@@ -1,0 +1,598 @@
+/* ==================== 放生页样式 ==================== */
+
+.page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ==================== 水面背景 ==================== */
+.water-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(212, 232, 226, 0.55) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 45% at 80% 90%, rgba(62, 122, 150, 0.35) 0%, transparent 55%),
+    linear-gradient(160deg, #d4e8e2 0%, #a9d2c5 35%, #6fae9c 70%, #3e7a7e 100%);
+}
+
+.water-ripples {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0rpx,
+      transparent 160rpx,
+      rgba(255, 255, 255, 0.04) 160rpx,
+      rgba(255, 255, 255, 0.04) 162rpx,
+      transparent 162rpx,
+      transparent 320rpx
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0rpx,
+      transparent 240rpx,
+      rgba(255, 255, 255, 0.03) 240rpx,
+      rgba(255, 255, 255, 0.03) 242rpx,
+      transparent 242rpx,
+      transparent 480rpx
+    );
+}
+
+/* ==================== 导航栏 ==================== */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.55);
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.4);
+}
+
+.nav-bar-inner {
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.logo-mark {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2c8a7a, #1f3a36);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+  box-shadow: 0 4rpx 16rpx rgba(31, 58, 54, 0.25);
+}
+
+.logo-text {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1f3a36;
+  letter-spacing: 0.12em;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.nav-avatar {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4e8e2, #2c8a7a);
+  color: #1f3a36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(31, 58, 54, 0.18);
+}
+
+/* ==================== 主内容区 ==================== */
+.main-content {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== 水域画布 ==================== */
+.water-canvas {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.world-map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(207, 228, 221, 0.4) 0%, rgba(169, 210, 197, 0.5) 60%, rgba(127, 182, 164, 0.6) 100%);
+}
+
+.map-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ocean-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, #cfe4dd 0%, #a9d2c5 60%, #7fb6a4 100%);
+  border-radius: 8rpx;
+}
+
+.continent {
+  position: absolute;
+  background: #f0e6d0;
+  border: 1rpx solid #d6cdb8;
+  border-radius: 50%;
+}
+
+/* 水域标记点 */
+.water-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+.water-marker .dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background: #3e7a96;
+  border: 3rpx solid #fff;
+  box-shadow: 0 2rpx 6rpx rgba(31, 58, 54, 0.3);
+}
+
+.water-marker.lake .dot {
+  background: #2c8a7a;
+}
+
+.water-marker.river .dot {
+  background: #2c8a7a;
+}
+
+.water-marker.trench .dot {
+  background: #ed7d5b;
+}
+
+.water-marker.selected .dot {
+  width: 28rpx;
+  height: 28rpx;
+  background: #ed7d5b;
+  border: 5rpx solid #fff;
+}
+
+.water-marker .pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  border: 2rpx solid #ed7d5b;
+  transform: translate(-50%, -50%);
+  animation: mapPulse 1.8s ease-out infinite;
+}
+
+@keyframes mapPulse {
+  0% {
+    width: 28rpx;
+    height: 28rpx;
+    opacity: 0.7;
+  }
+  100% {
+    width: 80rpx;
+    height: 80rpx;
+    opacity: 0;
+  }
+}
+
+.water-label {
+  position: absolute;
+  top: -36rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18rpx;
+  color: #1f3a36;
+  font-weight: 600;
+  white-space: nowrap;
+  background: rgba(250, 246, 236, 0.9);
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+}
+
+.water-marker.selected .water-label {
+  color: #ed7d5b;
+  background: rgba(252, 232, 223, 0.95);
+}
+
+/* 热门气泡 */
+.hot-bubbles {
+  position: absolute;
+  top: 24rpx;
+  left: 20rpx;
+  right: 20rpx;
+  display: flex;
+  gap: 12rpx;
+  z-index: 6;
+  flex-wrap: wrap;
+}
+
+.hot-bubble {
+  padding: 10rpx 24rpx;
+  background: rgba(255, 255, 255, 0.92);
+  border: 2rpx solid #ed7d5b;
+  border-radius: 99rpx;
+  font-size: 22rpx;
+  color: #ed7d5b;
+  white-space: nowrap;
+  box-shadow: 0 4rpx 16rpx rgba(237, 125, 91, 0.15);
+}
+
+.hot-bubble.active {
+  background: #ed7d5b;
+  color: #fff;
+}
+
+/* 地图提示 */
+.map-hint {
+  position: absolute;
+  bottom: 120rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22rpx;
+  color: rgba(31, 58, 54, 0.7);
+  letter-spacing: 0.12em;
+  z-index: 4;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 8rpx 28rpx;
+  border-radius: 99rpx;
+  white-space: nowrap;
+  transition: opacity 0.4s;
+}
+
+.map-hint.hidden {
+  opacity: 0;
+}
+
+/* 电子生物层 */
+.creature-layer {
+  position: absolute;
+  bottom: 100rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  max-width: 400rpx;
+  z-index: 5;
+  transition: all 0.9s cubic-bezier(0.5, 0, 0.3, 1);
+  filter: drop-shadow(0 16rpx 32rpx rgba(31, 58, 54, 0.25));
+}
+
+.creature-layer.released {
+  bottom: -100%;
+  opacity: 0;
+  transform: translateX(-50%) scale(0.5);
+}
+
+.creature-img {
+  width: 100%;
+  height: 200rpx;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16rpx);
+  }
+}
+
+/* 水域统计 */
+.river-stat {
+  position: absolute;
+  bottom: 24rpx;
+  left: 24rpx;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20rpx;
+  padding: 16rpx 24rpx;
+  font-size: 22rpx;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  z-index: 5;
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4rpx 16rpx rgba(31, 58, 54, 0.08);
+}
+
+.river-stat .num {
+  color: #2c8a7a;
+  font-weight: 600;
+  font-family: "SF Mono", "Monaco", monospace;
+}
+
+.river-stat .stat-line {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.river-stat .stat-line.muted {
+  color: #999;
+  font-size: 20rpx;
+}
+
+/* ==================== 控制面板 ==================== */
+.control-panel {
+  flex: 1;
+  padding: 24rpx 24rpx 48rpx;
+  background: rgba(255, 255, 255, 0.5);
+  border-top-left-radius: 40rpx;
+  border-top-right-radius: 40rpx;
+  margin-top: -24rpx;
+  position: relative;
+  z-index: 6;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1rpx solid rgba(255, 255, 255, 0.55);
+  border-radius: 32rpx;
+  padding: 40rpx;
+  box-shadow: 0 24rpx 80rpx rgba(31, 58, 54, 0.18), 0 8rpx 24rpx rgba(31, 58, 54, 0.08);
+  width: 100%;
+}
+
+.section-block {
+  margin-bottom: 36rpx;
+}
+
+.section-block:last-of-type {
+  margin-bottom: 0;
+}
+
+.section-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.label-hint {
+  font-size: 22rpx;
+  color: #ed7d5b;
+  font-weight: 400;
+}
+
+.label-num {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: #d4e8e2;
+  color: #1f3a36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+/* 感受输入 */
+.feeling-row {
+  display: flex;
+  gap: 20rpx;
+  align-items: flex-end;
+  margin-bottom: 16rpx;
+}
+
+.mic-btn {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: rgba(212, 232, 226, 0.7);
+  border: 2rpx solid #2c8a7a;
+  color: #1f3a36;
+  font-size: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mic-btn.recording {
+  background: #ed7d5b;
+  border-color: #ed7d5b;
+  color: #fff;
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes micPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(237, 125, 91, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 20rpx rgba(237, 125, 91, 0);
+  }
+}
+
+.feeling-textarea {
+  flex: 1;
+  min-height: 96rpx;
+  padding: 24rpx 28rpx;
+  border: 2rpx solid #e0ddd5;
+  border-radius: 24rpx;
+  background: rgba(255, 253, 247, 0.85);
+  font-size: 28rpx;
+  color: #2a2a2a;
+  line-height: 1.5;
+}
+
+.placeholder-style {
+  color: #999;
+  opacity: 0.75;
+}
+
+.feeling-hint {
+  font-size: 22rpx;
+  color: #999;
+  line-height: 1.5;
+}
+
+.feeling-hint .dot {
+  color: #ed7d5b;
+  margin-right: 4rpx;
+}
+
+/* 生物选择 */
+.creature-chips {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 18rpx 32rpx;
+  background: rgba(255, 253, 247, 0.7);
+  border: 2rpx solid #e0ddd5;
+  border-radius: 99rpx;
+  font-size: 26rpx;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.chip.coral.active {
+  background: #ed7d5b;
+  color: #fff;
+  border-color: #ed7d5b;
+  box-shadow: 0 8rpx 24rpx rgba(237, 125, 91, 0.35);
+}
+
+/* 回信时间选项 */
+.feedback-options {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+.fb-opt {
+  padding: 16rpx 28rpx;
+  background: rgba(255, 253, 247, 0.7);
+  border: 2rpx solid #e0ddd5;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  color: #555;
+}
+
+.fb-opt.active {
+  background: #2a2a2a;
+  color: #faf6ec;
+  border-color: #2a2a2a;
+}
+
+.fb-date {
+  width: 100%;
+  margin-top: 20rpx;
+  padding: 20rpx 28rpx;
+  border: 2rpx solid #e0ddd5;
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  color: #555;
+  background: rgba(255, 253, 247, 0.85);
+}
+
+/* 放生按钮 */
+.release-btn {
+  width: 100%;
+  margin-top: 16rpx;
+  padding: 32rpx;
+  background: linear-gradient(180deg, #ed7d5b 0%, #d96d4d 100%);
+  color: #fff;
+  border-radius: 99rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  box-shadow: 0 12rpx 40rpx rgba(237, 125, 91, 0.4);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.release-btn.disabled {
+  background: #d8d0bf;
+  color: #faf6ec;
+  box-shadow: none;
+}
+
+.release-btn-text {
+  position: relative;
+  z-index: 2;
+}
+
+.release-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shine 3.5s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  60%, 100% {
+    left: 100%;
+  }
+}

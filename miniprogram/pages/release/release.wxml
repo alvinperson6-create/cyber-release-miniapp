@@ -1,0 +1,153 @@
+<!-- 放生页 -->
+<view class="page">
+  <!-- 水面背景 -->
+  <view class="water-bg"></view>
+  <view class="water-ripples"></view>
+
+  <!-- 自定义导航栏 -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-bar-inner">
+      <view class="nav-logo">
+        <view class="logo-mark">放</view>
+        <text class="logo-text">赛博放生局</text>
+      </view>
+      <view class="nav-right">
+        <view class="nav-avatar">微</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主内容区 -->
+  <view class="main-content" style="top: {{navTotalHeight}}px;">
+
+    <!-- 水域画布 -->
+    <view class="water-canvas" style="height: {{canvasHeight}}px;">
+      <view class="world-map"
+            bindtouchstart="onMapTouchStart"
+            bindtouchmove="onMapTouchMove"
+            bindtouchend="onMapTouchEnd">
+        <view class="map-content"
+              style="width: {{mapW}}px; height: {{mapH}}px; transform: translate({{mapOffsetX}}px, {{mapOffsetY}}px);">
+          <!-- 海洋背景 -->
+          <view class="ocean-bg"></view>
+          <!-- 大陆 -->
+          <view wx:for="{{continents}}" wx:key="index"
+                class="continent"
+                style="left: {{item.left}}%; top: {{item.top}}%; width: {{item.width}}%; height: {{item.height}}%;">
+          </view>
+          <!-- 水域标记点 -->
+          <view wx:for="{{waterMarkers}}" wx:key="key"
+                class="water-marker {{item.typeClass}} {{selectedWater === item.key ? 'selected' : ''}}"
+                style="left: {{item.left}}%; top: {{item.top}}%;"
+                data-water="{{item.key}}"
+                catchtap="onWaterTap">
+            <view class="pulse" wx:if="{{selectedWater === item.key}}"></view>
+            <view class="dot"></view>
+            <text class="water-label">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 热门水域快捷气泡 -->
+      <view class="hot-bubbles">
+        <view wx:for="{{hotWaters}}" wx:key="key"
+              class="hot-bubble {{selectedWater === item.key ? 'active' : ''}}"
+              data-water="{{item.key}}"
+              catchtap="onHotBubbleTap">
+          <text>🔥 {{item.name}}</text>
+        </view>
+      </view>
+
+      <!-- 地图提示 -->
+      <view class="map-hint {{selectedWater ? 'hidden' : ''}}">
+        <text>拖动地图 · 点选水域</text>
+      </view>
+
+      <!-- 电子生物浮动层 -->
+      <view class="creature-layer {{isReleased ? 'released' : ''}}">
+        <image class="creature-img" src="{{creatureImg}}" mode="aspectFit"></image>
+      </view>
+
+      <!-- 水域统计 -->
+      <view class="river-stat">
+        <view class="stat-line">已选 · <text class="num">{{selectedWaterName}}</text></view>
+        <view class="stat-line muted">今日放生 <text class="num">{{todayCountStr}}</text></view>
+      </view>
+    </view>
+
+    <!-- 控制面板 -->
+    <scroll-view class="control-panel" scroll-y style="height: {{panelHeight}}px;">
+      <view class="glass-panel">
+        <!-- ① 此刻感受 -->
+        <view class="section-block">
+          <view class="section-label">
+            <view class="label-num">1</view>
+            <text>此刻感受</text>
+            <text class="label-hint">（可语音 / 可文字）</text>
+          </view>
+          <view class="feeling-row">
+            <view class="mic-btn {{isRecording ? 'recording' : ''}}" catchtap="onMicTap">
+              <text class="mic-icon">{{isRecording ? '●' : '🎤'}}</text>
+            </view>
+            <textarea class="feeling-textarea"
+                      value="{{feeling}}"
+                      bindinput="onFeelingInput"
+                      bindfocus="onFeelingFocus"
+                      bindblur="onFeelingBlur"
+                      placeholder="{{placeholder}}"
+                      placeholder-class="placeholder-style"
+                      maxlength="200"
+                      auto-height></textarea>
+          </view>
+          <view class="feeling-hint"><text class="dot">·</text>描述越具体，回信越懂你</view>
+        </view>
+
+        <!-- ② 想放生一只 -->
+        <view class="section-block">
+          <view class="section-label">
+            <view class="label-num">2</view>
+            <text>想放生一只</text>
+          </view>
+          <view class="creature-chips">
+            <view wx:for="{{creatureList}}" wx:key="key"
+                  class="chip coral {{selectedCreature === item.key ? 'active' : ''}}"
+                  data-creature="{{item.key}}"
+                  catchtap="onCreatureTap">
+              <text>{{item.emoji}} {{item.name}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- ③ 什么时候回信 -->
+        <view class="section-block">
+          <view class="section-label">
+            <view class="label-num">3</view>
+            <text>什么时候回信？</text>
+          </view>
+          <view class="feedback-options">
+            <view wx:for="{{feedbackOptions}}" wx:key="key"
+                  class="fb-opt {{feedbackTime === item.key ? 'active' : ''}}"
+                  data-fb="{{item.key}}"
+                  catchtap="onFeedbackTap">
+              <text>{{item.label}}</text>
+            </view>
+          </view>
+          <picker wx:if="{{feedbackTime === 'custom'}}" mode="date"
+                  value="{{customDate}}"
+                  start="{{todayStr}}"
+                  bindchange="onDateChange">
+            <view class="fb-date">{{customDate || '选择日期'}}</view>
+          </picker>
+        </view>
+
+        <!-- 放生按钮 -->
+        <view class="release-btn {{!ready ? 'disabled' : ''}}" catchtap="onReleaseTap">
+          <text class="release-btn-text">{{btnText}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 回执弹窗 -->
+  <receipt show="{{showReceipt}}" receipt="{{receiptData}}" bind:close="onReceiptClose"></receipt>
+</view>

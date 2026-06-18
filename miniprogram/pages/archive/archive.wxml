@@ -1,0 +1,99 @@
+<!-- 档案页 -->
+<view class="page">
+  <!-- 水面背景 -->
+  <view class="water-bg"></view>
+  <view class="water-ripples"></view>
+
+  <!-- 自定义导航栏 -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-bar-inner">
+      <view class="nav-logo">
+        <view class="logo-mark">放</view>
+        <text class="logo-text">赛博放生局</text>
+      </view>
+      <view class="nav-right">
+        <view class="nav-avatar">微</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主内容区 -->
+  <view class="main-content" style="top: {{navTotalHeight}}px;">
+    <scroll-view class="archive-scroll" scroll-y style="height: {{scrollHeight}}px;">
+      <view class="archive-panel">
+        <!-- 用户栏 -->
+        <view class="user-bar">
+          <view class="user-avatar">微</view>
+          <view class="user-info">
+            <text class="user-name">微信用户</text>
+            <text class="user-id">ID ····3a7f</text>
+          </view>
+          <view class="login-tag">静默登录</view>
+        </view>
+
+        <!-- 统计行 -->
+        <view class="stats-row">
+          <view class="stat-item">
+            <text class="stat-num teal">{{stats.total}}</text>
+            <text class="stat-label">累计放生</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-num coral">{{stats.pending}}</text>
+            <text class="stat-label">待回信</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-num teal">{{stats.replied}}</text>
+            <text class="stat-label">已回信</text>
+          </view>
+        </view>
+
+        <!-- 记录列表 -->
+        <view class="record-list">
+          <block wx:if="{{records.length === 0}}">
+            <view class="empty-state">
+              <text>还没有放生记录</text>
+              <text>去放生一只吧 🐟</text>
+            </view>
+          </block>
+          <block wx:else>
+            <view wx:for="{{records}}" wx:key="id"
+                  class="record-card {{item.reply ? 'has-reply' : ''}}"
+                  data-idx="{{index}}"
+                  catchtap="onCardTap">
+              <!-- 卡片头部 -->
+              <view class="record-header">
+                <text class="record-id">{{item.id}}</text>
+                <text class="record-status {{item.reply ? 'replied' : 'pending'}}">{{item.reply ? '已回信' : '待回信'}}</text>
+              </view>
+              <!-- 卡片元信息 -->
+              <view class="record-meta">
+                <text>{{item.creatureEmoji}} {{item.creatureName}} · {{item.waterName}} · {{item.timeStr}}</text>
+              </view>
+              <!-- 感受 -->
+              <view class="record-feeling">
+                <text>"{{item.feeling}}"</text>
+              </view>
+
+              <!-- 已回信: 可展开的回信内容 -->
+              <view wx:if="{{item.reply}}" class="reply-block {{item.expanded ? 'expanded' : ''}}">
+                <view class="reply-inner">
+                  <text class="reply-label">📬 AI 回信 · {{item.feedbackLabel}}</text>
+                  <view class="reply-image" style="background: {{item.reply.bg}};">
+                    <text class="reply-emoji">{{item.reply.emoji}}</text>
+                  </view>
+                  <text class="reply-text">{{item.reply.text}}</text>
+                </view>
+              </view>
+
+              <!-- 待回信: 倒计时 -->
+              <view wx:else class="countdown-block">
+                <text>⏳ 回信倒计时</text>
+                <text class="countdown-time">{{item.countdown}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

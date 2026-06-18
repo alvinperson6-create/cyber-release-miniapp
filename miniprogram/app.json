@@ -1,0 +1,33 @@
+{
+  "pages": [
+    "pages/release/release",
+    "pages/archive/archive"
+  ],
+  "window": {
+    "navigationBarTitleText": "赛博放生局",
+    "navigationStyle": "custom",
+    "backgroundColor": "#d4e8e2",
+    "backgroundColorTop": "#d4e8e2",
+    "backgroundColorBottom": "#a9d2c5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#2c8a7a",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/release/release",
+        "text": "放生"
+      },
+      {
+        "pagePath": "pages/archive/archive",
+        "text": "档案"
+      }
+    ]
+  },
+  "usingComponents": {
+    "receipt": "/components/receipt/receipt"
+  },
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#cfe4dd"/>
+      <stop offset="60%" stop-color="#a9d2c5"/>
+      <stop offset="100%" stop-color="#7fb6a4"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#oceanGrad)"/>
+  <g fill="#f0e6d0" stroke="#d6cdb8" stroke-width="0.5">
+    <path d="M 50 70 Q 90 50 150 65 Q 190 80 195 120 Q 185 160 160 180 Q 120 195 85 180 Q 55 160 45 120 Q 40 90 50 70 Z"/>
+    <path d="M 130 230 Q 165 220 185 250 Q 195 290 185 330 Q 170 370 150 365 Q 125 340 120 300 Q 120 260 130 230 Z"/>
+    <path d="M 200 40 Q 230 30 250 45 Q 255 65 240 75 Q 215 75 200 60 Z"/>
+    <path d="M 260 75 Q 330 55 420 70 Q 500 85 545 120 Q 555 155 530 180 Q 480 195 420 190 Q 360 185 310 170 Q 270 155 255 125 Q 250 95 260 75 Z"/>
+    <path d="M 285 95 Q 300 88 308 100 Q 305 115 292 113 Q 283 105 285 95 Z"/>
+    <path d="M 540 130 Q 555 125 560 140 Q 555 155 545 150 Q 538 140 540 130 Z"/>
+    <path d="M 335 210 Q 370 200 395 225 Q 405 265 395 305 Q 380 340 360 340 Q 335 325 325 290 Q 320 250 335 210 Z"/>
+    <path d="M 500 220 Q 520 215 530 230 Q 525 245 510 243 Q 498 235 500 220 Z"/>
+    <path d="M 495 335 Q 535 325 560 345 Q 565 375 545 390 Q 515 392 498 378 Q 488 355 495 335 Z"/>
+  </g>
+</svg>

@@ -1,0 +1,14 @@
+{
+  "description": "赛博放生局小程序",
+  "miniprogramRoot": "./",
+  "compileType": "miniprogram",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true
+  },
+  "appid": "touristappid",
+  "projectname": "cyber-release-miniapp",
+  "libVersion": "3.3.4"
+}

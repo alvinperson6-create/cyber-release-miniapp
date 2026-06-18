@@ -1,0 +1,379 @@
+/* ==================== 档案页样式 ==================== */
+
+.page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 水面背景 (与放生页一致) */
+.water-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(212, 232, 226, 0.55) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 45% at 80% 90%, rgba(62, 122, 150, 0.35) 0%, transparent 55%),
+    linear-gradient(160deg, #d4e8e2 0%, #a9d2c5 35%, #6fae9c 70%, #3e7a7e 100%);
+}
+
+.water-ripples {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0rpx,
+      transparent 160rpx,
+      rgba(255, 255, 255, 0.04) 160rpx,
+      rgba(255, 255, 255, 0.04) 162rpx,
+      transparent 162rpx,
+      transparent 320rpx
+    );
+}
+
+/* 导航栏 (与放生页一致) */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.55);
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.4);
+}
+
+.nav-bar-inner {
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.logo-mark {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2c8a7a, #1f3a36);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+  box-shadow: 0 4rpx 16rpx rgba(31, 58, 54, 0.25);
+}
+
+.logo-text {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1f3a36;
+  letter-spacing: 0.12em;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-avatar {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4e8e2, #2c8a7a);
+  color: #1f3a36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(31, 58, 54, 0.18);
+}
+
+/* 主内容区 */
+.main-content {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.archive-scroll {
+  width: 100%;
+}
+
+/* 档案面板 */
+.archive-panel {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1rpx solid rgba(255, 255, 255, 0.55);
+  border-radius: 40rpx;
+  padding: 48rpx 36rpx;
+  margin: 24rpx;
+  box-shadow: 0 24rpx 80rpx rgba(31, 58, 54, 0.18), 0 8rpx 24rpx rgba(31, 58, 54, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 用户栏 */
+.user-bar {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding-bottom: 32rpx;
+  border-bottom: 1rpx solid #eeebe5;
+}
+
+.user-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4e8e2, #2c8a7a);
+  color: #1f3a36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 600;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 16rpx rgba(31, 58, 54, 0.15);
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.user-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2a2a2a;
+}
+
+.user-id {
+  font-size: 22rpx;
+  color: #999;
+  font-family: "SF Mono", "Monaco", monospace;
+  letter-spacing: 0.04em;
+}
+
+.login-tag {
+  font-size: 20rpx;
+  color: #2c8a7a;
+  background: #d4e8e2;
+  padding: 8rpx 20rpx;
+  border-radius: 99rpx;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+/* 统计行 */
+.stats-row {
+  display: flex;
+  padding: 36rpx 0;
+  border-bottom: 1rpx solid #eeebe5;
+  gap: 20rpx;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  background: rgba(255, 253, 247, 0.5);
+  border-radius: 20rpx;
+}
+
+.stat-num {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 56rpx;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.stat-num.teal {
+  color: #2c8a7a;
+}
+
+.stat-num.coral {
+  color: #ed7d5b;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 12rpx;
+  letter-spacing: 0.06em;
+}
+
+/* 记录列表 */
+.record-list {
+  padding: 32rpx 0 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 120rpx 40rpx;
+  color: #999;
+  font-size: 28rpx;
+  line-height: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 记录卡片 */
+.record-card {
+  background: rgba(255, 253, 247, 0.85);
+  border: 1rpx solid #eeebe5;
+  border-radius: 24rpx;
+  padding: 28rpx;
+}
+
+.record-card.has-reply {
+  border-color: #d4e8e2;
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.record-id {
+  font-size: 22rpx;
+  color: #999;
+  letter-spacing: 0.02em;
+  font-family: "SF Mono", "Monaco", monospace;
+}
+
+.record-status {
+  font-size: 20rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 99rpx;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+.record-status.replied {
+  background: #d4e8e2;
+  color: #1f3a36;
+}
+
+.record-status.pending {
+  background: #fce8df;
+  color: #ed7d5b;
+}
+
+.record-meta {
+  font-size: 24rpx;
+  color: #555;
+  margin-bottom: 12rpx;
+}
+
+.record-feeling {
+  font-size: 24rpx;
+  color: #2a2a2a;
+  font-style: italic;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* 回信展开块 */
+.reply-block {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
+  margin-top: 0;
+}
+
+.reply-block.expanded {
+  max-height: 1200rpx;
+  opacity: 1;
+  margin-top: 24rpx;
+}
+
+.reply-inner {
+  padding: 24rpx;
+  background: #f5ede0;
+  border-radius: 16rpx;
+  border-left: 6rpx solid #2c8a7a;
+}
+
+.reply-label {
+  font-size: 20rpx;
+  color: #2c8a7a;
+  letter-spacing: 0.1em;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+  display: block;
+}
+
+.reply-image {
+  width: 100%;
+  height: 160rpx;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reply-emoji {
+  font-size: 64rpx;
+}
+
+.reply-text {
+  font-size: 24rpx;
+  color: #2a2a2a;
+  line-height: 1.6;
+  display: block;
+}
+
+/* 倒计时 */
+.countdown-block {
+  margin-top: 20rpx;
+  padding: 20rpx 24rpx;
+  background: #fce8df;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  color: #ed7d5b;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.countdown-time {
+  font-family: "SF Mono", "Monaco", monospace;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}

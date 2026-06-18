@@ -2,27 +2,20 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>赛博放生局</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>赛博放生局 · 电子河流</title>
 <style>
 /* ==================== Reset & Base ==================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+html, body { height: 100%; width: 100%; }
 body {
   font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
-  background:
-    radial-gradient(circle at 25% 15%, rgba(212, 232, 226, 0.55) 0%, transparent 45%),
-    radial-gradient(circle at 75% 85%, rgba(252, 232, 223, 0.45) 0%, transparent 45%),
-    linear-gradient(135deg, #efe9dc 0%, #e4dece 100%);
   color: var(--ink);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
 }
 button { font-family: inherit; border: none; background: none; cursor: pointer; color: inherit; }
 textarea, input { font-family: inherit; }
@@ -42,146 +35,224 @@ textarea, input { font-family: inherit; }
   --ink-mute: #999;
   --line: #e0ddd5;
   --line-soft: #eeebe5;
-  --shadow-phone: 0 24px 60px rgba(31, 58, 54, 0.22), 0 6px 16px rgba(31, 58, 54, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-bg-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --shadow-glass: 0 12px 40px rgba(31, 58, 54, 0.18), 0 4px 12px rgba(31, 58, 54, 0.08);
   --shadow-card: 0 2px 8px rgba(31, 58, 54, 0.06);
 }
 
 .serif { font-family: "Kaiti SC", "STKaiti", "Songti SC", "STSong", serif; }
 .mono { font-family: "SF Mono", "Monaco", "Menlo", "Consolas", monospace; letter-spacing: 0.02em; }
 
-/* ==================== Phone Frame ==================== */
-.phone-frame {
-  width: 100%;
-  max-width: 390px;
-  height: 844px;
-  max-height: calc(100vh - 40px);
-  position: relative;
-}
-.phone-bezel {
-  width: 100%;
-  height: 100%;
-  background: var(--teal-deep);
-  padding: 12px;
-  border-radius: 44px;
-  box-shadow: var(--shadow-phone);
-}
-.phone-screen {
-  width: 100%;
-  height: 100%;
-  background: var(--paper);
-  border-radius: 32px;
+/* ==================== Water Background ==================== */
+.water-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(212, 232, 226, 0.55) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(62, 122, 150, 0.35) 0%, transparent 55%),
+    linear-gradient(160deg, #d4e8e2 0%, #a9d2c5 35%, #6fae9c 70%, #3e7a7e 100%);
   overflow: hidden;
+}
+.water-bg::before,
+.water-bg::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background:
+    radial-gradient(ellipse 60% 40% at 30% 40%, rgba(255,255,255,0.18), transparent 60%),
+    radial-gradient(ellipse 50% 35% at 70% 60%, rgba(255,255,255,0.12), transparent 60%);
+  animation: waterShimmer 18s ease-in-out infinite alternate;
+}
+.water-bg::after {
+  animation: waterShimmer2 24s ease-in-out infinite alternate;
+  background:
+    radial-gradient(ellipse 45% 30% at 60% 30%, rgba(212,232,226,0.22), transparent 60%),
+    radial-gradient(ellipse 55% 40% at 25% 70%, rgba(212,232,226,0.18), transparent 60%);
+  opacity: 0.7;
+}
+@keyframes waterShimmer {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(4%, -3%) rotate(2deg); }
+}
+@keyframes waterShimmer2 {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-3%, 4%) rotate(-2deg); }
+}
+
+/* Subtle ripple lines */
+.water-ripples {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 80px,
+      rgba(255,255,255,0.04) 80px,
+      rgba(255,255,255,0.04) 81px,
+      transparent 81px,
+      transparent 160px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 120px,
+      rgba(255,255,255,0.03) 120px,
+      rgba(255,255,255,0.03) 121px,
+      transparent 121px,
+      transparent 240px
+    );
+  animation: rippleDrift 30s linear infinite;
+}
+@keyframes rippleDrift {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(80px, 0); }
+}
+
+/* ==================== App Shell ==================== */
+.app-shell {
   position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* ==================== Status Bar ==================== */
-.status-bar {
-  height: 36px;
+/* ==================== Top Nav ==================== */
+.top-nav {
   flex-shrink: 0;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px 0 28px;
-  font-size: 13px;
+  padding: 0 28px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  position: relative;
+  z-index: 10;
+}
+.nav-logo {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 22px;
   font-weight: 600;
-  color: var(--ink);
-  position: relative;
-  z-index: 5;
-}
-.status-bar .status-time { font-variant-numeric: tabular-nums; }
-.status-bar .status-right { display: flex; align-items: center; gap: 6px; font-size: 12px; }
-.status-battery {
-  width: 22px; height: 11px;
-  border: 1px solid var(--ink);
-  border-radius: 3px;
-  position: relative;
-  padding: 1px;
-}
-.status-battery::after {
-  content: ''; position: absolute;
-  right: -3px; top: 3px;
-  width: 2px; height: 4px;
-  background: var(--ink);
-  border-radius: 0 1px 1px 0;
-}
-.status-battery i {
-  display: block; width: 80%; height: 100%;
-  background: var(--ink); border-radius: 1px;
-}
-
-/* ==================== Content Area ==================== */
-.content-area {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
+  color: var(--teal-deep);
+  letter-spacing: 0.12em;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
-
-/* ==================== Tab Bar ==================== */
-.tab-bar {
-  height: 52px;
-  flex-shrink: 0;
-  display: flex;
-  border-top: 1px solid var(--line-soft);
-  background: var(--paper);
-  position: relative;
-  z-index: 5;
-}
-.tab-bar .tab {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+.nav-logo .logo-mark {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--teal-deep));
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  font-size: 10px;
-  color: var(--ink-mute);
-  position: relative;
-  transition: color 0.2s;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(31, 58, 54, 0.25);
 }
-.tab-bar .tab .tab-dot {
-  position: absolute;
-  top: 6px;
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--teal);
-  opacity: 0;
-  transition: opacity 0.2s;
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 99px;
+  padding: 4px;
+  box-shadow: var(--shadow-card);
 }
-.tab-bar .tab .tab-icon { font-size: 19px; line-height: 1; }
-.tab-bar .tab .tab-label { font-size: 10px; letter-spacing: 0.06em; }
-.tab-bar .tab.active { color: var(--teal); }
-.tab-bar .tab.active .tab-dot { opacity: 1; }
-
-/* ==================== Release Page ==================== */
-.release-page {
-  flex: 1;
+.nav-toggle .nav-pill {
+  padding: 7px 22px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  border-radius: 99px;
+  letter-spacing: 0.08em;
+  transition: all 0.25s ease;
+  font-weight: 500;
+}
+.nav-toggle .nav-pill.active {
+  background: linear-gradient(135deg, var(--teal), var(--teal-deep));
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(31, 58, 54, 0.25);
+}
+.nav-right {
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  align-items: center;
+  gap: 12px;
+}
+.nav-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal-light), var(--teal));
+  color: var(--teal-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(31, 58, 54, 0.18);
+}
+.nav-login-tag {
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(212, 232, 226, 0.7);
+  padding: 4px 10px;
+  border-radius: 99px;
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(44, 138, 122, 0.2);
 }
 
-/* River Area */
-.river-area {
+/* ==================== View Container ==================== */
+.view-container {
   flex: 1;
   position: relative;
-  margin: 0 14px;
-  border-radius: 14px;
   overflow: hidden;
-  min-height: 280px;
+  min-height: 0;
+}
+.view {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  display: flex;
+}
+.view.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-/* World map */
+/* ==================== Release View ==================== */
+.release-view {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* Water canvas (left, 60%) */
+.water-canvas {
+  flex: 0 0 60%;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
 .world-map {
   position: absolute;
   inset: 0;
   overflow: hidden;
   cursor: grab;
   touch-action: none;
-  background: linear-gradient(180deg, #cfe4dd 0%, #a9d2c5 60%, #7fb6a4 100%);
+  background: linear-gradient(180deg, rgba(207, 228, 221, 0.4) 0%, rgba(169, 210, 197, 0.5) 60%, rgba(127, 182, 164, 0.6) 100%);
 }
 .world-map.dragging { cursor: grabbing; }
 .map-svg {
@@ -238,59 +309,66 @@ textarea, input { font-family: inherit; }
 /* Hot bubbles */
 .hot-bubbles {
   position: absolute;
-  top: 8px; left: 8px; right: 8px;
+  top: 16px; left: 16px; right: 16px;
   display: flex;
-  gap: 5px;
+  gap: 6px;
   z-index: 5;
   flex-wrap: wrap;
   pointer-events: none;
 }
 .hot-bubble {
   pointer-events: auto;
-  padding: 3px 9px;
+  padding: 5px 12px;
   background: rgba(255,255,255,0.92);
   border: 1px solid #ed7d5b;
   border-radius: 99px;
-  font-size: 10px;
+  font-size: 11px;
   color: #ed7d5b;
   white-space: nowrap;
   transition: all 0.2s;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(237, 125, 91, 0.15);
 }
+.hot-bubble:hover { transform: translateY(-1px); }
 .hot-bubble:active { transform: scale(0.95); }
 .hot-bubble.active { background: #ed7d5b; color: #fff; }
 
 /* Map hint */
 .map-hint {
   position: absolute;
-  bottom: 44px; left: 50%;
+  bottom: 80px; left: 50%;
   transform: translateX(-50%);
-  font-size: 9px;
-  color: rgba(31, 58, 54, 0.65);
-  letter-spacing: 0.1em;
+  font-size: 11px;
+  color: rgba(31, 58, 54, 0.7);
+  letter-spacing: 0.12em;
   pointer-events: none;
   z-index: 2;
-  background: rgba(255,255,255,0.82);
-  padding: 2px 10px;
+  background: rgba(255,255,255,0.85);
+  padding: 4px 14px;
   border-radius: 99px;
   transition: opacity 0.4s;
   white-space: nowrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 .map-hint.hidden { opacity: 0; }
 
 /* Creature layer */
 .creature-layer {
   position: absolute;
-  bottom: 12px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
-  width: 60%;
+  width: 38%;
+  max-width: 280px;
   pointer-events: none;
   z-index: 3;
   transition: all 0.9s cubic-bezier(0.5, 0, 0.3, 1);
+  filter: drop-shadow(0 8px 16px rgba(31, 58, 54, 0.25));
 }
 .creature-layer.released {
   bottom: -60%;
@@ -306,64 +384,102 @@ textarea, input { font-family: inherit; }
 /* River stat bar */
 .river-stat {
   position: absolute;
-  bottom: 8px; left: 10px; right: 10px;
+  bottom: 16px; left: 16px;
   background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(4px);
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 11px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12px;
   color: var(--ink-soft);
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 4px;
   z-index: 4;
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow: var(--shadow-card);
 }
 .river-stat .num { color: var(--teal); font-weight: 600; font-family: "SF Mono", "Monaco", monospace; }
+.river-stat .stat-line { display: flex; align-items: center; gap: 6px; }
+.river-stat .stat-line.muted { color: var(--ink-mute); font-size: 11px; }
 
-/* Scrollable Panel */
-.release-panel {
-  flex: 1;
+/* Control panel (right, 40%) */
+.control-panel {
+  flex: 0 0 40%;
+  padding: 24px;
   overflow-y: auto;
-  padding: 14px 18px 18px;
   -webkit-overflow-scrolling: touch;
-  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
-.release-panel::-webkit-scrollbar { width: 3px; }
-.release-panel::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+.control-panel::-webkit-scrollbar { width: 4px; }
+.control-panel::-webkit-scrollbar-thumb { background: rgba(31, 58, 54, 0.2); border-radius: 2px; }
 
-.section-block { margin-bottom: 16px; }
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: var(--shadow-glass);
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.section-block { margin-bottom: 22px; }
+.section-block:last-child { margin-bottom: 0; }
 .section-label {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-mute);
-  margin-bottom: 8px;
-  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .section-label .label-hint {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--coral);
   font-weight: 400;
-  margin-left: 4px;
+}
+.section-label .label-num {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--teal-light);
+  color: var(--teal-deep);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
 }
 
 /* Feeling input */
 .feeling-row {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: flex-end;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .mic-btn {
-  width: 48px; height: 48px;
+  width: 52px; height: 52px;
   border-radius: 50%;
-  background: var(--teal-light);
+  background: rgba(212, 232, 226, 0.7);
   border: 1px solid var(--teal);
   color: var(--teal-deep);
-  font-size: 20px;
+  font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   transition: all 0.2s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
+.mic-btn:hover { transform: translateY(-1px); }
 .mic-btn:active { transform: scale(0.92); }
 .mic-btn.recording {
   background: var(--coral);
@@ -373,27 +489,32 @@ textarea, input { font-family: inherit; }
 }
 @keyframes micPulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(237, 125, 91, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(237, 125, 91, 0); }
+  50% { box-shadow: 0 0 0 10px rgba(237, 125, 91, 0); }
 }
 .feeling-textarea {
   flex: 1;
-  min-height: 48px;
-  max-height: 100px;
-  padding: 12px 14px;
+  min-height: 52px;
+  max-height: 120px;
+  padding: 14px 16px;
   border: 1px solid var(--line);
-  border-radius: 12px;
-  background: #fffdf7;
-  font-size: 13px;
+  border-radius: 14px;
+  background: rgba(255, 253, 247, 0.85);
+  font-size: 14px;
   color: var(--ink);
   line-height: 1.5;
   resize: none;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
-.feeling-textarea:focus { border-color: var(--teal); }
+.feeling-textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(44, 138, 122, 0.12);
+}
 .feeling-textarea::placeholder { color: var(--ink-mute); opacity: 0.75; }
 .feeling-hint {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--ink-mute);
   line-height: 1.5;
 }
@@ -402,44 +523,50 @@ textarea, input { font-family: inherit; }
 /* Creature chips */
 .creature-chips {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 .chip {
-  padding: 8px 14px;
-  background: #fffdf7;
+  padding: 10px 16px;
+  background: rgba(255, 253, 247, 0.7);
   border: 1px solid var(--line);
   border-radius: 99px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-soft);
   transition: all 0.2s;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
+.chip:hover { transform: translateY(-1px); border-color: var(--coral); }
 .chip:active { transform: scale(0.96); }
 .chip.coral.active {
   background: var(--coral);
   color: #fff;
   border-color: var(--coral);
-  box-shadow: 0 2px 8px rgba(237, 125, 91, 0.3);
+  box-shadow: 0 4px 12px rgba(237, 125, 91, 0.35);
 }
 
 /* Feedback options */
 .feedback-options {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 .fb-opt {
-  padding: 6px 12px;
-  background: #fffdf7;
+  padding: 8px 14px;
+  background: rgba(255, 253, 247, 0.7);
   border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 11px;
+  border-radius: 10px;
+  font-size: 12px;
   color: var(--ink-soft);
   transition: all 0.2s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
+.fb-opt:hover { border-color: var(--teal); }
 .fb-opt:active { transform: scale(0.95); }
 .fb-opt.active {
   background: var(--ink);
@@ -448,34 +575,36 @@ textarea, input { font-family: inherit; }
 }
 .fb-date {
   width: 100%;
-  margin-top: 8px;
-  padding: 8px 12px;
+  margin-top: 10px;
+  padding: 10px 14px;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 12px;
+  border-radius: 10px;
+  font-size: 13px;
   color: var(--ink-soft);
-  background: #fffdf7;
+  background: rgba(255, 253, 247, 0.85);
   outline: none;
+  transition: border-color 0.2s;
 }
 .fb-date:focus { border-color: var(--teal); }
 
 /* Release button */
 .release-btn {
   width: 100%;
-  margin-top: 4px;
-  padding: 14px;
+  margin-top: 6px;
+  padding: 16px;
   background: linear-gradient(180deg, var(--coral) 0%, #d96d4d 100%);
   color: #fff;
   border-radius: 99px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  box-shadow: 0 4px 12px rgba(237, 125, 91, 0.32);
+  letter-spacing: 0.12em;
+  box-shadow: 0 6px 20px rgba(237, 125, 91, 0.4);
   transition: all 0.2s;
   position: relative;
   overflow: hidden;
 }
-.release-btn:active:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(237, 125, 91, 0.4); }
+.release-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(237, 125, 91, 0.5); }
+.release-btn:active:not(:disabled) { transform: translateY(0); }
 .release-btn:disabled {
   background: #d8d0bf;
   color: #faf6ec;
@@ -487,7 +616,7 @@ textarea, input { font-family: inherit; }
   position: absolute;
   top: 0; left: -100%;
   width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
   animation: shine 3.5s infinite;
 }
 @keyframes shine {
@@ -495,138 +624,172 @@ textarea, input { font-family: inherit; }
   60%, 100% { left: 100%; }
 }
 
-/* ==================== Archive Page ==================== */
-.archive-page {
-  flex: 1;
+/* ==================== Archive View ==================== */
+.archive-view {
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  align-items: center;
+}
+.archive-view::-webkit-scrollbar { width: 6px; }
+.archive-view::-webkit-scrollbar-thumb { background: rgba(31, 58, 54, 0.2); border-radius: 3px; }
+
+.archive-panel {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--shadow-glass);
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 112px);
 }
 
 .user-bar {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 18px 12px;
+  gap: 16px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--line-soft);
 }
 .user-avatar {
-  width: 38px; height: 38px;
+  width: 48px; height: 48px;
   border-radius: 50%;
-  background: var(--teal-light);
+  background: linear-gradient(135deg, var(--teal-light), var(--teal));
   color: var(--teal-deep);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(31, 58, 54, 0.15);
 }
 .user-info { flex: 1; min-width: 0; }
-.user-name { font-size: 14px; font-weight: 600; color: var(--ink); }
-.user-id { font-size: 10px; color: var(--ink-mute); font-family: "SF Mono", "Monaco", monospace; letter-spacing: 0.04em; margin-top: 1px; }
+.user-name { font-size: 16px; font-weight: 600; color: var(--ink); }
+.user-id { font-size: 11px; color: var(--ink-mute); font-family: "SF Mono", "Monaco", monospace; letter-spacing: 0.04em; margin-top: 2px; }
 .login-tag {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--teal);
   background: var(--teal-light);
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 99px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   flex-shrink: 0;
 }
 
 .stats-row {
   flex-shrink: 0;
   display: flex;
-  padding: 14px 18px;
+  padding: 22px 0;
   border-bottom: 1px solid var(--line-soft);
+  gap: 16px;
 }
 .stat-item {
   flex: 1;
   text-align: center;
+  padding: 8px 12px;
+  background: rgba(255, 253, 247, 0.5);
+  border-radius: 12px;
+  transition: transform 0.2s;
 }
-.stat-item + .stat-item { border-left: 1px solid var(--line-soft); }
+.stat-item:hover { transform: translateY(-2px); }
 .stat-num {
   font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
-  font-size: 26px;
+  font-size: 32px;
   line-height: 1;
   font-weight: 400;
 }
 .stat-num.teal { color: var(--teal); }
 .stat-num.coral { color: var(--coral); }
 .stat-label {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--ink-mute);
-  margin-top: 5px;
-  letter-spacing: 0.04em;
+  margin-top: 6px;
+  letter-spacing: 0.06em;
 }
 
 .record-list {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  padding: 20px 4px 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
   -webkit-overflow-scrolling: touch;
+  align-content: start;
 }
-.record-list::-webkit-scrollbar { width: 3px; }
+.record-list::-webkit-scrollbar { width: 4px; }
 .record-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
 
 .empty-state {
+  grid-column: 1 / -1;
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
   color: var(--ink-mute);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 2;
 }
 
 .record-card {
-  background: #fffdf7;
+  background: rgba(255, 253, 247, 0.85);
   border: 1px solid var(--line-soft);
-  border-radius: 10px;
-  padding: 12px;
-  transition: border-color 0.2s;
+  border-radius: 14px;
+  padding: 16px;
+  transition: all 0.2s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
+.record-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); border-color: var(--line); }
 .record-card.has-reply { cursor: pointer; }
-.record-card.has-reply:active { border-color: var(--teal); }
+.record-card.has-reply:hover { border-color: var(--teal); }
 
 .record-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .record-id {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--ink-mute);
   letter-spacing: 0.02em;
+  font-family: "SF Mono", "Monaco", monospace;
 }
 .record-status {
-  font-size: 9px;
-  padding: 2px 8px;
+  font-size: 10px;
+  padding: 3px 10px;
   border-radius: 99px;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  font-weight: 500;
 }
 .record-status.replied { background: var(--teal-light); color: var(--teal-deep); }
 .record-status.pending { background: var(--coral-soft); color: var(--coral); }
 
 .record-meta {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-soft);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .record-feeling {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink);
   font-style: italic;
   line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
@@ -638,48 +801,49 @@ textarea, input { font-family: inherit; }
   margin-top: 0;
 }
 .reply-block.expanded {
-  max-height: 500px;
+  max-height: 600px;
   opacity: 1;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 .reply-inner {
-  padding: 10px;
+  padding: 12px;
   background: var(--paper-warm);
-  border-radius: 8px;
+  border-radius: 10px;
   border-left: 3px solid var(--teal);
 }
 .reply-label {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--teal);
   letter-spacing: 0.1em;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 .reply-image {
   width: 100%;
-  height: 70px;
-  border-radius: 6px;
-  margin-bottom: 6px;
+  height: 80px;
+  border-radius: 8px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 32px;
 }
 .reply-text {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink);
   line-height: 1.6;
 }
 
 .countdown-block {
-  margin-top: 8px;
-  padding: 8px 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
   background: var(--coral-soft);
-  border-radius: 6px;
-  font-size: 10px;
+  border-radius: 8px;
+  font-size: 11px;
   color: var(--coral);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 .countdown-time {
   font-family: "SF Mono", "Monaco", monospace;
@@ -689,18 +853,19 @@ textarea, input { font-family: inherit; }
 
 /* ==================== Receipt Modal ==================== */
 .receipt-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(31, 58, 54, 0.45);
-  backdrop-filter: blur(2px);
+  background: rgba(31, 58, 54, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
   z-index: 100;
-  padding: 16px;
+  padding: 24px;
 }
 .receipt-overlay.show {
   opacity: 1;
@@ -708,18 +873,19 @@ textarea, input { font-family: inherit; }
 }
 .receipt-card {
   width: 100%;
-  max-height: 92%;
+  max-width: 420px;
+  max-height: 90vh;
   overflow-y: auto;
   background: var(--paper);
-  border-radius: 16px;
-  padding: 24px 20px 18px;
-  transform: translateY(100%);
+  border-radius: 20px;
+  padding: 28px 24px 20px;
+  transform: translateY(40px) scale(0.96);
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
-  box-shadow: 0 -8px 32px rgba(0,0,0,0.2);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
   position: relative;
 }
-.receipt-overlay.show .receipt-card { transform: translateY(0); }
-.receipt-card::-webkit-scrollbar { width: 3px; }
+.receipt-overlay.show .receipt-card { transform: translateY(0) scale(1); }
+.receipt-card::-webkit-scrollbar { width: 4px; }
 .receipt-card::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
 
 /* Perforated edges */
@@ -738,26 +904,26 @@ textarea, input { font-family: inherit; }
 
 .receipt-header {
   text-align: center;
-  padding-bottom: 14px;
+  padding-bottom: 16px;
   border-bottom: 1px dashed var(--line);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 .receipt-stamp {
   display: inline-block;
   font-family: "Kaiti SC", "STKaiti", serif;
-  font-size: 22px;
+  font-size: 24px;
   color: var(--coral);
   letter-spacing: 0.4em;
-  padding: 5px 14px 5px 18px;
+  padding: 6px 16px 6px 20px;
   border: 2px solid var(--coral);
   border-radius: 4px;
   transform: rotate(-3deg);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .receipt-subtitle {
   font-size: 10px;
   color: var(--ink-mute);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
 }
 
 .receipt-rows { margin-bottom: 4px; }
@@ -765,89 +931,91 @@ textarea, input { font-family: inherit; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
-  padding: 6px 0;
+  font-size: 13px;
+  padding: 8px 0;
 }
 .receipt-row .row-key { color: var(--ink-mute); }
 .receipt-row .row-val { color: var(--ink); }
-.receipt-row .row-val.mono { font-family: "SF Mono", "Monaco", monospace; font-size: 11px; }
-.receipt-row .row-val.serif { font-family: "Kaiti SC", "STKaiti", serif; font-size: 13px; }
+.receipt-row .row-val.mono { font-family: "SF Mono", "Monaco", monospace; font-size: 12px; }
+.receipt-row .row-val.serif { font-family: "Kaiti SC", "STKaiti", serif; font-size: 14px; }
 
 .receipt-feeling {
-  margin: 12px 0;
-  padding: 10px 12px;
+  margin: 14px 0;
+  padding: 12px 14px;
   background: var(--paper-warm);
-  border-radius: 6px;
+  border-radius: 8px;
   border-left: 3px solid var(--coral);
 }
 .receipt-sign {
-  margin: 12px 0;
-  padding: 12px;
+  margin: 14px 0;
+  padding: 14px;
   background: var(--teal-light);
-  border-radius: 6px;
+  border-radius: 8px;
   text-align: center;
 }
 .receipt-feedback {
-  margin: 12px 0 0;
-  padding: 10px 12px;
+  margin: 14px 0 0;
+  padding: 12px 14px;
   background: var(--teal-light);
-  border-radius: 6px;
+  border-radius: 8px;
 }
 .block-label {
   font-size: 10px;
-  letter-spacing: 0.12em;
-  margin-bottom: 5px;
+  letter-spacing: 0.14em;
+  margin-bottom: 6px;
 }
 .receipt-feeling .block-label { color: var(--coral); }
 .receipt-sign .block-label { color: var(--teal-deep); }
 .receipt-feedback .block-label { color: var(--teal-deep); }
 .block-text {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink);
   line-height: 1.6;
 }
 .receipt-feeling .block-text { font-style: italic; }
 .receipt-sign .block-text {
   font-family: "Kaiti SC", "STKaiti", serif;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.5;
 }
 .receipt-feedback .block-text strong { color: var(--teal-deep); }
-.receipt-feedback .block-text .mute { color: var(--ink-mute); font-size: 11px; }
+.receipt-feedback .block-text .mute { color: var(--ink-mute); font-size: 12px; }
 
 .receipt-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 10px;
+  margin-top: 16px;
 }
 .btn-line {
   flex: 1;
-  padding: 10px 0;
+  padding: 12px 0;
   background: transparent;
   border: 1px solid var(--line);
   border-radius: 99px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-soft);
   transition: all 0.2s;
 }
+.btn-line:hover { border-color: var(--teal); color: var(--teal); }
 .btn-line:active { transform: scale(0.97); }
 .btn-primary {
   flex: 1;
-  padding: 10px 0;
+  padding: 12px 0;
   background: var(--teal-deep);
   color: var(--paper);
   border-radius: 99px;
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  font-size: 13px;
+  letter-spacing: 0.06em;
   transition: all 0.2s;
 }
+.btn-primary:hover { background: var(--teal); }
 .btn-primary:active { transform: scale(0.97); }
 
 .receipt-footer {
   text-align: center;
-  font-size: 9px;
+  font-size: 10px;
   color: var(--ink-mute);
-  margin-top: 12px;
+  margin-top: 14px;
   letter-spacing: 0.02em;
   line-height: 1.6;
 }
@@ -855,67 +1023,157 @@ textarea, input { font-family: inherit; }
 /* ==================== Animations ==================== */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-8px); }
 }
 
-/* ==================== Responsive (Mobile) ==================== */
+/* ==================== Responsive ==================== */
+@media (max-width: 860px) {
+  .top-nav { padding: 0 16px; height: 56px; }
+  .nav-logo { font-size: 18px; }
+  .nav-logo .logo-mark { width: 24px; height: 24px; font-size: 12px; }
+  .nav-toggle .nav-pill { padding: 6px 16px; font-size: 12px; }
+  .nav-login-tag { display: none; }
+
+  .release-view { flex-direction: column; }
+  .water-canvas { flex: 0 0 50%; min-height: 280px; }
+  .control-panel {
+    flex: 1;
+    padding: 16px;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    margin-top: -16px;
+    z-index: 5;
+    position: relative;
+  }
+  .glass-panel { padding: 20px; border-radius: 16px; }
+  .creature-layer { width: 50%; bottom: 40px; }
+  .river-stat { bottom: 12px; left: 12px; padding: 8px 12px; font-size: 11px; }
+  .map-hint { bottom: 60px; font-size: 10px; }
+
+  .archive-view { padding: 16px; }
+  .archive-panel { padding: 20px; border-radius: 18px; max-height: calc(100vh - 88px); }
+  .record-list { grid-template-columns: 1fr; gap: 12px; padding: 16px 4px 8px; }
+  .stats-row { padding: 16px 0; gap: 10px; }
+  .stat-num { font-size: 26px; }
+  .user-bar { padding-bottom: 16px; gap: 12px; }
+  .user-avatar { width: 40px; height: 40px; font-size: 15px; }
+
+  .receipt-card { padding: 24px 18px 16px; max-height: 88vh; }
+}
+
 @media (max-width: 480px) {
-  body { padding: 0; }
-  .phone-frame {
-    max-width: 100%;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-  }
-  .phone-bezel {
-    padding: 0;
-    border-radius: 0;
-    box-shadow: none;
-  }
-  .phone-screen { border-radius: 0; }
+  .nav-logo .logo-text { display: none; }
+  .nav-toggle .nav-pill { padding: 6px 14px; }
+  .section-block { margin-bottom: 18px; }
+  .release-btn { padding: 14px; font-size: 15px; }
 }
 </style>
 </head>
 <body>
 
-<div class="phone-frame">
-  <div class="phone-bezel">
-    <div class="phone-screen" id="phoneScreen">
+<div class="water-bg"></div>
+<div class="water-ripples"></div>
 
-      <div class="status-bar">
-        <span class="status-time">9:41</span>
-        <div class="status-right">
-          <span>📶</span>
-          <span class="status-battery"><i></i></span>
-        </div>
-      </div>
+<div class="app-shell">
 
-      <div class="content-area" id="contentArea"></div>
-
-      <div class="tab-bar" id="tabBar">
-        <button class="tab active" data-page="release">
-          <span class="tab-dot"></span>
-          <span class="tab-icon">🏠</span>
-          <span class="tab-label">放生</span>
-        </button>
-        <button class="tab" data-page="archive">
-          <span class="tab-dot"></span>
-          <span class="tab-icon">📋</span>
-          <span class="tab-label">档案</span>
-        </button>
-      </div>
-
-      <div class="receipt-overlay" id="receiptOverlay">
-        <div class="receipt-card" id="receiptCard"></div>
-      </div>
-
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-logo">
+      <span class="logo-mark">放</span>
+      <span class="logo-text">赛博放生局</span>
     </div>
+    <div class="nav-toggle" id="navToggle">
+      <button class="nav-pill active" data-page="release">放生</button>
+      <button class="nav-pill" data-page="archive">档案</button>
+    </div>
+    <div class="nav-right">
+      <div class="nav-avatar">微</div>
+      <span class="nav-login-tag">静默登录</span>
+    </div>
+  </nav>
+
+  <!-- View Container -->
+  <div class="view-container">
+
+    <!-- Release View -->
+    <div class="view active" id="releaseView">
+      <div class="release-view" id="releaseContent"></div>
+    </div>
+
+    <!-- Archive View -->
+    <div class="view" id="archiveView">
+      <div class="archive-view" id="archiveContent"></div>
+    </div>
+
   </div>
+</div>
+
+<!-- Receipt Modal -->
+<div class="receipt-overlay" id="receiptOverlay">
+  <div class="receipt-card" id="receiptCard"></div>
 </div>
 
 <script>
 (function() {
   'use strict';
+
+  // ==================== API Layer ====================
+  const API_BASE = 'http://localhost:3000/api';
+  const USE_API = false; // Set to true when backend is running
+
+  async function apiRelease(data) {
+    if (!USE_API) return localRelease(data);
+    try {
+      const res = await fetch(`${API_BASE}/release`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('API error');
+      return await res.json();
+    } catch (e) {
+      console.warn('API unavailable, falling back to localStorage');
+      return localRelease(data);
+    }
+  }
+
+  async function apiGetRecords(openid) {
+    if (!USE_API) return { records: loadRecords(), stats: getStats() };
+    try {
+      const res = await fetch(`${API_BASE}/records?openid=${encodeURIComponent(openid)}`);
+      if (!res.ok) throw new Error('API error');
+      return await res.json();
+    } catch (e) {
+      console.warn('API unavailable, falling back to localStorage');
+      return { records: loadRecords(), stats: getStats() };
+    }
+  }
+
+  async function apiGetReply(id) {
+    if (!USE_API) {
+      const records = loadRecords();
+      const r = records.find(x => x.id === id);
+      return { reply: r ? r.reply : null };
+    }
+    try {
+      const res = await fetch(`${API_BASE}/reply/${id}`);
+      if (!res.ok) throw new Error('API error');
+      return await res.json();
+    } catch (e) {
+      console.warn('API unavailable, falling back to localStorage');
+      const records = loadRecords();
+      const r = records.find(x => x.id === id);
+      return { reply: r ? r.reply : null };
+    }
+  }
+
+  function localRelease(data) {
+    addRecord(data);
+    return { ok: true, id: data.id };
+  }
 
   // ==================== Data ====================
   const STORAGE_KEY = 'cyber_release_records';
@@ -1170,8 +1428,7 @@ textarea, input { font-family: inherit; }
     if (changed) {
       saveRecords(records);
       if (state.currentPage === 'archive') {
-        renderArchivePage();
-        attachArchiveHandlers();
+        renderArchive();
       }
     }
     return changed;
@@ -1236,25 +1493,21 @@ textarea, input { font-family: inherit; }
   // ==================== Router ====================
   function navigateTo(page) {
     state.currentPage = page;
-    const contentArea = $('contentArea');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
     if (page === 'release') {
-      contentArea.innerHTML = renderReleasePage();
-      attachReleaseHandlers();
+      $('releaseView').classList.add('active');
+      document.querySelector('.nav-pill[data-page="release"]').classList.add('active');
+      renderRelease();
     } else if (page === 'archive') {
-      contentArea.innerHTML = renderArchivePage();
-      attachArchiveHandlers();
+      $('archiveView').classList.add('active');
+      document.querySelector('.nav-pill[data-page="archive"]').classList.add('active');
+      renderArchive();
     }
-    updateTabBar();
-  }
-
-  function updateTabBar() {
-    document.querySelectorAll('.tab-bar .tab').forEach(tab => {
-      tab.classList.toggle('active', tab.dataset.page === state.currentPage);
-    });
   }
 
   // ==================== Release Page Render ====================
-  function renderReleasePage() {
+  function renderRelease() {
     const waterName = state.water ? WATERS[state.water].name : '未选择';
     const creatureArt = CREATURE_SVG[state.creature] || CREATURE_SVG.koi;
 
@@ -1263,7 +1516,7 @@ textarea, input { font-family: inherit; }
     `).join('');
 
     const waterMarkersHtml = `
-      <g class="water-marker ${WATERS.pacific.type === 'lake' ? 'lake' : WATERS.pacific.type === 'river' ? 'river' : WATERS.pacific.type === 'trench' ? 'trench' : ''} ${state.water === 'pacific' ? 'selected' : ''}" data-water="pacific" transform="translate(590,200)">
+      <g class="water-marker ${state.water === 'pacific' ? 'selected' : ''}" data-water="pacific" transform="translate(590,200)">
         <circle class="pulse" r="7"/><circle class="dot" r="5"/>
         <text class="water-label" y="-12">太平洋</text>
       </g>
@@ -1316,54 +1569,54 @@ textarea, input { font-family: inherit; }
     const ready = state.feeling.trim() && state.creature && state.water && !state.isReleased;
     const btnText = state.isReleased ? '正在放生…' : (ready ? '按下放生' : '选好啦 · 按下放生');
 
-    return `
-      <div class="release-page">
-        <div class="river-area">
-          <div class="world-map" id="worldMap">
-            <svg class="map-svg" id="mapSvg" viewBox="${mapVb.x} ${mapVb.y} ${MAP_VB.w} ${MAP_VB.h}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#cfe4dd"/>
-                  <stop offset="60%" stop-color="#a9d2c5"/>
-                  <stop offset="100%" stop-color="#7fb6a4"/>
-                </linearGradient>
-              </defs>
-              <rect width="640" height="480" fill="url(#oceanGrad)"/>
-              <g fill="#f0e6d0" stroke="#d6cdb8" stroke-width="0.5">
-                <path d="M 50 70 Q 90 50 150 65 Q 190 80 195 120 Q 185 160 160 180 Q 120 195 85 180 Q 55 160 45 120 Q 40 90 50 70 Z"/>
-                <path d="M 130 230 Q 165 220 185 250 Q 195 290 185 330 Q 170 370 150 365 Q 125 340 120 300 Q 120 260 130 230 Z"/>
-                <path d="M 200 40 Q 230 30 250 45 Q 255 65 240 75 Q 215 75 200 60 Z"/>
-                <path d="M 260 75 Q 330 55 420 70 Q 500 85 545 120 Q 555 155 530 180 Q 480 195 420 190 Q 360 185 310 170 Q 270 155 255 125 Q 250 95 260 75 Z"/>
-                <path d="M 285 95 Q 300 88 308 100 Q 305 115 292 113 Q 283 105 285 95 Z"/>
-                <path d="M 540 130 Q 555 125 560 140 Q 555 155 545 150 Q 538 140 540 130 Z"/>
-                <path d="M 335 210 Q 370 200 395 225 Q 405 265 395 305 Q 380 340 360 340 Q 335 325 325 290 Q 320 250 335 210 Z"/>
-                <path d="M 500 220 Q 520 215 530 230 Q 525 245 510 243 Q 498 235 500 220 Z"/>
-                <path d="M 495 335 Q 535 325 560 345 Q 565 375 545 390 Q 515 392 498 378 Q 488 355 495 335 Z"/>
-              </g>
-              <g id="waterMarkers">${waterMarkersHtml}</g>
-            </svg>
-          </div>
-          <div class="hot-bubbles">${hotBubblesHtml}</div>
-          <div class="map-hint ${state.water ? 'hidden' : ''}" id="mapHint">拖动地图 · 点选水域</div>
-          <div class="creature-layer ${state.isReleased ? 'released' : ''}" id="creatureLayer">
-            <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" id="creatureSvg">${creatureArt}</svg>
-          </div>
-          <div class="river-stat">
-            <span>已选 · <span class="num" id="selectedWater">${waterName}</span></span>
-            <span style="color: var(--ink-mute);">今日放生 <span id="todayCount">${state.todayCount.toLocaleString()}</span></span>
-          </div>
+    $('releaseContent').innerHTML = `
+      <div class="water-canvas">
+        <div class="world-map" id="worldMap">
+          <svg class="map-svg" id="mapSvg" viewBox="${mapVb.x} ${mapVb.y} ${MAP_VB.w} ${MAP_VB.h}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#cfe4dd"/>
+                <stop offset="60%" stop-color="#a9d2c5"/>
+                <stop offset="100%" stop-color="#7fb6a4"/>
+              </linearGradient>
+            </defs>
+            <rect width="640" height="480" fill="url(#oceanGrad)"/>
+            <g fill="#f0e6d0" stroke="#d6cdb8" stroke-width="0.5">
+              <path d="M 50 70 Q 90 50 150 65 Q 190 80 195 120 Q 185 160 160 180 Q 120 195 85 180 Q 55 160 45 120 Q 40 90 50 70 Z"/>
+              <path d="M 130 230 Q 165 220 185 250 Q 195 290 185 330 Q 170 370 150 365 Q 125 340 120 300 Q 120 260 130 230 Z"/>
+              <path d="M 200 40 Q 230 30 250 45 Q 255 65 240 75 Q 215 75 200 60 Z"/>
+              <path d="M 260 75 Q 330 55 420 70 Q 500 85 545 120 Q 555 155 530 180 Q 480 195 420 190 Q 360 185 310 170 Q 270 155 255 125 Q 250 95 260 75 Z"/>
+              <path d="M 285 95 Q 300 88 308 100 Q 305 115 292 113 Q 283 105 285 95 Z"/>
+              <path d="M 540 130 Q 555 125 560 140 Q 555 155 545 150 Q 538 140 540 130 Z"/>
+              <path d="M 335 210 Q 370 200 395 225 Q 405 265 395 305 Q 380 340 360 340 Q 335 325 325 290 Q 320 250 335 210 Z"/>
+              <path d="M 500 220 Q 520 215 530 230 Q 525 245 510 243 Q 498 235 500 220 Z"/>
+              <path d="M 495 335 Q 535 325 560 345 Q 565 375 545 390 Q 515 392 498 378 Q 488 355 495 335 Z"/>
+            </g>
+            <g id="waterMarkers">${waterMarkersHtml}</g>
+          </svg>
         </div>
-        <div class="release-panel">
+        <div class="hot-bubbles">${hotBubblesHtml}</div>
+        <div class="map-hint ${state.water ? 'hidden' : ''}" id="mapHint">拖动地图 · 点选水域</div>
+        <div class="creature-layer ${state.isReleased ? 'released' : ''}" id="creatureLayer">
+          <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" id="creatureSvg">${creatureArt}</svg>
+        </div>
+        <div class="river-stat">
+          <div class="stat-line">已选 · <span class="num" id="selectedWater">${waterName}</span></div>
+          <div class="stat-line muted">今日放生 <span id="todayCount">${state.todayCount.toLocaleString()}</span></div>
+        </div>
+      </div>
+      <div class="control-panel">
+        <div class="glass-panel">
           <div class="section-block">
-            <div class="section-label">此刻感受 <span class="label-hint">（可语音 / 可文字）</span></div>
+            <div class="section-label"><span class="label-num">1</span>此刻感受 <span class="label-hint">（可语音 / 可文字）</span></div>
             <div class="feeling-row">
               <button class="mic-btn" id="micBtn">🎤</button>
               <textarea class="feeling-textarea" id="feelingText" rows="2" placeholder="${PLACEHOLDERS[0]}"></textarea>
             </div>
-            <div class="feeling-hint"><span class="dot">·</span>描述越具体，24h 后的 AI 回信越懂你</div>
+            <div class="feeling-hint"><span class="dot">·</span>描述越具体，回信越懂你</div>
           </div>
           <div class="section-block">
-            <div class="section-label">想放生一只</div>
+            <div class="section-label"><span class="label-num">2</span>想放生一只</div>
             <div class="creature-chips" id="creatureChips">
               <button class="chip coral ${state.creature === 'koi' ? 'active' : ''}" data-creature="koi">🐟 电子锦鲤</button>
               <button class="chip coral ${state.creature === 'turtle' ? 'active' : ''}" data-creature="turtle">🐢 电子乌龟</button>
@@ -1371,7 +1624,7 @@ textarea, input { font-family: inherit; }
             </div>
           </div>
           <div class="section-block">
-            <div class="section-label">什么时候回信？</div>
+            <div class="section-label"><span class="label-num">3</span>什么时候回信？</div>
             <div class="feedback-options" id="feedbackOptions">
               <button class="fb-opt ${state.feedbackTime === '24h' ? 'active' : ''}" data-fb="24h">24 小时后</button>
               <button class="fb-opt ${state.feedbackTime === '3d' ? 'active' : ''}" data-fb="3d">3 天后</button>
@@ -1384,6 +1637,8 @@ textarea, input { font-family: inherit; }
         </div>
       </div>
     `;
+
+    attachReleaseHandlers();
   }
 
   // ==================== Release Page Handlers ====================
@@ -1611,18 +1866,14 @@ textarea, input { font-family: inherit; }
 
   function selectWater(waterId) {
     state.water = waterId;
-    // Update water markers
     document.querySelectorAll('.water-marker').forEach(m => {
       m.classList.toggle('selected', m.dataset.water === waterId);
     });
-    // Update hot bubbles
     document.querySelectorAll('.hot-bubble').forEach(b => {
       b.classList.toggle('active', b.dataset.water === waterId);
     });
-    // Update river stat
     const selectedSpan = $('selectedWater');
     if (selectedSpan) selectedSpan.textContent = WATERS[waterId].name;
-    // Hide map hint
     const mapHint = $('mapHint');
     if (mapHint) mapHint.classList.add('hidden');
     updateReleaseBtn();
@@ -1634,11 +1885,9 @@ textarea, input { font-family: inherit; }
     state.isReleased = true;
     updateReleaseBtn();
 
-    // Animate creature down
     const creatureLayer = $('creatureLayer');
     if (creatureLayer) creatureLayer.classList.add('released');
 
-    // Show receipt after 800ms
     setTimeout(showReceipt, 800);
   }
 
@@ -1664,8 +1913,7 @@ textarea, input { font-family: inherit; }
     state.showReceipt = true;
     state.todayCount++;
 
-    // Save record
-    addRecord({
+    const recordData = {
       id,
       creature: state.creature,
       water: state.water,
@@ -1674,11 +1922,12 @@ textarea, input { font-family: inherit; }
       createdAt: now,
       replyAt,
       reply: null
-    });
+    };
 
-    // Render receipt
-    const card = $('receiptCard');
-    card.innerHTML = `
+    // Use API with localStorage fallback
+    apiRelease(recordData);
+
+    $('receiptCard').innerHTML = `
       <div class="receipt-header">
         <div class="receipt-stamp">放生成功</div>
         <div class="receipt-subtitle">CYBER RELEASE RECEIPT</div>
@@ -1713,7 +1962,6 @@ textarea, input { font-family: inherit; }
 
     $('receiptOverlay').classList.add('show');
 
-    // Wire receipt buttons
     $('shareBtn').addEventListener('click', () => {
       const btn = $('shareBtn');
       const orig = btn.textContent;
@@ -1734,20 +1982,17 @@ textarea, input { font-family: inherit; }
     $('receiptOverlay').classList.remove('show');
     state.showReceipt = false;
     state.receipt = null;
-    // Reset release state
     state.isReleased = false;
     state.creature = null;
     state.water = null;
     state.feeling = '';
     state.feedbackTime = '24h';
     state.feedbackDate = '';
-    // Reset map position
     mapVb.x = 380;
     mapVb.y = 60;
-    // Re-render release page
     setTimeout(() => {
       if (state.currentPage === 'release') {
-        navigateTo('release');
+        renderRelease();
       }
     }, 300);
   }
@@ -1760,7 +2005,7 @@ textarea, input { font-family: inherit; }
   });
 
   // ==================== Archive Page Render ====================
-  function renderArchivePage() {
+  function renderArchive() {
     const stats = getStats();
     const records = loadRecords();
 
@@ -1805,8 +2050,8 @@ textarea, input { font-family: inherit; }
       }).join('');
     }
 
-    return `
-      <div class="archive-page">
+    $('archiveContent').innerHTML = `
+      <div class="archive-panel">
         <div class="user-bar">
           <div class="user-avatar">微</div>
           <div class="user-info">
@@ -1832,6 +2077,8 @@ textarea, input { font-family: inherit; }
         <div class="record-list" id="recordList">${listHtml}</div>
       </div>
     `;
+
+    attachArchiveHandlers();
   }
 
   // ==================== Archive Page Handlers ====================
@@ -1849,10 +2096,10 @@ textarea, input { font-family: inherit; }
     });
   }
 
-  // ==================== Tab Bar ====================
-  document.querySelectorAll('.tab-bar .tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      navigateTo(tab.dataset.page);
+  // ==================== Nav Toggle ====================
+  document.querySelectorAll('.nav-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      navigateTo(pill.dataset.page);
     });
   });
 

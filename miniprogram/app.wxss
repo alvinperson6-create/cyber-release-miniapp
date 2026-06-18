@@ -1,0 +1,51 @@
+/* ==================== 全局样式 ==================== */
+page {
+  --teal: #2c8a7a;
+  --teal-deep: #1f3a36;
+  --teal-light: #d4e8e2;
+  --coral: #ed7d5b;
+  --coral-soft: #fce8df;
+  --lake: #3e7a96;
+  --paper: #faf6ec;
+  --paper-warm: #f5ede0;
+  --ink: #2a2a2a;
+  --ink-soft: #555;
+  --ink-mute: #999;
+  --line: #e0ddd5;
+  --line-soft: #eeebe5;
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-bg-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.55);
+
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
+  color: var(--ink);
+  background: transparent;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+view, text, button, textarea, input, image, scroll-view {
+  box-sizing: border-box;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  color: inherit;
+  padding: 0;
+  line-height: normal;
+}
+
+button::after {
+  border: none;
+}
+
+.serif {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", "STSong", serif;
+}
+
+.mono {
+  font-family: "SF Mono", "Monaco", "Menlo", "Consolas", monospace;
+  letter-spacing: 0.02em;
+}

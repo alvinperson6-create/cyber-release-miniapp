@@ -1,0 +1,15 @@
+{
+  "name": "cyber-release-server",
+  "version": "1.0.0",
+  "description": "赛博放生局后端 API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "better-sqlite3": "^12.4.0"
+  }
+}

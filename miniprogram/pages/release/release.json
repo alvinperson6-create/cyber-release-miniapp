@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "receipt": "/components/receipt/receipt"
+  },
+  "navigationStyle": "custom"
+}
