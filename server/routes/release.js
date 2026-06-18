@@ -61,10 +61,11 @@ function feedbackLabelOf(feedbackTime, feedbackDate) {
 
 router.post('/', (req, res) => {
   try {
-    const { openid, creature, water, feeling, feedbackTime, feedbackDate } = req.body || {};
+    let { openid, creature, water, feeling, feedbackTime, feedbackDate } = req.body || {};
 
+    // 网页版没有微信 openid，未传时自动生成一个匿名用户ID
     if (!openid) {
-      return res.status(400).json({ error: '缺少 openid' });
+      openid = `web-user-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
     }
     if (!creature || !CREATURES[creature]) {
       return res.status(400).json({ error: '无效的生物类型' });

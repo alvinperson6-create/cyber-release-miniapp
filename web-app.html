@@ -1731,6 +1731,16 @@ textarea, input { font-family: inherit; }
   };
 
   // ==================== State ====================
+  const OPENID_KEY = 'cyber_release_openid';
+  function getOpenid() {
+    let id = localStorage.getItem(OPENID_KEY);
+    if (!id) {
+      id = `web-user-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+      localStorage.setItem(OPENID_KEY, id);
+    }
+    return id;
+  }
+
   let state = {
     currentPage: 'release',
     feeling: '',
@@ -1741,7 +1751,8 @@ textarea, input { font-family: inherit; }
     isReleased: false,
     showReceipt: false,
     receipt: null,
-    todayCount: 1247
+    todayCount: 1247,
+    openid: getOpenid()
   };
 
   // ==================== Map State ====================
@@ -1956,6 +1967,7 @@ textarea, input { font-family: inherit; }
   }
 
   function checkPendingReplies() {
+    if (USE_API) return false; // 后端模式下由服务器定时器处理
     const records = loadRecords();
     let changed = false;
     records.forEach(r => {
@@ -1974,6 +1986,7 @@ textarea, input { font-family: inherit; }
   }
 
   function seedDemoData() {
+    if (USE_API) return; // 后端模式下不注入本地演示数据
     if (loadRecords().length > 0) return;
     const now = Date.now();
     const demoRecords = [
@@ -2454,6 +2467,7 @@ textarea, input { font-family: inherit; }
 
     const recordData = {
       id,
+      openid: state.openid,
       creature: state.creature,
       water: state.water,
       feeling: state.feeling,
@@ -2544,9 +2558,22 @@ textarea, input { font-family: inherit; }
   });
 
   // ==================== Archive Page Render ====================
-  function renderArchive() {
-    const stats = getStats();
-    const records = loadRecords();
+  async function renderArchive() {
+    let stats, records;
+    if (USE_API) {
+      try {
+        const data = await apiGetRecords(state.openid);
+        stats = data.stats;
+        records = data.records;
+      } catch (e) {
+        console.error('[renderArchive] 加载后端记录失败:', e);
+        alert('加载档案失败：' + e.message);
+        return;
+      }
+    } else {
+      stats = getStats();
+      records = loadRecords();
+    }
 
     let listHtml;
     if (records.length === 0) {
