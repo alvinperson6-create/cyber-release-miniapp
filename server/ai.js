@@ -52,6 +52,12 @@ async function chatCompletion(messages, options = {}) {
     max_tokens: options.max_tokens ?? 1200
   };
 
+  // 调试日志：打印 provider/model/首条消息，便于确认调用是否真的发生
+  console.log(`[ai] → POST ${url}  model=${cfg.model}  provider=${cfg.provider}`);
+  console.log(`[ai] → system: ${String(messages[0]?.content || '').slice(0, 60)}...`);
+  console.log(`[ai] → user:   ${String(messages[1]?.content || '').slice(0, 80)}...`);
+
+  const t0 = Date.now();
   const resp = await fetch(url, {
     method: 'POST',
     headers: {
@@ -63,10 +69,14 @@ async function chatCompletion(messages, options = {}) {
 
   if (!resp.ok) {
     const text = await resp.text();
+    console.log(`[ai] ← ${resp.status}  ${Date.now() - t0}ms  body=${text.slice(0, 200)}`);
     throw new Error(`AI API ${resp.status}: ${text}`);
   }
   const data = await resp.json();
-  return data.choices?.[0]?.message?.content || '';
+  const content = data.choices?.[0]?.message?.content || '';
+  console.log(`[ai] ← 200  ${Date.now() - t0}ms  tokens=${data.usage?.total_tokens || '?'}  len=${content.length}`);
+  console.log(`[ai] ← content: ${content.slice(0, 100)}...`);
+  return content;
 }
 
 // ==================== 回信生成 ====================
