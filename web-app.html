@@ -1269,6 +1269,98 @@ textarea, input { font-family: inherit; }
   transform: translateX(-50%) translateY(0);
 }
 
+/* ==================== Ad Overlay (激励视频模拟) ==================== */
+.ad-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 200;
+  padding: 20px;
+}
+.ad-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ad-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--paper);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  transform: scale(0.96);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+.ad-overlay.show .ad-card { transform: scale(1); }
+.ad-banner {
+  background: linear-gradient(135deg, #2c8a7a, #1f3a36);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+.ad-body {
+  padding: 20px;
+}
+.ad-content {
+  background: linear-gradient(135deg, #d4e8e2, #c7dbe2);
+  border-radius: 12px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.ad-placeholder {
+  font-size: 32px;
+  color: var(--teal-deep);
+  opacity: 0.6;
+}
+.ad-tag {
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.06em;
+}
+.ad-countdown {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+.ad-countdown span {
+  font-family: "SF Mono", "Monaco", monospace;
+  font-weight: 600;
+  color: var(--coral);
+  font-size: 16px;
+}
+.ad-close-btn {
+  width: 100%;
+  padding: 12px 0;
+  background: var(--teal-deep);
+  color: var(--paper);
+  border: none;
+  border-radius: 99px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ad-close-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--line);
+}
+.ad-close-btn:not(:disabled):hover { background: var(--teal); }
+
 /* ==================== Animations ==================== */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
@@ -1370,6 +1462,21 @@ textarea, input { font-family: inherit; }
   <div class="destiny-modal" id="destinyModal"></div>
 </div>
 
+<!-- Ad Overlay (激励视频模拟) -->
+<div class="ad-overlay" id="adOverlay">
+  <div class="ad-card">
+    <div class="ad-banner">📺 广告</div>
+    <div class="ad-body">
+      <div class="ad-content" id="adContent">
+        <div class="ad-placeholder">广告位</div>
+        <div class="ad-tag">激励视频 · 观看完整后可解锁</div>
+      </div>
+      <div class="ad-countdown">剩余 <span id="adCountdownNum">15</span> 秒</div>
+    </div>
+    <button class="ad-close-btn" id="adCloseBtn" disabled>跳过</button>
+  </div>
+</div>
+
 <!-- Pay Toast -->
 <div class="destiny-pay-toast" id="destinyPayToast"></div>
 
@@ -1442,7 +1549,7 @@ textarea, input { font-family: inherit; }
     }
   }
 
-  // 命运轨迹：解锁（mock 支付）
+  // 命运轨迹：看广告解锁
   async function apiUnlockDestiny(recordId, mode, index) {
     if (!USE_API) {
       return localUnlockDestiny(recordId, mode, index);
@@ -1455,7 +1562,7 @@ textarea, input { font-family: inherit; }
           recordId,
           mode,
           index: mode === 'single' ? index : undefined,
-          payToken: 'mock_pay_ok'
+          adToken: 'mock_ad_ok'
         })
       });
       if (!res.ok) throw new Error('API error');
@@ -1805,7 +1912,7 @@ textarea, input { font-family: inherit; }
       if (unlocked.has(i)) {
         return { ...seg, index: i, locked: false };
       }
-      return { index: i, title: seg.title, emoji: seg.emoji, bg: seg.bg, locked: true, price: 100 };
+      return { index: i, title: seg.title, emoji: seg.emoji, bg: seg.bg, locked: true, unlockType: i === 0 ? 'free' : 'ad' };
     });
     return {
       id: d.id,
@@ -1814,8 +1921,7 @@ textarea, input { font-family: inherit; }
       totalSegments: segments.length,
       unlockedCount: segments.filter(s => !s.locked).length,
       allUnlocked: segments.every(s => !s.locked),
-      bundlePrice: 300,
-      segmentPrice: 100
+      adDurationMs: 15000
     };
   }
 
@@ -1833,7 +1939,7 @@ textarea, input { font-family: inherit; }
       const all = Array.from({ length: total }, (_, i) => i);
       d.unlockedIndices = all;
       saveDestinies(destinies);
-      return { ok: true, transactionId: 'LOCAL-' + Date.now(), unlockedIndices: all, amount: 300 };
+      return { ok: true, adId: 'LOCAL-AD-' + Date.now(), unlockedIndices: all, adWatched: true };
     }
 
     const idx = parseInt(index, 10);
@@ -1844,7 +1950,7 @@ textarea, input { font-family: inherit; }
     current.add(idx);
     d.unlockedIndices = Array.from(current).sort((a,b)=>a-b);
     saveDestinies(destinies);
-    return { ok: true, transactionId: 'LOCAL-' + Date.now(), unlockedIndices: d.unlockedIndices, amount: idx === 0 ? 0 : 100 };
+    return { ok: true, adId: 'LOCAL-AD-' + Date.now(), unlockedIndices: d.unlockedIndices, adWatched: idx !== 0 };
   }
 
   function localGenerateReply(id) {
@@ -2626,6 +2732,8 @@ textarea, input { font-family: inherit; }
 
     const segmentsHtml = d.segments.map(seg => {
       if (seg.locked) {
+        const isFree = seg.unlockType === 'free' || seg.index === 0;
+        const btnText = isFree ? '免费解锁' : '📺 看广告解锁';
         return `
           <div class="destiny-segment locked">
             <div class="destiny-seg-banner" style="background: ${seg.bg};">
@@ -2633,13 +2741,13 @@ textarea, input { font-family: inherit; }
               <span>${seg.emoji}</span>
               <div class="destiny-lock-overlay">
                 <div class="destiny-lock-icon">🔒</div>
-                <div class="destiny-lock-hint">未解锁</div>
+                <div class="destiny-lock-hint">${isFree ? '免费' : '看广告解锁'}</div>
               </div>
             </div>
             <div class="destiny-seg-body">
               <div class="destiny-seg-title">${seg.title}</div>
-              <button class="destiny-seg-unlock-btn" data-unlock-index="${seg.index}">
-                解锁本段 · ¥${(seg.price / 100).toFixed(0)}
+              <button class="destiny-seg-unlock-btn" data-unlock-index="${seg.index}" data-needs-ad="${isFree ? '0' : '1'}">
+                ${btnText}
               </button>
             </div>
           </div>
@@ -2662,7 +2770,7 @@ textarea, input { font-family: inherit; }
     const allUnlocked = d.allUnlocked;
     const bundleBtnHtml = allUnlocked
       ? ''
-      : `<button class="destiny-bundle-btn" id="destinyBundleBtn">一次解锁全部 · ¥${(d.bundlePrice / 100).toFixed(0)}</button>`;
+      : `<button class="destiny-bundle-btn" id="destinyBundleBtn">📺 看广告 · 一次解锁全部</button>`;
 
     modal.innerHTML = `
       <div class="destiny-header">
@@ -2681,24 +2789,37 @@ textarea, input { font-family: inherit; }
     modal.querySelectorAll('.destiny-seg-unlock-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const idx = parseInt(btn.dataset.unlockIndex, 10);
+        const needsAd = btn.dataset.needsAd === '1';
         btn.disabled = true;
+        const originalText = btn.textContent;
+
+        if (needsAd) {
+          // 看广告流程
+          const adOk = await watchAd(d.adDurationMs || 15000);
+          if (!adOk) {
+            showPayToast('广告未完成，解锁失败');
+            btn.disabled = false;
+            btn.textContent = originalText;
+            return;
+          }
+        }
+
         btn.textContent = '解锁中…';
         try {
           const res = await apiUnlockDestiny(destinyState.recordId, 'single', idx);
           if (res.ok) {
-            showPayToast(idx === 0 ? '已解锁（免费）' : '支付成功，已解锁');
-            // 刷新数据
+            showPayToast(idx === 0 ? '已解锁（免费）' : '广告观看完成，已解锁');
             destinyState.data = await apiGetDestiny(destinyState.recordId);
             renderDestinyModal();
           } else {
             showPayToast(res.error || '解锁失败');
             btn.disabled = false;
-            btn.textContent = `解锁本段 · ¥${((d.segmentPrice) / 100).toFixed(0)}`;
+            btn.textContent = originalText;
           }
         } catch (e) {
           showPayToast('解锁失败');
           btn.disabled = false;
-          btn.textContent = `解锁本段 · ¥${((d.segmentPrice) / 100).toFixed(0)}`;
+          btn.textContent = originalText;
         }
       });
     });
@@ -2708,11 +2829,19 @@ textarea, input { font-family: inherit; }
       bundleBtn.addEventListener('click', async () => {
         bundleBtn.disabled = true;
         const oldText = bundleBtn.textContent;
-        bundleBtn.textContent = '支付中…';
+        // 看广告流程
+        const adOk = await watchAd(d.adDurationMs || 15000);
+        if (!adOk) {
+          showPayToast('广告未完成，解锁失败');
+          bundleBtn.disabled = false;
+          bundleBtn.textContent = oldText;
+          return;
+        }
+        bundleBtn.textContent = '解锁中…';
         try {
           const res = await apiUnlockDestiny(destinyState.recordId, 'bundle');
           if (res.ok) {
-            showPayToast('支付成功，全部解锁');
+            showPayToast('广告观看完成，全部解锁');
             destinyState.data = await apiGetDestiny(destinyState.recordId);
             renderDestinyModal();
           } else {
@@ -2732,6 +2861,50 @@ textarea, input { font-family: inherit; }
     if (closeBtn) {
       closeBtn.addEventListener('click', closeDestinyModal);
     }
+  }
+
+  // ==================== Ad Watching (激励视频模拟) ====================
+  // 返回 Promise<boolean>，true 表示观看完成
+  function watchAd(durationMs) {
+    return new Promise((resolve) => {
+      const overlay = $('adOverlay');
+      const numEl = $('adCountdownNum');
+      const closeBtn = $('adCloseBtn');
+      if (!overlay || !numEl || !closeBtn) {
+        // 没有广告 UI，直接放行（本地降级）
+        resolve(true);
+        return;
+      }
+
+      const totalSec = Math.max(5, Math.round(durationMs / 1000));
+      let remaining = totalSec;
+      numEl.textContent = remaining;
+      closeBtn.disabled = true;
+      closeBtn.textContent = `请观看 ${remaining}s`;
+      overlay.classList.add('show');
+
+      const timer = setInterval(() => {
+        remaining -= 1;
+        numEl.textContent = remaining;
+        if (remaining > 0) {
+          closeBtn.textContent = `请观看 ${remaining}s`;
+        } else {
+          clearInterval(timer);
+          closeBtn.disabled = false;
+          closeBtn.textContent = '领取奖励';
+        }
+      }, 1000);
+
+      // 倒计时结束后点击"领取奖励"视为观看完成
+      const handler = () => {
+        if (closeBtn.disabled) return;
+        clearInterval(timer);
+        closeBtn.removeEventListener('click', handler);
+        overlay.classList.remove('show');
+        resolve(true);
+      };
+      closeBtn.addEventListener('click', handler);
+    });
   }
 
   // 点击遮罩关闭命运轨迹

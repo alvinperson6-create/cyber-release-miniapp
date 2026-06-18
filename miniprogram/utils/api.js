@@ -126,7 +126,7 @@ function apiGetDestiny(recordId) {
   });
 }
 
-// 解锁命运轨迹（mock 支付）
+// 解锁命运轨迹（看广告）
 function apiUnlockDestiny(recordId, mode, index) {
   return new Promise((resolve) => {
     if (!USE_API) {
@@ -141,7 +141,7 @@ function apiUnlockDestiny(recordId, mode, index) {
         recordId,
         mode,
         index: mode === 'single' ? index : undefined,
-        payToken: 'mock_pay_ok'
+        adToken: 'mock_ad_ok'
       },
       success(res) {
         if (res.statusCode >= 200 && res.statusCode < 300) {

@@ -192,7 +192,7 @@ function getDestiny(recordId) {
     if (unlocked[i]) {
       return Object.assign({}, seg, { index: i, locked: false });
     }
-    return { index: i, title: seg.title, emoji: seg.emoji, bg: seg.bg, locked: true, price: 100 };
+    return { index: i, title: seg.title, emoji: seg.emoji, bg: seg.bg, locked: true, unlockType: i === 0 ? 'free' : 'ad' };
   });
   return {
     id: d.id,
@@ -201,8 +201,7 @@ function getDestiny(recordId) {
     totalSegments: segments.length,
     unlockedCount: segments.filter(s => !s.locked).length,
     allUnlocked: segments.every(s => !s.locked),
-    bundlePrice: 300,
-    segmentPrice: 100
+    adDurationMs: 15000
   };
 }
 
@@ -222,7 +221,7 @@ function unlockDestiny(recordId, mode, index) {
     for (let i = 0; i < total; i++) all.push(i);
     d.unlockedIndices = all;
     saveDestinies(destinies);
-    return { ok: true, transactionId: 'LOCAL-' + Date.now(), unlockedIndices: all, amount: 300 };
+    return { ok: true, adId: 'LOCAL-AD-' + Date.now(), unlockedIndices: all, adWatched: true };
   }
 
   const idx = parseInt(index, 10);
@@ -233,7 +232,7 @@ function unlockDestiny(recordId, mode, index) {
   d.unlockedIndices.push(idx);
   d.unlockedIndices.sort((a, b) => a - b);
   saveDestinies(destinies);
-  return { ok: true, transactionId: 'LOCAL-' + Date.now(), unlockedIndices: d.unlockedIndices, amount: idx === 0 ? 0 : 100 };
+  return { ok: true, adId: 'LOCAL-AD-' + Date.now(), unlockedIndices: d.unlockedIndices, adWatched: idx !== 0 };
 }
 
 module.exports = {

@@ -225,3 +225,96 @@
   color: var(--ink-mute);
   letter-spacing: 0.04em;
 }
+
+/* ==================== 广告模拟弹窗 ==================== */
+.ad-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 48rpx 36rpx;
+}
+
+.ad-card {
+  width: 100%;
+  max-width: 620rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 12rpx 48rpx rgba(0, 0, 0, 0.35);
+}
+
+.ad-banner {
+  background: linear-gradient(135deg, #1f3a36, #2d524c);
+  color: #fff;
+  font-size: 24rpx;
+  letter-spacing: 0.16em;
+  text-align: center;
+  padding: 16rpx 0;
+}
+
+.ad-body {
+  padding: 32rpx 28rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.ad-content {
+  width: 100%;
+  height: 320rpx;
+  background: linear-gradient(135deg, #f5e6c8, #e8d4a8);
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  position: relative;
+}
+
+.ad-placeholder {
+  font-size: 56rpx;
+  color: #8a6a3a;
+  letter-spacing: 0.1em;
+}
+
+.ad-tag {
+  font-size: 22rpx;
+  color: #6b4f2a;
+  letter-spacing: 0.06em;
+}
+
+.ad-countdown {
+  font-size: 24rpx;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+.ad-ready-text {
+  color: var(--teal-deep);
+  font-weight: 600;
+}
+
+.ad-close-btn {
+  width: 100%;
+  padding: 22rpx 0;
+  background: var(--ink-mute);
+  color: #fff;
+  border-radius: 99rpx;
+  font-size: 26rpx;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+}
+
+.ad-close-btn::after {
+  border: none;
+}
+
+.ad-close-btn.ready {
+  background: linear-gradient(135deg, #2d8a7f, #1f5a52);
+}

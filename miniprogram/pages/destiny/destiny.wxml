@@ -37,7 +37,7 @@
             <text class="seg-emoji">{{item.emoji}}</text>
             <view wx:if="{{item.locked}}" class="seg-lock-overlay">
               <text class="lock-icon">🔒</text>
-              <text class="lock-hint">未解锁</text>
+              <text class="lock-hint">{{item.unlockType === 'free' ? '免费' : '看广告解锁'}}</text>
             </view>
           </view>
           <!-- body -->
@@ -48,7 +48,7 @@
                     class="seg-unlock-btn"
                     data-index="{{item.index}}"
                     catchtap="onUnlockSegment">
-              解锁本段 · {{item.priceYuan}}
+              {{item.unlockType === 'free' ? '免费解锁' : '📺 看广告解锁'}}
             </button>
           </view>
         </view>
@@ -59,7 +59,7 @@
         <button wx:if="{{!destiny.allUnlocked}}"
                 class="bundle-btn"
                 catchtap="onUnlockBundle">
-          一次解锁全部 · {{destiny.bundlePriceYuan}}
+          📺 看广告 · 一次解锁全部
         </button>
       </view>
 
@@ -68,4 +68,25 @@
       </view>
     </block>
   </scroll-view>
+</view>
+
+<!-- 广告模拟弹窗 -->
+<view wx:if="{{adVisible}}" class="ad-overlay">
+  <view class="ad-card">
+    <view class="ad-banner">📺 广告</view>
+    <view class="ad-body">
+      <view class="ad-content">
+        <text class="ad-placeholder">广告位</text>
+        <text class="ad-tag">激励视频 · 观看完整后可解锁</text>
+      </view>
+      <view class="ad-countdown">
+        <text wx:if="{{!adReady}}">剩余 {{adCountdown}} 秒</text>
+        <text wx:else class="ad-ready-text">✓ 观看完成，可领取奖励</text>
+      </view>
+      <button class="ad-close-btn {{adReady ? 'ready' : ''}}"
+              catchtap="onAdClose">
+        {{adReady ? '领取奖励' : '请观看 ' + adCountdown + 's'}}
+      </button>
+    </view>
+  </view>
 </view>

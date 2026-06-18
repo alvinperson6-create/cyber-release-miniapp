@@ -2,18 +2,17 @@ const express = require('express');
 const router = express.Router();
 const { getRecordById, getDestinyByRecordId, updateDestinyUnlocked } = require('../db');
 
-// 命运轨迹定价（mock）
-// 第 0 段免费，其余每段 1 元，一次性全部解锁 3 元
-const SEGMENT_PRICE = 100;     // 单段：1 元 = 100 分
-const BUNDLE_PRICE = 300;      // 全部：3 元 = 300 分
+// 命运轨迹解锁方式：看广告
+// 第 0 段免费，其余每段需看 1 次广告，一次性全部解锁需看 1 次广告
+const AD_DURATION_MS = 15 * 1000;  // mock 广告时长 15 秒
 
-// mock 支付：简单校验 payToken，实际项目接微信支付
-// 这里 payToken = 'mock_pay_ok' 视为支付成功
-function mockPay(payToken, amount) {
-  if (payToken === 'mock_pay_ok') return { ok: true, transactionId: 'MOCK-' + Date.now() };
-  // demo 模式：任何非空 token 都放行，方便前端调试
-  if (payToken && payToken.startsWith('demo_')) return { ok: true, transactionId: 'DEMO-' + Date.now() };
-  return { ok: false, error: '支付未完成' };
+// mock 看广告：校验 adToken，实际项目接入激励视频 SDK
+// 这里 adToken = 'mock_ad_ok' 视为广告观看完成
+// demo 模式：任何非空 token 都放行，方便前端调试
+function mockWatchAd(adToken) {
+  if (adToken === 'mock_ad_ok') return { ok: true, adId: 'AD-' + Date.now() };
+  if (adToken && adToken.startsWith('demo_')) return { ok: true, adId: 'DEMO-AD-' + Date.now() };
+  return { ok: false, error: '广告未完成观看' };
 }
 
 // GET /api/destiny/:id
@@ -45,7 +44,7 @@ router.get('/:id', (req, res) => {
         emoji: seg.emoji,
         bg: seg.bg,
         locked: true,
-        price: SEGMENT_PRICE
+        unlockType: i === 0 ? 'free' : 'ad'
       };
     });
 
@@ -57,8 +56,7 @@ router.get('/:id', (req, res) => {
       totalSegments: segments.length,
       unlockedCount: segments.filter(s => !s.locked).length,
       allUnlocked,
-      bundlePrice: BUNDLE_PRICE,
-      segmentPrice: SEGMENT_PRICE
+      adDurationMs: AD_DURATION_MS
     });
   } catch (err) {
     console.error('[destiny/:id] error:', err);
@@ -67,11 +65,11 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/destiny/unlock
-// body: { recordId, index?, payToken, mode: 'single' | 'bundle' }
-// mode=single 时 index 必填；mode=bundle 时解锁全部
+// body: { recordId, index?, adToken, mode: 'single' | 'bundle' }
+// mode=single 时 index 必填；mode=bundle 时看 1 次广告解锁全部
 router.post('/unlock', (req, res) => {
   try {
-    const { recordId, index, payToken, mode } = req.body || {};
+    const { recordId, index, adToken, mode } = req.body || {};
     if (!recordId) {
       return res.status(400).json({ error: '缺少 recordId' });
     }
@@ -85,23 +83,21 @@ router.post('/unlock', (req, res) => {
     const currentUnlocked = new Set(destiny.unlockedIndices);
 
     if (mode === 'bundle') {
-      // 一次性解锁全部
-      const needPay = !currentUnlocked.has(0) || currentUnlocked.size < total;
-      // 已经全解锁就不用再付
+      // 看一次广告解锁全部
       if (currentUnlocked.size >= total) {
         return res.json({ ok: true, alreadyUnlocked: true, unlockedIndices: Array.from(currentUnlocked).sort((a, b) => a - b) });
       }
-      const pay = mockPay(payToken, BUNDLE_PRICE);
-      if (!pay.ok) {
-        return res.status(402).json({ error: '支付失败', detail: pay.error });
+      const ad = mockWatchAd(adToken);
+      if (!ad.ok) {
+        return res.status(403).json({ error: '广告未完成', detail: ad.error });
       }
       const all = Array.from({ length: total }, (_, i) => i);
       updateDestinyUnlocked(recordId, all);
       return res.json({
         ok: true,
-        transactionId: pay.transactionId,
+        adId: ad.adId,
         unlockedIndices: all,
-        amount: BUNDLE_PRICE
+        adWatched: true
       });
     }
 
@@ -120,18 +116,19 @@ router.post('/unlock', (req, res) => {
       updateDestinyUnlocked(recordId, arr);
       return res.json({ ok: true, free: true, unlockedIndices: arr });
     }
-    const pay = mockPay(payToken, SEGMENT_PRICE);
-    if (!pay.ok) {
-      return res.status(402).json({ error: '支付失败', detail: pay.error });
+    // 其余段落看广告解锁
+    const ad = mockWatchAd(adToken);
+    if (!ad.ok) {
+      return res.status(403).json({ error: '广告未完成', detail: ad.error });
     }
     currentUnlocked.add(idx);
     const arr = Array.from(currentUnlocked).sort((a, b) => a - b);
     updateDestinyUnlocked(recordId, arr);
     return res.json({
       ok: true,
-      transactionId: pay.transactionId,
+      adId: ad.adId,
       unlockedIndices: arr,
-      amount: SEGMENT_PRICE
+      adWatched: true
     });
   } catch (err) {
     console.error('[destiny/unlock] error:', err);
