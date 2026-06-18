@@ -1486,7 +1486,7 @@ textarea, input { font-family: inherit; }
 
   // ==================== API Layer ====================
   const API_BASE = 'http://localhost:3000/api';
-  const USE_API = false; // Set to true when backend is running
+  const USE_API = true; // Set to true when backend is running
 
   async function apiRelease(data) {
     if (!USE_API) return localRelease(data);
