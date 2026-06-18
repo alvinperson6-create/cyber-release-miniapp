@@ -1,0 +1,2555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>赛博放生局 · 生活娱乐赛道 · 微信小程序创意方案</title>
+<style>
+/* ==================== Reset & Base ==================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #faf6ec;
+  color: #1f3a36;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+img, svg { display: block; max-width: 100%; }
+button { font-family: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+ul, ol { list-style: none; }
+a { color: inherit; text-decoration: none; }
+em { font-style: normal; }
+
+/* ==================== Tokens ==================== */
+:root {
+  --ink: #1f3a36;
+  --ink-soft: #4a5b58;
+  --ink-mute: #7a8a86;
+  --teal: #2c8a7a;
+  --teal-deep: #1a5a4e;
+  --teal-light: #d4e8e2;
+  --coral: #ed7d5b;
+  --coral-soft: #f9d8c9;
+  --lake: #3e7a96;
+  --lake-soft: #c7dbe2;
+  --cream: #f5efe2;
+  --paper: #faf6ec;
+  --paper-warm: #f4ecd9;
+  --line: #d6cdb8;
+  --line-soft: #e8e1d0;
+  --shadow-sm: 0 1px 2px rgba(31, 58, 54, 0.04);
+  --shadow: 0 2px 4px rgba(31, 58, 54, 0.04), 0 8px 24px rgba(31, 58, 54, 0.08);
+  --radius: 6px;
+  --radius-lg: 10px;
+}
+
+/* ==================== Typography helpers ==================== */
+.serif { font-family: 'Kaiti SC', 'STKaiti', 'KaiTi', 'Songti SC', 'STSong', 'SimSun', serif; font-weight: 400; }
+.mono { font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace; letter-spacing: 0.02em; }
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 500;
+}
+.section-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+  font-size: 12px;
+  color: var(--teal);
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+.section-marker::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--teal);
+}
+.section-title {
+  font-size: clamp(24px, 2.6vw, 34px);
+  line-height: 1.3;
+  color: var(--ink);
+  margin-bottom: 18px;
+  letter-spacing: -0.005em;
+}
+.section-title .accent { color: var(--coral); }
+.lead {
+  font-size: 16px;
+  color: var(--ink-soft);
+  max-width: 640px;
+}
+
+/* ==================== Layout ==================== */
+.page {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+@media (max-width: 720px) { .page { padding: 0 20px; } }
+
+/* ==================== Top bar ==================== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--ink-mute);
+  border-bottom: 1px solid var(--line-soft);
+}
+.topbar-left, .topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.topbar .dot { width: 6px; height: 6px; background: var(--coral); border-radius: 50%; }
+.topbar .track {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: var(--ink);
+  color: var(--paper);
+  letter-spacing: 0.18em;
+}
+@media (max-width: 560px) { .topbar-right { display: none; } }
+
+/* ==================== Hero ==================== */
+.hero {
+  padding: 72px 0 56px;
+  position: relative;
+  border-bottom: 1px solid var(--line-soft);
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 64px;
+  align-items: end;
+}
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  font-size: 12px;
+  color: var(--ink-mute);
+}
+.hero-meta .pill {
+  display: inline-block;
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+.hero-title {
+  font-family: 'Kaiti SC', 'STKaiti', 'KaiTi', 'Songti SC', 'STSong', serif;
+  font-size: clamp(64px, 13vw, 168px);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 28px;
+}
+.hero-title .coral { color: var(--coral); }
+.hero-title .teal { color: var(--teal); }
+.hero-sub {
+  font-size: clamp(18px, 2vw, 26px);
+  line-height: 1.55;
+  max-width: 720px;
+  color: var(--ink-soft);
+  margin-bottom: 36px;
+}
+.hero-sub strong { color: var(--ink); font-weight: 500; }
+
+.hero-aside {
+  border-left: 1px solid var(--line);
+  padding-left: 28px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.8;
+}
+.hero-aside dt { color: var(--ink-mute); font-size: 11px; letter-spacing: 0.14em; margin-bottom: 4px; }
+.hero-aside dd { margin-bottom: 18px; color: var(--ink); }
+.hero-aside dd:last-child { margin-bottom: 0; }
+.hero-aside .key { color: var(--teal); font-family: 'SF Mono', monospace; }
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 56px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 720px) { .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+.stat .num {
+  font-family: 'Kaiti SC', 'STKaiti', 'Songti SC', serif;
+  font-size: 44px;
+  color: var(--teal);
+  line-height: 1;
+  font-weight: 400;
+}
+.stat .num.coral { color: var(--coral); }
+.stat .num.lake { color: var(--lake); }
+.stat .label {
+  font-size: 12px;
+  color: var(--ink-mute);
+  margin-top: 8px;
+  letter-spacing: 0.04em;
+}
+
+/* ==================== Wave divider ==================== */
+.wave {
+  height: 40px;
+  margin: 0;
+  display: block;
+  width: 100%;
+}
+
+/* ==================== Section base ==================== */
+.section {
+  padding: 72px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.section:last-of-type { border-bottom: none; }
+
+/* ==================== Layout: Content + sticky Prototype ==================== */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 80px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .split { grid-template-columns: 1fr; gap: 56px; }
+}
+.col-main { min-width: 0; }
+.col-side { position: relative; }
+@media (min-width: 1101px) {
+  .col-side { position: sticky; top: 24px; }
+}
+
+/* ==================== Pull-quote ==================== */
+.pull-quote {
+  font-family: 'Kaiti SC', 'STKaiti', 'Songti SC', serif;
+  font-size: clamp(22px, 2.4vw, 32px);
+  line-height: 1.5;
+  color: var(--ink);
+  padding: 32px 0 32px 28px;
+  border-left: 3px solid var(--coral);
+  margin: 32px 0;
+}
+.pull-quote .src {
+  display: block;
+  margin-top: 18px;
+  font-family: 'PingFang SC', sans-serif;
+  font-size: 13px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+}
+
+/* ==================== Card grid ==================== */
+.card {
+  background: #fdfaf2;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 22px 20px;
+  position: relative;
+}
+.card .num {
+  font-family: 'SF Mono', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.card h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+  letter-spacing: 0.005em;
+}
+.card p {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 720px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* ==================== Inspiration block ==================== */
+.inspiration {
+  background: linear-gradient(180deg, #f5efe2 0%, #ede4d0 100%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.inspiration::before {
+  content: '"';
+  position: absolute;
+  top: -28px; left: 16px;
+  font-family: 'Kaiti SC', 'Songti SC', serif;
+  font-size: 220px;
+  color: var(--coral);
+  opacity: 0.18;
+  line-height: 1;
+}
+.inspiration .quote-text {
+  font-family: 'Kaiti SC', 'STKaiti', serif;
+  font-size: 24px;
+  color: var(--ink);
+  line-height: 1.55;
+  margin-bottom: 18px;
+  position: relative;
+}
+.inspiration .meta {
+  font-size: 12px;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+}
+.inspiration .meta .src { color: var(--teal); }
+
+/* ==================== Users + Scenarios ==================== */
+.users-scenarios { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+@media (max-width: 900px) { .users-scenarios { grid-template-columns: 1fr; gap: 36px; } }
+
+.user-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  background: #fdfaf2;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.user-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--teal-light);
+  color: var(--teal-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Kaiti SC', serif;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.user-card.alt .user-avatar { background: var(--coral-soft); color: var(--coral); }
+.user-card.lake .user-avatar { background: var(--lake-soft); color: var(--lake); }
+.user-card.yellow .user-avatar { background: #f4e7c8; color: #b58a2e; }
+.user-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.user-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+
+.scenario-list { display: flex; flex-direction: column; gap: 12px; }
+.scenario {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 18px;
+  background: #fdfaf2;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  transition: all 0.2s;
+}
+.scenario:hover { border-color: var(--teal); background: #fbf6e6; }
+.scenario .ix {
+  font-family: 'SF Mono', monospace;
+  font-size: 11px;
+  color: var(--coral);
+  letter-spacing: 0.08em;
+}
+.scenario .text { font-size: 14px; color: var(--ink); }
+.scenario .sub { display: block; font-size: 12px; color: var(--ink-mute); margin-top: 2px; }
+
+/* ==================== Pain points ==================== */
+.pain-grid { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 16px; align-items: stretch; }
+@media (max-width: 720px) { .pain-grid { grid-template-columns: 1fr; } }
+.pain-side { border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+.pain-side.bad { background: #f5e9e1; border-color: #e2c2af; }
+.pain-side.good { background: var(--teal-light); border-color: var(--teal); }
+.pain-side h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.pain-side.bad h4 { color: #b25a3a; }
+.pain-side.good h4 { color: var(--teal-deep); }
+.pain-side p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+.pain-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--coral);
+  font-size: 20px;
+}
+@media (max-width: 720px) { .pain-arrow { transform: rotate(90deg); padding: 8px 0; } }
+
+/* ==================== Gameplay steps ==================== */
+.steps { display: flex; flex-direction: column; gap: 0; margin-top: 24px; }
+.step {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 18px;
+  padding: 22px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.step:last-child { border-bottom: 1px solid var(--line-soft); }
+.step .ix {
+  font-family: 'Kaiti SC', 'Songti SC', serif;
+  font-size: 32px;
+  color: var(--teal);
+  line-height: 1;
+}
+.step h4 { font-size: 17px; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+.step p { font-size: 14px; color: var(--ink-soft); line-height: 1.65; max-width: 540px; }
+.step .chip {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 8px;
+  font-size: 12px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--ink-soft);
+  margin-right: 6px;
+}
+
+/* ==================== Value grid ==================== */
+.value-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 720px) { .value-grid { grid-template-columns: 1fr; } }
+.value-card {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fdfaf2;
+  position: relative;
+  overflow: hidden;
+}
+.value-card::after {
+  content: '';
+  position: absolute;
+  right: -20px; top: -20px;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--cream);
+  opacity: 0.7;
+}
+.value-card .k {
+  font-family: 'SF Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--coral);
+  margin-bottom: 6px;
+  position: relative;
+}
+.value-card h4 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  position: relative;
+}
+.value-card p {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  position: relative;
+}
+
+/* ==================== Phone mockup ==================== */
+.phone {
+  width: 360px;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #1f3a36;
+  border-radius: 36px;
+  padding: 10px;
+  box-shadow: 0 20px 50px rgba(31, 58, 54, 0.18), 0 4px 10px rgba(31, 58, 54, 0.1);
+  position: relative;
+}
+.phone::before {
+  content: '';
+  position: absolute;
+  top: 18px; left: 50%;
+  transform: translateX(-50%);
+  width: 110px; height: 22px;
+  background: #1f3a36;
+  border-radius: 0 0 14px 14px;
+  z-index: 5;
+}
+.phone-screen {
+  background: var(--paper);
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+}
+.phone-status {
+  height: 36px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.phone-status .right { display: flex; gap: 6px; align-items: center; }
+.phone-status .battery {
+  width: 22px; height: 11px;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+}
+.phone-status .battery::after {
+  content: ''; position: absolute;
+  right: -3px; top: 3px;
+  width: 2px; height: 3px;
+  background: var(--ink);
+  border-radius: 0 1px 1px 0;
+}
+.phone-status .battery i {
+  display: block; width: 80%; height: 100%;
+  background: var(--ink); border-radius: 1px;
+}
+
+.phone-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 18px 12px;
+  flex-shrink: 0;
+}
+.phone-header .title {
+  font-family: 'Kaiti SC', 'Songti SC', serif;
+  font-size: 18px;
+  color: var(--ink);
+}
+.phone-header .back { font-size: 18px; color: var(--ink-soft); }
+.phone-header .more { font-size: 16px; color: var(--ink-soft); letter-spacing: 1px; }
+
+.phone-river {
+  flex: 1;
+  position: relative;
+  background: linear-gradient(180deg, #d4e8e2 0%, #b5d6cc 60%, #9bc8bd 100%);
+  overflow: hidden;
+  margin: 0 14px;
+  border-radius: 14px;
+}
+.river-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.creature-layer {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  pointer-events: none;
+  z-index: 3;
+  transition: all 0.9s cubic-bezier(0.5, 0, 0.3, 1);
+}
+.creature-layer.released {
+  bottom: -60%;
+  opacity: 0;
+  transform: translateX(-50%) scale(0.5);
+}
+
+.river-stat {
+  position: absolute;
+  bottom: 8px; left: 10px; right: 10px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  z-index: 4;
+}
+.river-stat .num { color: var(--teal); font-weight: 600; font-family: 'SF Mono', monospace; }
+
+/* ==================== World water map ==================== */
+.world-map {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  background: linear-gradient(180deg, #cfe4dd 0%, #a9d2c5 60%, #7fb6a4 100%);
+}
+.world-map.dragging { cursor: grabbing; }
+.map-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.water-marker { cursor: pointer; }
+.water-marker circle.dot {
+  fill: #3e7a96;
+  stroke: #fff;
+  stroke-width: 1.5;
+  transition: r 0.2s ease;
+}
+.water-marker.lake circle.dot { fill: #2c8a7a; }
+.water-marker.river circle.dot { fill: #2c8a7a; }
+.water-marker.trench circle.dot { fill: #ed7d5b; }
+.water-marker:hover circle.dot { r: 7; }
+.water-marker.selected circle.dot {
+  fill: #ed7d5b;
+  stroke: #fff;
+  stroke-width: 2.5;
+  r: 7;
+}
+.water-marker .pulse {
+  fill: none;
+  stroke: #ed7d5b;
+  stroke-width: 1.2;
+  opacity: 0;
+}
+.water-marker.selected .pulse { animation: mapPulse 1.8s ease-out infinite; }
+@keyframes mapPulse {
+  0% { r: 7; opacity: 0.7; }
+  100% { r: 20; opacity: 0; }
+}
+
+.water-label {
+  font-size: 9px;
+  fill: #1f3a36;
+  text-anchor: middle;
+  pointer-events: none;
+  font-family: 'PingFang SC', sans-serif;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: #faf6ec;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.water-marker.selected .water-label { fill: #ed7d5b; }
+
+.hot-bubbles {
+  position: absolute;
+  top: 8px; left: 8px; right: 8px;
+  display: flex;
+  gap: 5px;
+  z-index: 5;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+.hot-bubble {
+  pointer-events: auto;
+  padding: 3px 9px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid #ed7d5b;
+  border-radius: 99px;
+  font-size: 10px;
+  color: #ed7d5b;
+  white-space: nowrap;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.hot-bubble:hover { background: #ed7d5b; color: #fff; }
+.hot-bubble.active { background: #ed7d5b; color: #fff; }
+
+.map-hint {
+  position: absolute;
+  bottom: 44px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: rgba(31, 58, 54, 0.65);
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  z-index: 2;
+  background: rgba(255,255,255,0.82);
+  padding: 2px 10px;
+  border-radius: 99px;
+  transition: opacity 0.4s;
+  white-space: nowrap;
+}
+.map-hint.hidden { opacity: 0; }
+
+.phone-panel {
+  padding: 14px 18px 18px;
+  background: var(--paper);
+  flex-shrink: 0;
+}
+.panel-label {
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+  letter-spacing: 0.08em;
+}
+.chip-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.chip-btn {
+  padding: 7px 12px;
+  background: #fdfaf2;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.chip-btn:hover { border-color: var(--teal); }
+.chip-btn.active {
+  background: var(--teal);
+  color: #fff;
+  border-color: var(--teal);
+}
+.chip-btn.coral.active { background: var(--coral); border-color: var(--coral); }
+
+.cta-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px;
+  background: linear-gradient(180deg, var(--coral) 0%, #d96d4d 100%);
+  color: #fff;
+  border-radius: 99px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  box-shadow: 0 4px 12px rgba(237, 125, 91, 0.32);
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.cta-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(237, 125, 91, 0.4); }
+.cta-btn:disabled {
+  background: #d8d0bf;
+  color: #faf6ec;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.cta-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shine 3s infinite;
+}
+@keyframes shine {
+  0% { left: -100%; }
+  60%, 100% { left: 100%; }
+}
+
+/* ==================== Feeling input (voice + text) ==================== */
+.feeling-input-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-bottom: 6px;
+}
+.mic-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--teal-light);
+  border: 1px solid var(--teal);
+  color: var(--teal-deep);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  position: relative;
+}
+.mic-btn:hover { background: var(--teal); color: #fff; }
+.mic-btn.recording {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: #fff;
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+@keyframes micPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(237, 125, 91, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(237, 125, 91, 0); }
+}
+.feeling-textarea {
+  flex: 1;
+  min-height: 38px;
+  max-height: 80px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fdfaf2;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.feeling-textarea:focus { border-color: var(--teal); }
+.feeling-textarea::placeholder {
+  color: var(--ink-mute);
+  opacity: 0.7;
+}
+.feeling-hint {
+  font-size: 10px;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.feeling-hint .dot { color: var(--coral); }
+
+/* ==================== Feedback time picker ==================== */
+.fb-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.fb-opt {
+  padding: 5px 10px;
+  background: #fdfaf2;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+}
+.fb-opt:hover { border-color: var(--teal); }
+.fb-opt.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* ==================== Receipt feeling + feedback ==================== */
+.receipt-feeling {
+  margin: 12px 0;
+  padding: 10px 12px;
+  background: var(--paper-warm);
+  border-radius: 6px;
+  border-left: 3px solid var(--coral);
+}
+.receipt-feeling .label {
+  font-size: 10px;
+  color: var(--coral);
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+}
+.receipt-feeling .text {
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1.6;
+  font-style: italic;
+}
+.receipt-feedback {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: var(--teal-light);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.receipt-feedback .icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.receipt-feedback .body { flex: 1; }
+.receipt-feedback .label {
+  font-size: 10px;
+  color: var(--teal-deep);
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+.receipt-feedback .text {
+  font-size: 11px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.receipt-feedback .text strong { color: var(--teal-deep); }
+
+/* ==================== Archive phone (放生档案) ==================== */
+.archive-screen {
+  background: var(--paper);
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  height: 640px;
+  display: flex;
+  flex-direction: column;
+}
+.archive-user {
+  padding: 14px 18px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--line-soft);
+  flex-shrink: 0;
+}
+.archive-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--teal-light);
+  color: var(--teal-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.archive-user .name { font-size: 14px; font-weight: 600; color: var(--ink); }
+.archive-user .id { font-size: 10px; color: var(--ink-mute); font-family: 'SF Mono', monospace; letter-spacing: 0.04em; }
+.archive-user .login-tag {
+  margin-left: auto;
+  font-size: 9px;
+  color: var(--teal);
+  background: var(--teal-light);
+  padding: 2px 7px;
+  border-radius: 99px;
+  letter-spacing: 0.06em;
+}
+
+.archive-stats {
+  display: flex;
+  padding: 12px 18px;
+  gap: 0;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.archive-stat {
+  flex: 1;
+  text-align: center;
+}
+.archive-stat .n {
+  font-family: 'Kaiti SC', 'Songti SC', serif;
+  font-size: 24px;
+  color: var(--teal);
+  line-height: 1;
+}
+.archive-stat .n.coral { color: var(--coral); }
+.archive-stat .l {
+  font-size: 10px;
+  color: var(--ink-mute);
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+.archive-stat + .archive-stat { border-left: 1px solid var(--line-soft); }
+
+.archive-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.archive-list::-webkit-scrollbar { width: 3px; }
+.archive-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+.archive-item {
+  background: #fdfaf2;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  padding: 12px;
+  transition: border-color 0.2s;
+}
+.archive-item:hover { border-color: var(--line); }
+.archive-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.archive-item .num {
+  font-family: 'SF Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+}
+.archive-status {
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.archive-status.done { background: var(--teal-light); color: var(--teal-deep); }
+.archive-status.pending { background: var(--coral-soft); color: var(--coral); }
+.archive-item .meta {
+  font-size: 11px;
+  color: var(--ink-soft);
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.archive-item .meta span { display: inline-flex; align-items: center; gap: 3px; }
+.archive-item .feeling-preview {
+  font-size: 11px;
+  color: var(--ink);
+  font-style: italic;
+  margin-top: 6px;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.archive-reply {
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--paper-warm);
+  border-radius: 6px;
+  border-left: 3px solid var(--teal);
+}
+.archive-reply .label {
+  font-size: 9px;
+  color: var(--teal);
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.archive-reply .img {
+  width: 100%;
+  height: 80px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.archive-reply .text {
+  font-size: 11px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.archive-countdown {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--coral-soft);
+  border-radius: 6px;
+  font-size: 10px;
+  color: var(--coral);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.archive-countdown .time { font-family: 'SF Mono', monospace; font-weight: 600; }
+
+/* ==================== Receipt modal ==================== */
+.receipt-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(31, 58, 54, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-radius: 28px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+  z-index: 10;
+  padding: 20px;
+}
+.receipt-mask.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.receipt {
+  background: #fdfaf2;
+  width: 100%;
+  border-radius: 14px;
+  padding: 22px 18px 18px;
+  position: relative;
+  transform: translateY(40px);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+}
+.receipt-mask.show .receipt { transform: translateY(0); }
+.receipt::before, .receipt::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 8px;
+  background-image: radial-gradient(circle, var(--paper) 4px, transparent 4px);
+  background-size: 14px 8px;
+  background-repeat: repeat-x;
+}
+.receipt::before { top: -4px; }
+.receipt::after { bottom: -4px; transform: rotate(180deg); }
+
+.receipt-head {
+  text-align: center;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line);
+  margin-bottom: 14px;
+}
+.receipt-head .stamp {
+  display: inline-block;
+  font-family: 'Kaiti SC', serif;
+  font-size: 22px;
+  color: var(--coral);
+  letter-spacing: 0.4em;
+  padding: 4px 12px;
+  border: 2px solid var(--coral);
+  border-radius: 4px;
+  transform: rotate(-3deg);
+  margin-bottom: 8px;
+}
+.receipt-head .sub {
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--ink-soft);
+  padding: 6px 0;
+}
+.receipt-row .k { color: var(--ink-mute); }
+.receipt-row .v { color: var(--ink); font-family: 'SF Mono', monospace; }
+.receipt-row .v.serif { font-family: 'Kaiti SC', serif; }
+
+.receipt-sign {
+  margin: 12px 0;
+  padding: 12px;
+  background: var(--paper-warm);
+  border-radius: 6px;
+  text-align: center;
+}
+.receipt-sign .label {
+  font-size: 10px;
+  color: var(--teal);
+  letter-spacing: 0.16em;
+  margin-bottom: 4px;
+}
+.receipt-sign .text {
+  font-family: 'Kaiti SC', 'Songti SC', serif;
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.receipt-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.btn-line {
+  flex: 1;
+  padding: 9px 0;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+}
+.btn-line:hover { border-color: var(--teal); color: var(--teal); }
+.btn-primary {
+  flex: 1;
+  padding: 9px 0;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 99px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: var(--teal); }
+
+.receipt-foot {
+  text-align: center;
+  font-size: 10px;
+  color: var(--ink-mute);
+  margin-top: 12px;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+/* ==================== Footer ==================== */
+.foot {
+  padding: 48px 0 56px;
+  font-size: 12px;
+  color: var(--ink-mute);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.foot .disclaimer {
+  max-width: 540px;
+  line-height: 1.7;
+}
+.foot .credit {
+  text-align: right;
+  letter-spacing: 0.04em;
+}
+.foot .credit .num {
+  font-family: 'Kaiti SC', serif;
+  font-size: 28px;
+  color: var(--teal);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+/* ==================== Animations ==================== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.2, 0.6, 0.2, 1) forwards; }
+.reveal.d1 { animation-delay: 0.1s; }
+.reveal.d2 { animation-delay: 0.2s; }
+.reveal.d3 { animation-delay: 0.3s; }
+.reveal.d4 { animation-delay: 0.4s; }
+.reveal.d5 { animation-delay: 0.5s; }
+
+@keyframes ripple {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-40px); }
+}
+.ripple-path { animation: ripple 4s linear infinite; }
+.ripple-path.reverse { animation: ripple 5s linear infinite reverse; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+}
+.float { animation: float 3s ease-in-out infinite; transform-origin: center; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+.twinkle { animation: twinkle 2.5s ease-in-out infinite; }
+
+/* ==================== Section heading with anchor ==================== */
+[id] { scroll-margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ============== Top bar ============== -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="track">生活娱乐赛道 · LIFE · ENTERTAINMENT</span>
+      <span>微信小程序创意方案 / CREATIVE PROPOSAL</span>
+    </div>
+    <div class="topbar-right">
+      <span class="dot"></span>
+      <span>VOL.001 / 2026 · MINI PROGRAM IDEA</span>
+    </div>
+  </header>
+
+  <!-- ============== Hero ============== -->
+  <section class="hero">
+    <div class="hero-meta reveal">
+      <span class="pill">A. 项目立项</span>
+      <span>· 第 03 号提案</span>
+      <span>· 单页式创意文档</span>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title reveal d1">
+          赛博<br><span class="coral">放生</span><span class="teal">局</span>
+        </h1>
+        <p class="hero-sub reveal d2">
+          一个把 <strong>压力、愿望和好运梗</strong> 放进电子河流的微信小程序 ——<br>
+          不鼓励现实放生，但欢迎你把想扔掉的情绪，都扔进这片虚拟水系。
+        </p>
+      </div>
+
+      <dl class="hero-aside reveal d3">
+        <div>
+          <dt>PROJECT</dt>
+          <dd>赛博放生局 <span class="key">/ Cyber Release Bureau</span></dd>
+        </div>
+        <div>
+          <dt>FORM</dt>
+          <dd>微信小程序 · H5 嵌入</dd>
+        </div>
+        <div>
+          <dt>赛道</dt>
+          <dd>生活娱乐 / LIFE · ENTERTAINMENT</dd>
+        </div>
+        <div>
+          <dt>SLOGAN</dt>
+          <dd>按下放生键，把今天的不顺流走。</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="hero-stats reveal d4">
+      <div class="stat">
+        <div class="num">06</div>
+        <div class="label">情绪场景覆盖</div>
+      </div>
+      <div class="stat">
+        <div class="num coral">03</div>
+        <div class="label">电子生物原型</div>
+      </div>
+      <div class="stat">
+        <div class="num lake">05</div>
+        <div class="label">步完成一次放生</div>
+      </div>
+      <div class="stat">
+        <div class="num">∞</div>
+        <div class="label">朋友接力可能</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 一句话介绍 ============== -->
+  <section class="section" id="oneline">
+    <div class="reveal">
+      <div class="section-marker">§ 01 — 一句话介绍</div>
+      <h2 class="section-title">它不是玄学，<span class="accent">也不是现实放生</span>。<br>它是一份带编号的电子心情回收站。</h2>
+    </div>
+
+    <div class="pull-quote reveal d1">
+      "考前放生电子锦鲤、面试前在群里放生一只电子乌龟、深夜内耗时放生一片电子云朵 —— 我们不放生任何生物，只放生情绪本身。"
+      <span class="src">— 赛博放生局 · 项目精神</span>
+    </div>
+  </section>
+
+  <!-- ============== 创意介绍 ============== -->
+  <section class="section" id="intro">
+    <div class="reveal">
+      <div class="section-marker">§ 02 — 创意介绍</div>
+      <h2 class="section-title">在所有"再扛一下"的时刻，给情绪一个去处。</h2>
+      <p class="lead">你一定有过这些瞬间：明天的考试还没复习、面试前夜在镜子前排练第五遍、周报写到第 17 稿、凌晨三点盯着天花板、突然收到一条不喜欢的消息。赛博放生局做了一件事 —— 让你把这些"塞不下又说不出口"的小情绪，轻轻按一下，放进一条不会泛滥的电子河流里。</p>
+    </div>
+
+    <div class="grid-2" style="margin-top: 40px;">
+      <div class="card reveal d1">
+        <div class="num">#01 不是工具</div>
+        <h4>不评估，不打卡，不做心理测评</h4>
+        <p>它不会追问你"最近心情如何"，也不会把你的情绪画成曲线图。它只是一个动作：<strong>按下放生</strong>，完事。</p>
+      </div>
+      <div class="card reveal d2">
+        <div class="num">#02 不是玄学</div>
+        <h4>没有"转运"、没有"改命"、没有"化解"</h4>
+        <p>所有"好运签"都只是符合你心情的轻量段子，绝对不引导任何线下放生行为，也不会用恐吓性的"厄运预警"做催促。</p>
+      </div>
+      <div class="card reveal d3">
+        <div class="num">#03 不是营销</div>
+        <h4>没有推送通知轰炸、没有"再来一次"</h4>
+        <p>你放生完就结束，不强行拉回流，不发"今天还没放生哦"的提示。让"轻"和"短"成为它唯一的承诺。</p>
+      </div>
+      <div class="card reveal d4">
+        <div class="num">#04 但是很上头</div>
+        <h4>小仪式感、随机性、群友接力</h4>
+        <p>每次放生生成编号 + 签文 + 虚拟地点，朋友可以"接力加持"让一只电子生物游得更快更远。把微小的安慰，做成可分享的小事件。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 灵感来源 ============== -->
+  <section class="section" id="inspiration">
+    <div class="reveal">
+      <div class="section-marker">§ 03 — 灵感来源</div>
+      <h2 class="section-title">来自一个很老、但每年都会复活的<span class="accent">网络梗</span>。</h2>
+    </div>
+
+    <div class="inspiration reveal d1" style="margin-top: 32px;">
+      <p class="quote-text">
+        考前一周去放生一条鱼，求不挂科。<br>
+        考完发现：<br>
+        ——鱼没活过那个冬天，自己却考过了。
+      </p>
+      <div class="meta">
+        <span class="src">— 来自 2023–2025 年高校表白墙与豆瓣"考试互助"小组的长期梗</span>，每年期末、考研、考公季都会以不同形式复活一次。
+      </div>
+    </div>
+
+    <p class="lead" style="margin-top: 28px;">
+      我们注意到：当代年轻人已经知道"放生不会带来好运气"，但仍然会带着戏谑的语气说"我先去放生一只电子锦鲤"。这种"知道没用、但还是想要一个动作"的心理，正是<strong style="color: var(--ink);">情绪仪式感的缺口</strong>。
+    </p>
+  </section>
+
+  <!-- ============== 目标用户 + 使用场景 ============== -->
+  <section class="section" id="users">
+    <div class="reveal">
+      <div class="section-marker">§ 04 — 服务对象</div>
+      <h2 class="section-title">谁最需要"赛博放生局"？</h2>
+    </div>
+
+    <div class="users-scenarios" style="margin-top: 40px;">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 16px;">目标用户 · TARGET USERS</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="user-card reveal d1">
+            <div class="user-avatar">考</div>
+            <div>
+              <h4>学生 / 考公考研人</h4>
+              <p>期末、择业、论文季压力大，需要一个"做了点什么"的安慰动作。</p>
+            </div>
+          </div>
+          <div class="user-card alt reveal d2">
+            <div class="user-avatar">班</div>
+            <div>
+              <h4>职场新人 / 1–3 年打工人</h4>
+              <p>周报、会议、汇报密集，"班味"重但不至于需要专业心理咨询。</p>
+            </div>
+          </div>
+          <div class="user-card lake reveal d3">
+            <div class="user-avatar">网</div>
+            <div>
+              <h4>网感青年 / 互联网原住民</h4>
+              <p>爱玩梗、爱分享朋友圈、喜欢收集小确幸和小仪式感。</p>
+            </div>
+          </div>
+          <div class="user-card yellow reveal d4">
+            <div class="user-avatar">群</div>
+            <div>
+              <h4>群聊里的"气氛组"</h4>
+              <p>在朋友群中承担"打气、找乐子、转移话题"的角色，是天然的接力传播节点。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="eyebrow" style="margin-bottom: 16px;">使用场景 · MOMENTS</div>
+        <div class="scenario-list">
+          <div class="scenario reveal d1">
+            <span class="ix">M-01</span>
+            <div>
+              <span class="text">期末周 / 考试前一晚</span>
+              <span class="sub">"复习不完了，先放生一只电子锦鲤压压惊。"</span>
+            </div>
+          </div>
+          <div class="scenario reveal d2">
+            <span class="ix">M-02</span>
+            <div>
+              <span class="text">面试前 30 分钟</span>
+              <span class="sub">在等候区打开小程序，把紧张交给一片电子水系。</span>
+            </div>
+          </div>
+          <div class="scenario reveal d3">
+            <span class="ix">M-03</span>
+            <div>
+              <span class="text">项目上线前夜的紧张时刻</span>
+              <span class="sub">给同事群一人放生一只电子乌龟，慢就是稳。</span>
+            </div>
+          </div>
+          <div class="scenario reveal d4">
+            <span class="ix">M-04</span>
+            <div>
+              <span class="text">深夜睡不着的内耗时刻</span>
+              <span class="sub">一只电子云朵，接住 03:00 的胡思乱想。</span>
+            </div>
+          </div>
+          <div class="scenario reveal d5">
+            <span class="ix">M-05</span>
+            <div>
+              <span class="text">朋友群互相打气的小仪式</span>
+              <span class="sub">有人"中签"，全群接力，把沉重变轻一点。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 痛点 ============== -->
+  <section class="section" id="pain">
+    <div class="reveal">
+      <div class="section-marker">§ 05 — 当前痛点</div>
+      <h2 class="section-title">为什么大家还在"用嘴放生"？<br>因为现有的选择都差那么一口气。</h2>
+    </div>
+
+    <div class="grid-3" style="margin-top: 36px;">
+      <div class="card reveal d1">
+        <div class="num">痛点 A</div>
+        <h4>发个动态太"轻"</h4>
+        <p>朋友圈/微博一发，要么无人问津，要么突然被老板关心，反而更累。情绪出口和社交压力搅在一起。</p>
+      </div>
+      <div class="card reveal d2">
+        <div class="num">痛点 B</div>
+        <h4>情绪记录 App 太"重"</h4>
+        <p>打开要选心情、打标签、画曲线、写日记，仪式感有了，但"我现在就想按一个键"的需求被忽视了。</p>
+      </div>
+      <div class="card reveal d3">
+        <div class="num">痛点 C</div>
+        <h4>现实放生有"代价"</h4>
+        <p>随意放生外来物种可能破坏本地生态；不规范放生还可能触法。需要一个<strong>无害、可控、零成本</strong>的替代方案。</p>
+      </div>
+    </div>
+
+    <div class="pain-grid" style="margin-top: 32px;">
+      <div class="pain-side bad reveal d1">
+        <h4>× 之前</h4>
+        <p>用表情包应付、用动态试探、用消费来补偿，或者干脆什么都不做。情绪没有出口，越攒越沉。</p>
+      </div>
+      <div class="pain-arrow">→</div>
+      <div class="pain-side good reveal d2">
+        <h4>√ 之后</h4>
+        <p>30 秒选个情绪 + 选只电子生物 + 按一次按钮，得到一张带编号的回执，可以分享到群、可以再来一只。仪式轻、动作短、有人接。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 核心玩法 + 交互原型 ============== -->
+  <section class="section" id="gameplay">
+    <div class="split">
+      <!-- 左侧文字 -->
+      <div class="col-main">
+        <div class="reveal">
+          <div class="section-marker">§ 06 — 核心玩法</div>
+          <h2 class="section-title">5 步完成一次<span class="accent">赛博放生</span>。<br>大约 30 秒。</h2>
+          <p class="lead">整个流程不设登录门槛，第一步和最后一步之间不存在"再做一步任务"的设计。结束即自由。</p>
+        </div>
+
+        <div class="steps">
+          <div class="step reveal d1">
+            <div class="ix">壹</div>
+            <div>
+              <h4>说几句此刻的感受</h4>
+              <p>按住麦克风<strong>语音</strong>或直接<strong>打字</strong>，描述此刻的感受。描述越具体，24h 后的 AI 回信越懂你。不选标签，你的话就是标签。</p>
+              <span class="chip">🎤 语音</span>
+              <span class="chip">⌨️ 文字</span>
+            </div>
+          </div>
+          <div class="step reveal d2">
+            <div class="ix">贰</div>
+            <div>
+              <h4>选电子生物</h4>
+              <p>电子锦鲤（求运气）、电子乌龟（求稳）、电子云朵（求清空）。生物决定回执的签文基调。</p>
+              <span class="chip">锦鲤</span>
+              <span class="chip">乌龟</span>
+              <span class="chip">云朵</span>
+            </div>
+          </div>
+          <div class="step reveal d3">
+            <div class="ix">叁</div>
+            <div>
+              <h4>在世界水域图上挑一片水域</h4>
+              <p>拖动地图，从 12 个真实水域中选一个：太平洋 / 贝加尔湖 / 西湖 / 湘江 / 马里亚纳海沟……顶部"今日热门"气泡帮新用户一键选中，不需要定位授权。</p>
+            </div>
+          </div>
+          <div class="step reveal d4">
+            <div class="ix">肆</div>
+            <div>
+              <h4>按下放生</h4>
+              <p>电子生物从画面中央缓缓沉入水中，伴随一声水波动画。不需要"二次确认"，单次动作即完成。</p>
+            </div>
+          </div>
+          <div class="step reveal d5">
+            <div class="ix">伍</div>
+            <div>
+              <h4>收回执 + 约定回信</h4>
+              <p>带编号的电子回执：护生编号 / 虚拟地点 / <strong>此刻感受</strong> / 签文 / 回信时间。默认 24 小时后收到一份 AI 图文回信——可能治愈、可能搞怪，取决于你写下的感受。也可自选 3 天 / 7 天 / 指定日期。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧手机原型 -->
+      <div class="col-side">
+        <div class="reveal d2" style="text-align: center; margin-bottom: 18px;">
+          <div class="eyebrow" style="margin-bottom: 8px;">LIVE PREVIEW · 小程序原型</div>
+          <p style="font-size: 12px; color: var(--ink-mute);">点击按钮试试完整流程</p>
+        </div>
+
+        <div class="phone" id="phone">
+          <div class="phone-screen">
+
+            <div class="phone-status">
+              <span>9:41</span>
+              <div class="right">
+                <span style="font-size: 11px;">📶</span>
+                <span class="battery"><i></i></span>
+              </div>
+            </div>
+
+            <div class="phone-header">
+              <span class="back">‹</span>
+              <span class="title">赛博放生局</span>
+              <span class="more">···</span>
+            </div>
+
+            <div class="phone-river" id="river">
+              <!-- World water map (draggable) -->
+              <div class="world-map" id="worldMap">
+                <svg class="map-svg" id="mapSvg" viewBox="380 60 280 280" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#cfe4dd"/>
+                      <stop offset="60%" stop-color="#a9d2c5"/>
+                      <stop offset="100%" stop-color="#7fb6a4"/>
+                    </linearGradient>
+                  </defs>
+
+                  <!-- Ocean background -->
+                  <rect width="640" height="480" fill="url(#oceanGrad)"/>
+
+                  <!-- Continents (simplified, stylized) -->
+                  <g fill="#f0e6d0" stroke="#d6cdb8" stroke-width="0.5">
+                    <path d="M 50 70 Q 90 50 150 65 Q 190 80 195 120 Q 185 160 160 180 Q 120 195 85 180 Q 55 160 45 120 Q 40 90 50 70 Z"/>
+                    <path d="M 130 230 Q 165 220 185 250 Q 195 290 185 330 Q 170 370 150 365 Q 125 340 120 300 Q 120 260 130 230 Z"/>
+                    <path d="M 200 40 Q 230 30 250 45 Q 255 65 240 75 Q 215 75 200 60 Z"/>
+                    <path d="M 260 75 Q 330 55 420 70 Q 500 85 545 120 Q 555 155 530 180 Q 480 195 420 190 Q 360 185 310 170 Q 270 155 255 125 Q 250 95 260 75 Z"/>
+                    <path d="M 285 95 Q 300 88 308 100 Q 305 115 292 113 Q 283 105 285 95 Z"/>
+                    <path d="M 540 130 Q 555 125 560 140 Q 555 155 545 150 Q 538 140 540 130 Z"/>
+                    <path d="M 335 210 Q 370 200 395 225 Q 405 265 395 305 Q 380 340 360 340 Q 335 325 325 290 Q 320 250 335 210 Z"/>
+                    <path d="M 500 220 Q 520 215 530 230 Q 525 245 510 243 Q 498 235 500 220 Z"/>
+                    <path d="M 495 335 Q 535 325 560 345 Q 565 375 545 390 Q 515 392 498 378 Q 488 355 495 335 Z"/>
+                  </g>
+
+                  <!-- Water markers -->
+                  <g id="waterMarkers">
+                    <g class="water-marker" data-water="pacific" transform="translate(590,200)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">太平洋</text>
+                    </g>
+                    <g class="water-marker" data-water="atlantic" transform="translate(225,180)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">大西洋</text>
+                    </g>
+                    <g class="water-marker" data-water="indian" transform="translate(460,340)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">印度洋</text>
+                    </g>
+                    <g class="water-marker" data-water="arctic" transform="translate(340,25)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="18">北冰洋</text>
+                    </g>
+                    <g class="water-marker lake" data-water="baikal" transform="translate(450,120)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">贝加尔湖</text>
+                    </g>
+                    <g class="water-marker lake" data-water="ness" transform="translate(295,90)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">尼斯湖</text>
+                    </g>
+                    <g class="water-marker lake" data-water="xihu" transform="translate(515,155)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">西湖</text>
+                    </g>
+                    <g class="water-marker river" data-water="xiang" transform="translate(505,175)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="18">湘江</text>
+                    </g>
+                    <g class="water-marker trench" data-water="mariana" transform="translate(600,275)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">马里亚纳海沟</text>
+                    </g>
+                    <g class="water-marker lake" data-water="deadsea" transform="translate(395,198)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">死海</text>
+                    </g>
+                    <g class="water-marker" data-water="aegean" transform="translate(350,188)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">爱琴海</text>
+                    </g>
+                    <g class="water-marker" data-water="galapagos" transform="translate(95,260)">
+                      <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+                      <text class="water-label" y="-12">加拉帕戈斯</text>
+                    </g>
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Hot bubbles (today's popular waters) -->
+              <div class="hot-bubbles" id="hotBubbles">
+                <button class="hot-bubble" data-water="pacific">🔥 太平洋</button>
+                <button class="hot-bubble" data-water="baikal">🔥 贝加尔湖</button>
+                <button class="hot-bubble" data-water="mariana">🔥 马里亚纳海沟</button>
+              </div>
+
+              <!-- Drag hint -->
+              <div class="map-hint" id="mapHint">拖动地图 · 点选水域</div>
+
+              <!-- Floating creature -->
+              <div class="creature-layer" id="creatureLayer">
+                <svg class="float" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" id="creatureSvg">
+                  <g id="koiArt">
+                    <ellipse cx="60" cy="40" rx="38" ry="20" fill="url(#koiGrad)"/>
+                    <ellipse cx="60" cy="40" rx="38" ry="20" fill="none" stroke="#b85a3a" stroke-width="0.5" opacity="0.4"/>
+                    <path d="M22 40 Q 10 28 6 40 Q 10 52 22 40 Z" fill="#ed7d5b"/>
+                    <ellipse cx="60" cy="32" rx="14" ry="4" fill="#fff" opacity="0.5"/>
+                    <circle cx="78" cy="36" r="3" fill="#1f3a36"/>
+                    <circle cx="79" cy="35" r="0.8" fill="#fff"/>
+                    <path d="M55 50 Q 60 60 65 50" stroke="#b85a3a" stroke-width="1" fill="none" opacity="0.6"/>
+                    <defs>
+                      <linearGradient id="koiGrad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#f9d8c9"/>
+                        <stop offset="50%" stop-color="#ed7d5b"/>
+                        <stop offset="100%" stop-color="#d96d4d"/>
+                      </linearGradient>
+                    </defs>
+                  </g>
+                </svg>
+              </div>
+
+              <div class="river-stat">
+                <span>已选 · <span class="num" id="selectedWater">未选择</span></span>
+                <span style="color: var(--ink-mute);">今日放生 <span id="todayCount">1,247</span></span>
+              </div>
+            </div>
+
+            <div class="phone-panel">
+              <div class="panel-label">此刻感受 <span style="color: var(--coral); font-size: 10px;">（可语音 / 可文字）</span></div>
+              <div class="feeling-input-wrap">
+                <button class="mic-btn" id="micBtn" title="语音输入">🎤</button>
+                <textarea class="feeling-textarea" id="feelingText" rows="2" placeholder="明天要答辩，紧张到胃疼..."></textarea>
+              </div>
+              <div class="feeling-hint" id="feelingHint">
+                <span class="dot">·</span>描述越具体，24h 后的 AI 回信越懂你
+              </div>
+
+              <div class="panel-label">想放生一只</div>
+              <div class="chip-row" id="creatureRow">
+                <button class="chip-btn coral" data-creature="koi">🐟 电子锦鲤</button>
+                <button class="chip-btn coral" data-creature="turtle">🐢 电子乌龟</button>
+                <button class="chip-btn coral" data-creature="cloud">☁️ 电子云朵</button>
+              </div>
+
+              <div class="panel-label">什么时候回信？</div>
+              <div class="fb-row" id="fbRow">
+                <button class="fb-opt active" data-fb="24h">24 小时后</button>
+                <button class="fb-opt" data-fb="3d">3 天后</button>
+                <button class="fb-opt" data-fb="7d">7 天后</button>
+                <button class="fb-opt" data-fb="custom">自选时间</button>
+              </div>
+              <input type="datetime-local" id="fbDate" style="display:none; width:100%; padding:6px 10px; border:1px solid var(--line); border-radius:6px; font-size:12px; color:var(--ink-soft); margin-bottom:12px; font-family:inherit;">
+
+              <button class="cta-btn" id="releaseBtn" disabled>选好啦 · 按下放生</button>
+            </div>
+
+            <!-- Receipt overlay -->
+            <div class="receipt-mask" id="receiptMask">
+              <div class="receipt" id="receipt">
+                <div class="receipt-head">
+                  <div class="stamp">放生成功</div>
+                  <div class="sub">CYBER RELEASE RECEIPT</div>
+                </div>
+
+                <div class="receipt-row">
+                  <span class="k">护生编号</span>
+                  <span class="v" id="rNum">CRSB-000000</span>
+                </div>
+                <div class="receipt-row">
+                  <span class="k">放生地点</span>
+                  <span class="v serif" id="rLoc">清流湾 · 流萤岛</span>
+                </div>
+                <div class="receipt-row">
+                  <span class="k">电子生物</span>
+                  <span class="v" id="rCreature">电子锦鲤</span>
+                </div>
+                <div class="receipt-row">
+                  <span class="k">放生时间</span>
+                  <span class="v" id="rTime">2026.06.16 09:41</span>
+                </div>
+
+                <div class="receipt-feeling">
+                  <div class="label">— 此刻感受 —</div>
+                  <div class="text" id="rFeeling">明天要答辩，紧张到胃疼...</div>
+                </div>
+
+                <div class="receipt-sign">
+                  <div class="label">— 本日好运签 —</div>
+                  <div class="text" id="rSign">今天的你已经比昨天更松弛一丢丢了。</div>
+                </div>
+
+                <div class="receipt-feedback">
+                  <div class="icon">📬</div>
+                  <div class="body">
+                    <div class="label">AI 回信安排</div>
+                    <div class="text"><strong id="rFbTime">24 小时后</strong>以图文形式推送，基于你此刻的感受生成 · <span style="color: var(--ink-mute);">可能治愈、可能搞怪</span></div>
+                  </div>
+                </div>
+
+                <div class="receipt-actions">
+                  <button class="btn-line" id="rShare">分享到群</button>
+                  <button class="btn-primary" id="rAgain">再来一只</button>
+                </div>
+
+                <div class="receipt-foot">
+                  * 本回执不构成任何好运承诺 / 也不鼓励线下放生<br>
+                  仅作虚拟情绪仪式使用 · 编号随机
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 放生档案 ============== -->
+  <section class="section" id="archive">
+    <div class="split">
+      <div class="col-main">
+        <div class="reveal">
+          <div class="section-marker">§ 07 — 放生档案</div>
+          <h2 class="section-title">一个<span class="accent">用户无感</span>的极简身份系统。</h2>
+          <p class="lead">不注册、不填手机号、不设密码。打开小程序就自动登录，关掉也不会丢。每个用户的放生记录和回信都安静地存在那里，随时可以回看。</p>
+        </div>
+
+        <div class="grid-2" style="margin-top: 36px;">
+          <div class="card reveal d1">
+            <div class="num">#01 静默登录</div>
+            <h4>wx.login 拿 openid，零摩擦</h4>
+            <p>用户打开小程序即自动完成登录，不需要任何手动操作。后端只存一个 openid，不采集头像、昵称、手机号。</p>
+          </div>
+          <div class="card reveal d2">
+            <div class="num">#02 一张表搞定</div>
+            <h4>放生记录表 = 全部数据</h4>
+            <p>字段：openid / 编号 / 感受 / 生物 / 水域 / 回信时间 / 回信内容 / 创建时间。没有用户资料表、没有关系链、没有积分体系。</p>
+          </div>
+          <div class="card reveal d3">
+            <div class="num">#03 回信可回看</div>
+            <h4>24h 后的 AI 回信不会消失</h4>
+            <p>回信推送后永久存在档案里，用户可以随时翻看"上次放生时我写了什么、AI 回了什么"。情绪有时间线。</p>
+          </div>
+          <div class="card reveal d4">
+            <div class="num">#04 藏在二级页</div>
+            <h4>不干扰主流程</h4>
+            <p>"我的档案"入口放在小程序右上角菜单或"我的"tab，不在放生主路径上。想看的人能找到，不想看的人感知不到。</p>
+          </div>
+        </div>
+
+        <div class="pull-quote reveal d3" style="margin-top: 32px; font-size: 18px;">
+          用户不需要"注册账号"，只需要"打开就用"。<br>
+          身份是隐形的，记录是真实的。
+          <span class="src">— 赛博放生局 · 极简用户系统原则</span>
+        </div>
+      </div>
+
+      <!-- 右侧手机原型：放生档案 -->
+      <div class="col-side">
+        <div class="reveal d2" style="text-align: center; margin-bottom: 18px;">
+          <div class="eyebrow" style="margin-bottom: 8px;">ARCHIVE PREVIEW · 我的档案</div>
+          <p style="font-size: 12px; color: var(--ink-mute);">点击记录可展开回信</p>
+        </div>
+
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-status">
+              <span>9:41</span>
+              <div class="right">
+                <span style="font-size: 11px;">📶</span>
+                <span class="battery"><i></i></span>
+              </div>
+            </div>
+
+            <div class="phone-header">
+              <span class="back">‹</span>
+              <span class="title">我的放生档案</span>
+              <span class="more">···</span>
+            </div>
+
+            <div class="archive-screen" style="border-radius: 0; height: auto; flex: 1;">
+              <!-- User info -->
+              <div class="archive-user">
+                <div class="archive-avatar">微</div>
+                <div>
+                  <div class="name">微信用户</div>
+                  <div class="id">ID ····3a7f</div>
+                </div>
+                <span class="login-tag">静默登录</span>
+              </div>
+
+              <!-- Stats -->
+              <div class="archive-stats">
+                <div class="archive-stat">
+                  <div class="n">7</div>
+                  <div class="l">累计放生</div>
+                </div>
+                <div class="archive-stat">
+                  <div class="n coral">2</div>
+                  <div class="l">待回信</div>
+                </div>
+                <div class="archive-stat">
+                  <div class="n">5</div>
+                  <div class="l">已回信</div>
+                </div>
+              </div>
+
+              <!-- Record list -->
+              <div class="archive-list" id="archiveList">
+                <!-- Item 1: has reply, expanded -->
+                <div class="archive-item" data-idx="0">
+                  <div class="archive-item-head">
+                    <span class="num">CRSB-20260615-2847</span>
+                    <span class="archive-status done">已回信</span>
+                  </div>
+                  <div class="meta">
+                    <span>🐟 锦鲤</span>
+                    <span>· 西湖</span>
+                    <span>· 06.15 22:30</span>
+                  </div>
+                  <div class="feeling-preview">"明天答辩，紧张到胃疼..."</div>
+                  <div class="archive-reply">
+                    <div class="label">📬 AI 回信 · 24h 后送达</div>
+                    <div class="img" style="background: linear-gradient(135deg, #d4e8e2, #a9d2c5);">🌅</div>
+                    <div class="text">嘿，昨晚的西湖锦鲤替你游了一圈。它说答辩那天你会比想象中镇定——不是因为不紧张了，而是因为你已经紧张过了，该轮到镇定了。胃不疼了吧？</div>
+                  </div>
+                </div>
+
+                <!-- Item 2: pending -->
+                <div class="archive-item" data-idx="1">
+                  <div class="archive-item-head">
+                    <span class="num">CRSB-20260616-3912</span>
+                    <span class="archive-status pending">待回信</span>
+                  </div>
+                  <div class="meta">
+                    <span>🐢 乌龟</span>
+                    <span>· 马里亚纳海沟</span>
+                    <span>· 06.16 09:41</span>
+                  </div>
+                  <div class="feeling-preview">"项目今天上线，手心一直在出汗..."</div>
+                  <div class="archive-countdown">
+                    <span>⏳</span>
+                    <span>回信倒计时 <span class="time">23:14:32</span></span>
+                  </div>
+                </div>
+
+                <!-- Item 3: has reply, collapsed -->
+                <div class="archive-item" data-idx="2">
+                  <div class="archive-item-head">
+                    <span class="num">CRSB-20260614-1023</span>
+                    <span class="archive-status done">已回信</span>
+                  </div>
+                  <div class="meta">
+                    <span>☁️ 云朵</span>
+                    <span>· 贝加尔湖</span>
+                    <span>· 06.14 01:20</span>
+                  </div>
+                  <div class="feeling-preview">"凌晨三点了还是睡不着，想太多..."</div>
+                </div>
+
+                <!-- Item 4: has reply, collapsed -->
+                <div class="archive-item" data-idx="3">
+                  <div class="archive-item-head">
+                    <span class="num">CRSB-20260612-0568</span>
+                    <span class="archive-status done">已回信</span>
+                  </div>
+                  <div class="meta">
+                    <span>🐟 锦鲤</span>
+                    <span>· 太平洋</span>
+                    <span>· 06.12 18:05</span>
+                  </div>
+                  <div class="feeling-preview">"今天被老板否了第三版方案..."</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 价值意义 ============== -->
+  <section class="section" id="value">
+    <div class="reveal">
+      <div class="section-marker">§ 08 — 价值意义</div>
+      <h2 class="section-title">不止"好玩"，它在四个层面都成立。</h2>
+    </div>
+
+    <div class="value-grid" style="margin-top: 36px;">
+      <div class="value-card reveal d1">
+        <div class="k">V.01 娱乐价值</div>
+        <h4>短时高完成度的解压小游戏</h4>
+        <p>30 秒一次放生，0 学习成本。回执可截图可分享，反馈立刻、过程轻量。适合嵌入微信聊天的"间隙"使用。</p>
+      </div>
+      <div class="value-card reveal d2">
+        <div class="k">V.02 情绪价值</div>
+        <h4>不评判、不说教、只接住</h4>
+        <p>它不告诉你"应该更积极"，也不追问原因，只是提供一个动作：把情绪从身体里搬走一厘米。</p>
+      </div>
+      <div class="value-card reveal d3">
+        <div class="k">V.03 商业价值</div>
+        <h4>微信生态内轻量化社交裂变</h4>
+        <p>回执即分享卡，群友接力是天然传播动作。可与品牌"轻联名"、城市限定水系、节日限定生物做内容延展。</p>
+      </div>
+      <div class="value-card reveal d4">
+        <div class="k">V.04 社会价值</div>
+        <h4>用虚拟仪式替代冲动式现实放生</h4>
+        <p>承接"考前放生"这一长期文化心理的需求，把"求好运"的动作从线下迁回线上，降低生态风险与法律风险。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Footer ============== -->
+  <footer class="foot">
+    <div class="disclaimer">
+      <strong style="color: var(--ink);">— 重要声明 —</strong><br>
+      赛博放生局是一款<strong style="color: var(--ink);">纯虚拟情绪工具</strong>，不鼓励、不引导任何形式的线下放生活动。所有"好运签"均为符合语境的轻量文案，不构成任何承诺。平台内不展示真实生物交易、不提供宗教服务、不进行命运预测。
+    </div>
+    <div class="credit">
+      <div class="num">赛博放生局</div>
+      <div>微信小程序创意方案 · VOL.001</div>
+      <div>赛道：生活娱乐 · 2026</div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ============ Data pools ============
+  const SIGNS = {
+    koi: [
+      '今天的你已经比昨天更松弛一丢丢了。',
+      'DDL 看见你都得绕道走。',
+      '你发的朋友圈，今天都是好心情。',
+      '水电费会自己交的那种日子在靠近。',
+      '今晚的梦会很长，而且不难醒来。',
+      '你的下一个外卖会准时到。',
+      'WiFi 信号今天会格外给力。',
+      '老板今天会忘记 @ 你三次。'
+    ],
+    turtle: [
+      '慢就是稳，稳就是快。',
+      '今天的你不需要证明什么。',
+      '深呼吸三次，世界会等你。',
+      '问题会自己变小，你也会。',
+      '稳一点，再稳一点。',
+      '比起结果，今天的过程更值得收藏。',
+      '把"算了"换成"我先缓缓"。'
+    ],
+    cloud: [
+      '内耗的事，让它飘走就好。',
+      '今晚的月亮会特别圆。',
+      '想哭就哭，云朵替你接住。',
+      '明天会有新的云，新的心情。',
+      '别和昨晚的梦较劲，它没别的意思。',
+      '允许自己什么也不想十分钟。',
+      '脑子里的弹幕可以关一会儿。'
+    ]
+  };
+
+  const WATERS = {
+    pacific:   { name: '太平洋',         type: 'ocean'  },
+    atlantic:  { name: '大西洋',         type: 'ocean'  },
+    indian:    { name: '印度洋',         type: 'ocean'  },
+    arctic:    { name: '北冰洋',         type: 'ocean'  },
+    baikal:    { name: '贝加尔湖',       type: 'lake'   },
+    ness:      { name: '尼斯湖',         type: 'lake'   },
+    xihu:      { name: '西湖',           type: 'lake'   },
+    xiang:     { name: '湘江',           type: 'river'  },
+    mariana:   { name: '马里亚纳海沟',   type: 'trench' },
+    deadsea:   { name: '死海',           type: 'lake'   },
+    aegean:    { name: '爱琴海',         type: 'sea'    },
+    galapagos: { name: '加拉帕戈斯',     type: 'sea'    }
+  };
+
+  // water marker SVG coordinates (for map panning)
+  const WATER_COORDS = {
+    pacific:   { x: 590, y: 200 },
+    atlantic:  { x: 225, y: 180 },
+    indian:    { x: 460, y: 340 },
+    arctic:    { x: 340, y: 25  },
+    baikal:    { x: 450, y: 120 },
+    ness:      { x: 295, y: 90  },
+    xihu:      { x: 515, y: 155 },
+    xiang:     { x: 505, y: 175 },
+    mariana:   { x: 600, y: 275 },
+    deadsea:   { x: 395, y: 198 },
+    aegean:    { x: 350, y: 188 },
+    galapagos: { x: 95,  y: 260 }
+  };
+
+  const CREATURE_NAMES = {
+    koi: '电子锦鲤',
+    turtle: '电子乌龟',
+    cloud: '电子云朵'
+  };
+
+  // ============ State ============
+  let state = {
+    creature: null,
+    water: null,
+    feeling: '',
+    feedbackTime: '24h',
+    feedbackDate: '',
+    isReleased: false
+  };
+
+  // ============ Elements ============
+  const $ = (id) => document.getElementById(id);
+  const creatureRow = $('creatureRow');
+  const releaseBtn = $('releaseBtn');
+  const receiptMask = $('receiptMask');
+  const creatureLayer = $('creatureLayer');
+  const creatureSvg = $('creatureSvg');
+  const worldMap = $('worldMap');
+  const mapSvg = $('mapSvg');
+  const mapHint = $('mapHint');
+  const micBtn = $('micBtn');
+  const feelingText = $('feelingText');
+  const feelingHint = $('feelingHint');
+  const fbRow = $('fbRow');
+  const fbDate = $('fbDate');
+
+  // ============ SVG art for each creature ============
+  const CREATURE_SVG = {
+    koi: `<g>
+      <ellipse cx="60" cy="40" rx="38" ry="20" fill="url(#koiGrad)"/>
+      <path d="M22 40 Q 10 28 6 40 Q 10 52 22 40 Z" fill="#ed7d5b"/>
+      <ellipse cx="60" cy="32" rx="14" ry="4" fill="#fff" opacity="0.5"/>
+      <circle cx="78" cy="36" r="3" fill="#1f3a36"/>
+      <circle cx="79" cy="35" r="0.8" fill="#fff"/>
+      <path d="M55 50 Q 60 60 65 50" stroke="#b85a3a" stroke-width="1" fill="none" opacity="0.6"/>
+      <defs>
+        <linearGradient id="koiGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#f9d8c9"/>
+          <stop offset="50%" stop-color="#ed7d5b"/>
+          <stop offset="100%" stop-color="#d96d4d"/>
+        </linearGradient>
+      </defs>
+    </g>`,
+    turtle: `<g>
+      <ellipse cx="60" cy="50" rx="36" ry="22" fill="#3e7a96"/>
+      <ellipse cx="60" cy="50" rx="36" ry="22" fill="none" stroke="#1f3a36" stroke-width="0.5" opacity="0.3"/>
+      <ellipse cx="60" cy="50" rx="24" ry="14" fill="#5a9bb5"/>
+      <g fill="#2c5d72" opacity="0.55">
+        <ellipse cx="60" cy="42" rx="4" ry="3"/>
+        <ellipse cx="48" cy="48" rx="4" ry="3"/>
+        <ellipse cx="72" cy="48" rx="4" ry="3"/>
+        <ellipse cx="54" cy="58" rx="4" ry="3"/>
+        <ellipse cx="66" cy="58" rx="4" ry="3"/>
+        <ellipse cx="60" cy="50" rx="3" ry="3"/>
+      </g>
+      <ellipse cx="22" cy="52" rx="10" ry="6" fill="#5a9bb5"/>
+      <ellipse cx="98" cy="52" rx="10" ry="6" fill="#5a9bb5"/>
+      <circle cx="22" cy="50" r="2" fill="#1f3a36"/>
+      <circle cx="98" cy="50" r="2" fill="#1f3a36"/>
+      <circle cx="22.6" cy="49.5" r="0.6" fill="#fff"/>
+      <circle cx="98.6" cy="49.5" r="0.6" fill="#fff"/>
+    </g>`,
+    cloud: `<g>
+      <ellipse cx="60" cy="48" rx="42" ry="22" fill="#faf6ec"/>
+      <ellipse cx="40" cy="42" rx="18" ry="16" fill="#faf6ec"/>
+      <ellipse cx="78" cy="40" rx="20" ry="18" fill="#faf6ec"/>
+      <ellipse cx="60" cy="38" rx="16" ry="14" fill="#fff"/>
+      <ellipse cx="60" cy="48" rx="42" ry="22" fill="none" stroke="#c7dbe2" stroke-width="0.6"/>
+      <g opacity="0.5">
+        <circle cx="44" cy="42" r="2" fill="#cfe4dd"/>
+        <circle cx="56" cy="40" r="2.5" fill="#cfe4dd"/>
+        <circle cx="70" cy="38" r="2" fill="#cfe4dd"/>
+        <circle cx="80" cy="44" r="2" fill="#cfe4dd"/>
+      </g>
+      <circle cx="48" cy="46" r="1.2" fill="#1f3a36"/>
+      <circle cx="72" cy="46" r="1.2" fill="#1f3a36"/>
+      <path d="M52 52 Q 60 56 68 52" stroke="#1f3a36" stroke-width="0.8" fill="none" opacity="0.6"/>
+    </g>`
+  };
+
+  // ============ Helpers ============
+  function rand(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function pad(n, len) {
+    return String(n).padStart(len, '0');
+  }
+
+  function now() {
+    const d = new Date();
+    return `${d.getFullYear()}.${pad(d.getMonth()+1, 2)}.${pad(d.getDate(), 2)} ${pad(d.getHours(), 2)}:${pad(d.getMinutes(), 2)}`;
+  }
+
+  function updateCta() {
+    const ready = state.feeling.trim() && state.creature && state.water && !state.isReleased;
+    releaseBtn.disabled = !ready;
+    releaseBtn.textContent = ready ? '按下放生' : '选好啦 · 按下放生';
+  }
+
+  // ============ Feeling text input ============
+  const PLACEHOLDERS = [
+    '明天要答辩，紧张到胃疼...',
+    '又加班到十一点，脑子嗡嗡的...',
+    '就是莫名的烦躁，说不上来...',
+    '项目明天上线，手心一直在出汗...',
+    '凌晨三点了还是睡不着，想太多...',
+    '今天被老板否了第三版方案...'
+  ];
+  let phIdx = 0;
+  function rotatePlaceholder() {
+    feelingText.placeholder = PLACEHOLDERS[phIdx];
+    phIdx = (phIdx + 1) % PLACEHOLDERS.length;
+  }
+  rotatePlaceholder();
+  setInterval(rotatePlaceholder, 3500);
+
+  feelingText.addEventListener('input', () => {
+    state.feeling = feelingText.value;
+    updateCta();
+  });
+
+  // ============ Voice input (Web Speech API) ============
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  let isRecording = false;
+
+  if (SpeechRec) {
+    recognition = new SpeechRec();
+    recognition.lang = 'zh-CN';
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onresult = (e) => {
+      let transcript = '';
+      for (let i = 0; i < e.results.length; i++) {
+        transcript += e.results[i][0].transcript;
+      }
+      feelingText.value = transcript;
+      state.feeling = transcript;
+      updateCta();
+    };
+
+    recognition.onend = () => {
+      isRecording = false;
+      micBtn.classList.remove('recording');
+      micBtn.textContent = '🎤';
+      feelingHint.innerHTML = '<span class="dot">·</span>描述越具体，回信越懂你';
+    };
+
+    recognition.onerror = (e) => {
+      isRecording = false;
+      micBtn.classList.remove('recording');
+      micBtn.textContent = '🎤';
+      feelingHint.innerHTML = '<span class="dot">·</span>语音没听清，直接打字也行';
+    };
+  }
+
+  micBtn.addEventListener('click', () => {
+    if (state.isReleased) return;
+    if (!recognition) {
+      // fallback: focus textarea + hint
+      feelingText.focus();
+      feelingHint.innerHTML = '<span class="dot">·</span>当前环境不支持语音，请直接输入';
+      return;
+    }
+    if (isRecording) {
+      recognition.stop();
+      return;
+    }
+    try {
+      recognition.start();
+      isRecording = true;
+      micBtn.classList.add('recording');
+      micBtn.textContent = '●';
+      feelingHint.innerHTML = '<span class="dot">·</span>正在聆听... 说出你此刻的感受';
+    } catch(_) {
+      isRecording = false;
+      micBtn.classList.remove('recording');
+    }
+  });
+
+  // ============ Feedback time picker ============
+  const FB_LABELS = {
+    '24h': '24 小时后',
+    '3d': '3 天后',
+    '7d': '7 天后',
+    'custom': ''
+  };
+
+  fbRow.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-fb]');
+    if (!btn || state.isReleased) return;
+    fbRow.querySelectorAll('.fb-opt').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.feedbackTime = btn.dataset.fb;
+    if (state.feedbackTime === 'custom') {
+      fbDate.style.display = 'block';
+      fbDate.focus();
+    } else {
+      fbDate.style.display = 'none';
+      state.feedbackDate = '';
+    }
+  });
+
+  fbDate.addEventListener('change', () => {
+    state.feedbackDate = fbDate.value;
+  });
+
+  function getFeedbackLabel() {
+    if (state.feedbackTime === 'custom' && state.feedbackDate) {
+      // datetime-local value: "2026-06-20T14:30" -> "2026.06.20 14:30"
+      return state.feedbackDate.replace(/-/g, '.').replace('T', ' ');
+    }
+    return FB_LABELS[state.feedbackTime] || '24 小时后';
+  }
+
+  // ============ World map drag ============
+  const MAP_VB = { w: 280, h: 280 };
+  const MAP_BOUNDS = { minX: 0, maxX: 640 - MAP_VB.w, minY: 0, maxY: 480 - MAP_VB.h };
+  let mapVb = { x: 380, y: 60 };
+  let mapDrag = { active: false, startX: 0, startY: 0, vbX: 0, vbY: 0, moved: false };
+
+  function setMapViewBox() {
+    mapSvg.setAttribute('viewBox', `${mapVb.x} ${mapVb.y} ${MAP_VB.w} ${MAP_VB.h}`);
+  }
+
+  function panToWater(waterId) {
+    const c = WATER_COORDS[waterId];
+    if (!c) return;
+    mapVb.x = Math.max(MAP_BOUNDS.minX, Math.min(MAP_BOUNDS.maxX, c.x - MAP_VB.w / 2));
+    mapVb.y = Math.max(MAP_BOUNDS.minY, Math.min(MAP_BOUNDS.maxY, c.y - MAP_VB.h / 2));
+    setMapViewBox();
+  }
+
+  worldMap.addEventListener('pointerdown', (e) => {
+    if (state.isReleased) return;
+    mapDrag.active = true;
+    mapDrag.moved = false;
+    mapDrag.startX = e.clientX;
+    mapDrag.startY = e.clientY;
+    mapDrag.vbX = mapVb.x;
+    mapDrag.vbY = mapVb.y;
+    worldMap.classList.add('dragging');
+    mapHint.classList.add('hidden');
+    document.addEventListener('pointermove', onDocPointerMove);
+    document.addEventListener('pointerup', onDocPointerUp);
+  });
+
+  function onDocPointerMove(e) {
+    if (!mapDrag.active) return;
+    const dx = e.clientX - mapDrag.startX;
+    const dy = e.clientY - mapDrag.startY;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) mapDrag.moved = true;
+    const rect = mapSvg.getBoundingClientRect();
+    const scaleX = MAP_VB.w / rect.width;
+    const scaleY = MAP_VB.h / rect.height;
+    mapVb.x = Math.max(MAP_BOUNDS.minX, Math.min(MAP_BOUNDS.maxX, mapDrag.vbX - dx * scaleX));
+    mapVb.y = Math.max(MAP_BOUNDS.minY, Math.min(MAP_BOUNDS.maxY, mapDrag.vbY - dy * scaleY));
+    setMapViewBox();
+  }
+
+  function onDocPointerUp() {
+    mapDrag.active = false;
+    worldMap.classList.remove('dragging');
+    document.removeEventListener('pointermove', onDocPointerMove);
+    document.removeEventListener('pointerup', onDocPointerUp);
+  }
+
+  // ============ Water selection ============
+  function selectWater(waterId) {
+    if (state.isReleased) return;
+    state.water = waterId;
+    document.querySelectorAll('.water-marker').forEach(m => {
+      m.classList.toggle('selected', m.dataset.water === waterId);
+    });
+    document.querySelectorAll('.hot-bubble').forEach(b => {
+      b.classList.toggle('active', b.dataset.water === waterId);
+    });
+    $('selectedWater').textContent = WATERS[waterId].name;
+    mapHint.classList.add('hidden');
+    updateCta();
+  }
+
+  document.querySelectorAll('.water-marker').forEach(marker => {
+    marker.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (mapDrag.moved) return;
+      selectWater(marker.dataset.water);
+    });
+  });
+
+  document.querySelectorAll('.hot-bubble').forEach(bubble => {
+    bubble.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const waterId = bubble.dataset.water;
+      panToWater(waterId);
+      selectWater(waterId);
+    });
+  });
+
+  // ============ Wire up creature chips ============
+  creatureRow.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-creature]');
+    if (!btn || state.isReleased) return;
+    creatureRow.querySelectorAll('[data-creature]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.creature = btn.dataset.creature;
+    // swap art
+    creatureSvg.innerHTML = CREATURE_SVG[state.creature];
+    updateCta();
+  });
+
+  // ============ Release ============
+  releaseBtn.addEventListener('click', () => {
+    if (!state.feeling.trim() || !state.creature || !state.water) return;
+    state.isReleased = true;
+    releaseBtn.disabled = true;
+    releaseBtn.textContent = '正在放生…';
+
+    // animate creature down
+    creatureLayer.classList.add('released');
+
+    // generate receipt after a short delay
+    setTimeout(showReceipt, 800);
+  });
+
+  function showReceipt() {
+    const num = `CRSB-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${pad(Math.floor(Math.random()*9999), 4)}`;
+    $('rNum').textContent = num;
+    $('rLoc').textContent = WATERS[state.water].name;
+    $('rCreature').textContent = CREATURE_NAMES[state.creature];
+    $('rTime').textContent = now();
+    $('rSign').textContent = rand(SIGNS[state.creature]);
+    $('rFeeling').textContent = state.feeling || '（这次没说，没关系）';
+    $('rFbTime').textContent = getFeedbackLabel();
+
+    receiptMask.classList.add('show');
+  }
+
+  // ============ Share button (just a friendly toast) ============
+  $('rShare').addEventListener('click', () => {
+    const btn = $('rShare');
+    const orig = btn.textContent;
+    btn.textContent = '✓ 已生成卡片';
+    btn.style.color = 'var(--teal)';
+    btn.style.borderColor = 'var(--teal)';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 1500);
+  });
+
+  // ============ Again button ============
+  $('rAgain').addEventListener('click', () => {
+    // reset
+    state.isReleased = false;
+    state.creature = null;
+    state.water = null;
+    state.feeling = '';
+    state.feedbackTime = '24h';
+    state.feedbackDate = '';
+    creatureRow.querySelectorAll('[data-creature]').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.water-marker').forEach(m => m.classList.remove('selected'));
+    document.querySelectorAll('.hot-bubble').forEach(b => b.classList.remove('active'));
+    fbRow.querySelectorAll('.fb-opt').forEach(b => b.classList.remove('active'));
+    fbRow.querySelector('[data-fb="24h"]').classList.add('active');
+    fbDate.style.display = 'none';
+    fbDate.value = '';
+    feelingText.value = '';
+    $('selectedWater').textContent = '未选择';
+    mapHint.classList.remove('hidden');
+    feelingHint.innerHTML = '<span class="dot">·</span>描述越具体，回信越懂你';
+    receiptMask.classList.remove('show');
+    creatureLayer.classList.remove('released');
+    creatureSvg.innerHTML = CREATURE_SVG.koi;
+    updateCta();
+  });
+
+  // ============ Init ============
+  updateCta();
+
+  // ============ Archive: toggle reply ============
+  const ARCHIVE_REPLIES = {
+    0: {
+      label: '📬 AI 回信 · 24h 后送达',
+      bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)',
+      emoji: '🌅',
+      text: '嘿，昨晚的西湖锦鲤替你游了一圈。它说答辩那天你会比想象中镇定——不是因为不紧张了，而是因为你已经紧张过了，该轮到镇定了。胃不疼了吧？'
+    },
+    2: {
+      label: '📬 AI 回信 · 24h 后送达',
+      bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)',
+      emoji: '🌙',
+      text: '贝加尔湖的云朵飘过来说：你凌晨三点想的事，有 90% 不会发生。剩下 10% 发生了你也管不了。它替你把那 90% 装走了，今晚试试能不能早点闭眼。'
+    },
+    3: {
+      label: '📬 AI 回信 · 24h 后送达',
+      bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)',
+      emoji: '🔥',
+      text: '太平洋的锦鲤回信了：老板否了三版，说明你在尝试。它替你数了一下——第三版被否的人，第四版过的概率是 67%。你已经在路上了，别停下来。'
+    }
+  };
+
+  document.querySelectorAll('.archive-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const idx = item.dataset.idx;
+      const existing = item.querySelector('.archive-reply');
+      // 如果已有回信展示，点击则收起
+      if (existing) {
+        existing.remove();
+        return;
+      }
+      // 如果是待回信项，不展开
+      if (item.querySelector('.archive-countdown')) return;
+      // 否则展开回信
+      const reply = ARCHIVE_REPLIES[idx];
+      if (!reply) return;
+      const div = document.createElement('div');
+      div.className = 'archive-reply';
+      div.innerHTML = `
+        <div class="label">${reply.label}</div>
+        <div class="img" style="background: ${reply.bg};">${reply.emoji}</div>
+        <div class="text">${reply.text}</div>
+      `;
+      item.appendChild(div);
+    });
+  });
+
+  // ============ Reveal on scroll (simple, no library) ============
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      io.observe(el);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
