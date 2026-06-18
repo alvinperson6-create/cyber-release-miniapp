@@ -69,6 +69,11 @@
               <text class="reply-emoji">{{item.reply.emoji}}</text>
             </view>
             <text class="reply-text">{{item.reply.text}}</text>
+            <!-- 命运轨迹入口 -->
+            <view class="destiny-entry" data-record-id="{{item.id}}" catchtap="onDestinyTap">
+              <text class="destiny-entry-label">✨ 命运轨迹</text>
+              <text class="destiny-entry-progress">查看 ›</text>
+            </view>
           </view>
 
           <!-- 待回信: 倒计时 -->

@@ -255,6 +255,32 @@
   display: block;
 }
 
+/* ==================== 命运轨迹入口 ==================== */
+.destiny-entry {
+  margin-top: 16rpx;
+  padding: 16rpx 20rpx;
+  background: linear-gradient(135deg, #e8d5f0, #c4a8d8);
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.destiny-entry-label {
+  font-size: 22rpx;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.destiny-entry-progress {
+  font-size: 20rpx;
+  color: var(--ink-mute);
+  background: rgba(255,255,255,0.6);
+  padding: 4rpx 16rpx;
+  border-radius: 99rpx;
+}
+
 /* ==================== 倒计时 ==================== */
 .archive-countdown {
   margin-top: 16rpx;

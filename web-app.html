@@ -1020,6 +1020,255 @@ textarea, input { font-family: inherit; }
   line-height: 1.6;
 }
 
+/* ==================== Destiny Entry (on archive card) ==================== */
+.destiny-entry {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #e8d5f0, #c4a8d8);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.destiny-entry:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(196, 168, 216, 0.4); }
+.destiny-entry:active { transform: scale(0.98); }
+.destiny-entry-label {
+  font-size: 11px;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.destiny-entry-arrow {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.destiny-entry-progress {
+  font-size: 10px;
+  color: var(--ink-mute);
+  background: rgba(255,255,255,0.6);
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+/* ==================== Destiny Modal ==================== */
+.destiny-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 58, 54, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 110;
+  padding: 20px;
+}
+.destiny-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.destiny-modal {
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--paper);
+  border-radius: 20px;
+  padding: 24px 20px 18px;
+  transform: translateY(40px) scale(0.96);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+  position: relative;
+}
+.destiny-overlay.show .destiny-modal { transform: translateY(0) scale(1); }
+.destiny-modal::-webkit-scrollbar { width: 4px; }
+.destiny-modal::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+.destiny-header {
+  text-align: center;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line);
+  margin-bottom: 16px;
+}
+.destiny-title {
+  font-family: "Kaiti SC", "STKaiti", serif;
+  font-size: 22px;
+  color: var(--teal-deep);
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+}
+.destiny-subtitle {
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.12em;
+}
+.destiny-record-id {
+  font-family: "SF Mono", "Monaco", monospace;
+  font-size: 10px;
+  color: var(--ink-mute);
+  margin-top: 4px;
+}
+
+.destiny-segment {
+  margin-bottom: 14px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  background: #fdfaf2;
+  transition: opacity 0.3s;
+}
+.destiny-segment.locked {
+  opacity: 0.85;
+}
+.destiny-seg-banner {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  position: relative;
+}
+.destiny-seg-body {
+  padding: 12px 14px 14px;
+}
+.destiny-seg-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: 0.04em;
+}
+.destiny-seg-text {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.destiny-seg-index {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.85);
+  font-family: "SF Mono", "Monaco", monospace;
+  background: rgba(31,58,54,0.35);
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.destiny-lock-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(31, 58, 54, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #fff;
+}
+.destiny-lock-icon { font-size: 22px; }
+.destiny-lock-hint { font-size: 10px; letter-spacing: 0.1em; opacity: 0.9; }
+
+.destiny-seg-unlock-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 0;
+  background: var(--teal-deep);
+  color: var(--paper);
+  border: none;
+  border-radius: 8px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.destiny-seg-unlock-btn:hover { background: var(--teal); }
+.destiny-seg-unlock-btn:active { transform: scale(0.97); }
+.destiny-seg-unlock-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.destiny-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+}
+.destiny-bundle-btn {
+  flex: 1;
+  padding: 11px 0;
+  background: linear-gradient(135deg, #ed7d5b, #d96d4d);
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.destiny-bundle-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(237,125,91,0.4); }
+.destiny-bundle-btn:active { transform: scale(0.97); }
+.destiny-bundle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.destiny-close-btn {
+  flex: 0 0 80px;
+  padding: 11px 0;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.destiny-close-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+.destiny-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ink-mute);
+  font-size: 12px;
+}
+.destiny-loading .spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--line);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.destiny-pay-toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--teal-deep);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 99px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 200;
+  box-shadow: 0 8px 24px rgba(31,58,54,0.3);
+}
+.destiny-pay-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* ==================== Animations ==================== */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
@@ -1116,6 +1365,14 @@ textarea, input { font-family: inherit; }
   <div class="receipt-card" id="receiptCard"></div>
 </div>
 
+<!-- Destiny Modal -->
+<div class="destiny-overlay" id="destinyOverlay">
+  <div class="destiny-modal" id="destinyModal"></div>
+</div>
+
+<!-- Pay Toast -->
+<div class="destiny-pay-toast" id="destinyPayToast"></div>
+
 <script>
 (function() {
   'use strict';
@@ -1167,6 +1424,64 @@ textarea, input { font-family: inherit; }
       const records = loadRecords();
       const r = records.find(x => x.id === id);
       return { reply: r ? r.reply : null };
+    }
+  }
+
+  // 命运轨迹：获取
+  async function apiGetDestiny(recordId) {
+    if (!USE_API) {
+      return localGetDestiny(recordId);
+    }
+    try {
+      const res = await fetch(`${API_BASE}/destiny/${recordId}`);
+      if (!res.ok) throw new Error('API error');
+      return await res.json();
+    } catch (e) {
+      console.warn('API unavailable, falling back to local destiny');
+      return localGetDestiny(recordId);
+    }
+  }
+
+  // 命运轨迹：解锁（mock 支付）
+  async function apiUnlockDestiny(recordId, mode, index) {
+    if (!USE_API) {
+      return localUnlockDestiny(recordId, mode, index);
+    }
+    try {
+      const res = await fetch(`${API_BASE}/destiny/unlock`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recordId,
+          mode,
+          index: mode === 'single' ? index : undefined,
+          payToken: 'mock_pay_ok'
+        })
+      });
+      if (!res.ok) throw new Error('API error');
+      return await res.json();
+    } catch (e) {
+      console.warn('API unavailable, falling back to local destiny');
+      return localUnlockDestiny(recordId, mode, index);
+    }
+  }
+
+  // 生成回信 + 命运轨迹（手动触发，用于本地模式）
+  async function apiGenerateReply(id) {
+    if (!USE_API) {
+      return localGenerateReply(id);
+    }
+    try {
+      const res = await fetch(`${API_BASE}/reply/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      if (!res.ok) throw new Error('API error');
+      return await res.json();
+    } catch (e) {
+      console.warn('API unavailable, falling back to local');
+      return localGenerateReply(id);
     }
   }
 
@@ -1414,6 +1729,135 @@ textarea, input { font-family: inherit; }
 
   function generateReply() {
     return REPLY_POOL[Math.floor(Math.random() * REPLY_POOL.length)];
+  }
+
+  // ==================== Local Destiny (命运轨迹) ====================
+  const DESTINY_KEY = 'cyber_release_destinies';
+
+  function loadDestinies() {
+    try {
+      return JSON.parse(localStorage.getItem(DESTINY_KEY)) || {};
+    } catch(_) { return {}; }
+  }
+
+  function saveDestinies(d) {
+    localStorage.setItem(DESTINY_KEY, JSON.stringify(d));
+  }
+
+  // 本地命运轨迹模板生成（与 server/ai.js templateDestiny 保持一致）
+  function localGenerateDestinySegments(creature) {
+    const creatureName = CREATURES[creature]?.name || '电子生物';
+    const palettes = [
+      { bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)', emoji: '🌿' },
+      { bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)', emoji: '🌊' },
+      { bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)', emoji: '🔥' },
+      { bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)', emoji: '✨' }
+    ];
+    const arcs = {
+      koi: [
+        { title: '入水瞬间', text: `${creatureName}从你的掌心滑进水域，鳞片在光里闪了一下。它没有回头，但摆了摆尾巴，像是在说"放心"。` },
+        { title: '顺流而下', text: '水流比想象中温柔。它穿过一片水草，遇见一群透明的小鱼，它们互相打了个照面，又各自游开。' },
+        { title: '一次回望', text: '在某个转弯处它停了一下。它想起你写下那些字时的样子——它没法替你解决，但它决定替你记着。' },
+        { title: '准备回信', text: '它找到一块温暖的礁石，靠着，开始想怎么把这一路的事讲给你听。回信已经在它嘴里成形了。' }
+      ],
+      turtle: [
+        { title: '缓缓下沉', text: `${creatureName}缩进壳里，慢慢沉到水底。光从上面一缕缕漏下来，它闭上眼，决定先休息一会儿。` },
+        { title: '海底漫步', text: '它在沙地上一步一步走，比谁都慢，但每一步都稳。遇到一只水母，它从水母下面钻过去，像过一扇门。' },
+        { title: '一个决定', text: '它想起你写下的那些话。它想：慢不是错，方向对就行。它决定把这个想法带回去给你。' },
+        { title: '浮出水面', text: '它开始往上浮，气泡一颗颗从嘴边冒出去。它要去找一张干净的纸，把回信写下来。' }
+      ],
+      cloud: [
+        { title: '升上天空', text: `${creatureName}从你手心飘起来，越飘越高，最后停在水域上空。它低头看了你一眼，然后被风推着走了。` },
+        { title: '随风漂泊', text: '它路过一座山，又路过一片云。云和云之间互相点头，像在说"你也来啦"。它觉得自己轻了一点。' },
+        { title: '装下你的事', text: '它把你写下的那些事装进自己身体里。装着装着，它发现自己变重了——但不是坏事，是那种被需要的重。' },
+        { title: '化作回信', text: '它飘回水域上空，把自己拧了拧，拧出一封回信，轻轻丢向你的方向。' }
+      ]
+    };
+    const list = arcs[creature] || arcs.koi;
+    return list.map((seg, i) => ({
+      title: seg.title,
+      text: seg.text,
+      emoji: palettes[i % palettes.length].emoji,
+      bg: palettes[i % palettes.length].bg
+    }));
+  }
+
+  function localGetDestiny(recordId) {
+    const destinies = loadDestinies();
+    const records = loadRecords();
+    const record = records.find(r => r.id === recordId);
+    if (!record) return { error: '记录不存在' };
+
+    // 若命运轨迹不存在，则生成（第 0 段默认免费）
+    if (!destinies[recordId]) {
+      destinies[recordId] = {
+        id: `DST-${recordId}`,
+        recordId,
+        segments: localGenerateDestinySegments(record.creature),
+        unlockedIndices: [0],
+        createdAt: Date.now()
+      };
+      saveDestinies(destinies);
+    }
+    const d = destinies[recordId];
+    const unlocked = new Set(d.unlockedIndices);
+    const segments = d.segments.map((seg, i) => {
+      if (unlocked.has(i)) {
+        return { ...seg, index: i, locked: false };
+      }
+      return { index: i, title: seg.title, emoji: seg.emoji, bg: seg.bg, locked: true, price: 100 };
+    });
+    return {
+      id: d.id,
+      recordId: d.recordId,
+      segments,
+      totalSegments: segments.length,
+      unlockedCount: segments.filter(s => !s.locked).length,
+      allUnlocked: segments.every(s => !s.locked),
+      bundlePrice: 300,
+      segmentPrice: 100
+    };
+  }
+
+  function localUnlockDestiny(recordId, mode, index) {
+    const destinies = loadDestinies();
+    const d = destinies[recordId];
+    if (!d) return { error: '命运轨迹不存在' };
+    const total = d.segments.length;
+    const current = new Set(d.unlockedIndices);
+
+    if (mode === 'bundle') {
+      if (current.size >= total) {
+        return { ok: true, alreadyUnlocked: true, unlockedIndices: Array.from(current).sort((a,b)=>a-b) };
+      }
+      const all = Array.from({ length: total }, (_, i) => i);
+      d.unlockedIndices = all;
+      saveDestinies(destinies);
+      return { ok: true, transactionId: 'LOCAL-' + Date.now(), unlockedIndices: all, amount: 300 };
+    }
+
+    const idx = parseInt(index, 10);
+    if (isNaN(idx) || idx < 0 || idx >= total) return { error: '无效索引' };
+    if (current.has(idx)) {
+      return { ok: true, alreadyUnlocked: true, unlockedIndices: Array.from(current).sort((a,b)=>a-b) };
+    }
+    current.add(idx);
+    d.unlockedIndices = Array.from(current).sort((a,b)=>a-b);
+    saveDestinies(destinies);
+    return { ok: true, transactionId: 'LOCAL-' + Date.now(), unlockedIndices: d.unlockedIndices, amount: idx === 0 ? 0 : 100 };
+  }
+
+  function localGenerateReply(id) {
+    const records = loadRecords();
+    const r = records.find(x => x.id === id);
+    if (!r) return { ok: false, error: '记录不存在' };
+    if (!r.reply) {
+      r.reply = generateReply();
+      saveRecords(records);
+    }
+    // 确保命运轨迹存在
+    localGetDestiny(id);
+    return { ok: true, reply: r.reply, destinyId: `DST-${id}`, aiEnabled: false };
   }
 
   function checkPendingReplies() {
@@ -2035,6 +2479,10 @@ textarea, input { font-family: inherit; }
                 <div class="reply-label">📬 AI 回信 · ${r.feedbackLabel}</div>
                 <div class="reply-image" style="background: ${r.reply.bg};">${r.reply.emoji}</div>
                 <div class="reply-text">${r.reply.text}</div>
+                <div class="destiny-entry" data-record-id="${r.id}">
+                  <span class="destiny-entry-label">✨ 命运轨迹</span>
+                  <span class="destiny-entry-progress">查看 ›</span>
+                </div>
               </div>
             </div>
           `;
@@ -2087,14 +2535,211 @@ textarea, input { font-family: inherit; }
     if (!list) return;
 
     list.querySelectorAll('.record-card.has-reply').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        // 点击命运轨迹入口时不折叠/展开回信
+        if (e.target.closest('.destiny-entry')) return;
         const replyBlock = card.querySelector('.reply-block');
         if (replyBlock) {
           replyBlock.classList.toggle('expanded');
         }
       });
     });
+
+    // 命运轨迹入口
+    list.querySelectorAll('.destiny-entry').forEach(entry => {
+      entry.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const recordId = entry.dataset.recordId;
+        openDestinyModal(recordId);
+      });
+    });
   }
+
+  // ==================== Destiny Modal (命运轨迹) ====================
+  let destinyState = {
+    recordId: null,
+    data: null,
+    loading: false
+  };
+
+  function showPayToast(msg) {
+    const toast = $('destinyPayToast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  async function openDestinyModal(recordId) {
+    destinyState.recordId = recordId;
+    destinyState.data = null;
+    destinyState.loading = true;
+    renderDestinyModal();
+    $('destinyOverlay').classList.add('show');
+
+    try {
+      const data = await apiGetDestiny(recordId);
+      destinyState.data = data;
+    } catch (e) {
+      destinyState.data = { error: '加载失败' };
+    } finally {
+      destinyState.loading = false;
+      renderDestinyModal();
+    }
+  }
+
+  function closeDestinyModal() {
+    $('destinyOverlay').classList.remove('show');
+    destinyState.recordId = null;
+    destinyState.data = null;
+    destinyState.loading = false;
+  }
+
+  function renderDestinyModal() {
+    const modal = $('destinyModal');
+    if (!modal) return;
+
+    if (destinyState.loading) {
+      modal.innerHTML = `
+        <div class="destiny-loading">
+          <div class="spinner"></div>
+          <div>正在召唤命运轨迹…</div>
+        </div>
+      `;
+      return;
+    }
+
+    const d = destinyState.data;
+    if (!d || d.error) {
+      modal.innerHTML = `
+        <div class="destiny-header">
+          <div class="destiny-title">命运轨迹</div>
+          <div class="destiny-subtitle">DESTINY TRAJECTORY</div>
+        </div>
+        <div class="destiny-loading">${d && d.error ? d.error : '加载失败'}</div>
+        <div class="destiny-actions">
+          <button class="destiny-close-btn" onclick="document.getElementById('destinyOverlay').classList.remove('show')">关闭</button>
+        </div>
+      `;
+      return;
+    }
+
+    const segmentsHtml = d.segments.map(seg => {
+      if (seg.locked) {
+        return `
+          <div class="destiny-segment locked">
+            <div class="destiny-seg-banner" style="background: ${seg.bg};">
+              <span class="destiny-seg-index">第 ${seg.index + 1} 段</span>
+              <span>${seg.emoji}</span>
+              <div class="destiny-lock-overlay">
+                <div class="destiny-lock-icon">🔒</div>
+                <div class="destiny-lock-hint">未解锁</div>
+              </div>
+            </div>
+            <div class="destiny-seg-body">
+              <div class="destiny-seg-title">${seg.title}</div>
+              <button class="destiny-seg-unlock-btn" data-unlock-index="${seg.index}">
+                解锁本段 · ¥${(seg.price / 100).toFixed(0)}
+              </button>
+            </div>
+          </div>
+        `;
+      }
+      return `
+        <div class="destiny-segment">
+          <div class="destiny-seg-banner" style="background: ${seg.bg};">
+            <span class="destiny-seg-index">第 ${seg.index + 1} 段</span>
+            <span>${seg.emoji}</span>
+          </div>
+          <div class="destiny-seg-body">
+            <div class="destiny-seg-title">${seg.title}</div>
+            <div class="destiny-seg-text">${seg.text}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const allUnlocked = d.allUnlocked;
+    const bundleBtnHtml = allUnlocked
+      ? ''
+      : `<button class="destiny-bundle-btn" id="destinyBundleBtn">一次解锁全部 · ¥${(d.bundlePrice / 100).toFixed(0)}</button>`;
+
+    modal.innerHTML = `
+      <div class="destiny-header">
+        <div class="destiny-title">命运轨迹</div>
+        <div class="destiny-subtitle">DESTINY TRAJECTORY</div>
+        <div class="destiny-record-id">${d.recordId}</div>
+      </div>
+      <div>${segmentsHtml}</div>
+      <div class="destiny-actions">
+        ${bundleBtnHtml}
+        <button class="destiny-close-btn" id="destinyCloseBtn">关闭</button>
+      </div>
+    `;
+
+    // 绑定解锁按钮
+    modal.querySelectorAll('.destiny-seg-unlock-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const idx = parseInt(btn.dataset.unlockIndex, 10);
+        btn.disabled = true;
+        btn.textContent = '解锁中…';
+        try {
+          const res = await apiUnlockDestiny(destinyState.recordId, 'single', idx);
+          if (res.ok) {
+            showPayToast(idx === 0 ? '已解锁（免费）' : '支付成功，已解锁');
+            // 刷新数据
+            destinyState.data = await apiGetDestiny(destinyState.recordId);
+            renderDestinyModal();
+          } else {
+            showPayToast(res.error || '解锁失败');
+            btn.disabled = false;
+            btn.textContent = `解锁本段 · ¥${((d.segmentPrice) / 100).toFixed(0)}`;
+          }
+        } catch (e) {
+          showPayToast('解锁失败');
+          btn.disabled = false;
+          btn.textContent = `解锁本段 · ¥${((d.segmentPrice) / 100).toFixed(0)}`;
+        }
+      });
+    });
+
+    const bundleBtn = $('destinyBundleBtn');
+    if (bundleBtn) {
+      bundleBtn.addEventListener('click', async () => {
+        bundleBtn.disabled = true;
+        const oldText = bundleBtn.textContent;
+        bundleBtn.textContent = '支付中…';
+        try {
+          const res = await apiUnlockDestiny(destinyState.recordId, 'bundle');
+          if (res.ok) {
+            showPayToast('支付成功，全部解锁');
+            destinyState.data = await apiGetDestiny(destinyState.recordId);
+            renderDestinyModal();
+          } else {
+            showPayToast(res.error || '解锁失败');
+            bundleBtn.disabled = false;
+            bundleBtn.textContent = oldText;
+          }
+        } catch (e) {
+          showPayToast('解锁失败');
+          bundleBtn.disabled = false;
+          bundleBtn.textContent = oldText;
+        }
+      });
+    }
+
+    const closeBtn = $('destinyCloseBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeDestinyModal);
+    }
+  }
+
+  // 点击遮罩关闭命运轨迹
+  $('destinyOverlay').addEventListener('click', (e) => {
+    if (e.target === $('destinyOverlay')) {
+      closeDestinyModal();
+    }
+  });
 
   // ==================== Nav Toggle ====================
   document.querySelectorAll('.nav-pill').forEach(pill => {

@@ -12,7 +12,9 @@ const {
   addRecord,
   getStats,
   generateReply,
-  checkPendingReplies
+  checkPendingReplies,
+  getDestiny,
+  unlockDestiny
 } = storage;
 
 // ==================== API 调用 (带本地降级) ====================
@@ -100,6 +102,61 @@ function apiGetReply(id) {
   });
 }
 
+// 获取命运轨迹
+function apiGetDestiny(recordId) {
+  return new Promise((resolve) => {
+    if (!USE_API) {
+      resolve(getDestiny(recordId));
+      return;
+    }
+    wx.request({
+      url: API_BASE + '/destiny/' + recordId,
+      method: 'GET',
+      success(res) {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          resolve(res.data);
+        } else {
+          resolve(getDestiny(recordId));
+        }
+      },
+      fail() {
+        resolve(getDestiny(recordId));
+      }
+    });
+  });
+}
+
+// 解锁命运轨迹（mock 支付）
+function apiUnlockDestiny(recordId, mode, index) {
+  return new Promise((resolve) => {
+    if (!USE_API) {
+      resolve(unlockDestiny(recordId, mode, index));
+      return;
+    }
+    wx.request({
+      url: API_BASE + '/destiny/unlock',
+      method: 'POST',
+      header: { 'Content-Type': 'application/json' },
+      data: {
+        recordId,
+        mode,
+        index: mode === 'single' ? index : undefined,
+        payToken: 'mock_pay_ok'
+      },
+      success(res) {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          resolve(res.data);
+        } else {
+          resolve(unlockDestiny(recordId, mode, index));
+        }
+      },
+      fail() {
+        resolve(unlockDestiny(recordId, mode, index));
+      }
+    });
+  });
+}
+
 module.exports = {
   STORAGE_KEY: storage.STORAGE_KEY,
   loadRecords,
@@ -110,5 +167,7 @@ module.exports = {
   checkPendingReplies,
   apiRelease,
   apiGetRecords,
-  apiGetReply
+  apiGetReply,
+  apiGetDestiny,
+  apiUnlockDestiny
 };

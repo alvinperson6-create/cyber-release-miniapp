@@ -158,6 +158,15 @@ Page({
     this.setData({ records });
   },
 
+  // ==================== 命运轨迹入口 ====================
+  onDestinyTap(e) {
+    const recordId = e.currentTarget.dataset.recordId;
+    if (!recordId) return;
+    wx.navigateTo({
+      url: `/pages/destiny/destiny?recordId=${recordId}`
+    });
+  },
+
   // ==================== 分享 ====================
   onShareAppMessage() {
     return {

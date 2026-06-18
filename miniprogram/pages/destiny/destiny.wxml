@@ -1,0 +1,71 @@
+<!-- 命运轨迹页 -->
+<view class="page" style="padding-top: {{statusBarHeight}}px;">
+  <!-- 自定义导航栏 -->
+  <view class="phone-header">
+    <text class="header-back" catchtap="onBackTap">‹</text>
+    <text class="header-title">命运轨迹</text>
+    <text class="header-more"></text>
+  </view>
+
+  <scroll-view class="destiny-scroll" scroll-y style="height: {{scrollHeight}}px;">
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="destiny-loading">
+      <view class="spinner"></view>
+      <text>正在召唤命运轨迹…</text>
+    </view>
+
+    <!-- 错误 -->
+    <view wx:elif="{{errorMsg}}" class="destiny-loading">
+      <text>{{errorMsg}}</text>
+    </view>
+
+    <!-- 命运轨迹内容 -->
+    <block wx:elif="{{destiny}}">
+      <view class="destiny-header">
+        <text class="destiny-title">命运轨迹</text>
+        <text class="destiny-subtitle">DESTINY TRAJECTORY</text>
+        <text class="destiny-record-id">{{destiny.recordId}}</text>
+      </view>
+
+      <!-- 段落列表 -->
+      <view class="destiny-segments">
+        <view wx:for="{{destiny.segments}}" wx:key="index"
+              class="destiny-segment {{item.locked ? 'locked' : ''}}">
+          <!-- banner -->
+          <view class="seg-banner" style="background: {{item.bg}};">
+            <text class="seg-index">第 {{item.index + 1}} 段</text>
+            <text class="seg-emoji">{{item.emoji}}</text>
+            <view wx:if="{{item.locked}}" class="seg-lock-overlay">
+              <text class="lock-icon">🔒</text>
+              <text class="lock-hint">未解锁</text>
+            </view>
+          </view>
+          <!-- body -->
+          <view class="seg-body">
+            <text class="seg-title">{{item.title}}</text>
+            <text wx:if="{{!item.locked}}" class="seg-text">{{item.text}}</text>
+            <button wx:else
+                    class="seg-unlock-btn"
+                    data-index="{{item.index}}"
+                    catchtap="onUnlockSegment">
+              解锁本段 · {{item.priceYuan}}
+            </button>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部操作 -->
+      <view class="destiny-actions">
+        <button wx:if="{{!destiny.allUnlocked}}"
+                class="bundle-btn"
+                catchtap="onUnlockBundle">
+          一次解锁全部 · {{destiny.bundlePriceYuan}}
+        </button>
+      </view>
+
+      <view class="destiny-footer">
+        <text>放生瞬间 → 命运轨迹 → 最终回信</text>
+      </view>
+    </block>
+  </scroll-view>
+</view>

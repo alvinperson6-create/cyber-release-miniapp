@@ -27,6 +27,21 @@ function initDb() {
     )
   `).run();
 
+  // 命运轨迹表：每条放生记录对应一段命运轨迹
+  // segments: JSON 数组 [{title, text, emoji, bg}]
+  // unlocked_indices: JSON 数组 [0,1,2,...] 已解锁的段索引（第 0 段默认免费）
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS destinies (
+      id TEXT PRIMARY KEY,
+      record_id TEXT NOT NULL UNIQUE,
+      openid TEXT NOT NULL,
+      segments TEXT NOT NULL,
+      unlocked_indices TEXT NOT NULL DEFAULT '[0]',
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (record_id) REFERENCES records(id)
+    )
+  `).run();
+
   seedDemoData();
 }
 
@@ -120,6 +135,64 @@ function seedDemoData() {
   });
 
   tx(demoRecords);
+
+  // 为已回信的 demo 记录播种命运轨迹
+  const demoDestinies = [
+    {
+      id: 'DST-CRSB-DEMO-0001',
+      record_id: 'CRSB-DEMO-0001',
+      openid: DEMO_OPENID,
+      segments: [
+        { title: '入水瞬间', text: '锦鲤从你的掌心滑进西湖，鳞片在晨光里闪了一下。它没有回头，但摆了摆尾巴，像是在说"放心"。', emoji: '🌿', bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)' },
+        { title: '顺流而下', text: '它穿过一片水草，遇见一群透明的小鱼。它们互相打了个照面，又各自游开。西湖的水比它想象的温柔。', emoji: '🌊', bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)' },
+        { title: '一次回望', text: '在断桥下面它停了一下。它想起你写"项目压力大"时的样子——它没法替你解决，但它决定替你记着，替你游得慢一点。', emoji: '🔥', bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)' },
+        { title: '准备回信', text: '它找到一块长满青苔的石头，靠着，开始想怎么把这一路的事讲给你听。回信已经在它嘴里成形了。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' }
+      ],
+      unlocked_indices: '[0,1]'  // 前两段已解锁
+    },
+    {
+      id: 'DST-CRSB-DEMO-0003',
+      record_id: 'CRSB-DEMO-0003',
+      openid: DEMO_OPENID,
+      segments: [
+        { title: '升上天空', text: '云朵从你手心飘起来，越飘越高，最后停在贝加尔湖上空。它低头看了你一眼，然后被风推着走了。', emoji: '☁️', bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)' },
+        { title: '随风漂泊', text: '它路过一座雪山，又路过一片云。云和云之间互相点头，像在说"你也来啦"。它觉得自己轻了一点。', emoji: '🌙', bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)' },
+        { title: '装下你的事', text: '它把你写下的"脑子乱糟糟的"装进自己身体里。装着装着，它发现自己变重了——但不是坏事，是那种被需要的重。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' },
+        { title: '化作回信', text: '它飘回贝加尔湖上空，把自己拧了拧，拧出一封回信，轻轻丢向你的方向。', emoji: '🌙', bg: 'linear-gradient(135deg, #fff3cd, #ffd970)' }
+      ],
+      unlocked_indices: '[0]'  // 仅第一段已解锁
+    },
+    {
+      id: 'DST-CRSB-DEMO-0004',
+      record_id: 'CRSB-DEMO-0004',
+      openid: DEMO_OPENID,
+      segments: [
+        { title: '入水瞬间', text: '锦鲤从你的掌心滑进太平洋，鳞片在正午的阳光里闪了一下。它没有回头，一头扎进了深蓝色的水里。', emoji: '🔥', bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)' },
+        { title: '顺流而下', text: '太平洋很大，它游了很久没见到边。遇到一群海豚，海豚问它去哪，它说"去给一个人写封信"。', emoji: '🌊', bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)' },
+        { title: '一次回望', text: '在一片珊瑚礁它停了一下。它想起你写"放生积德"时的样子——它决定替你把这份善意带去更远的海域。', emoji: '☀️', bg: 'linear-gradient(135deg, #fff3cd, #ffd970)' },
+        { title: '准备回信', text: '它找到一块温暖的礁石，靠着，开始想怎么把这一路的事讲给你听。回信已经在它嘴里成形了。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' }
+      ],
+      unlocked_indices: '[0,1,2,3]'  // 全部已解锁
+    }
+  ];
+
+  const insertDst = db.prepare(`
+    INSERT INTO destinies (id, record_id, openid, segments, unlocked_indices, created_at)
+    VALUES (@id, @record_id, @openid, @segments, @unlocked_indices, @created_at)
+  `);
+  const txDst = db.transaction((items) => {
+    for (const d of items) {
+      insertDst.run({
+        id: d.id,
+        record_id: d.record_id,
+        openid: d.openid,
+        segments: JSON.stringify(d.segments),
+        unlocked_indices: d.unlocked_indices,
+        created_at: now
+      });
+    }
+  });
+  txDst(demoDestinies);
   console.log(`[db] Seeded ${demoRecords.length} demo records`);
 }
 
@@ -188,6 +261,33 @@ function getStats(openid) {
   return { total, pending, replied };
 }
 
+// ==================== 命运轨迹 ====================
+function insertDestiny({ id, recordId, openid, segments }) {
+  db.prepare(`
+    INSERT INTO destinies (id, record_id, openid, segments, unlocked_indices, created_at)
+    VALUES (?, ?, ?, ?, '[0]', ?)
+  `).run(id, recordId, openid, JSON.stringify(segments), Date.now());
+}
+
+function getDestinyByRecordId(recordId) {
+  const row = db.prepare(`SELECT * FROM destinies WHERE record_id = ?`).get(recordId);
+  if (!row) return null;
+  return {
+    id: row.id,
+    recordId: row.record_id,
+    openid: row.openid,
+    segments: JSON.parse(row.segments),
+    unlockedIndices: JSON.parse(row.unlocked_indices),
+    createdAt: row.created_at
+  };
+}
+
+function updateDestinyUnlocked(recordId, indices) {
+  db.prepare(`
+    UPDATE destinies SET unlocked_indices = ? WHERE record_id = ?
+  `).run(JSON.stringify(indices), recordId);
+}
+
 module.exports = {
   initDb,
   insertRecord,
@@ -196,5 +296,8 @@ module.exports = {
   getPendingReplies,
   updateReply,
   getStats,
+  insertDestiny,
+  getDestinyByRecordId,
+  updateDestinyUnlocked,
   DEMO_OPENID
 };

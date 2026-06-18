@@ -1,7 +1,8 @@
 {
   "pages": [
     "pages/release/release",
-    "pages/archive/archive"
+    "pages/archive/archive",
+    "pages/destiny/destiny"
   ],
   "window": {
     "navigationBarTitleText": "赛博放生局",
