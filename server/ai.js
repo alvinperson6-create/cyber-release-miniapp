@@ -22,7 +22,7 @@ const PROVIDERS = {
   doubao: {
     // 火山方舟 OpenAI 兼容协议
     baseUrl: 'https://ark.cn-beijing.volces.com/api/v3',
-    model: 'doubao-pro-32k-241215'
+    model: 'doubao-seed-2-0-lite-260215'
   }
 };
 

@@ -4,8 +4,8 @@
   "description": "赛博放生局后端 API",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.js"
+    "start": "node --env-file=.env index.js",
+    "dev": "node --env-file=.env index.js"
   },
   "dependencies": {
     "express": "^4.18.2",
