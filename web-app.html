@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>赛博放生局 · 电子河流</title>
 <style>
 /* ==================== Reset & Base ==================== */
@@ -1496,24 +1499,26 @@ textarea, input { font-family: inherit; }
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      if (!res.ok) throw new Error('API error');
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
+      }
       return await res.json();
     } catch (e) {
-      console.warn('API unavailable, falling back to localStorage');
-      return localRelease(data);
+      console.error('[apiRelease] 失败:', e);
+      alert('后端 API 连接失败，无法放生。请确认：\n1. 已在 server 目录运行 npm start\n2. 访问的是 http://localhost:3000\n3. 不是 file:// 打开的文件\n\n错误：' + e.message);
+      throw e;
     }
   }
 
   async function apiGetRecords(openid) {
     if (!USE_API) return { records: loadRecords(), stats: getStats() };
-    try {
-      const res = await fetch(`${API_BASE}/records?openid=${encodeURIComponent(openid)}`);
-      if (!res.ok) throw new Error('API error');
-      return await res.json();
-    } catch (e) {
-      console.warn('API unavailable, falling back to localStorage');
-      return { records: loadRecords(), stats: getStats() };
+    const res = await fetch(`${API_BASE}/records?openid=${encodeURIComponent(openid)}`);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
     }
+    return await res.json();
   }
 
   async function apiGetReply(id) {
@@ -1522,74 +1527,58 @@ textarea, input { font-family: inherit; }
       const r = records.find(x => x.id === id);
       return { reply: r ? r.reply : null };
     }
-    try {
-      const res = await fetch(`${API_BASE}/reply/${id}`);
-      if (!res.ok) throw new Error('API error');
-      return await res.json();
-    } catch (e) {
-      console.warn('API unavailable, falling back to localStorage');
-      const records = loadRecords();
-      const r = records.find(x => x.id === id);
-      return { reply: r ? r.reply : null };
+    const res = await fetch(`${API_BASE}/reply/${id}`);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
     }
+    return await res.json();
   }
 
   // 命运轨迹：获取
   async function apiGetDestiny(recordId) {
-    if (!USE_API) {
-      return localGetDestiny(recordId);
+    if (!USE_API) return localGetDestiny(recordId);
+    const res = await fetch(`${API_BASE}/destiny/${recordId}`);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
     }
-    try {
-      const res = await fetch(`${API_BASE}/destiny/${recordId}`);
-      if (!res.ok) throw new Error('API error');
-      return await res.json();
-    } catch (e) {
-      console.warn('API unavailable, falling back to local destiny');
-      return localGetDestiny(recordId);
-    }
+    return await res.json();
   }
 
   // 命运轨迹：看广告解锁
   async function apiUnlockDestiny(recordId, mode, index) {
-    if (!USE_API) {
-      return localUnlockDestiny(recordId, mode, index);
+    if (!USE_API) return localUnlockDestiny(recordId, mode, index);
+    const res = await fetch(`${API_BASE}/destiny/unlock`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        recordId,
+        mode,
+        index: mode === 'single' ? index : undefined,
+        adToken: 'mock_ad_ok'
+      })
+    });
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
     }
-    try {
-      const res = await fetch(`${API_BASE}/destiny/unlock`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recordId,
-          mode,
-          index: mode === 'single' ? index : undefined,
-          adToken: 'mock_ad_ok'
-        })
-      });
-      if (!res.ok) throw new Error('API error');
-      return await res.json();
-    } catch (e) {
-      console.warn('API unavailable, falling back to local destiny');
-      return localUnlockDestiny(recordId, mode, index);
-    }
+    return await res.json();
   }
 
   // 生成回信 + 命运轨迹（手动触发，用于本地模式）
   async function apiGenerateReply(id) {
-    if (!USE_API) {
-      return localGenerateReply(id);
+    if (!USE_API) return localGenerateReply(id);
+    const res = await fetch(`${API_BASE}/reply/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
     }
-    try {
-      const res = await fetch(`${API_BASE}/reply/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      });
-      if (!res.ok) throw new Error('API error');
-      return await res.json();
-    } catch (e) {
-      console.warn('API unavailable, falling back to local');
-      return localGenerateReply(id);
-    }
+    return await res.json();
   }
 
   function localRelease(data) {
