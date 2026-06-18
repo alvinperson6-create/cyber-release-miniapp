@@ -1,4 +1,6 @@
 /* ==================== 收据弹窗 ==================== */
+/* 严格还原 HTML 手机原型 receipt 设计 */
+
 .receipt-overlay {
   position: fixed;
   top: 0;
@@ -7,13 +9,13 @@
   bottom: 0;
   background: rgba(31, 58, 54, 0.55);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s;
   z-index: 100;
-  padding: 48rpx;
+  padding: 40rpx;
 }
 
 .receipt-overlay.show {
@@ -23,20 +25,19 @@
 
 .receipt-card {
   width: 100%;
-  max-width: 660rpx;
   max-height: 88vh;
   overflow-y: auto;
-  background: #faf6ec;
-  border-radius: 32rpx;
-  padding: 56rpx 40rpx 40rpx;
-  transform: translateY(80rpx) scale(0.96);
+  background: #fdfaf2;
+  border-radius: 28rpx;
+  padding: 44rpx 36rpx 36rpx;
+  transform: translateY(80rpx);
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
-  box-shadow: 0 48rpx 120rpx rgba(0, 0, 0, 0.3);
+  box-shadow: 0 16rpx 56rpx rgba(0, 0, 0, 0.2);
   position: relative;
 }
 
 .receipt-overlay.show .receipt-card {
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
 /* 穿孔边缘 (上下) */
@@ -47,7 +48,7 @@
   left: 0;
   right: 0;
   height: 16rpx;
-  background-image: radial-gradient(circle, #faf6ec 8rpx, transparent 8rpx);
+  background-image: radial-gradient(circle, var(--paper) 8rpx, transparent 8rpx);
   background-size: 28rpx 16rpx;
   background-repeat: repeat-x;
   z-index: 1;
@@ -62,32 +63,34 @@
   transform: rotate(180deg);
 }
 
-.receipt-header {
+/* ==================== 回执头部 ==================== */
+.receipt-head {
   text-align: center;
-  padding-bottom: 32rpx;
-  border-bottom: 1px dashed #e0ddd5;
-  margin-bottom: 32rpx;
+  padding-bottom: 28rpx;
+  border-bottom: 1rpx dashed var(--line);
+  margin-bottom: 28rpx;
 }
 
 .receipt-stamp {
   display: inline-block;
   font-family: "Kaiti SC", "STKaiti", serif;
   font-size: 44rpx;
-  color: #ed7d5b;
+  color: var(--coral);
   letter-spacing: 0.4em;
-  padding: 12rpx 32rpx 12rpx 40rpx;
-  border: 4rpx solid #ed7d5b;
+  padding: 8rpx 24rpx 8rpx 32rpx;
+  border: 4rpx solid var(--coral);
   border-radius: 8rpx;
   transform: rotate(-3deg);
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
-.receipt-subtitle {
-  font-size: 20rpx;
-  color: #999;
-  letter-spacing: 0.16em;
+.receipt-sub {
+  font-size: 22rpx;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
 }
 
+/* ==================== 信息行 ==================== */
 .receipt-rows {
   margin-bottom: 8rpx;
 }
@@ -96,72 +99,91 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 26rpx;
-  padding: 16rpx 0;
+  font-size: 24rpx;
+  color: var(--ink-soft);
+  padding: 12rpx 0;
 }
 
 .receipt-row .row-key {
-  color: #999;
+  color: var(--ink-mute);
 }
 
 .receipt-row .row-val {
-  color: #2a2a2a;
+  color: var(--ink);
 }
 
 .receipt-row .row-val.mono {
   font-family: "SF Mono", "Monaco", monospace;
-  font-size: 24rpx;
+  font-size: 22rpx;
 }
 
 .receipt-row .row-val.serif {
   font-family: "Kaiti SC", "STKaiti", serif;
-  font-size: 28rpx;
+  font-size: 26rpx;
 }
 
+/* ==================== 此刻感受块 ==================== */
 .receipt-feeling {
-  margin: 28rpx 0;
-  padding: 24rpx 28rpx;
-  background: #f5ede0;
-  border-radius: 16rpx;
-  border-left: 6rpx solid #ed7d5b;
+  margin: 24rpx 0;
+  padding: 20rpx 24rpx;
+  background: var(--paper-warm);
+  border-radius: 12rpx;
+  border-left: 6rpx solid var(--coral);
 }
 
+/* ==================== 好运签块 ==================== */
 .receipt-sign {
-  margin: 28rpx 0;
-  padding: 28rpx;
-  background: #d4e8e2;
-  border-radius: 16rpx;
+  margin: 24rpx 0;
+  padding: 24rpx;
+  background: var(--teal-light);
+  border-radius: 12rpx;
   text-align: center;
 }
 
+/* ==================== AI 回信安排块 ==================== */
 .receipt-feedback {
-  margin: 28rpx 0 0;
-  padding: 24rpx 28rpx;
-  background: #d4e8e2;
-  border-radius: 16rpx;
+  margin: 24rpx 0 0;
+  padding: 20rpx 24rpx;
+  background: var(--teal-light);
+  border-radius: 12rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
 }
 
+.feedback-icon {
+  font-size: 36rpx;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.feedback-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ==================== 区块标签和文本 ==================== */
 .block-label {
   font-size: 20rpx;
-  letter-spacing: 0.14em;
-  margin-bottom: 12rpx;
+  letter-spacing: 0.12em;
+  margin-bottom: 8rpx;
 }
 
 .receipt-feeling .block-label {
-  color: #ed7d5b;
+  color: var(--coral);
 }
 
 .receipt-sign .block-label {
-  color: #1f3a36;
+  color: var(--teal-deep);
 }
 
 .receipt-feedback .block-label {
-  color: #1f3a36;
+  color: var(--teal-deep);
 }
 
 .block-text {
-  font-size: 26rpx;
-  color: #2a2a2a;
+  font-size: 24rpx;
+  color: var(--ink);
   line-height: 1.6;
 }
 
@@ -170,61 +192,68 @@
 }
 
 .receipt-sign .block-text {
-  font-family: "Kaiti SC", "STKaiti", serif;
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
   font-size: 32rpx;
   line-height: 1.5;
 }
 
-.receipt-feedback .block-text .strong {
-  color: #1f3a36;
+.feedback-text {
+  font-size: 22rpx;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.feedback-text .strong {
+  color: var(--teal-deep);
   font-weight: 600;
 }
 
-.receipt-feedback .block-text .mute {
-  color: #999;
-  font-size: 24rpx;
+.feedback-text .mute {
+  color: var(--ink-mute);
 }
 
+/* ==================== 按钮组 ==================== */
 .receipt-actions {
   display: flex;
-  gap: 20rpx;
-  margin-top: 32rpx;
+  gap: 16rpx;
+  margin-top: 24rpx;
 }
 
 .btn-line {
   flex: 1;
-  padding: 24rpx 0;
+  padding: 18rpx 0;
   background: transparent;
-  border: 2rpx solid #e0ddd5;
+  border: 2rpx solid var(--line);
   border-radius: 99rpx;
-  font-size: 26rpx;
-  color: #555;
+  font-size: 24rpx;
+  color: var(--ink-soft);
   transition: all 0.2s;
 }
 
 .btn-line-active {
-  border-color: #2c8a7a;
-  color: #2c8a7a;
+  border-color: var(--teal);
+  color: var(--teal);
 }
 
 .btn-primary {
   flex: 1;
-  padding: 24rpx 0;
-  background: #1f3a36;
-  color: #faf6ec;
+  padding: 18rpx 0;
+  background: var(--ink);
+  color: var(--paper);
   border-radius: 99rpx;
-  font-size: 26rpx;
-  letter-spacing: 0.06em;
+  font-size: 24rpx;
+  letter-spacing: 0.04em;
   transition: all 0.2s;
 }
 
-.receipt-footer {
+/* ==================== 底部免责声明 ==================== */
+.receipt-foot {
   text-align: center;
   font-size: 20rpx;
-  color: #999;
-  margin-top: 28rpx;
-  letter-spacing: 0.02em;
-  line-height: 1.6;
+  color: var(--ink-mute);
+  margin-top: 24rpx;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
   display: flex;
   flex-direction: column;
 }

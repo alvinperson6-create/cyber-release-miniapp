@@ -1,9 +1,9 @@
 <!-- 收据弹窗 -->
 <view class="receipt-overlay {{show ? 'show' : ''}}" bindtap="onOverlayTap" data-role="overlay" wx:if="{{show}}">
   <view class="receipt-card" catchtap="noop">
-    <view class="receipt-header">
+    <view class="receipt-head">
       <view class="receipt-stamp">放生成功</view>
-      <view class="receipt-subtitle">CYBER RELEASE RECEIPT</view>
+      <view class="receipt-sub">CYBER RELEASE RECEIPT</view>
     </view>
 
     <view class="receipt-rows">
@@ -36,8 +36,11 @@
     </view>
 
     <view class="receipt-feedback">
-      <view class="block-label">— AI 回信安排 —</view>
-      <view class="block-text">📬 <text class="strong">{{receipt.feedbackLabel}}</text> 以图文形式推送，基于你此刻的感受生成 · <text class="mute">可能治愈、可能搞怪</text></view>
+      <view class="feedback-icon">📬</view>
+      <view class="feedback-body">
+        <view class="block-label">AI 回信安排</view>
+        <view class="feedback-text"><text class="strong">{{receipt.feedbackLabel}}</text> 以图文形式推送，基于你此刻的感受生成 · <text class="mute">可能治愈、可能搞怪</text></view>
+      </view>
     </view>
 
     <view class="receipt-actions">
@@ -47,7 +50,7 @@
       <button class="btn-primary" bindtap="onAgainTap">再来一只</button>
     </view>
 
-    <view class="receipt-footer">
+    <view class="receipt-foot">
       <text>* 本回执不构成任何好运承诺 / 也不鼓励线下放生</text>
       <text>仅作虚拟情绪仪式使用 · 编号随机</text>
     </view>

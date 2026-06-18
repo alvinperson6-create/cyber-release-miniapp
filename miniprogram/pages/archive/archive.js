@@ -8,7 +8,6 @@ const { formatTime, formatCountdown } = require('../../utils/util.js');
 Page({
   data: {
     statusBarHeight: 20,
-    navTotalHeight: 64,
     scrollHeight: 600,
     records: [],
     stats: { total: 0, pending: 0, replied: 0 }
@@ -23,11 +22,11 @@ Page({
     const statusBarHeight = sysInfo.statusBarHeight || 20;
     const rpxToPx = screenWidth / 750;
 
-    const navBarContentHeight = 88 * rpxToPx;
-    const navTotalHeight = statusBarHeight + navBarContentHeight;
-    const scrollHeight = windowHeight - navTotalHeight;
+    // 导航栏高度 (padding 16rpx + 标题 36rpx + padding 24rpx)
+    const headerHeight = (16 + 36 + 24) * rpxToPx;
+    const scrollHeight = windowHeight - statusBarHeight - headerHeight;
 
-    this.setData({ statusBarHeight, navTotalHeight, scrollHeight });
+    this.setData({ statusBarHeight, scrollHeight });
   },
 
   onShow() {
@@ -41,6 +40,35 @@ Page({
 
   onUnload() {
     this.stopCountdown();
+  },
+
+  // ==================== 导航栏按钮 ====================
+  onBackTap() {
+    // tab 页无返回，静默处理
+  },
+
+  onMoreTap() {
+    wx.showActionSheet({
+      itemList: ['分享给朋友', '清空所有记录'],
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          wx.showToast({ title: '请点击右上角转发', icon: 'none' });
+        } else if (res.tapIndex === 1) {
+          wx.showModal({
+            title: '确认清空',
+            content: '将删除所有放生记录和回信，此操作不可撤销。',
+            success: (modalRes) => {
+              if (modalRes.confirm) {
+                const { saveRecords } = require('../../utils/storage.js');
+                saveRecords([]);
+                this.loadData();
+                wx.showToast({ title: '已清空', icon: 'success' });
+              }
+            }
+          });
+        }
+      }
+    });
   },
 
   // ==================== 数据加载 ====================

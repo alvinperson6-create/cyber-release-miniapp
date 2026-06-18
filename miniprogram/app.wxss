@@ -1,27 +1,28 @@
 /* ==================== 全局样式 ==================== */
 page {
+  /* 配色与 HTML 原型完全一致 */
+  --ink: #1f3a36;
+  --ink-soft: #4a5b58;
+  --ink-mute: #7a8a86;
   --teal: #2c8a7a;
-  --teal-deep: #1f3a36;
+  --teal-deep: #1a5a4e;
   --teal-light: #d4e8e2;
   --coral: #ed7d5b;
-  --coral-soft: #fce8df;
+  --coral-soft: #f9d8c9;
   --lake: #3e7a96;
+  --lake-soft: #c7dbe2;
+  --cream: #f5efe2;
   --paper: #faf6ec;
-  --paper-warm: #f5ede0;
-  --ink: #2a2a2a;
-  --ink-soft: #555;
-  --ink-mute: #999;
-  --line: #e0ddd5;
-  --line-soft: #eeebe5;
-  --glass-bg: rgba(255, 255, 255, 0.78);
-  --glass-bg-strong: rgba(255, 255, 255, 0.88);
-  --glass-border: rgba(255, 255, 255, 0.55);
+  --paper-warm: #f4ecd9;
+  --line: #d6cdb8;
+  --line-soft: #e8e1d0;
 
   font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
   color: var(--ink);
-  background: transparent;
-  line-height: 1.6;
+  background: var(--paper);
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 view, text, button, textarea, input, image, scroll-view {

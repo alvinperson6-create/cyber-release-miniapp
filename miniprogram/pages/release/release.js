@@ -1,7 +1,7 @@
 // 赛博放生局 · 放生页
 const app = getApp();
 const {
-  CREATURES, WATERS, WATER_COORDS, CONTINENTS, HOT_WATERS,
+  CREATURES, WATERS, WATER_COORDS, HOT_WATERS,
   CREATURE_DATA_URI, SIGNS, PLACEHOLDERS, FB_LABELS,
   MAP_ORIGINAL
 } = require('../../utils/data.js');
@@ -16,9 +16,8 @@ Page({
   data: {
     // 系统 & 布局
     statusBarHeight: 20,
-    navTotalHeight: 64,
-    canvasHeight: 300,
-    panelHeight: 400,
+    riverHeight: 300,
+    riverWidth: 375,
     mapW: 600,
     mapH: 450,
     mapOffsetX: 0,
@@ -26,7 +25,6 @@ Page({
 
     // 地图数据
     waterMarkers: [],
-    continents: [],
     hotWaters: [],
 
     // 表单状态
@@ -70,30 +68,38 @@ Page({
     const statusBarHeight = sysInfo.statusBarHeight || 20;
     const rpxToPx = screenWidth / 750;
 
-    // 导航栏总高度 (状态栏 + 88rpx 导航内容)
-    const navBarContentHeight = 88 * rpxToPx;
-    const navTotalHeight = statusBarHeight + navBarContentHeight;
+    // 导航栏高度 (padding 16rpx + 标题 36rpx + padding 24rpx)
+    const headerHeight = (16 + 36 + 24) * rpxToPx;
 
-    // 可用高度 (窗口高度 - 导航栏)
-    const availableHeight = windowHeight - navTotalHeight;
+    // 河流区域宽度 (屏幕宽度 - 28rpx*2 左右 margin)
+    const riverWidth = screenWidth - 56 * rpxToPx;
 
-    // 水域画布占 42%, 控制面板占剩余
-    const canvasHeight = Math.floor(availableHeight * 0.42);
-    const panelHeight = availableHeight - canvasHeight;
+    // 控制面板预估高度 (padding + 各区块内容)
+    // padding: 28rpx + 36rpx = 64rpx
+    // 感受 label 40rpx + 输入行 76rpx + hint 40rpx = 156rpx
+    // 生物 label 40rpx + chip 60rpx = 100rpx
+    // 回信 label 40rpx + fb 50rpx = 90rpx
+    // 按钮 80rpx + margin 16rpx = 96rpx
+    // 各 margin-bottom 约 48rpx
+    const panelHeight = (64 + 156 + 100 + 90 + 96 + 48) * rpxToPx;
 
-    // 地图内容尺寸 (1.8 倍屏幕宽度, 保持 4:3 比例)
-    const mapW = screenWidth * 1.8;
+    // 河流区域高度 = 可用高度 - 面板高度
+    const availableHeight = windowHeight - statusBarHeight - headerHeight;
+    const riverHeight = Math.max(availableHeight - panelHeight, 200);
+
+    // 地图内容尺寸 (1.8 倍河流宽度, 保持 4:3 比例)
+    const mapW = riverWidth * 1.8;
     const mapH = mapW * (MAP_H / MAP_W);
 
     // 初始偏移: 居中
-    const mapOffsetX = (screenWidth - mapW) / 2;
-    const mapOffsetY = (canvasHeight - mapH) / 2;
+    const mapOffsetX = (riverWidth - mapW) / 2;
+    const mapOffsetY = (riverHeight - mapH) / 2;
 
     // 地图拖动边界
     this.mapBounds = {
-      minX: screenWidth - mapW,
+      minX: riverWidth - mapW,
       maxX: 0,
-      minY: canvasHeight - mapH,
+      minY: riverHeight - mapH,
       maxY: 0
     };
 
@@ -109,14 +115,6 @@ Page({
         top: (coord.y / MAP_H * 100).toFixed(2)
       };
     });
-
-    // 预计算大陆位置 (百分比定位)
-    const continents = CONTINENTS.map(c => ({
-      left: (c.x / MAP_W * 100).toFixed(2),
-      top: (c.y / MAP_H * 100).toFixed(2),
-      width: (c.w / MAP_W * 100).toFixed(2),
-      height: (c.h / MAP_H * 100).toFixed(2)
-    }));
 
     // 热门水域
     const hotWaters = HOT_WATERS.map(key => ({
@@ -148,15 +146,13 @@ Page({
 
     this.setData({
       statusBarHeight,
-      navTotalHeight,
-      canvasHeight,
-      panelHeight,
+      riverHeight,
+      riverWidth,
       mapW,
       mapH,
       mapOffsetX,
       mapOffsetY,
       waterMarkers,
-      continents,
       hotWaters,
       creatureList,
       feedbackOptions,
@@ -178,12 +174,34 @@ Page({
     this.stopPlaceholderRotation();
   },
 
+  // ==================== 导航栏按钮 ====================
+  onBackTap() {
+    // tab 页无返回，静默处理
+  },
+
+  onMoreTap() {
+    wx.showActionSheet({
+      itemList: ['分享给朋友', '关于赛博放生局'],
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          wx.showToast({ title: '请点击右上角转发', icon: 'none' });
+        } else if (res.tapIndex === 1) {
+          wx.showModal({
+            title: '赛博放生局',
+            content: '一个把压力、愿望和好运梗放进电子河流的微信小程序。不鼓励现实放生，只放生情绪本身。',
+            showCancel: false
+          });
+        }
+      }
+    });
+  },
+
   // ==================== Placeholder 轮播 ====================
   startPlaceholderRotation() {
     this.stopPlaceholderRotation();
     this.placeholderTimer = setInterval(() => {
       if (this.data.isReleased) return;
-      // textarea 未聚焦时才轮播 (通过 data 标记)
+      // textarea 未聚焦时才轮播
       if (!this._textareaFocused) {
         this.placeholderIdx = (this.placeholderIdx + 1) % PLACEHOLDERS.length;
         this.setData({ placeholder: PLACEHOLDERS[this.placeholderIdx] });
@@ -272,10 +290,8 @@ Page({
     const targetX = (coord.x / MAP_W) * this.data.mapW;
     const targetY = (coord.y / MAP_H) * this.data.mapH;
     // 居中所需偏移
-    const sysInfo = wx.getSystemInfoSync();
-    const screenWidth = sysInfo.screenWidth || 375;
-    let newX = screenWidth / 2 - targetX;
-    let newY = this.data.canvasHeight / 2 - targetY;
+    let newX = this.data.riverWidth / 2 - targetX;
+    let newY = this.data.riverHeight / 2 - targetY;
     // 边界约束
     const b = this.mapBounds;
     newX = Math.max(b.minX, Math.min(b.maxX, newX));
@@ -414,10 +430,8 @@ Page({
         receiptData: null
       });
       // 重置地图到居中
-      const sysInfo = wx.getSystemInfoSync();
-      const screenWidth = sysInfo.screenWidth || 375;
-      const mapOffsetX = (screenWidth - this.data.mapW) / 2;
-      const mapOffsetY = (this.data.canvasHeight - this.data.mapH) / 2;
+      const mapOffsetX = (this.data.riverWidth - this.data.mapW) / 2;
+      const mapOffsetY = (this.data.riverHeight - this.data.mapH) / 2;
       this.setData({ mapOffsetX, mapOffsetY });
       this.updateButtonState();
     }, 300);
