@@ -1,0 +1,176 @@
+<view class="page">
+
+  <!-- 河流/水域视觉区 -->
+  <view class="river-area">
+    <!-- 热门水域气泡 -->
+    <view class="hot-bubbles">
+      <view class="hot-bubble" wx:for="{{hotWaters}}" wx:key="id" data-id="{{item.id}}" bindtap="onHotWaterTap">
+        🔥 {{item.name}}
+      </view>
+    </view>
+
+    <!-- 生物展示 -->
+    <view class="creature-display {{creatureReleased ? 'released' : ''}}">
+      <text wx:if="{{creature}}">{{creatureEmoji}}</text>
+      <text wx:else class="creature-placeholder">选择一只电子生物</text>
+    </view>
+
+    <!-- 水域状态 -->
+    <view class="river-stat">
+      <text>📍 {{selectedWaterName}}</text>
+      <text>今日已放生 {{todayCount}} 只</text>
+    </view>
+  </view>
+
+  <!-- 面板区 -->
+  <view class="panel">
+
+    <!-- 此刻感受 -->
+    <view class="section">
+      <view class="panel-label">此刻感受</view>
+      <view class="feeling-row">
+        <view class="mic-btn" bindtap="onMicTap">🎤</view>
+        <textarea
+          class="feeling-textarea"
+          value="{{feeling}}"
+          placeholder="{{placeholder}}"
+          maxlength="200"
+          auto-height
+          bindinput="onFeelingInput"
+        />
+      </view>
+      <view class="feeling-hint">把此刻的烦恼交给电子水域，它会替你收着。</view>
+    </view>
+
+    <!-- 想放生一只 -->
+    <view class="section">
+      <view class="panel-label">想放生一只</view>
+      <view class="chip-row">
+        <view
+          class="chip teal {{creature === item.key ? 'active' : ''}}"
+          wx:for="{{creatures}}"
+          wx:key="key"
+          data-key="{{item.key}}"
+          bindtap="onCreatureTap"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+    <!-- 选择水域 -->
+    <view class="section">
+      <view class="panel-label">选择水域</view>
+      <scroll-view scroll-x="false" scroll-y="true" class="water-scroll">
+        <view class="water-grid">
+          <view
+            class="water-item {{water === item.id ? 'active' : ''}}"
+            wx:for="{{waterList}}"
+            wx:key="id"
+            data-id="{{item.id}}"
+            bindtap="onWaterTap"
+          >
+            <view class="water-emoji">{{item.emoji}}</view>
+            <view class="water-name">{{item.name}}</view>
+            <view class="water-type">{{item.type}}</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 什么时候回信 -->
+    <view class="section">
+      <view class="panel-label">什么时候回信？</view>
+      <view class="fb-row">
+        <view
+          class="fb-opt {{feedbackTime === item.value ? 'active' : ''}}"
+          wx:for="{{fbOptions}}"
+          wx:key="value"
+          data-value="{{item.value}}"
+          bindtap="onFbTap"
+        >{{item.label}}</view>
+      </view>
+      <picker
+        wx:if="{{showCustomPicker}}"
+        mode="datetime"
+        value="{{feedbackDate}}"
+        bindchange="onDateChange"
+      >
+        <view class="custom-picker-trigger">
+          {{feedbackDate ? feedbackDate : '点此选择时间'}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- 放生按钮 -->
+    <button
+      class="btn-primary cta-btn"
+      disabled="{{!canRelease}}"
+      bindtap="onReleaseTap"
+    >放生 🌊</button>
+
+  </view>
+
+  <!-- 放生回执弹窗 -->
+  <view class="receipt-mask" wx:if="{{showReceipt}}" catchtap="onAgainTap">
+    <view class="receipt" catchtap="">
+
+      <!-- 印章头部 -->
+      <view class="receipt-head">
+        <view class="stamp">放生成功</view>
+        <view class="receipt-sub">愿你放下的，会以另一种形式回来</view>
+      </view>
+
+      <!-- 信息行 -->
+      <view class="receipt-row">
+        <text class="k">护生编号</text>
+        <text class="v">{{receipt.num}}</text>
+      </view>
+      <view class="receipt-row">
+        <text class="k">放生地点</text>
+        <text class="v">{{receipt.location}}</text>
+      </view>
+      <view class="receipt-row">
+        <text class="k">电子生物</text>
+        <text class="v">{{receipt.creature}}</text>
+      </view>
+      <view class="receipt-row">
+        <text class="k">放生时间</text>
+        <text class="v">{{receipt.time}}</text>
+      </view>
+
+      <!-- 此刻感受 -->
+      <view class="receipt-feeling">
+        <view class="receipt-section-title">此刻感受</view>
+        <view class="receipt-section-text">{{receipt.feeling}}</view>
+      </view>
+
+      <!-- 本日好运签 -->
+      <view class="receipt-sign">
+        <view class="receipt-section-title">本日好运签</view>
+        <view class="receipt-section-text">{{receipt.sign}}</view>
+      </view>
+
+      <!-- AI 回信安排 -->
+      <view class="receipt-feedback">
+        <text class="feedback-emoji">📬</text>
+        <view class="feedback-body">
+          <view class="receipt-section-title">AI 回信安排</view>
+          <view class="receipt-section-text">{{receipt.fbLabel}}，电子生物会托 AI 给你回一封信。</view>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="receipt-actions">
+        <button class="btn-line" bindtap="onShareTap">分享到群</button>
+        <button class="btn-primary" bindtap="onAgainTap">再来一只</button>
+      </view>
+
+      <!-- 免责声明 -->
+      <view class="receipt-foot">
+        本服务为情绪陪伴 demo，所有"电子生物"均为虚拟存在。<br/>
+        到点回信由本地 AI 生成，不构成任何专业建议。
+      </view>
+
+    </view>
+  </view>
+
+</view>

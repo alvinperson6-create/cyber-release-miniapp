@@ -1,0 +1,89 @@
+<!-- pages/archive/archive.wxml -->
+<view class="archive-page">
+
+  <!-- 用户信息栏 -->
+  <view class="user-bar">
+    <view class="avatar">微</view>
+    <view class="user-info">
+      <view class="user-name">微信用户</view>
+      <view class="user-id">ID ····{{userId}}</view>
+    </view>
+    <view class="login-tag">静默登录</view>
+  </view>
+
+  <!-- 统计栏 -->
+  <view class="stats-row">
+    <view class="stat-item">
+      <view class="n">{{stats.total}}</view>
+      <view class="l">累计放生</view>
+    </view>
+    <view class="stat-item">
+      <view class="n coral">{{stats.pending}}</view>
+      <view class="l">待回信</view>
+    </view>
+    <view class="stat-item">
+      <view class="n">{{stats.replied}}</view>
+      <view class="l">已回信</view>
+    </view>
+  </view>
+
+  <!-- 记录列表 -->
+  <scroll-view scroll-y class="record-list" style="flex: 1;">
+
+    <block wx:if="{{records.length > 0}}">
+      <view
+        class="record-item"
+        wx:for="{{records}}"
+        wx:key="id"
+        data-idx="{{index}}"
+        bindtap="onItemTap"
+      >
+        <!-- 头部：编号 + 状态 -->
+        <view class="record-head">
+          <text class="record-num">{{item.id}}</text>
+          <text class="status-badge {{item.hasReply ? 'done' : 'pending'}}">
+            {{item.hasReply ? '已回信' : '待回信'}}
+          </text>
+        </view>
+
+        <!-- 元信息 -->
+        <view class="record-meta">
+          <text>{{item.creatureEmoji}} {{item.creatureName}}</text>
+          <text>·</text>
+          <text>{{item.waterName}}</text>
+          <text>·</text>
+          <text>{{item.timeStr}}</text>
+        </view>
+
+        <!-- 感受预览 -->
+        <view class="feeling-preview">"{{item.feeling}}"</view>
+
+        <!-- 回信内容（已回信且展开时显示） -->
+        <block wx:if="{{item.hasReply && item.expanded}}">
+          <view class="reply-block">
+            <view class="reply-label">📬 AI 回信 · {{item.feedbackLabel}}</view>
+            <view class="reply-img" style="background: {{item.reply.bg}};">
+              <text>{{item.reply.emoji}}</text>
+            </view>
+            <view class="reply-text">{{item.reply.text}}</view>
+          </view>
+        </block>
+
+        <!-- 倒计时（待回信时显示） -->
+        <block wx:if="{{!item.hasReply}}">
+          <view class="countdown-block">
+            <text>⏳ 回信倒计时</text>
+            <text class="countdown-time">{{item.countdown}}</text>
+          </view>
+        </block>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      还没有放生记录，去放生一只吧 🐟
+    </view>
+
+  </scroll-view>
+
+</view>
