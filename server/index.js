@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { initDb } = require('./db');
 const { generateReply, generateDestiny, isAIEnabled } = require('./ai');
 const { insertDestiny } = require('./db');
@@ -9,6 +10,15 @@ const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// 托管静态网页（项目根目录的 web-app.html）
+const WEB_DIR = path.join(__dirname, '..');
+app.use(express.static(WEB_DIR));
+
+// 首页默认跳转到 web-app.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(WEB_DIR, 'web-app.html'));
+});
 
 // Routes
 app.use('/api/release', require('./routes/release'));

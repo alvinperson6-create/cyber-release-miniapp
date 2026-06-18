@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node --env-file=.env index.js",
-    "dev": "node --env-file=.env index.js"
+    "dev": "node --env-file=.env index.js",
+    "web": "node --env-file=.env index.js"
   },
   "dependencies": {
     "express": "^4.18.2",
