@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>赛博放生局</title>
+<style>
+/* ==================== Reset & Base ==================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
+  background:
+    radial-gradient(circle at 25% 15%, rgba(212, 232, 226, 0.55) 0%, transparent 45%),
+    radial-gradient(circle at 75% 85%, rgba(252, 232, 223, 0.45) 0%, transparent 45%),
+    linear-gradient(135deg, #efe9dc 0%, #e4dece 100%);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  min-height: 100vh;
+}
+button { font-family: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+textarea, input { font-family: inherit; }
+
+/* ==================== Tokens ==================== */
+:root {
+  --teal: #2c8a7a;
+  --teal-deep: #1f3a36;
+  --teal-light: #d4e8e2;
+  --coral: #ed7d5b;
+  --coral-soft: #fce8df;
+  --lake: #3e7a96;
+  --paper: #faf6ec;
+  --paper-warm: #f5ede0;
+  --ink: #2a2a2a;
+  --ink-soft: #555;
+  --ink-mute: #999;
+  --line: #e0ddd5;
+  --line-soft: #eeebe5;
+  --shadow-phone: 0 24px 60px rgba(31, 58, 54, 0.22), 0 6px 16px rgba(31, 58, 54, 0.12);
+  --shadow-card: 0 2px 8px rgba(31, 58, 54, 0.06);
+}
+
+.serif { font-family: "Kaiti SC", "STKaiti", "Songti SC", "STSong", serif; }
+.mono { font-family: "SF Mono", "Monaco", "Menlo", "Consolas", monospace; letter-spacing: 0.02em; }
+
+/* ==================== Phone Frame ==================== */
+.phone-frame {
+  width: 100%;
+  max-width: 420px;
+  height: 880px;
+  max-height: calc(100vh - 48px);
+  position: relative;
+}
+.phone-bezel {
+  width: 100%;
+  height: 100%;
+  background: var(--teal-deep);
+  padding: 12px;
+  border-radius: 44px;
+  box-shadow: var(--shadow-phone);
+}
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: var(--paper);
+  border-radius: 32px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== Status Bar ==================== */
+.status-bar {
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px 0 28px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  position: relative;
+  z-index: 5;
+}
+.status-bar .status-time { font-variant-numeric: tabular-nums; }
+.status-bar .status-right { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.status-battery {
+  width: 22px; height: 11px;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+}
+.status-battery::after {
+  content: ''; position: absolute;
+  right: -3px; top: 3px;
+  width: 2px; height: 4px;
+  background: var(--ink);
+  border-radius: 0 1px 1px 0;
+}
+.status-battery i {
+  display: block; width: 80%; height: 100%;
+  background: var(--ink); border-radius: 1px;
+}
+
+/* ==================== Content Area ==================== */
+.content-area {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== Tab Bar ==================== */
+.tab-bar {
+  height: 52px;
+  flex-shrink: 0;
+  display: flex;
+  border-top: 1px solid var(--line-soft);
+  background: var(--paper);
+  position: relative;
+  z-index: 5;
+}
+.tab-bar .tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--ink-mute);
+  position: relative;
+  transition: color 0.2s;
+}
+.tab-bar .tab .tab-dot {
+  position: absolute;
+  top: 6px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--teal);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.tab-bar .tab .tab-icon { font-size: 19px; line-height: 1; }
+.tab-bar .tab .tab-label { font-size: 10px; letter-spacing: 0.06em; }
+.tab-bar .tab.active { color: var(--teal); }
+.tab-bar .tab.active .tab-dot { opacity: 1; }
+
+/* ==================== Release Page ==================== */
+.release-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* River Area */
+.river-area {
+  flex-shrink: 0;
+  height: 35%;
+  min-height: 200px;
+  position: relative;
+  background: linear-gradient(180deg, var(--teal-light) 0%, #a9d2c5 70%, var(--teal) 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.river-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(255,255,255,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hot-bubbles {
+  position: absolute;
+  top: 10px; left: 10px; right: 10px;
+  display: flex;
+  gap: 6px;
+  z-index: 3;
+  pointer-events: none;
+}
+.hot-bubble {
+  pointer-events: auto;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--coral);
+  border-radius: 99px;
+  font-size: 10px;
+  color: var(--coral);
+  white-space: nowrap;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+.hot-bubble:active { transform: scale(0.95); }
+.hot-bubble.active { background: var(--coral); color: #fff; }
+
+.creature-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.creature-emoji {
+  font-size: 80px;
+  line-height: 1;
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.8s cubic-bezier(0.5, 0, 0.3, 1), opacity 0.8s ease-out;
+  filter: drop-shadow(0 6px 12px rgba(31, 58, 54, 0.2));
+}
+.creature-emoji.releasing {
+  animation: none;
+  transform: translateY(140px) scale(0.15);
+  opacity: 0;
+}
+.creature-placeholder {
+  font-size: 14px;
+  color: var(--teal-deep);
+  opacity: 0.6;
+  letter-spacing: 0.08em;
+  background: rgba(255,255,255,0.6);
+  padding: 8px 16px;
+  border-radius: 99px;
+  backdrop-filter: blur(4px);
+}
+
+.river-bottom-bar {
+  position: absolute;
+  bottom: 8px; left: 10px; right: 10px;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(6px);
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 4;
+}
+.river-bottom-bar .river-count-num {
+  color: var(--teal);
+  font-weight: 600;
+  font-family: "SF Mono", "Monaco", monospace;
+}
+
+/* Scrollable Panel */
+.release-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 18px 20px;
+  -webkit-overflow-scrolling: touch;
+}
+.release-panel::-webkit-scrollbar { width: 3px; }
+.release-panel::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+.section-block { margin-bottom: 16px; }
+.section-label {
+  font-size: 12px;
+  color: var(--ink);
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+.section-label .label-hint {
+  font-size: 10px;
+  color: var(--coral);
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+/* Feeling input */
+.feeling-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-bottom: 6px;
+}
+.mic-btn {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--teal-light);
+  border: 1px solid var(--teal);
+  color: var(--teal-deep);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.mic-btn:active { transform: scale(0.92); }
+.mic-btn.recording {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: #fff;
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+@keyframes micPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(237, 125, 91, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(237, 125, 91, 0); }
+}
+.feeling-textarea {
+  flex: 1;
+  min-height: 48px;
+  max-height: 100px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fffdf7;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.feeling-textarea:focus { border-color: var(--teal); }
+.feeling-textarea::placeholder { color: var(--ink-mute); opacity: 0.75; }
+.feeling-hint {
+  font-size: 10px;
+  color: var(--ink-mute);
+  line-height: 1.5;
+}
+.feeling-hint .dot { color: var(--coral); margin-right: 2px; }
+
+/* Creature chips */
+.creature-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chip {
+  padding: 8px 14px;
+  background: #fffdf7;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.chip:active { transform: scale(0.96); }
+.chip.coral.active {
+  background: var(--coral);
+  color: #fff;
+  border-color: var(--coral);
+  box-shadow: 0 2px 8px rgba(237, 125, 91, 0.3);
+}
+
+/* Water grid */
+.water-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+.water-cell {
+  padding: 10px 6px;
+  background: #fffdf7;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+.water-cell:active { transform: scale(0.95); }
+.water-cell .water-emoji { font-size: 20px; line-height: 1; }
+.water-cell .water-name { font-size: 10px; color: var(--ink-soft); text-align: center; }
+.water-cell.active {
+  background: var(--teal-light);
+  border-color: var(--teal);
+  box-shadow: 0 0 0 1px var(--teal);
+}
+.water-cell.active .water-name { color: var(--teal-deep); font-weight: 600; }
+
+/* Feedback options */
+.feedback-options {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.fb-opt {
+  padding: 6px 12px;
+  background: #fffdf7;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+}
+.fb-opt:active { transform: scale(0.95); }
+.fb-opt.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.fb-date {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  background: #fffdf7;
+  outline: none;
+}
+.fb-date:focus { border-color: var(--teal); }
+
+/* Release button */
+.release-btn {
+  width: 100%;
+  margin-top: 4px;
+  padding: 15px;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 99px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.release-btn:active:not(:disabled) { transform: scale(0.98); }
+.release-btn:disabled {
+  background: #d8d0bf;
+  color: var(--paper);
+  cursor: not-allowed;
+}
+.release-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shine 3.5s infinite;
+}
+@keyframes shine {
+  0% { left: -100%; }
+  60%, 100% { left: 100%; }
+}
+
+/* ==================== Archive Page ==================== */
+.archive-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.user-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--teal-light);
+  color: var(--teal-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+.user-id { font-size: 10px; color: var(--ink-mute); font-family: "SF Mono", "Monaco", monospace; letter-spacing: 0.04em; margin-top: 1px; }
+.login-tag {
+  font-size: 9px;
+  color: var(--teal);
+  background: var(--teal-light);
+  padding: 3px 8px;
+  border-radius: 99px;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.stats-row {
+  flex-shrink: 0;
+  display: flex;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.stat-item {
+  flex: 1;
+  text-align: center;
+}
+.stat-item + .stat-item { border-left: 1px solid var(--line-soft); }
+.stat-num {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 400;
+}
+.stat-num.teal { color: var(--teal); }
+.stat-num.coral { color: var(--coral); }
+.stat-label {
+  font-size: 10px;
+  color: var(--ink-mute);
+  margin-top: 5px;
+  letter-spacing: 0.04em;
+}
+
+.record-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+.record-list::-webkit-scrollbar { width: 3px; }
+.record-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-mute);
+  font-size: 13px;
+  line-height: 2;
+}
+
+.record-card {
+  background: #fffdf7;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  padding: 12px;
+  transition: border-color 0.2s;
+}
+.record-card.has-reply { cursor: pointer; }
+.record-card.has-reply:active { border-color: var(--teal); }
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.record-id {
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.02em;
+}
+.record-status {
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.record-status.replied { background: var(--teal-light); color: var(--teal-deep); }
+.record-status.pending { background: var(--coral-soft); color: var(--coral); }
+
+.record-meta {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.record-feeling {
+  font-size: 11px;
+  color: var(--ink);
+  font-style: italic;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.reply-block {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
+  margin-top: 0;
+}
+.reply-block.expanded {
+  max-height: 500px;
+  opacity: 1;
+  margin-top: 10px;
+}
+.reply-inner {
+  padding: 10px;
+  background: var(--paper-warm);
+  border-radius: 8px;
+  border-left: 3px solid var(--teal);
+}
+.reply-label {
+  font-size: 9px;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.reply-image {
+  width: 100%;
+  height: 70px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.reply-text {
+  font-size: 11px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.countdown-block {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--coral-soft);
+  border-radius: 6px;
+  font-size: 10px;
+  color: var(--coral);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.countdown-time {
+  font-family: "SF Mono", "Monaco", monospace;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==================== Receipt Modal ==================== */
+.receipt-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(31, 58, 54, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 100;
+  padding: 16px;
+}
+.receipt-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.receipt-card {
+  width: 100%;
+  max-height: 92%;
+  overflow-y: auto;
+  background: var(--paper);
+  border-radius: 16px;
+  padding: 24px 20px 18px;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.2);
+  position: relative;
+}
+.receipt-overlay.show .receipt-card { transform: translateY(0); }
+.receipt-card::-webkit-scrollbar { width: 3px; }
+.receipt-card::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+/* Perforated edges */
+.receipt-card::before, .receipt-card::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 8px;
+  background-image: radial-gradient(circle, var(--paper) 4px, transparent 4px);
+  background-size: 14px 8px;
+  background-repeat: repeat-x;
+  z-index: 1;
+}
+.receipt-card::before { top: -4px; }
+.receipt-card::after { bottom: -4px; transform: rotate(180deg); }
+
+.receipt-header {
+  text-align: center;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line);
+  margin-bottom: 14px;
+}
+.receipt-stamp {
+  display: inline-block;
+  font-family: "Kaiti SC", "STKaiti", serif;
+  font-size: 22px;
+  color: var(--coral);
+  letter-spacing: 0.4em;
+  padding: 5px 14px 5px 18px;
+  border: 2px solid var(--coral);
+  border-radius: 4px;
+  transform: rotate(-3deg);
+  margin-bottom: 8px;
+}
+.receipt-subtitle {
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.14em;
+}
+
+.receipt-rows { margin-bottom: 4px; }
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 6px 0;
+}
+.receipt-row .row-key { color: var(--ink-mute); }
+.receipt-row .row-val { color: var(--ink); }
+.receipt-row .row-val.mono { font-family: "SF Mono", "Monaco", monospace; font-size: 11px; }
+.receipt-row .row-val.serif { font-family: "Kaiti SC", "STKaiti", serif; font-size: 13px; }
+
+.receipt-feeling {
+  margin: 12px 0;
+  padding: 10px 12px;
+  background: var(--paper-warm);
+  border-radius: 6px;
+  border-left: 3px solid var(--coral);
+}
+.receipt-sign {
+  margin: 12px 0;
+  padding: 12px;
+  background: var(--teal-light);
+  border-radius: 6px;
+  text-align: center;
+}
+.receipt-feedback {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: var(--teal-light);
+  border-radius: 6px;
+}
+.block-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  margin-bottom: 5px;
+}
+.receipt-feeling .block-label { color: var(--coral); }
+.receipt-sign .block-label { color: var(--teal-deep); }
+.receipt-feedback .block-label { color: var(--teal-deep); }
+.block-text {
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.receipt-feeling .block-text { font-style: italic; }
+.receipt-sign .block-text {
+  font-family: "Kaiti SC", "STKaiti", serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.receipt-feedback .block-text strong { color: var(--teal-deep); }
+.receipt-feedback .block-text .mute { color: var(--ink-mute); font-size: 11px; }
+
+.receipt-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.btn-line {
+  flex: 1;
+  padding: 10px 0;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+}
+.btn-line:active { transform: scale(0.97); }
+.btn-primary {
+  flex: 1;
+  padding: 10px 0;
+  background: var(--teal-deep);
+  color: var(--paper);
+  border-radius: 99px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+}
+.btn-primary:active { transform: scale(0.97); }
+
+.receipt-footer {
+  text-align: center;
+  font-size: 9px;
+  color: var(--ink-mute);
+  margin-top: 12px;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
+/* ==================== Animations ==================== */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ==================== Responsive (Mobile) ==================== */
+@media (max-width: 480px) {
+  body { padding: 0; }
+  .phone-frame {
+    max-width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  .phone-bezel {
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .phone-screen { border-radius: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-bezel">
+    <div class="phone-screen" id="phoneScreen">
+
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-right">
+          <span>📶</span>
+          <span class="status-battery"><i></i></span>
+        </div>
+      </div>
+
+      <div class="content-area" id="contentArea"></div>
+
+      <div class="tab-bar" id="tabBar">
+        <button class="tab active" data-page="release">
+          <span class="tab-dot"></span>
+          <span class="tab-icon">🏠</span>
+          <span class="tab-label">放生</span>
+        </button>
+        <button class="tab" data-page="archive">
+          <span class="tab-dot"></span>
+          <span class="tab-icon">📋</span>
+          <span class="tab-label">档案</span>
+        </button>
+      </div>
+
+      <div class="receipt-overlay" id="receiptOverlay">
+        <div class="receipt-card" id="receiptCard"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ==================== Data ====================
+  const STORAGE_KEY = 'cyber_release_records';
+
+  const CREATURES = {
+    koi: { name: '电子锦鲤', emoji: '🐟' },
+    turtle: { name: '电子乌龟', emoji: '🐢' },
+    cloud: { name: '电子云朵', emoji: '☁️' }
+  };
+
+  const WATERS = {
+    pacific:   { name: '太平洋',         emoji: '🌊' },
+    atlantic:  { name: '大西洋',         emoji: '🌊' },
+    indian:    { name: '印度洋',         emoji: '🌊' },
+    arctic:    { name: '北冰洋',         emoji: '🧊' },
+    baikal:    { name: '贝加尔湖',       emoji: '🏞️' },
+    ness:      { name: '尼斯湖',         emoji: '🏞️' },
+    xihu:      { name: '西湖',           emoji: '🏞️' },
+    xiang:     { name: '湘江',           emoji: '💧' },
+    mariana:   { name: '马里亚纳海沟',   emoji: '深渊' },
+    deadsea:   { name: '死海',           emoji: '🧂' },
+    aegean:    { name: '爱琴海',         emoji: '🌊' },
+    galapagos: { name: '加拉帕戈斯',     emoji: '🐢' }
+  };
+
+  const HOT_WATERS = ['pacific', 'baikal', 'mariana'];
+
+  const SIGNS = {
+    koi: [
+      '今天的你已经比昨天更松弛一丢丢了。',
+      '锦鲤说：好运不是等来的，是你走过去接的。',
+      '你放下的东西，会以另一种形式回来。',
+      '今天适合做一件没用但开心的事。',
+      '紧张说明你在乎，在乎说明你认真。'
+    ],
+    turtle: [
+      '乌龟说：慢一点也没关系，方向对就行。',
+      '你不需要赢过谁，你只需要不放弃。',
+      '今天的疲惫是明天的铠甲。',
+      '允许自己偶尔停下来，这不叫偷懒。',
+      '乌龟的壳不是逃避，是给自己一个安全的空间。'
+    ],
+    cloud: [
+      '云朵说：飘着飘着，风就来了。',
+      '你此刻的烦恼，90% 不会发生。',
+      '允许自己不开心一会儿，但别忘了开心。',
+      '天上没有过不去的云，地上没有过不去的坎。',
+      '你比你以为的要轻，放下一些就飘起来了。'
+    ]
+  };
+
+  const REPLY_POOL = [
+    { bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)', emoji: '🌿', text: '你放生的那只小家伙在电子水域里安顿下来了。它托我转告：你此刻觉得过不去的坎，三个月后回头看连坎都不算。深呼吸，没事的。' },
+    { bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)', emoji: '🌙', text: '今晚的水域很安静。你的感受已经被收到了——不是被解决了，是被听到了。有些事不需要解决，被听到就够了。' },
+    { bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)', emoji: '🔥', text: '好消息：你焦虑的事有 87% 不会发生。坏消息：剩下 13% 你也管不了。所以这只电子生物决定替你扛着，你先去吃顿好的。' },
+    { bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)', emoji: '✨', text: '它游了一圈回来说：你比自己以为的要结实。那些让你觉得要碎掉的时刻，其实你一次都没真碎过。这次也不会。' },
+    { bg: 'linear-gradient(135deg, #fff3cd, #ffd970)', emoji: '☀️', text: '报告！你的电子生物已在虚拟水域完成打卡。它观察到：你最近对自己太严格了。建议本周至少做两件"没用但开心"的事。' },
+    { bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)', emoji: '🌊', text: '水域温度 22°C，生物状态良好。它给你带了一句话："紧张说明你在乎，在乎说明你认真，认真的人运气不会太差。"' }
+  ];
+
+  const PLACEHOLDERS = [
+    '明天要答辩，紧张到胃疼...',
+    '又加班到十一点，脑子嗡嗡的...',
+    '就是莫名的烦躁，说不上来...',
+    '项目明天上线，手心一直在出汗...',
+    '凌晨三点了还是睡不着，想太多...',
+    '今天被老板否了第三版方案...'
+  ];
+
+  const FB_LABELS = {
+    '24h': '24 小时后',
+    '3d': '3 天后',
+    '7d': '7 天后',
+    'custom': ''
+  };
+
+  // ==================== State ====================
+  let state = {
+    currentPage: 'release',
+    feeling: '',
+    creature: null,
+    water: null,
+    feedbackTime: '24h',
+    feedbackDate: '',
+    isReleased: false,
+    showReceipt: false,
+    receipt: null,
+    todayCount: 1247
+  };
+
+  // ==================== Helpers ====================
+  const $ = (id) => document.getElementById(id);
+  const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const pad = (n, len) => String(n).padStart(len, '0');
+
+  function formatTime(ts) {
+    const d = new Date(ts);
+    return `${pad(d.getMonth()+1, 2)}.${pad(d.getDate(), 2)} ${pad(d.getHours(), 2)}:${pad(d.getMinutes(), 2)}`;
+  }
+
+  function formatFullTime(ts) {
+    const d = new Date(ts);
+    return `${d.getFullYear()}.${pad(d.getMonth()+1, 2)}.${pad(d.getDate(), 2)} ${pad(d.getHours(), 2)}:${pad(d.getMinutes(), 2)}`;
+  }
+
+  function formatCountdown(ms) {
+    if (ms <= 0) return '00:00:00';
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    return `${pad(h,2)}:${pad(m,2)}:${pad(s,2)}`;
+  }
+
+  function generateId() {
+    const d = new Date();
+    const dateStr = `${d.getFullYear()}${pad(d.getMonth()+1, 2)}${pad(d.getDate(), 2)}`;
+    const rand4 = pad(Math.floor(Math.random() * 9999), 4);
+    return `CRSB-${dateStr}-${rand4}`;
+  }
+
+  function getFeedbackLabel() {
+    if (state.feedbackTime === 'custom' && state.feedbackDate) {
+      return state.feedbackDate.replace(/-/g, '.').replace('T', ' ');
+    }
+    return FB_LABELS[state.feedbackTime] || '24 小时后';
+  }
+
+  function calcReplyAt() {
+    const now = Date.now();
+    if (state.feedbackTime === '3d') return now + 3 * 24 * 3600 * 1000;
+    if (state.feedbackTime === '7d') return now + 7 * 24 * 3600 * 1000;
+    if (state.feedbackTime === 'custom' && state.feedbackDate) {
+      const t = new Date(state.feedbackDate).getTime();
+      if (!isNaN(t)) return t;
+    }
+    return now + 24 * 3600 * 1000;
+  }
+
+  // ==================== Storage ====================
+  function loadRecords() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch(_) { return []; }
+  }
+
+  function saveRecords(records) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  }
+
+  function addRecord(record) {
+    const records = loadRecords();
+    records.unshift(record);
+    saveRecords(records);
+  }
+
+  function getStats() {
+    const records = loadRecords();
+    const total = records.length;
+    const pending = records.filter(r => !r.reply).length;
+    const replied = total - pending;
+    return { total, pending, replied };
+  }
+
+  function generateReply() {
+    return REPLY_POOL[Math.floor(Math.random() * REPLY_POOL.length)];
+  }
+
+  function checkPendingReplies() {
+    const records = loadRecords();
+    let changed = false;
+    records.forEach(r => {
+      if (!r.reply && Date.now() >= r.replyAt) {
+        r.reply = generateReply();
+        changed = true;
+      }
+    });
+    if (changed) {
+      saveRecords(records);
+      if (state.currentPage === 'archive') {
+        renderArchivePage();
+        attachArchiveHandlers();
+      }
+    }
+    return changed;
+  }
+
+  function seedDemoData() {
+    if (loadRecords().length > 0) return;
+    const now = Date.now();
+    const demoRecords = [
+      {
+        id: 'CRSB-20260615-2847',
+        creature: 'koi', water: 'xihu',
+        feeling: '明天答辩，紧张到胃疼...',
+        feedbackLabel: '24 小时后',
+        createdAt: now - 26 * 3600 * 1000,
+        replyAt: now - 2 * 3600 * 1000,
+        reply: {
+          bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)',
+          emoji: '🌅',
+          text: '嘿，昨晚的西湖锦鲤替你游了一圈。它说答辩那天你会比想象中镇定——不是因为不紧张了，而是因为你已经紧张过了，该轮到镇定了。胃不疼了吧？'
+        }
+      },
+      {
+        id: 'CRSB-20260616-3912',
+        creature: 'turtle', water: 'mariana',
+        feeling: '项目今天上线，手心一直在出汗...',
+        feedbackLabel: '24 小时后',
+        createdAt: now - 0.5 * 3600 * 1000,
+        replyAt: now + 23.5 * 3600 * 1000,
+        reply: null
+      },
+      {
+        id: 'CRSB-20260614-1023',
+        creature: 'cloud', water: 'baikal',
+        feeling: '凌晨三点了还是睡不着，想太多...',
+        feedbackLabel: '24 小时后',
+        createdAt: now - 50 * 3600 * 1000,
+        replyAt: now - 26 * 3600 * 1000,
+        reply: {
+          bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)',
+          emoji: '🌙',
+          text: '贝加尔湖的云朵飘过来说：你凌晨三点想的事，有 90% 不会发生。剩下 10% 发生了你也管不了。它替你把那 90% 装走了，今晚试试能不能早点闭眼。'
+        }
+      },
+      {
+        id: 'CRSB-20260612-0568',
+        creature: 'koi', water: 'pacific',
+        feeling: '今天被老板否了第三版方案...',
+        feedbackLabel: '24 小时后',
+        createdAt: now - 96 * 3600 * 1000,
+        replyAt: now - 72 * 3600 * 1000,
+        reply: {
+          bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)',
+          emoji: '🔥',
+          text: '太平洋的锦鲤回信了：老板否了三版，说明你在尝试。它替你数了一下——第三版被否的人，第四版过的概率是 67%。你已经在路上了，别停下来。'
+        }
+      }
+    ];
+    saveRecords(demoRecords);
+  }
+
+  // ==================== Router ====================
+  function navigateTo(page) {
+    state.currentPage = page;
+    const contentArea = $('contentArea');
+    if (page === 'release') {
+      contentArea.innerHTML = renderReleasePage();
+      attachReleaseHandlers();
+    } else if (page === 'archive') {
+      contentArea.innerHTML = renderArchivePage();
+      attachArchiveHandlers();
+    }
+    updateTabBar();
+  }
+
+  function updateTabBar() {
+    document.querySelectorAll('.tab-bar .tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.page === state.currentPage);
+    });
+  }
+
+  // ==================== Release Page Render ====================
+  function renderReleasePage() {
+    const creatureDisplay = state.creature
+      ? `<div class="creature-emoji ${state.isReleased ? 'releasing' : ''}" id="creatureEmoji">${CREATURES[state.creature].emoji}</div>`
+      : `<div class="creature-placeholder">选择一只电子生物</div>`;
+
+    const waterName = state.water ? WATERS[state.water].name : '未选择';
+
+    const waterGridHtml = Object.entries(WATERS).map(([key, w]) => `
+      <button class="water-cell ${state.water === key ? 'active' : ''}" data-water="${key}">
+        <span class="water-emoji">${w.emoji}</span>
+        <span class="water-name">${w.name}</span>
+      </button>
+    `).join('');
+
+    const hotBubblesHtml = HOT_WATERS.map(key => `
+      <button class="hot-bubble ${state.water === key ? 'active' : ''}" data-water="${key}">🔥 ${WATERS[key].name}</button>
+    `).join('');
+
+    const ready = state.feeling.trim() && state.creature && state.water && !state.isReleased;
+    const btnText = state.isReleased ? '正在放生…' : (ready ? '按下放生' : '选好啦 · 按下放生');
+
+    return `
+      <div class="release-page">
+        <div class="river-area">
+          <div class="hot-bubbles">${hotBubblesHtml}</div>
+          <div class="creature-center">${creatureDisplay}</div>
+          <div class="river-bottom-bar">
+            <span>已选 · <span>${waterName}</span></span>
+            <span>今日放生 <span class="river-count-num">${state.todayCount.toLocaleString()}</span></span>
+          </div>
+        </div>
+        <div class="release-panel">
+          <div class="section-block">
+            <div class="section-label">此刻感受 <span class="label-hint">（可语音 / 可文字）</span></div>
+            <div class="feeling-row">
+              <button class="mic-btn" id="micBtn">🎤</button>
+              <textarea class="feeling-textarea" id="feelingText" rows="2" placeholder="${PLACEHOLDERS[0]}"></textarea>
+            </div>
+            <div class="feeling-hint"><span class="dot">·</span>描述越具体，24h 后的 AI 回信越懂你</div>
+          </div>
+          <div class="section-block">
+            <div class="section-label">想放生一只</div>
+            <div class="creature-chips" id="creatureChips">
+              <button class="chip coral ${state.creature === 'koi' ? 'active' : ''}" data-creature="koi">🐟 电子锦鲤</button>
+              <button class="chip coral ${state.creature === 'turtle' ? 'active' : ''}" data-creature="turtle">🐢 电子乌龟</button>
+              <button class="chip coral ${state.creature === 'cloud' ? 'active' : ''}" data-creature="cloud">☁️ 电子云朵</button>
+            </div>
+          </div>
+          <div class="section-block">
+            <div class="section-label">选择水域</div>
+            <div class="water-grid" id="waterGrid">${waterGridHtml}</div>
+          </div>
+          <div class="section-block">
+            <div class="section-label">什么时候回信？</div>
+            <div class="feedback-options" id="feedbackOptions">
+              <button class="fb-opt ${state.feedbackTime === '24h' ? 'active' : ''}" data-fb="24h">24 小时后</button>
+              <button class="fb-opt ${state.feedbackTime === '3d' ? 'active' : ''}" data-fb="3d">3 天后</button>
+              <button class="fb-opt ${state.feedbackTime === '7d' ? 'active' : ''}" data-fb="7d">7 天后</button>
+              <button class="fb-opt ${state.feedbackTime === 'custom' ? 'active' : ''}" data-fb="custom">自选时间</button>
+            </div>
+            <input type="datetime-local" class="fb-date" id="fbDate" style="display:${state.feedbackTime === 'custom' ? 'block' : 'none'}" value="${state.feedbackDate}">
+          </div>
+          <button class="release-btn" id="releaseBtn" ${!ready ? 'disabled' : ''}>${btnText}</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ==================== Release Page Handlers ====================
+  let placeholderIdx = 0;
+  let placeholderTimer = null;
+
+  function attachReleaseHandlers() {
+    const feelingText = $('feelingText');
+    const micBtn = $('micBtn');
+    const creatureChips = $('creatureChips');
+    const waterGrid = $('waterGrid');
+    const feedbackOptions = $('feedbackOptions');
+    const fbDate = $('fbDate');
+    const releaseBtn = $('releaseBtn');
+
+    // Restore feeling text
+    if (feelingText) {
+      feelingText.value = state.feeling;
+      feelingText.addEventListener('input', () => {
+        state.feeling = feelingText.value;
+        updateReleaseBtn();
+      });
+    }
+
+    // Placeholder rotation
+    if (placeholderTimer) clearInterval(placeholderTimer);
+    placeholderIdx = 0;
+    placeholderTimer = setInterval(() => {
+      if (feelingText && document.activeElement !== feelingText && !state.isReleased) {
+        feelingText.placeholder = PLACEHOLDERS[placeholderIdx];
+      }
+      placeholderIdx = (placeholderIdx + 1) % PLACEHOLDERS.length;
+    }, 3500);
+
+    // Mic button (Web Speech API if available)
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isRecording = false;
+
+    if (SpeechRec) {
+      recognition = new SpeechRec();
+      recognition.lang = 'zh-CN';
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.onresult = (e) => {
+        let transcript = '';
+        for (let i = 0; i < e.results.length; i++) {
+          transcript += e.results[i][0].transcript;
+        }
+        if (feelingText) {
+          feelingText.value = transcript;
+          state.feeling = transcript;
+          updateReleaseBtn();
+        }
+      };
+      recognition.onend = () => {
+        isRecording = false;
+        if (micBtn) {
+          micBtn.classList.remove('recording');
+          micBtn.textContent = '🎤';
+        }
+      };
+      recognition.onerror = () => {
+        isRecording = false;
+        if (micBtn) {
+          micBtn.classList.remove('recording');
+          micBtn.textContent = '🎤';
+        }
+      };
+    }
+
+    if (micBtn) {
+      micBtn.addEventListener('click', () => {
+        if (state.isReleased) return;
+        if (!recognition) {
+          if (feelingText) feelingText.focus();
+          return;
+        }
+        if (isRecording) {
+          recognition.stop();
+          return;
+        }
+        try {
+          recognition.start();
+          isRecording = true;
+          micBtn.classList.add('recording');
+          micBtn.textContent = '●';
+        } catch(_) {}
+      });
+    }
+
+    // Creature chips
+    if (creatureChips) {
+      creatureChips.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-creature]');
+        if (!btn || state.isReleased) return;
+        creatureChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        state.creature = btn.dataset.creature;
+        updateCreatureDisplay();
+        updateReleaseBtn();
+      });
+    }
+
+    // Water grid
+    if (waterGrid) {
+      waterGrid.addEventListener('click', (e) => {
+        const cell = e.target.closest('[data-water]');
+        if (!cell || state.isReleased) return;
+        selectWater(cell.dataset.water);
+      });
+    }
+
+    // Hot bubbles
+    document.querySelectorAll('.hot-bubble').forEach(bubble => {
+      bubble.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (state.isReleased) return;
+        selectWater(bubble.dataset.water);
+      });
+    });
+
+    // Feedback options
+    if (feedbackOptions) {
+      feedbackOptions.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-fb]');
+        if (!btn || state.isReleased) return;
+        feedbackOptions.querySelectorAll('.fb-opt').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.feedbackTime = btn.dataset.fb;
+        if (state.feedbackTime === 'custom') {
+          if (fbDate) {
+            fbDate.style.display = 'block';
+            fbDate.focus();
+          }
+        } else {
+          if (fbDate) fbDate.style.display = 'none';
+          state.feedbackDate = '';
+        }
+      });
+    }
+
+    if (fbDate) {
+      fbDate.addEventListener('change', () => {
+        state.feedbackDate = fbDate.value;
+      });
+    }
+
+    // Release button
+    if (releaseBtn) {
+      releaseBtn.addEventListener('click', triggerRelease);
+    }
+  }
+
+  function updateReleaseBtn() {
+    const btn = $('releaseBtn');
+    if (!btn) return;
+    const ready = state.feeling.trim() && state.creature && state.water && !state.isReleased;
+    btn.disabled = !ready;
+    btn.textContent = state.isReleased ? '正在放生…' : (ready ? '按下放生' : '选好啦 · 按下放生');
+  }
+
+  function updateCreatureDisplay() {
+    const center = document.querySelector('.creature-center');
+    if (!center) return;
+    if (state.creature) {
+      center.innerHTML = `<div class="creature-emoji" id="creatureEmoji">${CREATURES[state.creature].emoji}</div>`;
+    } else {
+      center.innerHTML = `<div class="creature-placeholder">选择一只电子生物</div>`;
+    }
+  }
+
+  function selectWater(waterId) {
+    state.water = waterId;
+    // Update water grid
+    document.querySelectorAll('.water-cell').forEach(c => {
+      c.classList.toggle('active', c.dataset.water === waterId);
+    });
+    // Update hot bubbles
+    document.querySelectorAll('.hot-bubble').forEach(b => {
+      b.classList.toggle('active', b.dataset.water === waterId);
+    });
+    // Update bottom bar
+    const selectedSpan = document.querySelector('.river-bottom-bar span:first-child span');
+    if (selectedSpan) selectedSpan.textContent = WATERS[waterId].name;
+    updateReleaseBtn();
+  }
+
+  // ==================== Release Trigger ====================
+  function triggerRelease() {
+    if (!state.feeling.trim() || !state.creature || !state.water || state.isReleased) return;
+    state.isReleased = true;
+    updateReleaseBtn();
+
+    // Animate creature down
+    const emoji = $('creatureEmoji');
+    if (emoji) emoji.classList.add('releasing');
+
+    // Show receipt after 800ms
+    setTimeout(showReceipt, 800);
+  }
+
+  function showReceipt() {
+    const id = generateId();
+    const sign = rand(SIGNS[state.creature]);
+    const fbLabel = getFeedbackLabel();
+    const replyAt = calcReplyAt();
+    const now = Date.now();
+
+    const receipt = {
+      id,
+      creature: state.creature,
+      water: state.water,
+      feeling: state.feeling,
+      sign,
+      feedbackLabel: fbLabel,
+      createdAt: now,
+      timeStr: formatFullTime(now)
+    };
+
+    state.receipt = receipt;
+    state.showReceipt = true;
+    state.todayCount++;
+
+    // Save record
+    addRecord({
+      id,
+      creature: state.creature,
+      water: state.water,
+      feeling: state.feeling,
+      feedbackLabel: fbLabel,
+      createdAt: now,
+      replyAt,
+      reply: null
+    });
+
+    // Render receipt
+    const card = $('receiptCard');
+    card.innerHTML = `
+      <div class="receipt-header">
+        <div class="receipt-stamp">放生成功</div>
+        <div class="receipt-subtitle">CYBER RELEASE RECEIPT</div>
+      </div>
+      <div class="receipt-rows">
+        <div class="receipt-row"><span class="row-key">护生编号</span><span class="row-val mono">${id}</span></div>
+        <div class="receipt-row"><span class="row-key">放生地点</span><span class="row-val serif">${WATERS[state.water].name}</span></div>
+        <div class="receipt-row"><span class="row-key">电子生物</span><span class="row-val">${CREATURES[state.creature].emoji} ${CREATURES[state.creature].name}</span></div>
+        <div class="receipt-row"><span class="row-key">放生时间</span><span class="row-val mono">${receipt.timeStr}</span></div>
+      </div>
+      <div class="receipt-feeling">
+        <div class="block-label">— 此刻感受 —</div>
+        <div class="block-text">${state.feeling || '（这次没说，没关系）'}</div>
+      </div>
+      <div class="receipt-sign">
+        <div class="block-label">— 本日好运签 —</div>
+        <div class="block-text">${sign}</div>
+      </div>
+      <div class="receipt-feedback">
+        <div class="block-label">— AI 回信安排 —</div>
+        <div class="block-text">📬 <strong>${fbLabel}</strong> 以图文形式推送，基于你此刻的感受生成 · <span class="mute">可能治愈、可能搞怪</span></div>
+      </div>
+      <div class="receipt-actions">
+        <button class="btn-line" id="shareBtn">分享到群</button>
+        <button class="btn-primary" id="againBtn">再来一只</button>
+      </div>
+      <div class="receipt-footer">
+        * 本回执不构成任何好运承诺 / 也不鼓励线下放生<br>
+        仅作虚拟情绪仪式使用 · 编号随机
+      </div>
+    `;
+
+    $('receiptOverlay').classList.add('show');
+
+    // Wire receipt buttons
+    $('shareBtn').addEventListener('click', () => {
+      const btn = $('shareBtn');
+      const orig = btn.textContent;
+      btn.textContent = '✓ 已生成卡片';
+      btn.style.color = 'var(--teal)';
+      btn.style.borderColor = 'var(--teal)';
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 1500);
+    });
+
+    $('againBtn').addEventListener('click', closeReceipt);
+  }
+
+  function closeReceipt() {
+    $('receiptOverlay').classList.remove('show');
+    state.showReceipt = false;
+    state.receipt = null;
+    // Reset release state
+    state.isReleased = false;
+    state.creature = null;
+    state.water = null;
+    state.feeling = '';
+    state.feedbackTime = '24h';
+    state.feedbackDate = '';
+    // Re-render release page
+    setTimeout(() => {
+      if (state.currentPage === 'release') {
+        navigateTo('release');
+      }
+    }, 300);
+  }
+
+  // Click overlay to close
+  $('receiptOverlay').addEventListener('click', (e) => {
+    if (e.target === $('receiptOverlay')) {
+      closeReceipt();
+    }
+  });
+
+  // ==================== Archive Page Render ====================
+  function renderArchivePage() {
+    const stats = getStats();
+    const records = loadRecords();
+
+    let listHtml;
+    if (records.length === 0) {
+      listHtml = '<div class="empty-state">还没有放生记录<br>去放生一只吧 🐟</div>';
+    } else {
+      listHtml = records.map((r, i) => {
+        const creature = CREATURES[r.creature] || { name: r.creature, emoji: '🐟' };
+        const water = WATERS[r.water] || { name: r.water };
+        const hasReply = !!r.reply;
+        const timeStr = formatTime(r.createdAt);
+
+        let inner = `
+          <div class="record-header">
+            <span class="record-id mono">${r.id}</span>
+            <span class="record-status ${hasReply ? 'replied' : 'pending'}">${hasReply ? '已回信' : '待回信'}</span>
+          </div>
+          <div class="record-meta">${creature.emoji} ${creature.name} · ${water.name} · ${timeStr}</div>
+          <div class="record-feeling">"${r.feeling}"</div>
+        `;
+
+        if (hasReply) {
+          inner += `
+            <div class="reply-block">
+              <div class="reply-inner">
+                <div class="reply-label">📬 AI 回信 · ${r.feedbackLabel}</div>
+                <div class="reply-image" style="background: ${r.reply.bg};">${r.reply.emoji}</div>
+                <div class="reply-text">${r.reply.text}</div>
+              </div>
+            </div>
+          `;
+        } else {
+          inner += `
+            <div class="countdown-block" data-reply-at="${r.replyAt}">
+              ⏳ 回信倒计时 <span class="countdown-time">${formatCountdown(r.replyAt - Date.now())}</span>
+            </div>
+          `;
+        }
+
+        return `<div class="record-card ${hasReply ? 'has-reply' : ''}" data-idx="${i}">${inner}</div>`;
+      }).join('');
+    }
+
+    return `
+      <div class="archive-page">
+        <div class="user-bar">
+          <div class="user-avatar">微</div>
+          <div class="user-info">
+            <div class="user-name">微信用户</div>
+            <div class="user-id">ID ····3a7f</div>
+          </div>
+          <span class="login-tag">静默登录</span>
+        </div>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-num teal">${stats.total}</div>
+            <div class="stat-label">累计放生</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num coral">${stats.pending}</div>
+            <div class="stat-label">待回信</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num teal">${stats.replied}</div>
+            <div class="stat-label">已回信</div>
+          </div>
+        </div>
+        <div class="record-list" id="recordList">${listHtml}</div>
+      </div>
+    `;
+  }
+
+  // ==================== Archive Page Handlers ====================
+  function attachArchiveHandlers() {
+    const list = $('recordList');
+    if (!list) return;
+
+    list.querySelectorAll('.record-card.has-reply').forEach(card => {
+      card.addEventListener('click', () => {
+        const replyBlock = card.querySelector('.reply-block');
+        if (replyBlock) {
+          replyBlock.classList.toggle('expanded');
+        }
+      });
+    });
+  }
+
+  // ==================== Tab Bar ====================
+  document.querySelectorAll('.tab-bar .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      navigateTo(tab.dataset.page);
+    });
+  });
+
+  // ==================== Countdown Timer ====================
+  setInterval(() => {
+    checkPendingReplies();
+    if (state.currentPage === 'archive') {
+      document.querySelectorAll('.countdown-block').forEach(el => {
+        const replyAt = parseInt(el.dataset.replyAt);
+        const timeEl = el.querySelector('.countdown-time');
+        if (timeEl) {
+          timeEl.textContent = formatCountdown(replyAt - Date.now());
+        }
+      });
+    }
+  }, 1000);
+
+  // ==================== Init ====================
+  seedDemoData();
+  checkPendingReplies();
+  navigateTo('release');
+
+})();
+</script>
+
+</body>
+</html>
