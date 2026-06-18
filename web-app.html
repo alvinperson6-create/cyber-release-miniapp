@@ -52,9 +52,9 @@ textarea, input { font-family: inherit; }
 /* ==================== Phone Frame ==================== */
 .phone-frame {
   width: 100%;
-  max-width: 420px;
-  height: 880px;
-  max-height: calc(100vh - 48px);
+  max-width: 390px;
+  height: 844px;
+  max-height: calc(100vh - 40px);
   position: relative;
 }
 .phone-bezel {
@@ -166,118 +166,176 @@ textarea, input { font-family: inherit; }
 
 /* River Area */
 .river-area {
-  flex-shrink: 0;
-  height: 35%;
-  min-height: 200px;
+  flex: 1;
   position: relative;
-  background: linear-gradient(180deg, var(--teal-light) 0%, #a9d2c5 70%, var(--teal) 100%);
+  margin: 0 14px;
+  border-radius: 14px;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.river-area::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 30% 40%, rgba(255,255,255,0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 60%, rgba(255,255,255,0.1) 0%, transparent 50%);
-  pointer-events: none;
+  min-height: 280px;
 }
 
+/* World map */
+.world-map {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  background: linear-gradient(180deg, #cfe4dd 0%, #a9d2c5 60%, #7fb6a4 100%);
+}
+.world-map.dragging { cursor: grabbing; }
+.map-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Water markers */
+.water-marker { cursor: pointer; }
+.water-marker circle.dot {
+  fill: #3e7a96;
+  stroke: #fff;
+  stroke-width: 1.5;
+  transition: r 0.2s ease;
+}
+.water-marker.lake circle.dot { fill: #2c8a7a; }
+.water-marker.river circle.dot { fill: #2c8a7a; }
+.water-marker.trench circle.dot { fill: #ed7d5b; }
+.water-marker.selected circle.dot {
+  fill: #ed7d5b;
+  stroke: #fff;
+  stroke-width: 2.5;
+  r: 7;
+}
+.water-marker .pulse {
+  fill: none;
+  stroke: #ed7d5b;
+  stroke-width: 1.2;
+  opacity: 0;
+}
+.water-marker.selected .pulse { animation: mapPulse 1.8s ease-out infinite; }
+@keyframes mapPulse {
+  0% { r: 7; opacity: 0.7; }
+  100% { r: 20; opacity: 0; }
+}
+.water-label {
+  font-size: 9px;
+  fill: #1f3a36;
+  text-anchor: middle;
+  pointer-events: none;
+  font-family: "PingFang SC", sans-serif;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: #faf6ec;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.water-marker.selected .water-label { fill: #ed7d5b; }
+
+/* Hot bubbles */
 .hot-bubbles {
   position: absolute;
-  top: 10px; left: 10px; right: 10px;
+  top: 8px; left: 8px; right: 8px;
   display: flex;
-  gap: 6px;
-  z-index: 3;
+  gap: 5px;
+  z-index: 5;
+  flex-wrap: wrap;
   pointer-events: none;
 }
 .hot-bubble {
   pointer-events: auto;
-  padding: 4px 10px;
+  padding: 3px 9px;
   background: rgba(255,255,255,0.92);
-  border: 1px solid var(--coral);
+  border: 1px solid #ed7d5b;
   border-radius: 99px;
   font-size: 10px;
-  color: var(--coral);
+  color: #ed7d5b;
   white-space: nowrap;
   transition: all 0.2s;
   backdrop-filter: blur(4px);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 .hot-bubble:active { transform: scale(0.95); }
-.hot-bubble.active { background: var(--coral); color: #fff; }
+.hot-bubble.active { background: #ed7d5b; color: #fff; }
 
-.creature-center {
-  position: relative;
+/* Map hint */
+.map-hint {
+  position: absolute;
+  bottom: 44px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: rgba(31, 58, 54, 0.65);
+  letter-spacing: 0.1em;
+  pointer-events: none;
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-.creature-emoji {
-  font-size: 80px;
-  line-height: 1;
-  animation: float 3s ease-in-out infinite;
-  transition: transform 0.8s cubic-bezier(0.5, 0, 0.3, 1), opacity 0.8s ease-out;
-  filter: drop-shadow(0 6px 12px rgba(31, 58, 54, 0.2));
-}
-.creature-emoji.releasing {
-  animation: none;
-  transform: translateY(140px) scale(0.15);
-  opacity: 0;
-}
-.creature-placeholder {
-  font-size: 14px;
-  color: var(--teal-deep);
-  opacity: 0.6;
-  letter-spacing: 0.08em;
-  background: rgba(255,255,255,0.6);
-  padding: 8px 16px;
+  background: rgba(255,255,255,0.82);
+  padding: 2px 10px;
   border-radius: 99px;
-  backdrop-filter: blur(4px);
+  transition: opacity 0.4s;
+  white-space: nowrap;
+}
+.map-hint.hidden { opacity: 0; }
+
+/* Creature layer */
+.creature-layer {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  pointer-events: none;
+  z-index: 3;
+  transition: all 0.9s cubic-bezier(0.5, 0, 0.3, 1);
+}
+.creature-layer.released {
+  bottom: -60%;
+  opacity: 0;
+  transform: translateX(-50%) scale(0.5);
+}
+.creature-layer svg {
+  width: 100%;
+  height: auto;
+  animation: float 4s ease-in-out infinite;
 }
 
-.river-bottom-bar {
+/* River stat bar */
+.river-stat {
   position: absolute;
   bottom: 8px; left: 10px; right: 10px;
-  background: rgba(255,255,255,0.88);
-  backdrop-filter: blur(6px);
-  border-radius: 10px;
-  padding: 7px 12px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  padding: 8px 10px;
   font-size: 11px;
   color: var(--ink-soft);
   display: flex;
   justify-content: space-between;
-  align-items: center;
   z-index: 4;
 }
-.river-bottom-bar .river-count-num {
-  color: var(--teal);
-  font-weight: 600;
-  font-family: "SF Mono", "Monaco", monospace;
-}
+.river-stat .num { color: var(--teal); font-weight: 600; font-family: "SF Mono", "Monaco", monospace; }
 
 /* Scrollable Panel */
 .release-panel {
   flex: 1;
   overflow-y: auto;
-  padding: 14px 18px 20px;
+  padding: 14px 18px 18px;
   -webkit-overflow-scrolling: touch;
+  min-height: 0;
 }
 .release-panel::-webkit-scrollbar { width: 3px; }
 .release-panel::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
 
 .section-block { margin-bottom: 16px; }
 .section-label {
-  font-size: 12px;
-  color: var(--ink);
-  font-weight: 600;
+  font-size: 11px;
+  color: var(--ink-mute);
   margin-bottom: 8px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.08em;
 }
 .section-label .label-hint {
   font-size: 10px;
@@ -367,33 +425,6 @@ textarea, input { font-family: inherit; }
   box-shadow: 0 2px 8px rgba(237, 125, 91, 0.3);
 }
 
-/* Water grid */
-.water-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 7px;
-}
-.water-cell {
-  padding: 10px 6px;
-  background: #fffdf7;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.2s;
-}
-.water-cell:active { transform: scale(0.95); }
-.water-cell .water-emoji { font-size: 20px; line-height: 1; }
-.water-cell .water-name { font-size: 10px; color: var(--ink-soft); text-align: center; }
-.water-cell.active {
-  background: var(--teal-light);
-  border-color: var(--teal);
-  box-shadow: 0 0 0 1px var(--teal);
-}
-.water-cell.active .water-name { color: var(--teal-deep); font-weight: 600; }
-
 /* Feedback options */
 .feedback-options {
   display: flex;
@@ -432,21 +463,23 @@ textarea, input { font-family: inherit; }
 .release-btn {
   width: 100%;
   margin-top: 4px;
-  padding: 15px;
-  background: var(--teal);
+  padding: 14px;
+  background: linear-gradient(180deg, var(--coral) 0%, #d96d4d 100%);
   color: #fff;
   border-radius: 99px;
   font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
+  box-shadow: 0 4px 12px rgba(237, 125, 91, 0.32);
   transition: all 0.2s;
   position: relative;
   overflow: hidden;
 }
-.release-btn:active:not(:disabled) { transform: scale(0.98); }
+.release-btn:active:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(237, 125, 91, 0.4); }
 .release-btn:disabled {
   background: #d8d0bf;
-  color: var(--paper);
+  color: #faf6ec;
+  box-shadow: none;
   cursor: not-allowed;
 }
 .release-btn::before {
@@ -822,7 +855,7 @@ textarea, input { font-family: inherit; }
 /* ==================== Animations ==================== */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-6px); }
 }
 
 /* ==================== Responsive (Mobile) ==================== */
@@ -894,18 +927,87 @@ textarea, input { font-family: inherit; }
   };
 
   const WATERS = {
-    pacific:   { name: '太平洋',         emoji: '🌊' },
-    atlantic:  { name: '大西洋',         emoji: '🌊' },
-    indian:    { name: '印度洋',         emoji: '🌊' },
-    arctic:    { name: '北冰洋',         emoji: '🧊' },
-    baikal:    { name: '贝加尔湖',       emoji: '🏞️' },
-    ness:      { name: '尼斯湖',         emoji: '🏞️' },
-    xihu:      { name: '西湖',           emoji: '🏞️' },
-    xiang:     { name: '湘江',           emoji: '💧' },
-    mariana:   { name: '马里亚纳海沟',   emoji: '深渊' },
-    deadsea:   { name: '死海',           emoji: '🧂' },
-    aegean:    { name: '爱琴海',         emoji: '🌊' },
-    galapagos: { name: '加拉帕戈斯',     emoji: '🐢' }
+    pacific:   { name: '太平洋',         type: 'ocean'  },
+    atlantic:  { name: '大西洋',         type: 'ocean'  },
+    indian:    { name: '印度洋',         type: 'ocean'  },
+    arctic:    { name: '北冰洋',         type: 'ocean'  },
+    baikal:    { name: '贝加尔湖',       type: 'lake'   },
+    ness:      { name: '尼斯湖',         type: 'lake'   },
+    xihu:      { name: '西湖',           type: 'lake'   },
+    xiang:     { name: '湘江',           type: 'river'  },
+    mariana:   { name: '马里亚纳海沟',   type: 'trench' },
+    deadsea:   { name: '死海',           type: 'lake'   },
+    aegean:    { name: '爱琴海',         type: 'sea'    },
+    galapagos: { name: '加拉帕戈斯',     type: 'sea'    }
+  };
+
+  const WATER_COORDS = {
+    pacific:   { x: 590, y: 200 },
+    atlantic:  { x: 225, y: 180 },
+    indian:    { x: 460, y: 340 },
+    arctic:    { x: 340, y: 25  },
+    baikal:    { x: 450, y: 120 },
+    ness:      { x: 295, y: 90  },
+    xihu:      { x: 515, y: 155 },
+    xiang:     { x: 505, y: 175 },
+    mariana:   { x: 600, y: 275 },
+    deadsea:   { x: 395, y: 198 },
+    aegean:    { x: 350, y: 188 },
+    galapagos: { x: 95,  y: 260 }
+  };
+
+  const CREATURE_SVG = {
+    koi: `<g>
+      <ellipse cx="60" cy="40" rx="38" ry="20" fill="url(#koiGrad)"/>
+      <ellipse cx="60" cy="40" rx="38" ry="20" fill="none" stroke="#b85a3a" stroke-width="0.5" opacity="0.4"/>
+      <path d="M22 40 Q 10 28 6 40 Q 10 52 22 40 Z" fill="#ed7d5b"/>
+      <ellipse cx="60" cy="32" rx="14" ry="4" fill="#fff" opacity="0.5"/>
+      <circle cx="78" cy="36" r="3" fill="#1f3a36"/>
+      <circle cx="79" cy="35" r="0.8" fill="#fff"/>
+      <path d="M55 50 Q 60 60 65 50" stroke="#b85a3a" stroke-width="1" fill="none" opacity="0.6"/>
+      <defs>
+        <linearGradient id="koiGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#f9d8c9"/>
+          <stop offset="50%" stop-color="#ed7d5b"/>
+          <stop offset="100%" stop-color="#d96d4d"/>
+        </linearGradient>
+      </defs>
+    </g>`,
+    turtle: `<g>
+      <ellipse cx="60" cy="50" rx="36" ry="22" fill="#3e7a96"/>
+      <ellipse cx="60" cy="50" rx="36" ry="22" fill="none" stroke="#1f3a36" stroke-width="0.5" opacity="0.3"/>
+      <ellipse cx="60" cy="50" rx="24" ry="14" fill="#5a9bb5"/>
+      <g fill="#2c5d72" opacity="0.55">
+        <ellipse cx="60" cy="42" rx="4" ry="3"/>
+        <ellipse cx="48" cy="48" rx="4" ry="3"/>
+        <ellipse cx="72" cy="48" rx="4" ry="3"/>
+        <ellipse cx="54" cy="58" rx="4" ry="3"/>
+        <ellipse cx="66" cy="58" rx="4" ry="3"/>
+        <ellipse cx="60" cy="50" rx="3" ry="3"/>
+      </g>
+      <ellipse cx="22" cy="52" rx="10" ry="6" fill="#5a9bb5"/>
+      <ellipse cx="98" cy="52" rx="10" ry="6" fill="#5a9bb5"/>
+      <circle cx="22" cy="50" r="2" fill="#1f3a36"/>
+      <circle cx="98" cy="50" r="2" fill="#1f3a36"/>
+      <circle cx="22.6" cy="49.5" r="0.6" fill="#fff"/>
+      <circle cx="98.6" cy="49.5" r="0.6" fill="#fff"/>
+    </g>`,
+    cloud: `<g>
+      <ellipse cx="60" cy="48" rx="42" ry="22" fill="#faf6ec"/>
+      <ellipse cx="40" cy="42" rx="18" ry="16" fill="#faf6ec"/>
+      <ellipse cx="78" cy="40" rx="20" ry="18" fill="#faf6ec"/>
+      <ellipse cx="60" cy="38" rx="16" ry="14" fill="#fff"/>
+      <ellipse cx="60" cy="48" rx="42" ry="22" fill="none" stroke="#c7dbe2" stroke-width="0.6"/>
+      <g opacity="0.5">
+        <circle cx="44" cy="42" r="2" fill="#cfe4dd"/>
+        <circle cx="56" cy="40" r="2.5" fill="#cfe4dd"/>
+        <circle cx="70" cy="38" r="2" fill="#cfe4dd"/>
+        <circle cx="80" cy="44" r="2" fill="#cfe4dd"/>
+      </g>
+      <circle cx="48" cy="46" r="1.2" fill="#1f3a36"/>
+      <circle cx="72" cy="46" r="1.2" fill="#1f3a36"/>
+      <path d="M52 52 Q 60 56 68 52" stroke="#1f3a36" stroke-width="0.8" fill="none" opacity="0.6"/>
+    </g>`
   };
 
   const HOT_WATERS = ['pacific', 'baikal', 'mariana'];
@@ -972,6 +1074,12 @@ textarea, input { font-family: inherit; }
     receipt: null,
     todayCount: 1247
   };
+
+  // ==================== Map State ====================
+  const MAP_VB = { w: 280, h: 280 };
+  const MAP_BOUNDS = { minX: 0, maxX: 640 - MAP_VB.w, minY: 0, maxY: 480 - MAP_VB.h };
+  let mapVb = { x: 380, y: 60 };
+  let mapDrag = { active: false, startX: 0, startY: 0, vbX: 0, vbY: 0, moved: false };
 
   // ==================== Helpers ====================
   const $ = (id) => document.getElementById(id);
@@ -1147,22 +1255,63 @@ textarea, input { font-family: inherit; }
 
   // ==================== Release Page Render ====================
   function renderReleasePage() {
-    const creatureDisplay = state.creature
-      ? `<div class="creature-emoji ${state.isReleased ? 'releasing' : ''}" id="creatureEmoji">${CREATURES[state.creature].emoji}</div>`
-      : `<div class="creature-placeholder">选择一只电子生物</div>`;
-
     const waterName = state.water ? WATERS[state.water].name : '未选择';
-
-    const waterGridHtml = Object.entries(WATERS).map(([key, w]) => `
-      <button class="water-cell ${state.water === key ? 'active' : ''}" data-water="${key}">
-        <span class="water-emoji">${w.emoji}</span>
-        <span class="water-name">${w.name}</span>
-      </button>
-    `).join('');
+    const creatureArt = CREATURE_SVG[state.creature] || CREATURE_SVG.koi;
 
     const hotBubblesHtml = HOT_WATERS.map(key => `
       <button class="hot-bubble ${state.water === key ? 'active' : ''}" data-water="${key}">🔥 ${WATERS[key].name}</button>
     `).join('');
+
+    const waterMarkersHtml = `
+      <g class="water-marker ${WATERS.pacific.type === 'lake' ? 'lake' : WATERS.pacific.type === 'river' ? 'river' : WATERS.pacific.type === 'trench' ? 'trench' : ''} ${state.water === 'pacific' ? 'selected' : ''}" data-water="pacific" transform="translate(590,200)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">太平洋</text>
+      </g>
+      <g class="water-marker ${state.water === 'atlantic' ? 'selected' : ''}" data-water="atlantic" transform="translate(225,180)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">大西洋</text>
+      </g>
+      <g class="water-marker ${state.water === 'indian' ? 'selected' : ''}" data-water="indian" transform="translate(460,340)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">印度洋</text>
+      </g>
+      <g class="water-marker ${state.water === 'arctic' ? 'selected' : ''}" data-water="arctic" transform="translate(340,25)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="18">北冰洋</text>
+      </g>
+      <g class="water-marker lake ${state.water === 'baikal' ? 'selected' : ''}" data-water="baikal" transform="translate(450,120)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">贝加尔湖</text>
+      </g>
+      <g class="water-marker lake ${state.water === 'ness' ? 'selected' : ''}" data-water="ness" transform="translate(295,90)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">尼斯湖</text>
+      </g>
+      <g class="water-marker lake ${state.water === 'xihu' ? 'selected' : ''}" data-water="xihu" transform="translate(515,155)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">西湖</text>
+      </g>
+      <g class="water-marker river ${state.water === 'xiang' ? 'selected' : ''}" data-water="xiang" transform="translate(505,175)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="18">湘江</text>
+      </g>
+      <g class="water-marker trench ${state.water === 'mariana' ? 'selected' : ''}" data-water="mariana" transform="translate(600,275)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">马里亚纳海沟</text>
+      </g>
+      <g class="water-marker lake ${state.water === 'deadsea' ? 'selected' : ''}" data-water="deadsea" transform="translate(395,198)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">死海</text>
+      </g>
+      <g class="water-marker ${state.water === 'aegean' ? 'selected' : ''}" data-water="aegean" transform="translate(350,188)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">爱琴海</text>
+      </g>
+      <g class="water-marker ${state.water === 'galapagos' ? 'selected' : ''}" data-water="galapagos" transform="translate(95,260)">
+        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
+        <text class="water-label" y="-12">加拉帕戈斯</text>
+      </g>
+    `;
 
     const ready = state.feeling.trim() && state.creature && state.water && !state.isReleased;
     const btnText = state.isReleased ? '正在放生…' : (ready ? '按下放生' : '选好啦 · 按下放生');
@@ -1170,11 +1319,38 @@ textarea, input { font-family: inherit; }
     return `
       <div class="release-page">
         <div class="river-area">
+          <div class="world-map" id="worldMap">
+            <svg class="map-svg" id="mapSvg" viewBox="${mapVb.x} ${mapVb.y} ${MAP_VB.w} ${MAP_VB.h}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#cfe4dd"/>
+                  <stop offset="60%" stop-color="#a9d2c5"/>
+                  <stop offset="100%" stop-color="#7fb6a4"/>
+                </linearGradient>
+              </defs>
+              <rect width="640" height="480" fill="url(#oceanGrad)"/>
+              <g fill="#f0e6d0" stroke="#d6cdb8" stroke-width="0.5">
+                <path d="M 50 70 Q 90 50 150 65 Q 190 80 195 120 Q 185 160 160 180 Q 120 195 85 180 Q 55 160 45 120 Q 40 90 50 70 Z"/>
+                <path d="M 130 230 Q 165 220 185 250 Q 195 290 185 330 Q 170 370 150 365 Q 125 340 120 300 Q 120 260 130 230 Z"/>
+                <path d="M 200 40 Q 230 30 250 45 Q 255 65 240 75 Q 215 75 200 60 Z"/>
+                <path d="M 260 75 Q 330 55 420 70 Q 500 85 545 120 Q 555 155 530 180 Q 480 195 420 190 Q 360 185 310 170 Q 270 155 255 125 Q 250 95 260 75 Z"/>
+                <path d="M 285 95 Q 300 88 308 100 Q 305 115 292 113 Q 283 105 285 95 Z"/>
+                <path d="M 540 130 Q 555 125 560 140 Q 555 155 545 150 Q 538 140 540 130 Z"/>
+                <path d="M 335 210 Q 370 200 395 225 Q 405 265 395 305 Q 380 340 360 340 Q 335 325 325 290 Q 320 250 335 210 Z"/>
+                <path d="M 500 220 Q 520 215 530 230 Q 525 245 510 243 Q 498 235 500 220 Z"/>
+                <path d="M 495 335 Q 535 325 560 345 Q 565 375 545 390 Q 515 392 498 378 Q 488 355 495 335 Z"/>
+              </g>
+              <g id="waterMarkers">${waterMarkersHtml}</g>
+            </svg>
+          </div>
           <div class="hot-bubbles">${hotBubblesHtml}</div>
-          <div class="creature-center">${creatureDisplay}</div>
-          <div class="river-bottom-bar">
-            <span>已选 · <span>${waterName}</span></span>
-            <span>今日放生 <span class="river-count-num">${state.todayCount.toLocaleString()}</span></span>
+          <div class="map-hint ${state.water ? 'hidden' : ''}" id="mapHint">拖动地图 · 点选水域</div>
+          <div class="creature-layer ${state.isReleased ? 'released' : ''}" id="creatureLayer">
+            <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" id="creatureSvg">${creatureArt}</svg>
+          </div>
+          <div class="river-stat">
+            <span>已选 · <span class="num" id="selectedWater">${waterName}</span></span>
+            <span style="color: var(--ink-mute);">今日放生 <span id="todayCount">${state.todayCount.toLocaleString()}</span></span>
           </div>
         </div>
         <div class="release-panel">
@@ -1193,10 +1369,6 @@ textarea, input { font-family: inherit; }
               <button class="chip coral ${state.creature === 'turtle' ? 'active' : ''}" data-creature="turtle">🐢 电子乌龟</button>
               <button class="chip coral ${state.creature === 'cloud' ? 'active' : ''}" data-creature="cloud">☁️ 电子云朵</button>
             </div>
-          </div>
-          <div class="section-block">
-            <div class="section-label">选择水域</div>
-            <div class="water-grid" id="waterGrid">${waterGridHtml}</div>
           </div>
           <div class="section-block">
             <div class="section-label">什么时候回信？</div>
@@ -1222,10 +1394,12 @@ textarea, input { font-family: inherit; }
     const feelingText = $('feelingText');
     const micBtn = $('micBtn');
     const creatureChips = $('creatureChips');
-    const waterGrid = $('waterGrid');
     const feedbackOptions = $('feedbackOptions');
     const fbDate = $('fbDate');
     const releaseBtn = $('releaseBtn');
+    const worldMap = $('worldMap');
+    const mapSvg = $('mapSvg');
+    const mapHint = $('mapHint');
 
     // Restore feeling text
     if (feelingText) {
@@ -1316,20 +1490,71 @@ textarea, input { font-family: inherit; }
       });
     }
 
-    // Water grid
-    if (waterGrid) {
-      waterGrid.addEventListener('click', (e) => {
-        const cell = e.target.closest('[data-water]');
-        if (!cell || state.isReleased) return;
-        selectWater(cell.dataset.water);
+    // World map drag
+    function setMapViewBox() {
+      if (mapSvg) mapSvg.setAttribute('viewBox', `${mapVb.x} ${mapVb.y} ${MAP_VB.w} ${MAP_VB.h}`);
+    }
+
+    function panToWater(waterId) {
+      const c = WATER_COORDS[waterId];
+      if (!c) return;
+      mapVb.x = Math.max(MAP_BOUNDS.minX, Math.min(MAP_BOUNDS.maxX, c.x - MAP_VB.w / 2));
+      mapVb.y = Math.max(MAP_BOUNDS.minY, Math.min(MAP_BOUNDS.maxY, c.y - MAP_VB.h / 2));
+      setMapViewBox();
+    }
+
+    function onDocPointerMove(e) {
+      if (!mapDrag.active) return;
+      const dx = e.clientX - mapDrag.startX;
+      const dy = e.clientY - mapDrag.startY;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) mapDrag.moved = true;
+      if (!mapSvg) return;
+      const rect = mapSvg.getBoundingClientRect();
+      const scaleX = MAP_VB.w / rect.width;
+      const scaleY = MAP_VB.h / rect.height;
+      mapVb.x = Math.max(MAP_BOUNDS.minX, Math.min(MAP_BOUNDS.maxX, mapDrag.vbX - dx * scaleX));
+      mapVb.y = Math.max(MAP_BOUNDS.minY, Math.min(MAP_BOUNDS.maxY, mapDrag.vbY - dy * scaleY));
+      setMapViewBox();
+    }
+
+    function onDocPointerUp() {
+      mapDrag.active = false;
+      if (worldMap) worldMap.classList.remove('dragging');
+      document.removeEventListener('pointermove', onDocPointerMove);
+      document.removeEventListener('pointerup', onDocPointerUp);
+    }
+
+    if (worldMap) {
+      worldMap.addEventListener('pointerdown', (e) => {
+        if (state.isReleased) return;
+        mapDrag.active = true;
+        mapDrag.moved = false;
+        mapDrag.startX = e.clientX;
+        mapDrag.startY = e.clientY;
+        mapDrag.vbX = mapVb.x;
+        mapDrag.vbY = mapVb.y;
+        worldMap.classList.add('dragging');
+        if (mapHint) mapHint.classList.add('hidden');
+        document.addEventListener('pointermove', onDocPointerMove);
+        document.addEventListener('pointerup', onDocPointerUp);
       });
     }
+
+    // Water marker clicks
+    document.querySelectorAll('.water-marker').forEach(marker => {
+      marker.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (mapDrag.moved || state.isReleased) return;
+        selectWater(marker.dataset.water);
+      });
+    });
 
     // Hot bubbles
     document.querySelectorAll('.hot-bubble').forEach(bubble => {
       bubble.addEventListener('click', (e) => {
         e.stopPropagation();
         if (state.isReleased) return;
+        panToWater(bubble.dataset.water);
         selectWater(bubble.dataset.water);
       });
     });
@@ -1375,28 +1600,31 @@ textarea, input { font-family: inherit; }
   }
 
   function updateCreatureDisplay() {
-    const center = document.querySelector('.creature-center');
-    if (!center) return;
+    const creatureSvg = $('creatureSvg');
+    if (!creatureSvg) return;
     if (state.creature) {
-      center.innerHTML = `<div class="creature-emoji" id="creatureEmoji">${CREATURES[state.creature].emoji}</div>`;
+      creatureSvg.innerHTML = CREATURE_SVG[state.creature];
     } else {
-      center.innerHTML = `<div class="creature-placeholder">选择一只电子生物</div>`;
+      creatureSvg.innerHTML = CREATURE_SVG.koi;
     }
   }
 
   function selectWater(waterId) {
     state.water = waterId;
-    // Update water grid
-    document.querySelectorAll('.water-cell').forEach(c => {
-      c.classList.toggle('active', c.dataset.water === waterId);
+    // Update water markers
+    document.querySelectorAll('.water-marker').forEach(m => {
+      m.classList.toggle('selected', m.dataset.water === waterId);
     });
     // Update hot bubbles
     document.querySelectorAll('.hot-bubble').forEach(b => {
       b.classList.toggle('active', b.dataset.water === waterId);
     });
-    // Update bottom bar
-    const selectedSpan = document.querySelector('.river-bottom-bar span:first-child span');
+    // Update river stat
+    const selectedSpan = $('selectedWater');
     if (selectedSpan) selectedSpan.textContent = WATERS[waterId].name;
+    // Hide map hint
+    const mapHint = $('mapHint');
+    if (mapHint) mapHint.classList.add('hidden');
     updateReleaseBtn();
   }
 
@@ -1407,8 +1635,8 @@ textarea, input { font-family: inherit; }
     updateReleaseBtn();
 
     // Animate creature down
-    const emoji = $('creatureEmoji');
-    if (emoji) emoji.classList.add('releasing');
+    const creatureLayer = $('creatureLayer');
+    if (creatureLayer) creatureLayer.classList.add('released');
 
     // Show receipt after 800ms
     setTimeout(showReceipt, 800);
@@ -1513,6 +1741,9 @@ textarea, input { font-family: inherit; }
     state.feeling = '';
     state.feedbackTime = '24h';
     state.feedbackDate = '';
+    // Reset map position
+    mapVb.x = 380;
+    mapVb.y = 60;
     // Re-render release page
     setTimeout(() => {
       if (state.currentPage === 'release') {
