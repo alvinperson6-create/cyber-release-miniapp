@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getRecordById, updateReply, insertDestiny, getDestinyByRecordId } = require('../db');
-const { generateReply, generateDestiny, isAIEnabled } = require('../ai');
+const { generateReply, generateReplyImage, generateDestiny, isAIEnabled } = require('../ai');
 
 // GET /api/reply/:id
 router.get('/:id', (req, res) => {
@@ -46,16 +46,20 @@ router.post('/generate', async (req, res) => {
       return res.status(404).json({ error: '记录不存在' });
     }
 
-    // 1. 生成 AI 回信（若已存在则跳过）
+    // 1. 生成 AI 回信 + 背景图（回信若已存在则跳过，图片若缺失则补生成）
     let reply;
     if (row.reply_text) {
-      reply = { bg: row.reply_bg, emoji: row.reply_emoji, text: row.reply_text };
+      reply = { bg: row.reply_bg, emoji: row.reply_emoji, text: row.reply_text, image: row.reply_image };
+      if (!reply.image) {
+        reply.image = await generateReplyImage({ feeling: row.feeling, creature: row.creature, water: row.water });
+        if (reply.image) updateReply(id, reply);
+      }
     } else {
-      reply = await generateReply({
-        feeling: row.feeling,
-        creature: row.creature,
-        water: row.water
-      });
+      const [generatedReply, image] = await Promise.all([
+        generateReply({ feeling: row.feeling, creature: row.creature, water: row.water }),
+        generateReplyImage({ feeling: row.feeling, creature: row.creature, water: row.water })
+      ]);
+      reply = { ...generatedReply, image };
       updateReply(id, reply);
     }
 

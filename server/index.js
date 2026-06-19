@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { initDb } = require('./db');
-const { generateReply, generateDestiny, isAIEnabled } = require('./ai');
+const { generateReply, generateReplyImage, generateDestiny, isAIEnabled } = require('./ai');
 const { insertDestiny } = require('./db');
 
 const app = express();
@@ -43,12 +43,11 @@ setInterval(async () => {
   const pending = getPendingReplies();
   for (const r of pending) {
     try {
-      const reply = await generateReply({
-        feeling: r.feeling,
-        creature: r.creature,
-        water: r.water
-      });
-      updateReply(r.id, reply);
+      const [reply, image] = await Promise.all([
+        generateReply({ feeling: r.feeling, creature: r.creature, water: r.water }),
+        generateReplyImage({ feeling: r.feeling, creature: r.creature, water: r.water })
+      ]);
+      updateReply(r.id, { ...reply, image });
 
       // 同步生成命运轨迹（若不存在）
       if (!getDestinyByRecordId(r.id)) {

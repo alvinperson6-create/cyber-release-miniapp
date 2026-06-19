@@ -830,6 +830,9 @@ textarea, input { font-family: inherit; }
   align-items: center;
   justify-content: center;
   font-size: 32px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 .reply-text {
   font-size: 12px;
@@ -2601,7 +2604,7 @@ textarea, input { font-family: inherit; }
             <div class="reply-block">
               <div class="reply-inner">
                 <div class="reply-label">📬 AI 回信 · ${r.feedbackLabel}</div>
-                <div class="reply-image" style="background: ${r.reply.bg};">${r.reply.emoji}</div>
+                <div class="reply-image" style="background: ${r.reply.image ? `url('${r.reply.image}'), ` : ''}${r.reply.bg};">${r.reply.emoji}</div>
                 <div class="reply-text">${r.reply.text}</div>
                 <div class="destiny-entry" data-record-id="${r.id}">
                   <span class="destiny-entry-label">✨ 命运轨迹</span>

@@ -65,7 +65,7 @@
           <!-- 已回信: 可展开的回信内容 -->
           <view wx:if="{{item.reply}}" class="archive-reply {{item.expanded ? 'expanded' : ''}}">
             <view class="reply-label">📬 AI 回信 · {{item.feedbackLabel}}</view>
-            <view class="reply-image" style="background: {{item.reply.bg}};">
+            <view class="reply-image" style="background: {{item.reply.image ? 'url(' + item.reply.image + '), ' : ''}}{{item.reply.bg}};">
               <text class="reply-emoji">{{item.reply.emoji}}</text>
             </view>
             <text class="reply-text">{{item.reply.text}}</text>

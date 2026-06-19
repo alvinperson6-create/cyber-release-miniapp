@@ -256,6 +256,30 @@ function templateDestiny({ creature }) {
   return list.map((seg, i) => ({ ...seg, bg: palettes[i % palettes.length].bg, emoji: palettes[i % palettes.length].emoji }));
 }
 
+// ==================== 回信背景图生成 ====================
+async function generateReplyImage({ feeling, creature, water }) {
+  const apiKey = process.env.IMAGE_API_KEY;
+  const baseURL = process.env.IMAGE_BASE_URL;
+  const model = process.env.IMAGE_MODEL || 'ernie-image-turbo';
+  if (!apiKey || !baseURL) return null;
+
+  const creatureName = CREATURES[creature]?.name || '电子生物';
+  const waterName = WATERS[water]?.name || '虚拟水域';
+  const prompt = `治愈系扁平插画，${creatureName}在${waterName}，画面温暖柔和，水彩质感，呼应「${feeling}」的情绪，适合作为手机卡片背景，无文字，无 UI`;
+
+  try {
+    const OpenAI = require('openai');
+    const client = new OpenAI({ apiKey, baseURL });
+    const resp = await client.images.generate({ model, prompt, size: '1376x768' });
+    const url = resp.data?.[0]?.url;
+    console.log(`[ai] image generated: ${url?.slice(0, 80)}...`);
+    return url || null;
+  } catch (err) {
+    console.warn('[ai] generateReplyImage failed:', err.message);
+    return null;
+  }
+}
+
 // ==================== 对外接口 ====================
 async function generateReply({ feeling, creature, water }) {
   if (!isAIEnabled()) {
@@ -294,6 +318,7 @@ module.exports = {
   isAIEnabled,
   getConfig,
   generateReply,
+  generateReplyImage,
   generateDestiny,
   // 暴露模板用于测试/兜底
   templateReply,

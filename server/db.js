@@ -23,9 +23,17 @@ function initDb() {
       reply_bg TEXT,
       reply_emoji TEXT,
       reply_text TEXT,
+      reply_image TEXT,
       reply_created_at INTEGER
     )
   `).run();
+
+  // 兼容旧数据库：新增 reply_image 字段
+  try {
+    db.prepare(`ALTER TABLE records ADD COLUMN reply_image TEXT`).run();
+  } catch (e) {
+    // 字段已存在则忽略
+  }
 
   // 命运轨迹表：每条放生记录对应一段命运轨迹
   // segments: JSON 数组 [{title, text, emoji, bg}]
@@ -200,10 +208,10 @@ function insertRecord(record) {
   const stmt = db.prepare(`
     INSERT INTO records (
       id, openid, creature, water, feeling, feedback_label, sign,
-      created_at, reply_at, reply_bg, reply_emoji, reply_text, reply_created_at
+      created_at, reply_at, reply_bg, reply_emoji, reply_text, reply_image, reply_created_at
     ) VALUES (
       @id, @openid, @creature, @water, @feeling, @feedback_label, @sign,
-      @created_at, @reply_at, @reply_bg, @reply_emoji, @reply_text, @reply_created_at
+      @created_at, @reply_at, @reply_bg, @reply_emoji, @reply_text, @reply_image, @reply_created_at
     )
   `);
   stmt.run({
@@ -219,6 +227,7 @@ function insertRecord(record) {
     reply_bg: record.reply_bg ?? null,
     reply_emoji: record.reply_emoji ?? null,
     reply_text: record.reply_text ?? null,
+    reply_image: record.reply_image ?? null,
     reply_created_at: record.reply_created_at ?? null
   });
 }
@@ -245,9 +254,9 @@ function updateReply(id, reply) {
   const now = Date.now();
   db.prepare(`
     UPDATE records
-    SET reply_bg = ?, reply_emoji = ?, reply_text = ?, reply_created_at = ?
+    SET reply_bg = ?, reply_emoji = ?, reply_text = ?, reply_image = ?, reply_created_at = ?
     WHERE id = ?
-  `).run(reply.bg, reply.emoji, reply.text, now, id);
+  `).run(reply.bg, reply.emoji, reply.text, reply.image || null, now, id);
 }
 
 function getStats(openid) {

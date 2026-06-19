@@ -32,6 +32,7 @@ function formatRecord(r) {
           bg: r.reply_bg,
           emoji: r.reply_emoji,
           text: r.reply_text,
+          image: r.reply_image,
           createdAt: r.reply_created_at
         }
       : null
