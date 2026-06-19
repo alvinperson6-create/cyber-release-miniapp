@@ -263,9 +263,14 @@ function getStats(openid) {
 
 // ==================== 命运轨迹 ====================
 function insertDestiny({ id, recordId, openid, segments }) {
+  // 同一记录多次生成时直接覆盖，避免 UNIQUE constraint failed
   db.prepare(`
     INSERT INTO destinies (id, record_id, openid, segments, unlocked_indices, created_at)
     VALUES (?, ?, ?, ?, '[0]', ?)
+    ON CONFLICT(record_id) DO UPDATE SET
+      segments = excluded.segments,
+      unlocked_indices = excluded.unlocked_indices,
+      created_at = excluded.created_at
   `).run(id, recordId, openid, JSON.stringify(segments), Date.now());
 }
 
