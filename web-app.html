@@ -271,6 +271,50 @@ textarea, input { font-family: inherit; }
 .water-canvas.mode-3d .globe-canvas { display: block; }
 .water-canvas.mode-3d .world-map { visibility: hidden; }
 
+/* 3D 模式深海背景，衬托发光地球 */
+.water-canvas.mode-3d {
+  background:
+    radial-gradient(130% 100% at 50% 26%, rgba(23, 74, 82, 0.55) 0%, rgba(8, 34, 46, 0.85) 46%, rgba(4, 16, 28, 0.96) 100%);
+}
+
+.water-canvas.mode-3d .river-stat {
+  background: rgba(6, 22, 30, 0.45);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+}
+
+.water-canvas.mode-3d .river-stat .stat-line { color: rgba(223, 243, 236, 0.9); }
+.water-canvas.mode-3d .river-stat .muted { color: rgba(223, 243, 236, 0.55); }
+
+/* 3D 模式下热门水域改为玻璃胶囊，不抢地球的戏；沉到底部统计栏上方 */
+.water-canvas.mode-3d .hot-bubbles {
+  top: auto;
+  bottom: 48px;
+  left: 10px;
+  right: 10px;
+  gap: 5px;
+}
+
+.water-canvas.mode-3d .hot-bubble {
+  background: rgba(10, 40, 48, 0.55);
+  border: 1px solid rgba(169, 210, 197, 0.35);
+  color: rgba(223, 243, 236, 0.85);
+  backdrop-filter: blur(6px);
+  font-size: 10px;
+}
+
+.water-canvas.mode-3d .hot-bubble.active {
+  background: rgba(237, 125, 91, 0.85);
+  border-color: rgba(255, 200, 170, 0.8);
+  color: #fff;
+}
+
+.water-canvas.mode-3d .map-hint {
+  color: rgba(223, 243, 236, 0.75);
+  background: rgba(10, 40, 48, 0.35);
+  backdrop-filter: blur(4px);
+}
+
 .world-map {
   position: absolute;
   inset: 0;
@@ -1706,6 +1750,13 @@ textarea, input { font-family: inherit; }
     document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"><\/script>');
   }
 </script>
+<!-- Bloom 后处理（可选：缺失时 globe3d 自动降级普通渲染） -->
+<script src="/vendor/CopyShader.js" onerror="this.remove()"></script>
+<script src="/vendor/LuminosityHighPassShader.js" onerror="this.remove()"></script>
+<script src="/vendor/EffectComposer.js" onerror="this.remove()"></script>
+<script src="/vendor/RenderPass.js" onerror="this.remove()"></script>
+<script src="/vendor/ShaderPass.js" onerror="this.remove()"></script>
+<script src="/vendor/UnrealBloomPass.js" onerror="this.remove()"></script>
 <script src="/globe3d.js"></script>
 <script>
   // 加载与小程序共享的 3D 地球配置（失败则用 globe3d.js 内置兜底常量）
@@ -1726,6 +1777,10 @@ textarea, input { font-family: inherit; }
     };
     window.__globeConfigReady = fetch('/globe-config.json').then(r => r.ok ? r.json() : Promise.reject())
       .then(inject).catch(function () { inject(fallback); });
+    // 真实大陆轮廓（Natural Earth，61KB）；init 前必须就绪
+    window.__worldLandReady = fetch('/world-land.json').then(r => r.ok ? r.json() : Promise.reject())
+      .then(function (wl) { if (window.Globe3D) Globe3D.setWorldLand(wl); return wl; })
+      .catch(function () { return null; });
   })();
 </script>
 <script>
@@ -2684,7 +2739,10 @@ textarea, input { font-family: inherit; }
     const canvas = $('globeCanvas');
     const box = $('waterCanvasBox');
     if (!canvas || !box || typeof Globe3D === 'undefined') return;
-    try { await window.__globeConfigReady; } catch(_) {}
+    try {
+      await window.__globeConfigReady;
+      if (window.__worldLandReady) await window.__worldLandReady;
+    } catch(_) {}
     const ok = Globe3D.init({
       canvas,
       onSelect: (waterId) => {

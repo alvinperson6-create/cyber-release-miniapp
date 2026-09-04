@@ -462,3 +462,7 @@
   0%, 100% { box-shadow: 0 8rpx 24rpx rgba(237, 125, 91, 0.45); }
   50% { box-shadow: 0 8rpx 40rpx rgba(237, 125, 91, 0.95), 0 0 80rpx rgba(255, 179, 138, 0.5); }
 }
+
+/* 3D 地球模式下，热门气泡与提示浮在 canvas 之上 */
+.hot-bubbles { z-index: 10; }
+.map-hint { z-index: 10; pointer-events: none; }
