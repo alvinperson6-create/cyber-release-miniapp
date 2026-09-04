@@ -1,0 +1,2 @@
+<canvas id="globeCanvas" type="2d" class="globe-canvas"
+  bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd"></canvas>

@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "receipt": "/components/receipt/receipt"
+    "receipt": "/components/receipt/receipt",
+    "globe3d": "/components/globe3d/globe3d"
   },
   "navigationStyle": "custom"
 }

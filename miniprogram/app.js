@@ -1,4 +1,4 @@
-// 赛博放生局小程序 · 应用入口
+// 赛博放生小程序 · 应用入口
 const { seedDemoData, checkPendingReplies } = require('./utils/storage.js');
 
 App({

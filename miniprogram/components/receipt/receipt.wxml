@@ -16,7 +16,7 @@
         <text class="row-val serif">{{receipt.waterName}}</text>
       </view>
       <view class="receipt-row">
-        <text class="row-key">电子生物</text>
+        <text class="row-key">生物</text>
         <text class="row-val">{{receipt.creatureEmoji}} {{receipt.creatureName}}</text>
       </view>
       <view class="receipt-row">

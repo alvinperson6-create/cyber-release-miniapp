@@ -1,11 +1,11 @@
-// 赛博放生局 · 数据常量
+// 赛博放生 · 数据常量
 // 所有常量与 web 版保持一致
 
 // ==================== 生物 ====================
 const CREATURES = {
-  koi: { name: '电子锦鲤', emoji: '🐟' },
-  turtle: { name: '电子乌龟', emoji: '🐢' },
-  cloud: { name: '电子云朵', emoji: '☁️' }
+  koi: { name: '锦鲤', emoji: '🐟' },
+  turtle: { name: '乌龟', emoji: '🐢' },
+  cloud: { name: '云朵', emoji: '☁️' }
 };
 
 // ==================== 水域 ====================
@@ -169,9 +169,9 @@ const SIGNS = {
 const REPLY_POOL = [
   { bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)', emoji: '🌿', text: '你放生的那只小家伙在电子水域里安顿下来了。它托我转告：你此刻觉得过不去的坎，三个月后回头看连坎都不算。深呼吸，没事的。' },
   { bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)', emoji: '🌙', text: '今晚的水域很安静。你的感受已经被收到了——不是被解决了，是被听到了。有些事不需要解决，被听到就够了。' },
-  { bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)', emoji: '🔥', text: '好消息：你焦虑的事有 87% 不会发生。坏消息：剩下 13% 你也管不了。所以这只电子生物决定替你扛着，你先去吃顿好的。' },
+  { bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)', emoji: '🔥', text: '好消息：你焦虑的事有 87% 不会发生。坏消息：剩下 13% 你也管不了。所以这只生物决定替你扛着，你先去吃顿好的。' },
   { bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)', emoji: '✨', text: '它游了一圈回来说：你比自己以为的要结实。那些让你觉得要碎掉的时刻，其实你一次都没真碎过。这次也不会。' },
-  { bg: 'linear-gradient(135deg, #fff3cd, #ffd970)', emoji: '☀️', text: '报告！你的电子生物已在虚拟水域完成打卡。它观察到：你最近对自己太严格了。建议本周至少做两件"没用但开心"的事。' },
+  { bg: 'linear-gradient(135deg, #fff3cd, #ffd970)', emoji: '☀️', text: '报告！你的生物已在虚拟水域完成打卡。它观察到：你最近对自己太严格了。建议本周至少做两件"没用但开心"的事。' },
   { bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)', emoji: '🌊', text: '水域温度 22°C，生物状态良好。它给你带了一句话："紧张说明你在乎，在乎说明你认真，认真的人运气不会太差。"' }
 ];
 

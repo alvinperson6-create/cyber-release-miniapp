@@ -1,4 +1,4 @@
-// 赛博放生局 · 收据组件
+// 赛博放生 · 收据组件
 const { CREATURES, WATERS } = require('../../utils/data.js');
 
 Component({

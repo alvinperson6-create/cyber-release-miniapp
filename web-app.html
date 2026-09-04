@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>赛博放生局 · 电子河流</title>
+<title>赛博放生 · 电子河流</title>
 <style>
 /* ==================== Reset & Base ==================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -68,6 +68,8 @@ textarea, input { font-family: inherit; }
     radial-gradient(ellipse 60% 40% at 30% 40%, rgba(255,255,255,0.18), transparent 60%),
     radial-gradient(ellipse 50% 35% at 70% 60%, rgba(255,255,255,0.12), transparent 60%);
   animation: waterShimmer 18s ease-in-out infinite alternate;
+  will-change: transform;
+  transform: translateZ(0);
 }
 .water-bg::after {
   animation: waterShimmer2 24s ease-in-out infinite alternate;
@@ -111,6 +113,8 @@ textarea, input { font-family: inherit; }
       transparent 240px
     );
   animation: rippleDrift 30s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 @keyframes rippleDrift {
   0%   { transform: translate(0, 0); }
@@ -135,9 +139,7 @@ textarea, input { font-family: inherit; }
   align-items: center;
   justify-content: space-between;
   padding: 0 28px;
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  background: rgba(255, 255, 255, 0.92);
   border-bottom: 1px solid rgba(255, 255, 255, 0.4);
   position: relative;
   z-index: 10;
@@ -249,6 +251,26 @@ textarea, input { font-family: inherit; }
   overflow: hidden;
   min-height: 0;
 }
+.water-canvas {
+  position: relative;
+}
+
+.globe-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  touch-action: none;
+  cursor: grab;
+  z-index: 5;
+}
+
+.globe-canvas:active { cursor: grabbing; }
+
+.water-canvas.mode-3d .globe-canvas { display: block; }
+.water-canvas.mode-3d .world-map { visibility: hidden; }
+
 .world-map {
   position: absolute;
   inset: 0;
@@ -592,6 +614,8 @@ textarea, input { font-family: inherit; }
 
 /* Release button */
 .release-btn {
+  position: relative;
+  overflow: hidden;
   width: 100%;
   margin-top: 6px;
   padding: 16px;
@@ -730,6 +754,7 @@ textarea, input { font-family: inherit; }
   gap: 14px;
   -webkit-overflow-scrolling: touch;
   align-content: start;
+  align-items: start;
 }
 .record-list::-webkit-scrollbar { width: 4px; }
 .record-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
@@ -744,15 +769,13 @@ textarea, input { font-family: inherit; }
 }
 
 .record-card {
-  background: rgba(255, 253, 247, 0.85);
+  background: rgba(255, 253, 247, 0.95);
   border: 1px solid var(--line-soft);
   border-radius: 14px;
   padding: 16px;
-  transition: all 0.2s;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  transition: box-shadow 0.2s, border-color 0.2s;
 }
-.record-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); border-color: var(--line); }
+.record-card:hover { box-shadow: var(--shadow-card); border-color: var(--line); }
 .record-card.has-reply { cursor: pointer; }
 .record-card.has-reply:hover { border-color: var(--teal); }
 
@@ -797,16 +820,16 @@ textarea, input { font-family: inherit; }
 }
 
 .reply-block {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
-  margin-top: 0;
-}
-.reply-block.expanded {
   max-height: 600px;
+  overflow: hidden;
   opacity: 1;
   margin-top: 12px;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
+}
+.reply-block.collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
 }
 .reply-inner {
   padding: 12px;
@@ -821,9 +844,73 @@ textarea, input { font-family: inherit; }
   margin-bottom: 8px;
   font-weight: 500;
 }
-.reply-image {
+/* ===== 漂流瓶拆封 ===== */
+.bottle-block {
+  margin: 10px 0 4px;
+  padding: 22px 12px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(207,228,221,.5), rgba(169,210,197,.35));
+  border: 1px dashed var(--teal, #4a9c86);
+  border-radius: 14px;
+}
+
+.bottle-visual {
+  font-size: 44px;
+  animation: bottleBob 2.6s ease-in-out infinite;
+}
+
+@keyframes bottleBob {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-8px) rotate(4deg); }
+}
+
+.bottle-text {
+  margin: 8px 0 12px;
+  font-size: 13px;
+  color: var(--ink, #2f4f48);
+}
+
+.bottle-open-btn {
+  padding: 8px 18px;
+  font-size: 13px;
+  border-radius: 18px;
+  border: 1px solid var(--coral, #ed7d5b);
+  background: transparent;
+  color: var(--coral, #ed7d5b);
+  cursor: pointer;
+  transition: all .25s;
+}
+
+.bottle-open-btn:hover { background: var(--coral, #ed7d5b); color: #fff; }
+
+.tts-btn {
+  margin-left: 8px;
+  padding: 2px 10px;
+  font-size: 11px;
+  border-radius: 12px;
+  border: 1px solid var(--teal, #4a9c86);
+  background: transparent;
+  color: var(--teal, #4a9c86);
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.reply-image {  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: block;
+  cursor: zoom-in;
+  background: rgba(0,0,0,0.05);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.reply-image-fallback {
   width: 100%;
-  height: 80px;
+  height: 120px;
   border-radius: 8px;
   margin-bottom: 8px;
   display: flex;
@@ -833,6 +920,13 @@ textarea, input { font-family: inherit; }
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+@keyframes previewFadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+.preview-image-full {
+  animation: previewFadeIn 0.25s ease;
 }
 .reply-text {
   font-size: 12px;
@@ -1065,9 +1159,7 @@ textarea, input { font-family: inherit; }
 .destiny-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(31, 58, 54, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(31, 58, 54, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1097,6 +1189,104 @@ textarea, input { font-family: inherit; }
 .destiny-overlay.show .destiny-modal { transform: translateY(0) scale(1); }
 .destiny-modal::-webkit-scrollbar { width: 4px; }
 .destiny-modal::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+/* ===== 命运航线图 ===== */
+.destiny-route {
+  margin: 0 0 12px;
+  padding: 8px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 12px;
+}
+
+.destiny-route svg { width: 100%; display: block; }
+
+.destiny-route-line {
+  animation: routeFlow 2.2s linear infinite;
+}
+
+@keyframes routeFlow {
+  to { stroke-dashoffset: -16; }
+}
+
+.destiny-route-hint {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(47,79,72,0.6);
+  margin-top: 2px;
+}
+
+/* ===== 年度放生报告 ===== */
+.annual-report-btn {
+  margin-left: auto;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 12px;
+  border: 1px solid var(--coral, #ed7d5b);
+  background: transparent;
+  color: var(--coral, #ed7d5b);
+  cursor: pointer;
+}
+
+.annual-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(15,35,32,0.72);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: previewFadeIn .3s ease;
+}
+
+.annual-card {
+  width: 100%;
+  max-width: 340px;
+  max-height: 82vh;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #10282f, #1c4b4a);
+  border-radius: 20px;
+  padding: 26px 22px;
+  text-align: center;
+  color: #f0e6d0;
+}
+
+.annual-title { font-size: 20px; font-weight: 700; }
+.annual-sub { font-size: 10px; letter-spacing: 2px; opacity: .55; margin: 4px 0 18px; }
+.annual-line.big { font-size: 52px; font-weight: 800; color: #ffd970; }
+.annual-line.big .unit { font-size: 16px; margin-left: 4px; color: #f0e6d0; }
+.annual-cap { font-size: 13px; opacity: .85; margin-bottom: 18px; }
+.annual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.annual-cell {
+  background: rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 12px 8px;
+  font-size: 11px;
+}
+.annual-cell .num { font-size: 22px; margin-bottom: 4px; }
+.annual-quote {
+  margin-top: 16px;
+  padding: 12px;
+  border-left: 2px solid #ffd970;
+  background: rgba(255,217,112,0.08);
+  border-radius: 0 10px 10px 0;
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: left;
+}
+.annual-quote-from { margin-top: 6px; opacity: .55; font-size: 10px; text-align: right; }
+.annual-close {
+  margin-top: 18px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 24px;
+  background: #ed7d5b;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
 
 .destiny-header {
   text-align: center;
@@ -1417,6 +1607,29 @@ textarea, input { font-family: inherit; }
   .section-block { margin-bottom: 18px; }
   .release-btn { padding: 14px; font-size: 15px; }
 }
+
+/* ===== 长按蓄力放生 ===== */
+.release-btn.charging {
+  animation: chargeGlow 1.2s ease-in-out infinite;
+  transform: scale(0.97);
+}
+
+@keyframes chargeGlow {
+  0%, 100% { box-shadow: 0 6px 18px rgba(237,125,91,.45); }
+  50% { box-shadow: 0 6px 34px rgba(237,125,91,.95), 0 0 60px rgba(255,179,138,.5); }
+}
+
+.release-btn.charging::after {
+  content: '深呼吸 · 长按送它走';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.28);
+  letter-spacing: 2px;
+  font-size: 13px;
+}
 </style>
 </head>
 <body>
@@ -1430,7 +1643,7 @@ textarea, input { font-family: inherit; }
   <nav class="top-nav">
     <div class="nav-logo">
       <span class="logo-mark">放</span>
-      <span class="logo-text">赛博放生局</span>
+      <span class="logo-text">赛博放生</span>
     </div>
     <div class="nav-toggle" id="navToggle">
       <button class="nav-pill active" data-page="release">放生</button>
@@ -1486,12 +1699,41 @@ textarea, input { font-family: inherit; }
 <!-- Pay Toast -->
 <div class="destiny-pay-toast" id="destinyPayToast"></div>
 
+<!-- 3D 地球依赖：本地 vendor 优先，CDN 兜底；失败自动回落 2D 地图 -->
+<script src="/vendor/three.min.js" onerror="this.remove()"></script>
+<script>
+  if (typeof THREE === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"><\/script>');
+  }
+</script>
+<script src="/globe3d.js"></script>
+<script>
+  // 加载与小程序共享的 3D 地球配置（失败则用 globe3d.js 内置兜底常量）
+  (function () {
+    var inject = function (cfg) { if (window.Globe3D) Globe3D.loadConfig(cfg); };
+    var fallback = {
+      WATERS_GEO: {
+        pacific: { lat: 0, lng: -160 }, atlantic: { lat: 15, lng: -40 }, indian: { lat: -25, lng: 75 },
+        arctic: { lat: 85, lng: 0 }, aegean: { lat: 38, lng: 25 }, galapagos: { lat: -0.7, lng: -90.5 },
+        baikal: { lat: 53.5, lng: 108 }, ness: { lat: 57.3, lng: -4.4 }, xihu: { lat: 30.2, lng: 120.1 },
+        deadsea: { lat: 31.5, lng: 35.5 }, xiang: { lat: 28, lng: 113 }, mariana: { lat: 11.3, lng: 142.2 }
+      },
+      CREATURE_3D: {
+        koi: { color: 0xed7d5b, glow: 0xffb38a }, turtle: { color: 0x7fb6a4, glow: 0xa9d2c5 },
+        cloud: { color: 0xf0e6d0, glow: 0xffffff }
+      },
+      GLOBE_ANIM: { CHARGE_MIN_MS: 600, DIVE_MS: 1600, RIPPLE_MS: 2400, BUBBLE_COUNT: 40, FOCUS_MS: 900, AUTO_ROTATE_SPEED: 0.0004 }
+    };
+    window.__globeConfigReady = fetch('/globe-config.json').then(r => r.ok ? r.json() : Promise.reject())
+      .then(inject).catch(function () { inject(fallback); });
+  })();
+</script>
 <script>
 (function() {
   'use strict';
 
   // ==================== API Layer ====================
-  const API_BASE = 'http://localhost:3000/api';
+  const API_BASE = '/api';
   const USE_API = true; // Set to true when backend is running
 
   async function apiRelease(data) {
@@ -1509,7 +1751,7 @@ textarea, input { font-family: inherit; }
       return await res.json();
     } catch (e) {
       console.error('[apiRelease] 失败:', e);
-      alert('后端 API 连接失败，无法放生。请确认：\n1. 已在 server 目录运行 npm start\n2. 访问的是 http://localhost:3000\n3. 不是 file:// 打开的文件\n\n错误：' + e.message);
+      alert('后端 API 连接失败，无法放生。请确认：\n1. 已在 server 目录运行 npm start\n2. 访问的是 http://localhost:3001\n3. 不是 file:// 打开的文件\n\n错误：' + e.message);
       throw e;
     }
   }
@@ -1593,9 +1835,9 @@ textarea, input { font-family: inherit; }
   const STORAGE_KEY = 'cyber_release_records';
 
   const CREATURES = {
-    koi: { name: '电子锦鲤', emoji: '🐟' },
-    turtle: { name: '电子乌龟', emoji: '🐢' },
-    cloud: { name: '电子云朵', emoji: '☁️' }
+    koi: { name: '锦鲤', emoji: '🐟' },
+    turtle: { name: '乌龟', emoji: '🐢' },
+    cloud: { name: '云朵', emoji: '☁️' }
   };
 
   const WATERS = {
@@ -1711,9 +1953,9 @@ textarea, input { font-family: inherit; }
   const REPLY_POOL = [
     { bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)', emoji: '🌿', text: '你放生的那只小家伙在电子水域里安顿下来了。它托我转告：你此刻觉得过不去的坎，三个月后回头看连坎都不算。深呼吸，没事的。' },
     { bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)', emoji: '🌙', text: '今晚的水域很安静。你的感受已经被收到了——不是被解决了，是被听到了。有些事不需要解决，被听到就够了。' },
-    { bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)', emoji: '🔥', text: '好消息：你焦虑的事有 87% 不会发生。坏消息：剩下 13% 你也管不了。所以这只电子生物决定替你扛着，你先去吃顿好的。' },
+    { bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)', emoji: '🔥', text: '好消息：你焦虑的事有 87% 不会发生。坏消息：剩下 13% 你也管不了。所以这只生物决定替你扛着，你先去吃顿好的。' },
     { bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)', emoji: '✨', text: '它游了一圈回来说：你比自己以为的要结实。那些让你觉得要碎掉的时刻，其实你一次都没真碎过。这次也不会。' },
-    { bg: 'linear-gradient(135deg, #fff3cd, #ffd970)', emoji: '☀️', text: '报告！你的电子生物已在虚拟水域完成打卡。它观察到：你最近对自己太严格了。建议本周至少做两件"没用但开心"的事。' },
+    { bg: 'linear-gradient(135deg, #fff3cd, #ffd970)', emoji: '☀️', text: '报告！你的生物已在虚拟水域完成打卡。它观察到：你最近对自己太严格了。建议本周至少做两件"没用但开心"的事。' },
     { bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)', emoji: '🌊', text: '水域温度 22°C，生物状态良好。它给你带了一句话："紧张说明你在乎，在乎说明你认真，认真的人运气不会太差。"' }
   ];
 
@@ -1755,7 +1997,8 @@ textarea, input { font-family: inherit; }
     showReceipt: false,
     receipt: null,
     todayCount: 1247,
-    openid: getOpenid()
+    openid: getOpenid(),
+    archiveCollapsedIds: new Set()
   };
 
   // ==================== Map State ====================
@@ -1856,7 +2099,7 @@ textarea, input { font-family: inherit; }
 
   // 本地命运轨迹模板生成（与 server/ai.js templateDestiny 保持一致）
   function localGenerateDestinySegments(creature) {
-    const creatureName = CREATURES[creature]?.name || '电子生物';
+    const creatureName = CREATURES[creature]?.name || '生物';
     const palettes = [
       { bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)', emoji: '🌿' },
       { bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)', emoji: '🌊' },
@@ -2125,7 +2368,8 @@ textarea, input { font-family: inherit; }
     const btnText = state.isReleased ? '正在放生…' : (ready ? '按下放生' : '选好啦 · 按下放生');
 
     $('releaseContent').innerHTML = `
-      <div class="water-canvas">
+      <div class="water-canvas" id="waterCanvasBox">
+        <canvas class="globe-canvas" id="globeCanvas"></canvas>
         <div class="world-map" id="worldMap">
           <svg class="map-svg" id="mapSvg" viewBox="${mapVb.x} ${mapVb.y} ${MAP_VB.w} ${MAP_VB.h}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -2158,6 +2402,7 @@ textarea, input { font-family: inherit; }
         <div class="river-stat">
           <div class="stat-line">已选 · <span class="num" id="selectedWater">${waterName}</span></div>
           <div class="stat-line muted">今日放生 <span id="todayCount">${state.todayCount.toLocaleString()}</span></div>
+          <div class="stat-line muted" id="worldPulseLine">此刻世界上有 <span id="worldAliveCount">…</span> 条生命在流浪</div>
         </div>
       </div>
       <div class="control-panel">
@@ -2173,9 +2418,9 @@ textarea, input { font-family: inherit; }
           <div class="section-block">
             <div class="section-label"><span class="label-num">2</span>想放生一只</div>
             <div class="creature-chips" id="creatureChips">
-              <button class="chip coral ${state.creature === 'koi' ? 'active' : ''}" data-creature="koi">🐟 电子锦鲤</button>
-              <button class="chip coral ${state.creature === 'turtle' ? 'active' : ''}" data-creature="turtle">🐢 电子乌龟</button>
-              <button class="chip coral ${state.creature === 'cloud' ? 'active' : ''}" data-creature="cloud">☁️ 电子云朵</button>
+              <button class="chip coral ${state.creature === 'koi' ? 'active' : ''}" data-creature="koi">🐟 锦鲤</button>
+              <button class="chip coral ${state.creature === 'turtle' ? 'active' : ''}" data-creature="turtle">🐢 乌龟</button>
+              <button class="chip coral ${state.creature === 'cloud' ? 'active' : ''}" data-creature="cloud">☁️ 云朵</button>
             </div>
           </div>
           <div class="section-block">
@@ -2395,10 +2640,97 @@ textarea, input { font-family: inherit; }
       });
     }
 
-    // Release button
+    // Release button —— 长按蓄力放生（松手触发），快速点击仍可用
     if (releaseBtn) {
-      releaseBtn.addEventListener('click', triggerRelease);
+      let pressTimer = null;
+      const CHARGE_MS = 600;
+      const vibrate = (p) => { if (navigator.vibrate) try { navigator.vibrate(p); } catch(_) {} };
+      const startCharge = () => {
+        if (releaseBtn.disabled || state.isReleased) return;
+        releaseBtn.classList.add('charging');
+        vibrate(30);
+        pressTimer = setTimeout(() => vibrate([40, 60, 40]), CHARGE_MS);
+      };
+      const endCharge = (fire) => {
+        releaseBtn.classList.remove('charging');
+        if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+        if (fire) triggerRelease();
+      };
+      releaseBtn.addEventListener('pointerdown', (e) => {
+        if (releaseBtn.disabled) return;
+        e.preventDefault();
+        startCharge();
+        const onUp = (ev) => {
+          document.removeEventListener('pointerup', onUp);
+          document.removeEventListener('pointercancel', onUp);
+          endCharge(true);
+        };
+        document.addEventListener('pointerup', onUp);
+        document.addEventListener('pointercancel', onUp);
+      });
+      releaseBtn.addEventListener('click', (e) => e.preventDefault()); // 由长按逻辑接管
+      releaseBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); triggerRelease(); }
+      });
     }
+
+    // ==================== 3D 地球初始化（失败回落 2D） ====================
+    initGlobe3D();
+  }
+
+  let globeActive = false;
+
+  async function initGlobe3D() {
+    const canvas = $('globeCanvas');
+    const box = $('waterCanvasBox');
+    if (!canvas || !box || typeof Globe3D === 'undefined') return;
+    try { await window.__globeConfigReady; } catch(_) {}
+    const ok = Globe3D.init({
+      canvas,
+      onSelect: (waterId) => {
+        if (state.isReleased) return;
+        selectWater(waterId);
+      },
+      disabled: () => state.isReleased
+    });
+    if (ok) {
+      globeActive = true;
+      box.classList.add('mode-3d');
+      const hint = $('mapHint');
+      if (hint) { hint.style.visibility = 'visible'; hint.textContent = '转动地球 · 点选水域'; }
+      if (state.water) Globe3D.setMarkersState(state.water);
+      startWorldPulse();
+    }
+  }
+
+  // ==================== 世界脉搏：全球共时感 ====================
+  let worldPulseSeen = new Set();
+  let worldPulseTimer = null;
+
+  async function fetchWorldPulse() {
+    try {
+      const r = await fetch('/api/world/pulse');
+      if (!r.ok) return;
+      const data = await r.json();
+      const num = $('worldAliveCount');
+      if (num) num.textContent = data.total.toLocaleString();
+      // 最近放生 → 球面亮起光点（只对未见过的）
+      for (const item of (data.recent || [])) {
+        const key = item.ts + ':' + item.water + ':' + item.feeling;
+        if (worldPulseSeen.has(key)) continue;
+        worldPulseSeen.add(key);
+        if (Date.now() - item.ts < 5 * 60 * 1000 && globeActive && Globe3D.addSpark) {
+          const w = (Globe3D.WATERS_GEO || {})[item.water];
+          if (w) Globe3D.addSpark({ lat: w.lat, lng: w.lng });
+        }
+      }
+    } catch (_) { /* 离线静默 */ }
+  }
+
+  function startWorldPulse() {
+    if (!USE_API || worldPulseTimer) return;
+    fetchWorldPulse();
+    worldPulseTimer = setInterval(fetchWorldPulse, 30000);
   }
 
   function updateReleaseBtn() {
@@ -2421,6 +2753,7 @@ textarea, input { font-family: inherit; }
 
   function selectWater(waterId) {
     state.water = waterId;
+    if (globeActive && typeof Globe3D !== 'undefined') Globe3D.focusWater(waterId);
     document.querySelectorAll('.water-marker').forEach(m => {
       m.classList.toggle('selected', m.dataset.water === waterId);
     });
@@ -2434,6 +2767,53 @@ textarea, input { font-family: inherit; }
     updateReleaseBtn();
   }
 
+  // ==================== WebAudio 音效（合成，无外部文件） ====================
+  const Sfx = (() => {
+    let ctx = null;
+    function ac() {
+      if (!ctx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        ctx = new AC();
+      }
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+    function tone(freq, dur, { type = 'sine', gain = 0.12, slideTo = null, delay = 0 } = {}) {
+      const c = ac(); if (!c) return;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type;
+      const t0 = c.currentTime + delay;
+      o.frequency.setValueAtTime(freq, t0);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+      g.gain.setValueAtTime(gain, t0);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+      o.connect(g).connect(c.destination);
+      o.start(t0); o.stop(t0 + dur + 0.05);
+    }
+    function noise(dur, { gain = 0.15, lp = 1200, delay = 0 } = {}) {
+      const c = ac(); if (!c) return;
+      const len = Math.floor(c.sampleRate * dur);
+      const buf = c.createBuffer(1, len, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      const src = c.createBufferSource(); src.buffer = buf;
+      const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = lp;
+      const g = c.createGain();
+      const t0 = c.currentTime + delay;
+      g.gain.setValueAtTime(gain, t0);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+      src.connect(f).connect(g).connect(c.destination);
+      src.start(t0);
+    }
+    return {
+      dive() { tone(660, 0.5, { type: 'sine', slideTo: 160, gain: 0.1 }); },
+      splash() { noise(0.7, { gain: 0.22, lp: 900 }); tone(180, 0.3, { slideTo: 60, gain: 0.08 }); },
+      ripple() { tone(520, 1.2, { type: 'sine', gain: 0.05, slideTo: 320 }); },
+      stamp() { noise(0.12, { gain: 0.3, lp: 2500 }); tone(140, 0.15, { type: 'square', gain: 0.06 }); }
+    };
+  })();
+
   // ==================== Release Trigger ====================
   function triggerRelease() {
     if (!state.feeling.trim() || !state.creature || !state.water || state.isReleased) return;
@@ -2441,12 +2821,22 @@ textarea, input { font-family: inherit; }
     updateReleaseBtn();
 
     const creatureLayer = $('creatureLayer');
-    if (creatureLayer) creatureLayer.classList.add('released');
+    const finish = () => showReceipt();
 
-    setTimeout(showReceipt, 800);
+    if (globeActive && typeof Globe3D !== 'undefined' && Globe3D.playRelease) {
+      if (creatureLayer) creatureLayer.style.opacity = '0';
+      Sfx.dive();
+      setTimeout(() => { Sfx.splash(); Sfx.ripple(); }, 1500);
+      Globe3D.playRelease({ creature: state.creature, water: state.water }).then(finish);
+    } else {
+      if (creatureLayer) creatureLayer.classList.add('released');
+      Sfx.splash();
+      setTimeout(finish, 800);
+    }
   }
 
   function showReceipt() {
+    Sfx.stamp();
     const id = generateId();
     const sign = rand(SIGNS[state.creature]);
     const fbLabel = getFeedbackLabel();
@@ -2493,7 +2883,7 @@ textarea, input { font-family: inherit; }
       <div class="receipt-rows">
         <div class="receipt-row"><span class="row-key">护生编号</span><span class="row-val mono">${id}</span></div>
         <div class="receipt-row"><span class="row-key">放生地点</span><span class="row-val serif">${WATERS[state.water].name}</span></div>
-        <div class="receipt-row"><span class="row-key">电子生物</span><span class="row-val">${CREATURES[state.creature].emoji} ${CREATURES[state.creature].name}</span></div>
+        <div class="receipt-row"><span class="row-key">生物</span><span class="row-val">${CREATURES[state.creature].emoji} ${CREATURES[state.creature].name}</span></div>
         <div class="receipt-row"><span class="row-key">放生时间</span><span class="row-val mono">${receipt.timeStr}</span></div>
       </div>
       <div class="receipt-feeling">
@@ -2509,7 +2899,7 @@ textarea, input { font-family: inherit; }
         <div class="block-text">📬 <strong>${fbLabel}</strong> 以图文形式推送，基于你此刻的感受生成 · <span class="mute">可能治愈、可能搞怪</span></div>
       </div>
       <div class="receipt-actions">
-        <button class="btn-line" id="shareBtn">分享到群</button>
+        <button class="btn-line" id="shareBtn">生成放生海报</button>
         <button class="btn-primary" id="againBtn">再来一只</button>
       </div>
       <div class="receipt-footer">
@@ -2521,9 +2911,109 @@ textarea, input { font-family: inherit; }
     $('receiptOverlay').classList.add('show');
 
     $('shareBtn').addEventListener('click', () => {
-      const btn = $('shareBtn');
+      sharePoster();
+    });
+
+    $('againBtn').addEventListener('click', closeReceipt);
+  }
+
+  // ==================== 放生瞬间海报（Canvas 绘制，星象风格） ====================
+  function drawPoster(r) {
+    const W = 750, H = 1200;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+
+    // 星空底
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#0e2a33');
+    grad.addColorStop(0.55, '#1c4b4a');
+    grad.addColorStop(1, '#2e6f60');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < 160; i++) {
+      const x = Math.random() * W, y = Math.random() * H * 0.8;
+      const s = Math.random() * 1.8 + 0.4;
+      ctx.fillStyle = `rgba(255,255,255,${0.25 + Math.random() * 0.6})`;
+      ctx.beginPath(); ctx.arc(x, y, s, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // 月亮
+    ctx.fillStyle = 'rgba(255,246,224,0.95)';
+    ctx.beginPath(); ctx.arc(W - 130, 140, 46, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(28,75,74,0.55)';
+    ctx.beginPath(); ctx.arc(W - 112, 126, 40, 0, Math.PI * 2); ctx.fill();
+
+    // 水面
+    ctx.fillStyle = 'rgba(10,30,34,0.65)';
+    ctx.fillRect(0, H * 0.78, W, H * 0.22);
+    for (let i = 0; i < 26; i++) {
+      const y = H * 0.8 + Math.random() * H * 0.18;
+      ctx.strokeStyle = `rgba(169,210,197,${0.06 + Math.random() * 0.12})`;
+      ctx.lineWidth = 1 + Math.random() * 2;
+      const x = Math.random() * W, w = 40 + Math.random() * 140;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w, y); ctx.stroke();
+    }
+
+    // 生物剪影（emoji 放大 + 光晕）
+    const emoji = CREATURES[r.creature].emoji;
+    ctx.save();
+    ctx.shadowColor = 'rgba(255,179,138,0.9)';
+    ctx.shadowBlur = 60;
+    ctx.font = '150px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(emoji, W / 2, H * 0.46);
+    ctx.restore();
+    // 涟漪
+    for (let i = 1; i <= 3; i++) {
+      ctx.strokeStyle = `rgba(223,243,236,${0.5 / i})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(W / 2, H * 0.8, 70 * i, 14 * i, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // 文案
+    ctx.fillStyle = '#f0e6d0';
+    ctx.textAlign = 'center';
+    ctx.font = '600 44px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText(`放生于 · ${WATERS[r.water].name}`, W / 2, H * 0.60);
+    ctx.font = '26px "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillStyle = 'rgba(240,230,208,0.85)';
+    const signLines = wrapText(ctx, r.sign, W - 160);
+    signLines.forEach((line, i) => ctx.fillText(line, W / 2, H * 0.66 + i * 40));
+    ctx.font = '22px monospace';
+    ctx.fillStyle = 'rgba(223,243,236,0.7)';
+    ctx.fillText(`护生编号 ${r.id}`, W / 2, H * 0.90);
+    ctx.font = '20px "PingFang SC", sans-serif';
+    ctx.fillStyle = 'rgba(223,243,236,0.5)';
+    ctx.fillText(`${r.timeStr} · 赛博放生`, W / 2, H * 0.94);
+    return c;
+  }
+
+  function wrapText(ctx, text, maxW) {
+    const lines = [];
+    let line = '';
+    for (const ch of text) {
+      if (ctx.measureText(line + ch).width > maxW) { lines.push(line); line = ch; }
+      else line += ch;
+    }
+    if (line) lines.push(line);
+    return lines.slice(0, 2);
+  }
+
+  function sharePoster() {
+    const btn = $('shareBtn');
+    if (!state.receipt) return;
+    try {
+      const c = drawPoster(state.receipt);
+      const url = c.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `赛博放生-${state.receipt.id}.png`;
+      a.click();
       const orig = btn.textContent;
-      btn.textContent = '✓ 已生成卡片';
+      btn.textContent = '✓ 海报已保存';
       btn.style.color = 'var(--teal)';
       btn.style.borderColor = 'var(--teal)';
       setTimeout(() => {
@@ -2531,9 +3021,9 @@ textarea, input { font-family: inherit; }
         btn.style.color = '';
         btn.style.borderColor = '';
       }, 1500);
-    });
-
-    $('againBtn').addEventListener('click', closeReceipt);
+    } catch (e) {
+      console.error('[poster] 生成失败:', e);
+    }
   }
 
   function closeReceipt() {
@@ -2589,6 +3079,7 @@ textarea, input { font-family: inherit; }
         const water = WATERS[r.water] || { name: r.water };
         const hasReply = !!r.reply;
         const timeStr = formatTime(r.createdAt);
+        const isCollapsed = state.archiveCollapsedIds.has(r.id);
 
         let inner = `
           <div class="record-header">
@@ -2600,11 +3091,24 @@ textarea, input { font-family: inherit; }
         `;
 
         if (hasReply) {
+          const opened = localStorage.getItem('cyber_bottle_opened_' + r.id);
+          if (!opened) {
+            // 漂流瓶待拆封
+            inner += `
+              <div class="bottle-block" data-record-id="${r.id}">
+                <div class="bottle-visual">🍶</div>
+                <div class="bottle-text">一只漂流瓶漂到了岸边</div>
+                <button class="bottle-open-btn" data-bottle-open="${r.id}">拔开瓶塞 · 拆读回信</button>
+              </div>
+            `;
+          } else {
           inner += `
-            <div class="reply-block">
+            <div class="reply-block ${isCollapsed ? 'collapsed' : ''}">
               <div class="reply-inner">
-                <div class="reply-label">📬 AI 回信 · ${r.feedbackLabel}</div>
-                <div class="reply-image" style="background: ${r.reply.image ? `url('${r.reply.image}'), ` : ''}${r.reply.bg};">${r.reply.emoji}</div>
+                <div class="reply-label">📬 AI 回信 · ${r.feedbackLabel}
+                  <button class="tts-btn" data-tts="${r.id}" title="听它读给你">🔊 听它说</button>
+                </div>
+                ${r.reply.image ? `<img class="reply-image" src="${r.reply.image}" alt="回信配图" data-full="${r.reply.image}">` : `<div class="reply-image-fallback" style="background: ${r.reply.bg};">${r.reply.emoji}</div>`}
                 <div class="reply-text">${r.reply.text}</div>
                 <div class="destiny-entry" data-record-id="${r.id}">
                   <span class="destiny-entry-label">✨ 命运轨迹</span>
@@ -2613,15 +3117,17 @@ textarea, input { font-family: inherit; }
               </div>
             </div>
           `;
+          }
         } else {
+          const isWriting = Date.now() >= r.replyAt;
           inner += `
             <div class="countdown-block" data-reply-at="${r.replyAt}">
-              ⏳ 回信倒计时 <span class="countdown-time">${formatCountdown(r.replyAt - Date.now())}</span>
+              ${isWriting ? '✍️ 信件正在撰写中…' : `⏳ 回信倒计时 <span class="countdown-time">${formatCountdown(r.replyAt - Date.now())}</span>`}
             </div>
           `;
         }
 
-        return `<div class="record-card ${hasReply ? 'has-reply' : ''}" data-idx="${i}">${inner}</div>`;
+        return `<div class="record-card ${hasReply ? 'has-reply' : ''}" data-idx="${i}" data-record-id="${r.id}">${inner}</div>`;
       }).join('');
     }
 
@@ -2648,11 +3154,13 @@ textarea, input { font-family: inherit; }
             <div class="stat-num teal">${stats.replied}</div>
             <div class="stat-label">已回信</div>
           </div>
+          <button class="annual-report-btn" id="annualReportBtn">🎯 我的放生报告</button>
         </div>
         <div class="record-list" id="recordList">${listHtml}</div>
       </div>
     `;
 
+    state.archiveRecords = records;
     attachArchiveHandlers();
   }
 
@@ -2665,9 +3173,15 @@ textarea, input { font-family: inherit; }
       card.addEventListener('click', (e) => {
         // 点击命运轨迹入口时不折叠/展开回信
         if (e.target.closest('.destiny-entry')) return;
+        const recordId = card.dataset.recordId;
         const replyBlock = card.querySelector('.reply-block');
-        if (replyBlock) {
-          replyBlock.classList.toggle('expanded');
+        if (!replyBlock) return;
+
+        replyBlock.classList.toggle('collapsed');
+        if (replyBlock.classList.contains('collapsed')) {
+          state.archiveCollapsedIds.add(recordId);
+        } else {
+          state.archiveCollapsedIds.delete(recordId);
         }
       });
     });
@@ -2680,6 +3194,93 @@ textarea, input { font-family: inherit; }
         openDestinyModal(recordId);
       });
     });
+
+    // 年度放生报告
+    const annualBtn = $('annualReportBtn');
+    if (annualBtn) {
+      annualBtn.addEventListener('click', () => showAnnualReport(state.archiveRecords));
+    }
+
+    // 回信配图点击放大
+    list.querySelectorAll('.reply-image').forEach(img => {
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        previewImage(img.dataset.full || img.src);
+      });
+    });
+
+    // 漂流瓶拆封
+    list.querySelectorAll('[data-bottle-open]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.bottleOpen;
+        localStorage.setItem('cyber_bottle_opened_' + id, '1');
+        Sfx.ripple();
+        if (navigator.vibrate) { try { navigator.vibrate(30); } catch(_) {} }
+        renderArchive();
+      });
+    });
+
+    // AI 回信语音朗读（Web Speech，生物专属音色）
+    list.querySelectorAll('[data-tts]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.tts;
+        const rec = records.find(x => x.id === id);
+        if (!rec || !rec.reply || !window.speechSynthesis) return;
+        if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; }
+        const u = new SpeechSynthesisUtterance(rec.reply.text);
+        u.lang = 'zh-CN';
+        // 生物专属音色：锦鲤轻快 / 乌龟低沉 / 云朵轻飘
+        if (rec.creature === 'turtle') { u.pitch = 0.6; u.rate = 0.85; }
+        else if (rec.creature === 'cloud') { u.pitch = 1.5; u.rate = 0.95; }
+        else { u.pitch = 1.15; u.rate = 1.0; }
+        speechSynthesis.speak(u);
+      });
+    });
+  }
+
+  // ==================== 年度放生报告 ====================
+  function showAnnualReport(records) {
+    if (!records || !records.length) return;
+    const byCreature = {}, byWater = {};
+    let repliedCount = 0, firstReplyText = '';
+    for (const r of records) {
+      byCreature[r.creature] = (byCreature[r.creature] || 0) + 1;
+      byWater[r.water] = (byWater[r.water] || 0) + 1;
+      if (r.reply) {
+        repliedCount++;
+        if (!firstReplyText) firstReplyText = r.reply.text;
+      }
+    }
+    const top = (obj) => Object.entries(obj).sort((a, b) => b[1] - a[1])[0] || ['-', 0];
+    const [tc, tcn] = top(byCreature), [tw, twn] = top(byWater);
+    const year = new Date().getFullYear();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'annual-overlay';
+    overlay.innerHTML = `
+      <div class="annual-card">
+        <div class="annual-title">🌊 ${year} 放生报告</div>
+        <div class="annual-sub">CYBER RELEASE ANNUAL REPORT</div>
+        <div class="annual-body">
+          <div class="annual-line big">${records.length}<span class="unit">次</span></div>
+          <div class="annual-cap">这一年，你把 ${records.length} 份情绪送进了水里</div>
+          <div class="annual-grid">
+            <div class="annual-cell"><div class="num">${(CREATURES[tc] || { emoji: '🐟' }).emoji}</div><div>最常陪伴 · ${(CREATURES[tc] || { name: tc }).name} ×${tcn}</div></div>
+            <div class="annual-cell"><div class="num">📍</div><div>最常去 · ${(WATERS[tw] || { name: tw }).name} ×${twn}</div></div>
+            <div class="annual-cell"><div class="num">${repliedCount}</div><div>封回信已抵达</div></div>
+            <div class="annual-cell"><div class="num">${records.length - repliedCount}</div><div>份牵挂还在海上</div></div>
+          </div>
+          ${firstReplyText ? `<div class="annual-quote">"${firstReplyText.slice(0, 60)}${firstReplyText.length > 60 ? '…' : ''}"<div class="annual-quote-from">—— 最戳你的一封回信</div></div>` : ''}
+        </div>
+        <button class="annual-close">收好这份报告</button>
+      </div>
+    `;
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+    overlay.querySelector('.annual-close').addEventListener('click', () => overlay.remove());
+    document.body.appendChild(overlay);
+    Sfx.ripple();
   }
 
   // ==================== Destiny Modal (命运轨迹) ====================
@@ -2720,6 +3321,129 @@ textarea, input { font-family: inherit; }
     destinyState.recordId = null;
     destinyState.data = null;
     destinyState.loading = false;
+    // 关闭后清空 modal，避免下次打开先闪旧内容
+    setTimeout(() => {
+      const modal = $('destinyModal');
+      if (modal && !$('destinyOverlay').classList.contains('show')) {
+        modal.innerHTML = '';
+      }
+    }, 350);
+  }
+
+  function previewImage(src) {
+    const modal = $('destinyModal');
+    const overlay = $('destinyOverlay');
+    if (!modal || !overlay) return;
+
+    // 先显示 loading，避免空白闪烁
+    modal.innerHTML = `
+      <div style="padding:60px 16px;text-align:center;color:var(--ink-light);">
+        <div class="spinner" style="margin:0 auto 12px;"></div>
+        <div>图片加载中…</div>
+      </div>
+    `;
+    overlay.classList.add('show');
+
+    const img = new Image();
+    img.onload = () => {
+      modal.innerHTML = `
+        <div style="padding:16px;text-align:center;">
+          <img class="preview-image-full" src="${src}" style="max-width:100%;max-height:70vh;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);display:block;margin:0 auto;" alt="大图预览">
+          <div style="margin-top:16px;">
+            <button class="destiny-close-btn" onclick="document.getElementById('destinyOverlay').classList.remove('show')">关闭</button>
+          </div>
+        </div>
+      `;
+    };
+    img.onerror = () => {
+      modal.innerHTML = `
+        <div style="padding:60px 16px;text-align:center;color:var(--ink-light);">
+          <div>图片加载失败</div>
+          <div style="margin-top:16px;">
+            <button class="destiny-close-btn" onclick="document.getElementById('destinyOverlay').classList.remove('show')">关闭</button>
+          </div>
+        </div>
+      `;
+    };
+    img.src = src;
+  }
+
+  // ==================== 命运航线图：放生水域 → 离谱结局地点 ====================
+  // 常见地名经纬度速查（LLM 生成离谱地点多为真实地标），未命中时用稳定伪随机坐标
+  const LANDMARK_GEO = {
+    '东京': [35.7, 139.7], '巴黎': [48.9, 2.35], '纽约': [40.7, -74], '伦敦': [51.5, -0.1],
+    '冰岛': [64.9, -19], '雷克雅未克': [64.1, -21.9], '撒哈拉': [23.4, 12.6], '开罗': [30, 31.2],
+    '马里亚纳': [11.3, 142.2], '百慕大': [32.3, -64.8], '夏威夷': [19.8, -155.5], '檀香山': [21.3, -157.9],
+    '南极': [-80, 0], '北极': [85, 0], '珠峰': [27.99, 86.93], '珠穆朗玛': [27.99, 86.93],
+    '亚马逊': [-3.5, -62], '威尼斯': [45.4, 12.3], '罗马': [41.9, 12.5], '迪拜': [25.2, 55.3],
+    '马尔代夫': [3.2, 73.2], '大堡礁': [-18.3, 147.7], '好望角': [-34.4, 18.5], '圣地亚哥': [-33.4, -70.7],
+    '洛杉矶': [34, -118.2], '旧金山': [37.8, -122.4], '西雅图': [47.6, -122.3], '莫斯科': [55.8, 37.6],
+    '曼谷': [13.8, 100.5], '新加坡': [1.35, 103.8], '首尔': [37.6, 127], '孟买': [19, 72.9],
+    '伊斯坦布尔': [41, 29], '里约': [-22.9, -43.2], '开普敦': [-33.9, 18.4], '内罗毕': [-1.3, 36.8],
+    '拉萨': [29.7, 91.1], '成都': [30.6, 104.1], '重庆': [29.6, 106.5], '上海': [31.2, 121.5],
+    '北京': [39.9, 116.4], '香港': [22.3, 114.2], '台北': [25, 121.5], '京都': [35, 135.8],
+    '复活节岛': [-27.1, -109.4], '格陵兰': [72, -40], '芬迪湾': [45.3, -65], '死海': [31.5, 35.5],
+    '贝加尔': [53.5, 108], '尼斯湖': [57.3, -4.4], '西湖': [30.2, 120.1], '湘江': [28, 113]
+  };
+
+  function geocodeLocation(name) {
+    if (!name) return null;
+    for (const [k, v] of Object.entries(LANDMARK_GEO)) {
+      if (name.includes(k)) return { lat: v[0], lng: v[1] };
+    }
+    // 稳定伪随机（同一地点总落同一点）
+    let h = 0;
+    for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) | 0;
+    return { lat: (h % 14000) / 100 - 70, lng: ((h >> 8) % 34000) / 100 - 170 };
+  }
+
+  function latLngToSvg(lat, lng, W, H) {
+    return { x: ((lng + 180) / 360) * W, y: ((90 - lat) / 180) * H };
+  }
+
+  function buildRouteMapHtml(d) {
+    const waterGeo = (window.Globe3D && Globe3D.WATERS_GEO && Globe3D.WATERS_GEO[d.water]) || { lat: 0, lng: -160 };
+    const dest = geocodeLocation(d.location);
+    if (!dest) return '';
+    const W = 320, H = 120;
+    const a = latLngToSvg(waterGeo.lat, waterGeo.lng, W, H);
+    const b = latLngToSvg(dest.lat, dest.lng, W, H);
+    // 大弧线（控制点垂直抬升）
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const len = Math.hypot(dx, dy);
+    const lift = Math.min(46, len * 0.35);
+    const cx = mx - dy / (len || 1) * lift, cy = my + dx / (len || 1) * lift;
+    // 已解锁比例 → 航线绘制进度
+    const progress = d.totalSegments ? d.unlockedCount / d.totalSegments : 1;
+    const totalLen = Math.abs(len) * 1.15;
+    const drawn = totalLen * progress;
+    return `
+      <div class="destiny-route">
+        <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="routeArrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+              <circle cx="4" cy="4" r="3" fill="#ed7d5b"/>
+            </marker>
+          </defs>
+          <rect width="${W}" height="${H}" rx="10" fill="rgba(169,210,197,0.18)"/>
+          <path d="M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}" fill="none" stroke="rgba(74,156,134,0.3)" stroke-width="2" stroke-dasharray="3 4"/>
+          <path d="M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}" fill="none" stroke="#ed7d5b" stroke-width="2.5"
+                stroke-linecap="round" marker-end="url(#routeArrow)"
+                stroke-dasharray="${drawn} ${totalLen}" class="destiny-route-line"/>
+          <circle cx="${a.x}" cy="${a.y}" r="4" fill="#2c8a7a"/>
+          <circle cx="${a.x}" cy="${a.y}" r="7" fill="none" stroke="#2c8a7a" stroke-opacity="0.4">
+            <animate attributeName="r" values="5;10;5" dur="2.4s" repeatCount="indefinite"/>
+          </circle>
+          ${progress >= 1 ? `<circle cx="${b.x}" cy="${b.y}" r="6" fill="#ed7d5b" class="destiny-route-burst">
+            <animate attributeName="r" values="3;9;3" dur="1.6s" repeatCount="indefinite"/>
+          </circle>` : ''}
+          <text x="${a.x}" y="${Math.min(H - 4, a.y + 16)}" font-size="8" text-anchor="middle" fill="#2f4f48">${(WATERS[d.water] || {}).name || '放生点'}</text>
+          <text x="${Math.max(30, Math.min(W - 30, b.x))}" y="${Math.max(10, b.y - 8)}" font-size="8" text-anchor="middle" fill="#ed7d5b">${(d.location || '').slice(0, 8)}</text>
+        </svg>
+        <div class="destiny-route-hint">${progress >= 1 ? '航线抵达终点' : '解锁下一段，航线继续延伸'}</div>
+      </div>
+    `;
   }
 
   function renderDestinyModal() {
@@ -2799,6 +3523,7 @@ textarea, input { font-family: inherit; }
         <div class="destiny-subtitle">DESTINY TRAJECTORY</div>
         <div class="destiny-record-id">${d.recordId}</div>
       </div>
+      ${buildRouteMapHtml(d)}
       <div>${segmentsHtml}</div>
       <div class="destiny-actions">
         ${bundleBtnHtml}
@@ -2943,14 +3668,34 @@ textarea, input { font-family: inherit; }
   });
 
   // ==================== Countdown Timer ====================
+  let archivePollCounter = 0;
   setInterval(() => {
+    archivePollCounter++;
     checkPendingReplies();
     if (state.currentPage === 'archive') {
+      // 每 10 秒轮询一次后端记录，生成完成后自动刷新
+      if (USE_API && archivePollCounter % 10 === 0) {
+        apiGetRecords(state.openid).then(data => {
+          state.records = data.records;
+          renderArchive();
+        }).catch(err => {
+          console.error('[poll] 加载后端记录失败:', err);
+        });
+      }
       document.querySelectorAll('.countdown-block').forEach(el => {
         const replyAt = parseInt(el.dataset.replyAt);
-        const timeEl = el.querySelector('.countdown-time');
-        if (timeEl) {
-          timeEl.textContent = formatCountdown(replyAt - Date.now());
+        const remaining = replyAt - Date.now();
+        if (remaining <= 0) {
+          el.innerHTML = '✍️ 信件正在撰写中…';
+        } else {
+          let timeEl = el.querySelector('.countdown-time');
+          if (!timeEl) {
+            el.innerHTML = '⏳ 回信倒计时 <span class="countdown-time"></span>';
+            timeEl = el.querySelector('.countdown-time');
+          }
+          if (timeEl) {
+            timeEl.textContent = formatCountdown(remaining);
+          }
         }
       });
     }

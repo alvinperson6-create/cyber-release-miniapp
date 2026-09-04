@@ -1,4 +1,4 @@
-// 赛博放生局 · 放生页
+// 赛博放生 · 放生页
 const app = getApp();
 const {
   CREATURES, WATERS, WATER_COORDS, HOT_WATERS,
@@ -45,6 +45,8 @@ Page({
     // 交互状态
     isReleased: false,
     isRecording: false,
+    charging: false,
+    globe3dOn: true,
     ready: false,
     btnText: '选好啦 · 按下放生',
     todayCountStr: '1,247',
@@ -181,13 +183,13 @@ Page({
 
   onMoreTap() {
     wx.showActionSheet({
-      itemList: ['分享给朋友', '关于赛博放生局'],
+      itemList: ['分享给朋友', '关于赛博放生'],
       success: (res) => {
         if (res.tapIndex === 0) {
           wx.showToast({ title: '请点击右上角转发', icon: 'none' });
         } else if (res.tapIndex === 1) {
           wx.showModal({
-            title: '赛博放生局',
+            title: '赛博放生',
             content: '一个把压力、愿望和好运梗放进电子河流的微信小程序。不鼓励现实放生，只放生情绪本身。',
             showCancel: false
           });
@@ -258,6 +260,21 @@ Page({
     setTimeout(() => { this.mapMoved = false; }, 100);
   },
 
+  // ==================== 3D 地球 ====================
+  onGlobeSelect(e) {
+    if (this.data.isReleased) return;
+    this.selectWater(e.detail.water);
+  },
+
+  onGlobeFallback() {
+    // canvas 2d 初始化失败，降级到 SVG 地图
+    this.setData({ globe3dOn: false });
+  },
+
+  getGlobe() {
+    return this.selectComponent('#globe');
+  },
+
   // ==================== 水域选择 ====================
   onWaterTap(e) {
     if (this.mapMoved || this.data.isReleased) return;
@@ -268,8 +285,8 @@ Page({
   onHotBubbleTap(e) {
     if (this.data.isReleased) return;
     const water = e.currentTarget.dataset.water;
-    // 平移地图到该水域
-    this.panToWater(water);
+    // 3D 模式下组件自动转向；2D 模式平移地图
+    if (!this.data.globe3dOn) this.panToWater(water);
     this.selectWater(water);
   },
 
@@ -356,17 +373,39 @@ Page({
     this.setData({ ready, btnText });
   },
 
-  // ==================== 放生触发 ====================
-  onReleaseTap() {
+  // ==================== 放生触发（长按蓄力） ====================
+  onReleaseTouchStart() {
     if (!this.data.ready || this.data.isReleased) return;
+    this.setData({ charging: true });
+    wx.vibrateShort({ type: 'light', fail: () => {} });
+  },
 
+  onReleaseTouchEnd() {
+    if (!this.data.charging) return;
+    this.setData({ charging: false });
+    wx.vibrateShort({ type: 'medium', fail: () => {} });
+    this.triggerRelease();
+  },
+
+  // 兜底：快速点击仍可放生
+  onReleaseTap() {
+    if (this.data.charging || !this.data.ready || this.data.isReleased) return;
+    this.triggerRelease();
+  },
+
+  triggerRelease() {
+    if (!this.data.ready || this.data.isReleased) return;
     this.setData({ isReleased: true });
     this.updateButtonState();
 
-    // 800ms 后显示回执 (等待生物下沉动画)
-    setTimeout(() => {
-      this.showReceipt();
-    }, 800);
+    const globe = this.data.globe3dOn ? this.getGlobe() : null;
+    if (globe && globe.playRelease) {
+      // 3D 俯冲动画完成后出回执
+      globe.playRelease().then(() => this.showReceipt());
+    } else {
+      // 2D 下沉动画
+      setTimeout(() => this.showReceipt(), 800);
+    }
   },
 
   showReceipt() {
@@ -459,7 +498,7 @@ Page({
   // ==================== 分享 ====================
   onShareAppMessage() {
     return {
-      title: '赛博放生局 · 放一只电子生物到虚拟水域',
+      title: '赛博放生 · 放一只生物到虚拟水域',
       path: '/pages/release/release'
     };
   }

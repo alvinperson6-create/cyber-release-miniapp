@@ -1,0 +1,3120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>赛博放生 · UI 原型 v2</title>
+<style>
+/* ==================== 全局变量与重置 ==================== */
+:root {
+  --ink: #1f3a36;
+  --ink-soft: #4a5b58;
+  --ink-mute: #7a8a86;
+  --teal: #2c8a7a;
+  --teal-deep: #1a5a4e;
+  --teal-light: #d4e8e2;
+  --coral: #ed7d5b;
+  --coral-soft: #f9d8c9;
+  --lake: #3e7a96;
+  --lake-soft: #c7dbe2;
+  --cream: #f5efe2;
+  --paper: #faf6ec;
+  --paper-warm: #f4ecd9;
+  --line: #d6cdb8;
+  --line-soft: #e8e1d0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
+  color: var(--ink);
+  background: #2a2a2a;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.serif { font-family: "Kaiti SC", "STKaiti", "Songti SC", "STSong", serif; }
+.mono { font-family: "SF Mono", "Monaco", "Menlo", "Consolas", monospace; letter-spacing: 0.02em; }
+
+/* ==================== 手机外框 ==================== */
+.phone-frame {
+  width: 375px;
+  height: 812px;
+  background: var(--paper);
+  border-radius: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 10px #1a1a1a, 0 0 0 11px #333;
+  overflow: hidden;
+  position: relative;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background: var(--paper);
+}
+
+/* ==================== 状态栏 ==================== */
+.status-bar {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  flex-shrink: 0;
+  background: var(--paper);
+  position: relative;
+  z-index: 10;
+}
+
+.status-bar .status-time { font-family: "SF Mono", "Monaco", monospace; }
+.status-bar .status-right { display: flex; align-items: center; gap: 4px; font-size: 10px; }
+
+/* ==================== 导航栏 ==================== */
+.phone-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 18px 12px;
+  flex-shrink: 0;
+  background: var(--paper);
+  position: relative;
+  z-index: 10;
+}
+
+.header-back {
+  font-size: 18px;
+  color: var(--ink-soft);
+  line-height: 1;
+  cursor: pointer;
+  width: 20px;
+}
+
+.header-title {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.header-more {
+  font-size: 16px;
+  color: var(--ink-soft);
+  letter-spacing: 1px;
+  cursor: pointer;
+  width: 20px;
+  text-align: right;
+}
+
+/* ==================== 页面容器 ==================== */
+.page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  overflow: hidden;
+  padding-bottom: 56px;
+  box-sizing: border-box;
+}
+
+.page-release { display: none; flex-direction: column; }
+.page-archive { display: none; flex-direction: column; }
+.page-release.active { display: flex; }
+.page-archive.active { display: flex; }
+
+/* ==================== 放生页 - 河流区域（卡通地图容器） ==================== */
+.phone-river {
+  position: relative;
+  background: linear-gradient(180deg, #e8f4f0 0%, #d0e8e0 50%, #b8d8cc 100%);
+  overflow: hidden;
+  margin: 0 10px;
+  border-radius: 16px;
+  flex: 1;
+  min-height: 0;
+  touch-action: none;
+}
+
+/* 卡通地图SVG */
+.cartoon-map {
+  position: absolute;
+  left: -30%;
+  top: -20%;
+  width: 160%;
+  height: 140%;
+  transform: translate(0px, 0px);
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+.cartoon-map.panning {
+  transition: none;
+}
+
+.cartoon-map svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 水域区域 */
+.water-zone path,
+.water-zone ellipse {
+  stroke: rgba(255,255,255,0.3);
+  stroke-width: 1;
+  transition: filter 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.water-zone {
+  cursor: pointer;
+  pointer-events: fill;
+}
+
+.water-zone text {
+  pointer-events: none;
+  font-family: "PingFang SC", "Hiragino Sans GB", sans-serif;
+  font-size: 10px;
+  fill: rgba(255,255,255,0.95);
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.water-zone.dark-text text {
+  fill: rgba(31,58,54,0.85);
+  text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+}
+
+.water-zone.hover path,
+.water-zone.hover ellipse,
+.water-zone.drag-over path,
+.water-zone.drag-over ellipse {
+  filter: brightness(1.2);
+  stroke: rgba(255,255,255,0.8);
+  stroke-width: 2.5;
+}
+
+.water-zone.hover,
+.water-zone.drag-over {
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.7));
+}
+
+.water-zone.selected path,
+.water-zone.selected ellipse {
+  stroke: rgba(237,125,91,0.9);
+  stroke-width: 2.5;
+}
+
+.water-zone.selected {
+  filter: brightness(1.1) drop-shadow(0 0 12px rgba(237,125,91,0.5));
+}
+
+/* 水纹装饰 */
+.water-wave {
+  fill: none;
+  stroke: rgba(255,255,255,0.25);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+/* ==================== 可拖拽生物 ==================== */
+.dragging-creature {
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  z-index: 10;
+  cursor: grab;
+  touch-action: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease, left 0.15s ease, top 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dragging-creature.dragging {
+  cursor: grabbing;
+  z-index: 20;
+  transform: translate(-50%, -50%) scale(1.15);
+  transition: none;
+  pointer-events: none;
+}
+
+.dragging-creature.bounce-back {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dragging-creature.sinking {
+  animation: creatureSink 0.8s cubic-bezier(0.5, 0, 0.7, 1) forwards;
+}
+
+@keyframes creatureSink {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 20%) scale(0.3);
+    opacity: 0;
+  }
+}
+
+.dragging-creature.floating {
+  animation: creatureFloat 3.5s ease-in-out infinite;
+}
+
+.dragging-creature svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+}
+
+@keyframes creatureFloat {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0) rotate(-2deg); }
+  50% { transform: translate(-50%, -50%) translateY(-6px) rotate(2deg); }
+}
+
+.dragging-creature.dragging,
+.dragging-creature.bounce-back {
+  animation: none;
+}
+
+/* ==================== 重置按钮 ==================== */
+.map-reset-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 7;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 5px 12px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.2s;
+}
+
+.map-reset-btn:hover {
+  background: #fff;
+  color: var(--ink);
+}
+
+.map-reset-btn .reset-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* ==================== 边缘指示器 ==================== */
+.edge-indicator {
+  position: absolute;
+  z-index: 8;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(237, 125, 91, 0.9);
+  border: 2px solid #fff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  transform: translate(-50%, -50%);
+  animation: edgePulse 1.5s ease-in-out infinite;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+@keyframes edgePulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.15); }
+}
+
+.edge-indicator.dir-left { border-radius: 0 50% 50% 0; }
+.edge-indicator.dir-right { border-radius: 50% 0 0 50%; }
+.edge-indicator.dir-top { border-radius: 0 0 50% 50%; }
+.edge-indicator.dir-bottom { border-radius: 50% 50% 0 0; }
+
+/* ==================== 热门水域气泡 ==================== */
+.hot-bubbles {
+  position: absolute;
+  bottom: 42px;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  display: flex;
+  gap: 5px;
+  padding: 0 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hot-bubbles::-webkit-scrollbar { display: none; }
+
+.hot-bubble {
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #ed7d5b;
+  border-radius: 99px;
+  font-size: 11px;
+  color: #ed7d5b;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.hot-bubble.active {
+  background: #ed7d5b;
+  color: #fff;
+}
+
+.hot-bubble .hot-icon {
+  font-size: 10px;
+  margin-right: 2px;
+}
+
+/* ==================== 水域统计栏 ==================== */
+.river-stat {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  z-index: 4;
+}
+
+.river-stat .num {
+  color: var(--teal);
+  font-weight: 600;
+  font-family: "SF Mono", "Monaco", monospace;
+}
+
+.river-stat .muted { color: var(--ink-mute); }
+
+/* ==================== 控制面板 ==================== */
+.phone-panel {
+  padding: 10px 14px 12px;
+  background: var(--paper);
+  flex-shrink: 0;
+}
+
+/* 智能提取标签 */
+.smart-tags {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  min-height: 0;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.smart-tags.visible {
+  opacity: 1;
+  transform: translateY(0);
+  min-height: 22px;
+}
+
+.smart-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  line-height: 1;
+  background: var(--teal-light);
+  color: var(--teal-deep);
+  border: 1px solid rgba(44, 138, 122, 0.2);
+  animation: tagPop 0.3s ease;
+}
+
+.smart-tag.tag-creature { background: rgba(237, 125, 91, 0.12); color: var(--coral); border-color: rgba(237, 125, 91, 0.25); }
+.smart-tag.tag-time { background: rgba(62, 122, 150, 0.12); color: var(--lake); border-color: rgba(62, 122, 150, 0.25); }
+.smart-tag.tag-water { background: var(--teal-light); color: var(--teal-deep); border-color: rgba(44, 138, 122, 0.2); }
+
+@keyframes tagPop {
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* 输入区 */
+.input-bubble {
+  display: flex;
+  align-items: flex-end;
+  background: #fdfaf2;
+  border: 1.5px solid var(--line-soft);
+  border-radius: 20px;
+  padding: 8px 14px;
+  transition: all 0.25s ease;
+}
+
+.input-bubble:focus-within {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(44, 138, 122, 0.08);
+  background: #fff;
+}
+
+.feeling-textarea {
+  flex: 1;
+  min-height: 24px;
+  max-height: 80px;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  overflow-y: auto;
+}
+
+.feeling-textarea::placeholder {
+  color: var(--ink-mute);
+  opacity: 0.8;
+  font-size: 13px;
+}
+
+/* 输入提示 */
+.input-hint {
+  margin-top: 7px;
+  font-size: 10px;
+  color: var(--ink-mute);
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  transition: opacity 0.3s;
+}
+
+.input-hint .hint-creature {
+  color: var(--coral);
+  font-weight: 500;
+}
+
+/* ==================== 确认卡片（底部滑入） ==================== */
+.confirm-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 80px;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 80;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.confirm-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.confirm-card {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 20px 24px;
+  max-height: 70%;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1);
+  z-index: 81;
+}
+
+.confirm-overlay.show .confirm-card {
+  transform: translateY(0);
+}
+
+.confirm-title {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 18px;
+  color: var(--teal-deep);
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.confirm-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-soft);
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 6px;
+  margin: 0 -6px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.confirm-row:last-of-type {
+  border-bottom: none;
+}
+
+.confirm-row:active {
+  background: var(--paper);
+}
+
+.confirm-row-icon {
+  font-size: 18px;
+  margin-right: 10px;
+  width: 24px;
+  text-align: center;
+}
+
+.confirm-row-label {
+  font-size: 14px;
+  color: var(--ink);
+  flex: 1;
+}
+
+.confirm-row-arrow {
+  color: var(--ink-mute);
+  font-size: 14px;
+}
+
+.confirm-preview {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--ink-mute);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.confirm-preview.empty {
+  color: var(--ink-mute);
+  opacity: 0.6;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  align-items: center;
+}
+
+.confirm-btn {
+  flex: 1;
+  padding: 13px 0;
+  background: linear-gradient(135deg, #ed7d5b, #d96d4d);
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 12px rgba(237,125,91,0.35);
+}
+
+.confirm-btn:active {
+  transform: scale(0.97);
+}
+
+.confirm-cancel {
+  padding: 13px 16px;
+  background: transparent;
+  color: var(--ink-mute);
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ==================== Tab Bar ==================== */
+.tab-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: rgba(250, 246, 236, 0.96);
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+  backdrop-filter: blur(10px);
+}
+
+.tab-items {
+  display: flex;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-icon-svg {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-icon-svg svg {
+  width: 100%;
+  height: 100%;
+}
+
+.tab-label {
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+}
+
+.tab-item.active .tab-label {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.tab-item.active .tab-icon-svg svg path,
+.tab-item.active .tab-icon-svg svg circle,
+.tab-item.active .tab-icon-svg svg ellipse {
+  stroke: var(--teal);
+}
+
+.home-indicator {
+  width: 100%;
+  height: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 6px;
+  flex-shrink: 0;
+}
+
+.home-indicator::before {
+  content: '';
+  width: 134px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--ink);
+  opacity: 0.25;
+}
+
+/* ==================== 档案页 ==================== */
+.archive-scroll {
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 56px;
+}
+
+.archive-user {
+  padding: 14px 18px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.archive-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--teal-light);
+  color: var(--teal-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.user-id {
+  font-size: 10px;
+  color: var(--ink-mute);
+  font-family: "SF Mono", "Monaco", monospace;
+  letter-spacing: 0.04em;
+}
+
+.login-tag {
+  font-size: 9px;
+  color: var(--teal);
+  background: var(--teal-light);
+  padding: 2px 7px;
+  border-radius: 99px;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.archive-stats {
+  display: flex;
+  padding: 12px 18px;
+  gap: 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.archive-stat {
+  flex: 1;
+  text-align: center;
+}
+
+.archive-stat + .archive-stat {
+  border-left: 1px solid var(--line-soft);
+}
+
+.stat-num {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 24px;
+  color: var(--teal);
+  line-height: 1;
+}
+
+.stat-num.coral { color: var(--coral); }
+
+.stat-label {
+  font-size: 10px;
+  color: var(--ink-mute);
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+
+.archive-list {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.archive-item {
+  background: #fdfaf2;
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.archive-item.has-reply {
+  border-color: var(--line);
+}
+
+.archive-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.item-num {
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  font-family: "SF Mono", "Monaco", monospace;
+}
+
+.archive-status {
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.archive-status.done {
+  background: var(--teal-light);
+  color: var(--teal-deep);
+}
+
+.archive-status.pending {
+  background: var(--coral-soft);
+  color: var(--coral);
+}
+
+.item-meta {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.feeling-preview {
+  font-size: 11px;
+  color: var(--ink);
+  font-style: italic;
+  margin-top: 4px;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.archive-reply {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
+  margin-top: 0;
+}
+
+.archive-reply.expanded {
+  max-height: 600px;
+  opacity: 1;
+  margin-top: 10px;
+}
+
+.reply-label {
+  font-size: 9px;
+  color: var(--teal);
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.reply-image {
+  width: 100%;
+  height: 80px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.reply-emoji { font-size: 28px; }
+
+.reply-text {
+  font-size: 11px;
+  color: var(--ink);
+  line-height: 1.6;
+  display: block;
+}
+
+.destiny-entry {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: linear-gradient(135deg, #e8d5f0, #c4a8d8);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.destiny-entry-label {
+  font-size: 11px;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.destiny-entry-progress {
+  font-size: 10px;
+  color: var(--ink-mute);
+  background: rgba(255,255,255,0.6);
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.archive-countdown {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--coral-soft);
+  border-radius: 6px;
+  font-size: 10px;
+  color: var(--coral);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.countdown-time {
+  font-family: "SF Mono", "Monaco", monospace;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==================== 命运轨迹页 ==================== */
+.page-destiny {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--paper);
+  z-index: 50;
+  display: none;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.page-destiny.active {
+  display: flex;
+  transform: translateX(0);
+}
+
+.destiny-scroll {
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.destiny-header {
+  text-align: center;
+  padding: 12px 18px 14px;
+  border-bottom: 1px dashed var(--line);
+  margin: 0 14px 14px;
+}
+
+.destiny-title {
+  display: block;
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 22px;
+  color: var(--teal-deep);
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+}
+
+.destiny-subtitle {
+  display: block;
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.12em;
+}
+
+.destiny-record-id {
+  display: block;
+  font-family: "SF Mono", "Monaco", monospace;
+  font-size: 10px;
+  color: var(--ink-mute);
+  margin-top: 4px;
+}
+
+.destiny-segments {
+  padding: 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.destiny-segment {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  background: #fdfaf2;
+  transition: opacity 0.3s;
+}
+
+.destiny-segment.locked { opacity: 0.85; }
+
+.seg-banner {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.seg-index {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.9);
+  font-family: "SF Mono", "Monaco", monospace;
+  background: rgba(31,58,54,0.35);
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.seg-emoji { font-size: 32px; }
+
+.seg-lock-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(31, 58, 54, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.lock-icon { font-size: 20px; }
+
+.lock-hint {
+  font-size: 10px;
+  color: #fff;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+
+.seg-body { padding: 12px 14px 14px; }
+
+.seg-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: 0.04em;
+}
+
+.seg-text {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.seg-unlock-btn {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 0;
+  background: var(--teal-deep);
+  color: var(--paper);
+  border-radius: 6px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  border: none;
+  cursor: pointer;
+}
+
+.destiny-actions { padding: 14px 14px 0; }
+
+.bundle-btn {
+  width: 100%;
+  padding: 12px 0;
+  background: linear-gradient(135deg, #ed7d5b, #d96d4d);
+  color: #fff;
+  border-radius: 99px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  border: none;
+  cursor: pointer;
+}
+
+.destiny-footer {
+  text-align: center;
+  padding: 16px 14px 48px;
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+}
+
+/* ==================== 广告模拟弹窗 ==================== */
+.ad-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px 18px;
+}
+
+.ad-overlay.show { display: flex; }
+
+.ad-card {
+  width: 100%;
+  max-width: 310px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.ad-banner {
+  background: linear-gradient(135deg, #1f3a36, #2d524c);
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.ad-body {
+  padding: 16px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.ad-content {
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(135deg, #f5e6c8, #e8d4a8);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+}
+
+.ad-placeholder {
+  font-size: 28px;
+  color: #8a6a3a;
+  letter-spacing: 0.1em;
+}
+
+.ad-tag {
+  font-size: 11px;
+  color: #6b4f2a;
+  letter-spacing: 0.06em;
+}
+
+.ad-countdown {
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+.ad-ready-text {
+  color: var(--teal-deep);
+  font-weight: 600;
+}
+
+.ad-close-btn {
+  width: 100%;
+  padding: 11px 0;
+  background: var(--ink-mute);
+  color: #fff;
+  border-radius: 99px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  border: none;
+  cursor: pointer;
+}
+
+.ad-close-btn.ready {
+  background: linear-gradient(135deg, #2d8a7f, #1f5a52);
+}
+
+/* ==================== 回执弹窗 ==================== */
+.receipt-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(31, 58, 54, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+  z-index: 100;
+  padding: 20px;
+}
+
+.receipt-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.receipt-card {
+  width: 100%;
+  max-height: 88%;
+  overflow-y: auto;
+  background: #fdfaf2;
+  border-radius: 14px;
+  padding: 22px 18px 18px;
+  transform: translateY(40px);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.receipt-overlay.show .receipt-card {
+  transform: translateY(0);
+}
+
+.receipt-card::before,
+.receipt-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background-image: radial-gradient(circle, var(--paper) 4px, transparent 4px);
+  background-size: 14px 8px;
+  background-repeat: repeat-x;
+  z-index: 1;
+}
+
+.receipt-card::before { top: -4px; }
+.receipt-card::after { bottom: -4px; transform: rotate(180deg); }
+
+.receipt-head {
+  text-align: center;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line);
+  margin-bottom: 14px;
+}
+
+.receipt-stamp {
+  display: inline-block;
+  font-family: "Kaiti SC", "STKaiti", serif;
+  font-size: 22px;
+  color: var(--coral);
+  letter-spacing: 0.4em;
+  padding: 4px 12px 4px 16px;
+  border: 2px solid var(--coral);
+  border-radius: 4px;
+  transform: rotate(-3deg);
+  margin-bottom: 8px;
+}
+
+.receipt-sub {
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
+}
+
+.receipt-rows { margin-bottom: 4px; }
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--ink-soft);
+  padding: 6px 0;
+}
+
+.receipt-row .row-key { color: var(--ink-mute); }
+.receipt-row .row-val { color: var(--ink); }
+.receipt-row .row-val.mono { font-family: "SF Mono", "Monaco", monospace; font-size: 11px; }
+.receipt-row .row-val.serif { font-family: "Kaiti SC", "STKaiti", serif; font-size: 13px; }
+
+.receipt-feeling {
+  margin: 12px 0;
+  padding: 10px 12px;
+  background: var(--paper-warm);
+  border-radius: 6px;
+  border-left: 3px solid var(--coral);
+}
+
+.receipt-sign {
+  margin: 12px 0;
+  padding: 12px;
+  background: var(--teal-light);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.receipt-feedback {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: var(--teal-light);
+  border-radius: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.feedback-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.feedback-body { flex: 1; min-width: 0; }
+
+.block-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+}
+
+.receipt-feeling .block-label { color: var(--coral); }
+.receipt-sign .block-label { color: var(--teal-deep); }
+.receipt-feedback .block-label { color: var(--teal-deep); }
+
+.block-text {
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.receipt-feeling .block-text { font-style: italic; }
+
+.receipt-sign .block-text {
+  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.feedback-text {
+  font-size: 11px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.feedback-text .strong { color: var(--teal-deep); font-weight: 600; }
+.feedback-text .mute { color: var(--ink-mute); }
+
+.receipt-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.btn-line {
+  flex: 1;
+  padding: 9px 0;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-line-active {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.btn-primary {
+  flex: 1;
+  padding: 9px 0;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 99px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.receipt-foot {
+  text-align: center;
+  font-size: 10px;
+  color: var(--ink-mute);
+  margin-top: 12px;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== Toast ==================== */
+.toast {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(31, 58, 54, 0.9);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  z-index: 9998;
+  white-space: pre-line;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  max-width: 250px;
+}
+
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+
+    <!-- 状态栏 -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <span class="status-right">●●● 100%</span>
+    </div>
+
+    <!-- 放生页 -->
+    <div class="page page-release active" id="page-release">
+      <!-- 导航栏 -->
+      <div class="phone-header">
+        <span class="header-back" onclick="onBackTap()">‹</span>
+        <span class="header-title">赛博放生</span>
+        <span class="header-more" onclick="onMoreTap()">···</span>
+      </div>
+
+      <!-- 河流区域（卡通地图） -->
+      <div class="phone-river" id="phone-river">
+        <!-- 卡通分区域地图 SVG -->
+        <div class="cartoon-map" id="cartoon-map">
+          <svg id="map-svg" viewBox="0 0 355 420" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <!-- 北冰洋渐变（冰蓝白） -->
+              <linearGradient id="arcticGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#e8f4fc"/>
+                <stop offset="100%" stop-color="#c5dde8"/>
+              </linearGradient>
+              <!-- 太平洋渐变（深蓝） -->
+              <linearGradient id="pacificGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#3a7ca5"/>
+                <stop offset="100%" stop-color="#2a5f80"/>
+              </linearGradient>
+              <!-- 大西洋渐变（中蓝） -->
+              <linearGradient id="atlanticGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#4a8aaf"/>
+                <stop offset="100%" stop-color="#3a6f8f"/>
+              </linearGradient>
+              <!-- 印度洋渐变（蓝绿） -->
+              <linearGradient id="indianGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#3a9a8f"/>
+                <stop offset="100%" stop-color="#2a7a70"/>
+              </linearGradient>
+              <!-- 贝加尔湖渐变（深青） -->
+              <radialGradient id="baikalGrad" cx="0.4" cy="0.35">
+                <stop offset="0%" stop-color="#2a8a9a"/>
+                <stop offset="100%" stop-color="#1a5f6a"/>
+              </radialGradient>
+              <!-- 尼斯湖渐变（深绿） -->
+              <linearGradient id="nessGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2a6a5a"/>
+                <stop offset="100%" stop-color="#1a4a3f"/>
+              </linearGradient>
+              <!-- 西湖渐变（浅绿） -->
+              <radialGradient id="xihuGrad" cx="0.5" cy="0.45">
+                <stop offset="0%" stop-color="#6ab89a"/>
+                <stop offset="100%" stop-color="#4a9878"/>
+              </radialGradient>
+              <!-- 湘江渐变（浅蓝河流） -->
+              <linearGradient id="xiangGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7ab8d8"/>
+                <stop offset="100%" stop-color="#5a98b8"/>
+              </linearGradient>
+              <!-- 马里亚纳海沟（深紫） -->
+              <radialGradient id="marianaGrad" cx="0.5" cy="0.4">
+                <stop offset="0%" stop-color="#5a3a7a"/>
+                <stop offset="100%" stop-color="#3a1f5a"/>
+              </radialGradient>
+              <!-- 死海（粉蓝） -->
+              <radialGradient id="deadseaGrad" cx="0.5" cy="0.4">
+                <stop offset="0%" stop-color="#8ac0d0"/>
+                <stop offset="100%" stop-color="#6aa0b0"/>
+              </radialGradient>
+              <!-- 爱琴海（浅蓝） -->
+              <radialGradient id="aegeanGrad" cx="0.4" cy="0.35">
+                <stop offset="0%" stop-color="#7ab8d8"/>
+                <stop offset="100%" stop-color="#5a98b8"/>
+              </radialGradient>
+              <!-- 加拉帕戈斯（绿蓝） -->
+              <radialGradient id="galapagosGrad" cx="0.45" cy="0.4">
+                <stop offset="0%" stop-color="#4a9a9a"/>
+                <stop offset="100%" stop-color="#2a7a7a"/>
+              </radialGradient>
+              <!-- 内阴影滤镜 -->
+              <filter id="waterShadow" x="-5%" y="-5%" width="110%" height="110%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+                <feOffset dx="0" dy="2" result="offsetblur"/>
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.3"/>
+                </feComponentTransfer>
+                <feMerge>
+                  <feMergeNode/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- 12片水域区域（按z-order从后往前绘制） -->
+
+            <!-- 北冰洋（顶部） -->
+            <g class="water-zone" data-water="arctic" id="zone-arctic">
+              <path d="M 0,0 Q 30,15 60,8 Q 100,20 140,10 Q 180,25 220,12 Q 260,22 300,8 Q 330,18 355,5 L 355,65 Q 320,55 280,62 Q 240,48 200,58 Q 160,45 120,55 Q 80,42 40,58 Q 15,52 0,65 Z"
+                    fill="url(#arcticGrad)" filter="url(#waterShadow)"/>
+              <!-- 冰裂纹装饰 -->
+              <path d="M 40,30 L 60,25 L 55,45 M 120,22 L 145,30 L 135,48 M 200,20 L 220,28 L 210,45 M 280,25 L 300,32 L 290,50"
+                    class="water-wave" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+              <text x="178" y="35">北冰洋</text>
+            </g>
+
+            <!-- 太平洋（右侧大片） -->
+            <g class="water-zone" data-water="pacific" id="zone-pacific">
+              <path d="M 185,65 Q 220,55 260,68 Q 300,58 340,72 Q 355,90 350,140 Q 355,190 345,240 Q 350,280 340,310 Q 310,290 280,280 Q 250,260 240,230 Q 220,190 200,160 Q 180,120 175,90 Q 178,75 185,65 Z"
+                    fill="url(#pacificGrad)" filter="url(#waterShadow)"/>
+              <path d="M 210,100 Q 240,95 270,105 M 220,140 Q 260,135 300,145 M 230,180 Q 270,175 310,185 M 240,220 Q 280,215 320,225 M 250,260 Q 290,255 330,265"
+                    class="water-wave"/>
+              <text x="275" y="175">太平洋</text>
+            </g>
+
+            <!-- 大西洋（左侧中部） -->
+            <g class="water-zone" data-water="atlantic" id="zone-atlantic">
+              <path d="M 10,105 Q 30,95 55,100 Q 80,90 105,105 Q 130,115 140,145 Q 145,180 135,215 Q 140,250 120,275 Q 90,285 60,275 Q 30,265 10,245 Q 5,200 10,160 Q 5,130 10,105 Z"
+                    fill="url(#atlanticGrad)" filter="url(#waterShadow)"/>
+              <path d="M 30,140 Q 60,135 90,145 M 35,180 Q 65,175 95,185 M 35,220 Q 65,215 90,225"
+                    class="water-wave"/>
+              <text x="75" y="190">大西洋</text>
+            </g>
+
+            <!-- 印度洋（右下方） -->
+            <g class="water-zone" data-water="indian" id="zone-indian">
+              <path d="M 185,255 Q 210,245 245,255 Q 280,248 315,260 Q 340,275 335,315 Q 340,355 320,380 Q 280,395 240,385 Q 200,375 185,350 Q 175,310 180,280 Q 180,265 185,255 Z"
+                    fill="url(#indianGrad)" filter="url(#waterShadow)"/>
+              <path d="M 210,290 Q 250,285 290,295 M 215,330 Q 255,325 295,335 M 220,360 Q 260,355 295,365"
+                    class="water-wave"/>
+              <text x="265" y="325">印度洋</text>
+            </g>
+
+            <!-- 爱琴海（中部偏左） -->
+            <g class="water-zone" data-water="aegean" id="zone-aegean">
+              <path d="M 120,155 Q 140,142 165,150 Q 185,158 185,180 Q 190,205 175,220 Q 155,228 135,220 Q 115,210 115,185 Q 112,168 120,155 Z"
+                    fill="url(#aegeanGrad)" filter="url(#waterShadow)"/>
+              <path d="M 130,175 Q 150,170 170,180 M 135,200 Q 155,195 170,202"
+                    class="water-wave"/>
+              <text x="150" y="190" style="font-size:9px;">爱琴海</text>
+            </g>
+
+            <!-- 贝加尔湖（北部偏左椭圆） -->
+            <g class="water-zone" data-water="baikal" id="zone-baikal">
+              <ellipse cx="148" cy="100" rx="32" ry="22" fill="url(#baikalGrad)" filter="url(#waterShadow)"/>
+              <path d="M 125,95 Q 145,90 170,98 M 128,108 Q 148,103 168,110"
+                    class="water-wave"/>
+              <text x="148" y="102" style="font-size:9px;">贝加尔湖</text>
+            </g>
+
+            <!-- 尼斯湖（左上细长形） -->
+            <g class="water-zone" data-water="ness" id="zone-ness">
+              <path d="M 30,82 Q 45,75 60,82 Q 75,88 80,105 Q 82,125 70,138 Q 55,142 40,135 Q 25,125 28,105 Q 26,90 30,82 Z"
+                    fill="url(#nessGrad)" filter="url(#waterShadow)"/>
+              <path d="M 38,100 Q 50,95 65,100 M 40,118 Q 52,113 65,118"
+                    class="water-wave"/>
+              <text x="55" y="112" style="font-size:8px;">尼斯湖</text>
+            </g>
+
+            <!-- 死海（中左偏下小椭圆） -->
+            <g class="water-zone dark-text" data-water="deadsea" id="zone-deadsea">
+              <ellipse cx="128" cy="262" rx="24" ry="16" fill="url(#deadseaGrad)" filter="url(#waterShadow)"/>
+              <path d="M 112,258 Q 128,253 145,260 M 114,268 Q 130,264 142,269"
+                    class="water-wave" stroke="rgba(255,255,255,0.35)"/>
+              <text x="128" y="264" style="font-size:8px;">死海</text>
+            </g>
+
+            <!-- 马里亚纳海沟（右侧底部深紫椭圆） -->
+            <g class="water-zone" data-water="mariana" id="zone-mariana">
+              <ellipse cx="275" cy="362" rx="35" ry="22" fill="url(#marianaGrad)" filter="url(#waterShadow)"/>
+              <path d="M 250,358 Q 272,352 300,360 M 252,370 Q 275,365 295,372"
+                    class="water-wave" stroke="rgba(255,255,255,0.15)"/>
+              <text x="275" y="365" style="font-size:8px;">马里亚纳海沟</text>
+            </g>
+
+            <!-- 加拉帕戈斯（最左侧小椭圆） -->
+            <g class="water-zone" data-water="galapagos" id="zone-galapagos">
+              <ellipse cx="28" cy="315" rx="20" ry="16" fill="url(#galapagosGrad)" filter="url(#waterShadow)"/>
+              <path d="M 15,312 Q 25,308 40,314"
+                    class="water-wave"/>
+              <text x="28" y="317" style="font-size:7px;">加拉帕戈斯</text>
+            </g>
+
+            <!-- 湘江（中下细长河流） -->
+            <g class="water-zone dark-text" data-water="xiang" id="zone-xiang">
+              <path d="M 148,290 Q 160,300 155,320 Q 165,340 175,355 Q 185,370 200,380 Q 215,388 225,385 L 220,395 Q 200,400 180,390 Q 160,375 150,355 Q 138,335 145,310 Q 138,298 148,290 Z"
+                    fill="url(#xiangGrad)" filter="url(#waterShadow)"/>
+              <text x="180" y="345" style="font-size:8px;">湘江</text>
+            </g>
+
+            <!-- 西湖（中部偏右小圆点，带荷花装饰） -->
+            <g class="water-zone dark-text" data-water="xihu" id="zone-xihu">
+              <ellipse cx="220" cy="197" rx="18" ry="14" fill="url(#xihuGrad)" filter="url(#waterShadow)"/>
+              <!-- 荷花装饰（简化） -->
+              <circle cx="215" cy="193" r="2.5" fill="#f9d8c9" opacity="0.8"/>
+              <circle cx="228" cy="200" r="2" fill="#f9d8c9" opacity="0.7"/>
+              <path d="M 220,200 Q 223,195 226,198" class="water-wave" stroke="rgba(255,255,255,0.4)"/>
+              <text x="220" y="208" style="font-size:8px;">西湖</text>
+            </g>
+
+          </svg>
+        </div>
+
+        <!-- 重置按钮 -->
+        <div class="map-reset-btn" id="map-reset-btn" onclick="onMapReset()">
+          <span class="reset-icon">⟲</span>
+          <span>重置生物</span>
+        </div>
+
+        <!-- 边缘指示器 -->
+        <div class="edge-indicator" id="edge-indicator" onclick="onEdgeIndicatorTap()">›</div>
+
+        <!-- 可拖拽生物 -->
+        <div class="dragging-creature floating" id="dragging-creature"></div>
+
+        <!-- 热门水域气泡 -->
+        <div class="hot-bubbles" id="hot-bubbles"></div>
+
+        <!-- 水域统计栏 -->
+        <div class="river-stat">
+          <span>已选 · <span class="num" id="selected-water-name">拖锦鲤到水域</span></span>
+          <span class="muted">今日放生 <span class="num" id="today-count">1,247</span></span>
+        </div>
+      </div>
+
+      <!-- 控制面板 -->
+      <div class="phone-panel">
+        <!-- 智能提取标签 -->
+        <div class="smart-tags" id="smart-tags"></div>
+
+        <!-- 对话气泡输入框（无按钮） -->
+        <div class="input-bubble">
+          <textarea class="feeling-textarea" id="feeling-textarea"
+                    placeholder="说说你此刻的感受..."
+                    maxlength="200" rows="1"
+                    oninput="onFeelingInput(this)"
+                    onfocus="onFeelingFocus()"
+                    onblur="onFeelingBlur()"
+                    onkeydown="onTextareaKeydown(event)"></textarea>
+        </div>
+
+        <!-- 输入提示 -->
+        <div class="input-hint" id="input-hint">把锦鲤拖到一片水域，说出感受，让它随水流走</div>
+      </div>
+    </div>
+
+    <!-- 档案页 -->
+    <div class="page page-archive" id="page-archive">
+      <div class="phone-header">
+        <span class="header-back" onclick="onBackTap()">‹</span>
+        <span class="header-title">放生档案</span>
+        <span class="header-more" onclick="onMoreTap()">···</span>
+      </div>
+
+      <div class="archive-scroll" id="archive-scroll">
+        <div class="archive-user">
+          <div class="archive-avatar">微</div>
+          <div class="user-info">
+            <span class="user-name">微信用户</span>
+            <span class="user-id">ID ····3a7f</span>
+          </div>
+          <div class="login-tag">静默登录</div>
+        </div>
+
+        <div class="archive-stats">
+          <div class="archive-stat">
+            <span class="stat-num" id="stat-total">2</span>
+            <span class="stat-label">累计放生</span>
+          </div>
+          <div class="archive-stat">
+            <span class="stat-num coral" id="stat-pending">1</span>
+            <span class="stat-label">待回信</span>
+          </div>
+          <div class="archive-stat">
+            <span class="stat-num" id="stat-replied">1</span>
+            <span class="stat-label">已回信</span>
+          </div>
+        </div>
+
+        <div class="archive-list" id="archive-list"></div>
+      </div>
+    </div>
+
+    <!-- 命运轨迹页 -->
+    <div class="page-destiny" id="page-destiny">
+      <div class="phone-header">
+        <span class="header-back" onclick="onDestinyBack()">‹</span>
+        <span class="header-title">命运轨迹</span>
+        <span class="header-more"></span>
+      </div>
+
+      <div class="destiny-scroll" id="destiny-scroll">
+        <div class="destiny-header">
+          <span class="destiny-title">命运轨迹</span>
+          <span class="destiny-subtitle">DESTINY TRAJECTORY</span>
+          <span class="destiny-record-id" id="destiny-record-id"></span>
+        </div>
+        <div class="destiny-segments" id="destiny-segments"></div>
+        <div class="destiny-actions" id="destiny-actions"></div>
+        <div class="destiny-footer">
+          <span>放生瞬间 → 命运轨迹 → 最终回信</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar" id="tab-bar">
+      <div class="tab-items">
+      <div class="tab-item active" data-page="release" onclick="onTabTap('release')">
+        <div class="tab-icon-svg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2 C 8 8, 5 12, 5 16 C 5 20, 8 22, 12 22 C 16 22, 19 20, 19 16 C 19 12, 16 8, 12 2 Z" stroke="var(--ink-mute)"/>
+          </svg>
+        </div>
+        <span class="tab-label">放生</span>
+      </div>
+      <div class="tab-item" data-page="archive" onclick="onTabTap('archive')">
+        <div class="tab-icon-svg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="3" width="16" height="18" rx="2" stroke="var(--ink-mute)"/>
+            <line x1="8" y1="8" x2="16" y2="8" stroke="var(--ink-mute)"/>
+            <line x1="8" y1="12" x2="16" y2="12" stroke="var(--ink-mute)"/>
+            <line x1="8" y1="16" x2="13" y2="16" stroke="var(--ink-mute)"/>
+          </svg>
+        </div>
+        <span class="tab-label">档案</span>
+      </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- 确认卡片遮罩 -->
+    <div class="confirm-overlay" id="confirm-overlay" onclick="onConfirmOverlayTap(event)">
+      <div class="confirm-card" id="confirm-card" onclick="event.stopPropagation()">
+        <div class="confirm-title">即将放生</div>
+        <div class="confirm-row" onclick="onConfirmReselect()">
+          <span class="confirm-row-icon">🗺️</span>
+          <span class="confirm-row-label" id="confirm-water-name">太平洋</span>
+          <span class="confirm-row-arrow">▸</span>
+        </div>
+        <div class="confirm-row" onclick="onConfirmCycleCreature()">
+          <span class="confirm-row-icon" id="confirm-creature-icon">🐟</span>
+          <span class="confirm-row-label" id="confirm-creature-name">锦鲤</span>
+          <span class="confirm-row-arrow">▸</span>
+        </div>
+        <div class="confirm-row" onclick="onConfirmCycleTime()">
+          <span class="confirm-row-icon">⏱</span>
+          <span class="confirm-row-label" id="confirm-time-label">3天后回信</span>
+          <span class="confirm-row-arrow">▸</span>
+        </div>
+        <div class="confirm-preview empty" id="confirm-preview">说说感受，让它带着你的情绪游走...</div>
+        <div class="confirm-actions">
+          <button class="confirm-cancel" onclick="onConfirmCancel()">取消</button>
+          <button class="confirm-btn" onclick="onConfirmRelease()">确认放生</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 回执弹窗 -->
+    <div class="receipt-overlay" id="receipt-overlay" onclick="onReceiptOverlayTap(event)">
+      <div class="receipt-card" id="receipt-card">
+        <div class="receipt-head">
+          <div class="receipt-stamp">放生成功</div>
+          <div class="receipt-sub">CYBER RELEASE RECEIPT</div>
+        </div>
+        <div class="receipt-rows" id="receipt-rows"></div>
+        <div class="receipt-feeling">
+          <div class="block-label">— 此刻感受 —</div>
+          <div class="block-text" id="receipt-feeling-text"></div>
+        </div>
+        <div class="receipt-sign">
+          <div class="block-label">— 本日好运签 —</div>
+          <div class="block-text" id="receipt-sign-text"></div>
+        </div>
+        <div class="receipt-feedback">
+          <div class="feedback-icon">📬</div>
+          <div class="feedback-body">
+            <div class="block-label">AI 回信安排</div>
+            <div class="feedback-text"><span class="strong" id="receipt-feedback-label"></span> 以图文形式推送，基于你此刻的感受生成 · <span class="mute">可能治愈、可能搞怪</span></div>
+          </div>
+        </div>
+        <div class="receipt-actions">
+          <button class="btn-line" id="receipt-share" onclick="onShareTap()">分享到群</button>
+          <button class="btn-primary" onclick="onAgainTap()">再来一只</button>
+        </div>
+        <div class="receipt-foot">
+          <span>* 本回执不构成任何好运承诺 / 也不鼓励线下放生</span>
+          <span>仅作虚拟情绪仪式使用 · 编号随机</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 广告模拟弹窗 -->
+    <div class="ad-overlay" id="ad-overlay">
+      <div class="ad-card">
+        <div class="ad-banner">📺 广告</div>
+        <div class="ad-body">
+          <div class="ad-content">
+            <span class="ad-placeholder">广告位</span>
+            <span class="ad-tag">激励视频 · 观看完整后可解锁</span>
+          </div>
+          <div class="ad-countdown" id="ad-countdown-text">剩余 15 秒</div>
+          <button class="ad-close-btn" id="ad-close-btn" onclick="onAdClose()">请观看 15s</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+  </div>
+</div>
+
+<script>
+/* ==================== 数据常量 ==================== */
+const CREATURES = {
+  koi: { name: '锦鲤', emoji: '🐟' },
+  turtle: { name: '乌龟', emoji: '🐢' },
+  cloud: { name: '云朵', emoji: '☁️' }
+};
+
+const CREATURE_CYCLE = ['koi', 'turtle', 'cloud'];
+const TIME_CYCLE = ['24h', '3d', '7d'];
+
+const WATERS = {
+  pacific:   { name: '太平洋',       type: 'ocean'  },
+  atlantic:  { name: '大西洋',       type: 'ocean'  },
+  indian:    { name: '印度洋',       type: 'ocean'  },
+  arctic:    { name: '北冰洋',       type: 'ocean'  },
+  baikal:    { name: '贝加尔湖',     type: 'lake'   },
+  ness:      { name: '尼斯湖',       type: 'lake'   },
+  xihu:      { name: '西湖',         type: 'lake'   },
+  xiang:     { name: '湘江',         type: 'river'  },
+  mariana:   { name: '马里亚纳海沟', type: 'trench' },
+  deadsea:   { name: '死海',         type: 'lake'   },
+  aegean:    { name: '爱琴海',       type: 'sea'    },
+  galapagos: { name: '加拉帕戈斯',   type: 'sea'    }
+};
+
+const HOT_WATERS = ['pacific', 'baikal', 'mariana'];
+
+const SIGNS = {
+  koi: ['今天的你已经比昨天更松弛一丢丢了。','锦鲤说：好运不是等来的，是你走过去接的。','你放下的东西，会以另一种形式回来。','今天适合做一件没用但开心的事。','紧张说明你在乎，在乎说明你认真。'],
+  turtle: ['乌龟说：慢一点也没关系，方向对就行。','你不需要赢过谁，你只需要不放弃。','今天的疲惫是明天的铠甲。','允许自己偶尔停下来，这不叫偷懒。','乌龟的壳不是逃避，是给自己一个安全的空间。'],
+  cloud: ['云朵说：飘着飘着，风就来了。','你此刻的烦恼，90% 不会发生。','允许自己不开心一会儿，但别忘了开心。','天上没有过不去的云，地上没有过不去的坎。','你比你以为的要轻，放下一些就飘起来了。']
+};
+
+const PLACEHOLDERS = ['明天要答辩，紧张到胃疼...','又加班到十一点，脑子嗡嗡的...','就是莫名的烦躁，说不上来...','项目明天上线，手心一直在出汗...','凌晨三点了还是睡不着，想太多...','今天被老板否了第三版方案...'];
+
+const REPLY_POOL = [
+  { bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)', emoji: '🌿', text: '你放生的那只小家伙在电子水域里安顿下来了。它托我转告：你此刻觉得过不去的坎，三个月后回头看连坎都不算。深呼吸，没事的。' },
+  { bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)', emoji: '🌙', text: '今晚的水域很安静。你的感受已经被收到了——不是被解决了，是被听到了。有些事不需要解决，被听到就够了。' },
+  { bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)', emoji: '🔥', text: '好消息：你焦虑的事有 87% 不会发生。坏消息：剩下 13% 你也管不了。所以这只生物决定替你扛着，你先去吃顿好的。' },
+  { bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)', emoji: '✨', text: '它游了一圈回来说：你比自己以为的要结实。那些让你觉得要碎掉的时刻，其实你一次都没真碎过。这次也不会。' },
+  { bg: 'linear-gradient(135deg, #fff3cd, #ffd970)', emoji: '☀️', text: '报告！你的生物已在虚拟水域完成打卡。它观察到：你最近对自己太严格了。建议本周至少做两件"没用但开心"的事。' },
+  { bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)', emoji: '🌊', text: '水域温度 22°C，生物状态良好。它给你带了一句话："紧张说明你在乎，在乎说明你认真，认真的人运气不会太差。"' }
+];
+
+const CREATURE_SVG = {
+  koi: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"><defs><linearGradient id="koiGrad2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f9d8c9"/><stop offset="50%" stop-color="#ed7d5b"/><stop offset="100%" stop-color="#d96d4d"/></linearGradient></defs><g><ellipse cx="60" cy="40" rx="38" ry="20" fill="url(#koiGrad2)"/><ellipse cx="60" cy="40" rx="38" ry="20" fill="none" stroke="#b85a3a" stroke-width="0.5" opacity="0.4"/><path d="M22 40 Q 10 28 6 40 Q 10 52 22 40 Z" fill="#ed7d5b"/><ellipse cx="60" cy="32" rx="14" ry="4" fill="#fff" opacity="0.5"/><circle cx="78" cy="36" r="3" fill="#1f3a36"/><circle cx="79" cy="35" r="0.8" fill="#fff"/><path d="M55 50 Q 60 60 65 50" stroke="#b85a3a" stroke-width="1" fill="none" opacity="0.6"/></g></svg>',
+  turtle: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"><g><ellipse cx="60" cy="50" rx="36" ry="22" fill="#3e7a96"/><ellipse cx="60" cy="50" rx="36" ry="22" fill="none" stroke="#1f3a36" stroke-width="0.5" opacity="0.3"/><ellipse cx="60" cy="50" rx="24" ry="14" fill="#5a9bb5"/><g fill="#2c5d72" opacity="0.55"><ellipse cx="60" cy="42" rx="4" ry="3"/><ellipse cx="48" cy="48" rx="4" ry="3"/><ellipse cx="72" cy="48" rx="4" ry="3"/><ellipse cx="54" cy="58" rx="4" ry="3"/><ellipse cx="66" cy="58" rx="4" ry="3"/><ellipse cx="60" cy="50" rx="3" ry="3"/></g><ellipse cx="22" cy="52" rx="10" ry="6" fill="#5a9bb5"/><ellipse cx="98" cy="52" rx="10" ry="6" fill="#5a9bb5"/><circle cx="22" cy="50" r="2" fill="#1f3a36"/><circle cx="98" cy="50" r="2" fill="#1f3a36"/><circle cx="22.6" cy="49.5" r="0.6" fill="#fff"/><circle cx="98.6" cy="49.5" r="0.6" fill="#fff"/></g></svg>',
+  cloud: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"><g><ellipse cx="60" cy="48" rx="42" ry="22" fill="#faf6ec"/><ellipse cx="40" cy="42" rx="18" ry="16" fill="#faf6ec"/><ellipse cx="78" cy="40" rx="20" ry="18" fill="#faf6ec"/><ellipse cx="60" cy="38" rx="16" ry="14" fill="#fff"/><ellipse cx="60" cy="48" rx="42" ry="22" fill="none" stroke="#c7dbe2" stroke-width="0.6"/><g opacity="0.5"><circle cx="44" cy="42" r="2" fill="#cfe4dd"/><circle cx="56" cy="40" r="2.5" fill="#cfe4dd"/><circle cx="70" cy="38" r="2" fill="#cfe4dd"/><circle cx="80" cy="44" r="2" fill="#cfe4dd"/></g><circle cx="48" cy="46" r="1.2" fill="#1f3a36"/><circle cx="72" cy="46" r="1.2" fill="#1f3a36"/><path d="M52 52 Q 60 56 68 52" stroke="#1f3a36" stroke-width="0.8" fill="none" opacity="0.6"/></g></svg>'
+};
+
+const FB_LABELS = { '24h': '24小时后回信', '3d': '3天后回信', '7d': '7天后回信' };
+
+/* ==================== 全局状态 ==================== */
+const state = {
+  riverWidth: 0,
+  riverHeight: 0,
+
+  feeling: '',
+  matchedCreature: null,
+  matchedTime: null,
+  selectedWater: null,
+  selectedWaterName: '拖锦鲤到水域',
+  currentCreature: 'koi',
+  confirmCreature: 'koi',
+  confirmTime: '3d',
+
+  isReleased: false,
+  todayCount: 1247,
+  confirmOpen: false,
+
+  showReceipt: false,
+  receiptData: null,
+  shareClicked: false,
+
+  records: [],
+  countdownTimer: null,
+
+  destinyData: null,
+  adVisible: false,
+  adCountdown: 15,
+  adReady: false,
+  adTimer: null,
+  adCallback: null
+};
+
+/* 拖拽内部状态 */
+const dragState = {
+  isDragging: false,
+  pointerId: null,
+  startX: 0,
+  startY: 0,
+  creatureStartX: 0,
+  creatureStartY: 0,
+  currentX: 0,
+  currentY: 0,
+  hoverZone: null,
+
+  // 地图平移
+  isPanningMap: false,
+  panStartX: 0,
+  panStartY: 0,
+  panOrigOffsetX: 0,
+  panOrigOffsetY: 0
+};
+
+/* 地图平移偏移（px） */
+let mapOffsetX = 0;
+let mapOffsetY = 0;
+const MAP_MAX_DRAG = 80;
+
+/* 生物初始位置（相对于.phone-river） */
+let creatureHomeX = 0;
+let creatureHomeY = 0;
+
+let placeholderTimer = null;
+let placeholderIdx = 0;
+let textareaFocused = false;
+
+/* ==================== 工具函数 ==================== */
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function pad(n, len) { return String(n).padStart(len, '0'); }
+
+function generateId() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = pad(now.getMonth() + 1, 2);
+  const d = pad(now.getDate(), 2);
+  const r = Math.random().toString(36).substring(2, 6);
+  return 'CR-' + y + m + d + '-' + r;
+}
+
+function formatFullTime(ts) {
+  const d = new Date(ts);
+  return d.getFullYear() + '.' + pad(d.getMonth()+1, 2) + '.' + pad(d.getDate(), 2) + ' ' + pad(d.getHours(), 2) + ':' + pad(d.getMinutes(), 2);
+}
+
+function toLocaleString(n) {
+  return n.toLocaleString('en-US');
+}
+
+function getFeedbackLabel() {
+  const fb = state.matchedTime || '3d';
+  return (FB_LABELS[fb] || '3天后回信');
+}
+
+function calcReplyAt() {
+  const fb = state.matchedTime || '3d';
+  const now = Date.now();
+  if (fb === '24h') return now + 24 * 3600 * 1000;
+  if (fb === '7d') return now + 7 * 24 * 3600 * 1000;
+  return now + 3 * 24 * 3600 * 1000;
+}
+
+function showToast(msg, duration) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => { toast.classList.remove('show'); }, duration || 2000);
+}
+
+/* ==================== 初始化 ==================== */
+function init() {
+  measureRiver();
+  initHotBubbles();
+  initArchiveRecords();
+  initAutoResize();
+  initCreatureDrag();
+  initMapPan();
+  setCreatureTo('koi', false);
+  resetCreaturePosition(true);
+  applyMapTransform();
+  updateSmartUI();
+
+  window.addEventListener('resize', function() {
+    setTimeout(function() {
+      measureRiver();
+      resetCreaturePosition(true);
+    }, 100);
+  });
+}
+
+/* ==================== 地图平移 ==================== */
+function initMapPan() {
+  const river = document.getElementById('phone-river');
+  river.addEventListener('pointerdown', onMapPointerDown);
+}
+
+function onMapPointerDown(e) {
+  if (state.isReleased || state.confirmOpen) return;
+  if (dragState.isDragging) return;
+  if (e.target.closest('.map-reset-btn') || e.target.closest('.hot-bubble') ||
+      e.target.closest('.edge-indicator') || e.target.closest('.river-stat')) return;
+
+  const river = document.getElementById('phone-river');
+  river.setPointerCapture(e.pointerId);
+
+  dragState.isPanningMap = true;
+  dragState.pointerId = e.pointerId;
+  dragState.panStartX = e.clientX;
+  dragState.panStartY = e.clientY;
+  dragState.panOrigOffsetX = mapOffsetX;
+  dragState.panOrigOffsetY = mapOffsetY;
+
+  document.getElementById('cartoon-map').classList.add('panning');
+
+  document.addEventListener('pointermove', onMapPointerMove);
+  document.addEventListener('pointerup', onMapPointerUp);
+  document.addEventListener('pointercancel', onMapPointerUp);
+}
+
+function onMapPointerMove(e) {
+  if (!dragState.isPanningMap || e.pointerId !== dragState.pointerId) return;
+  const dx = e.clientX - dragState.panStartX;
+  const dy = e.clientY - dragState.panStartY;
+  let nx = dragState.panOrigOffsetX + dx;
+  let ny = dragState.panOrigOffsetY + dy;
+  nx = Math.max(-MAP_MAX_DRAG, Math.min(MAP_MAX_DRAG, nx));
+  ny = Math.max(-MAP_MAX_DRAG, Math.min(MAP_MAX_DRAG, ny));
+  mapOffsetX = nx;
+  mapOffsetY = ny;
+  applyMapTransform();
+}
+
+function onMapPointerUp(e) {
+  if (!dragState.isPanningMap) return;
+  if (e.pointerId !== dragState.pointerId) return;
+
+  const river = document.getElementById('phone-river');
+  try { river.releasePointerCapture(e.pointerId); } catch(err) {}
+
+  document.removeEventListener('pointermove', onMapPointerMove);
+  document.removeEventListener('pointerup', onMapPointerUp);
+  document.removeEventListener('pointercancel', onMapPointerUp);
+
+  document.getElementById('cartoon-map').classList.remove('panning');
+  dragState.isPanningMap = false;
+}
+
+function applyMapTransform() {
+  const map = document.getElementById('cartoon-map');
+  if (map) {
+    map.style.transform = 'translate(' + mapOffsetX + 'px, ' + mapOffsetY + 'px)';
+  }
+}
+
+function resetMapOffset() {
+  mapOffsetX = 0;
+  mapOffsetY = 0;
+  const map = document.getElementById('cartoon-map');
+  map.classList.remove('panning');
+  map.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+  applyMapTransform();
+  setTimeout(() => { map.style.transition = ''; }, 400);
+}
+
+function measureRiver() {
+  const river = document.getElementById('phone-river');
+  const rect = river.getBoundingClientRect();
+  state.riverWidth = rect.width;
+  state.riverHeight = rect.height;
+  creatureHomeX = state.riverWidth / 2;
+  creatureHomeY = state.riverHeight * 0.68;
+}
+
+/* ==================== 生物位置与渲染 ==================== */
+function setCreatureTo(creatureKey, animate) {
+  state.currentCreature = creatureKey;
+  const el = document.getElementById('dragging-creature');
+  el.innerHTML = CREATURE_SVG[creatureKey] || CREATURE_SVG.koi;
+  if (animate) {
+    el.classList.remove('floating');
+    void el.offsetWidth;
+    el.classList.add('floating');
+  }
+}
+
+function setCreaturePosition(x, y, animate) {
+  const el = document.getElementById('dragging-creature');
+  if (animate) {
+    el.classList.add('bounce-back');
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    setTimeout(() => { el.classList.remove('bounce-back'); }, 500);
+  } else {
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+  }
+}
+
+function resetCreaturePosition(instant) {
+  const el = document.getElementById('dragging-creature');
+  el.classList.remove('sinking', 'dragging');
+  el.classList.add('floating');
+  if (instant) {
+    el.style.transition = 'none';
+    el.style.left = creatureHomeX + 'px';
+    el.style.top = creatureHomeY + 'px';
+    void el.offsetWidth;
+    el.style.transition = '';
+  } else {
+    setCreaturePosition(creatureHomeX, creatureHomeY, true);
+  }
+}
+
+/* ==================== 可拖拽生物 Pointer Events ==================== */
+function initCreatureDrag() {
+  const creature = document.getElementById('dragging-creature');
+  creature.addEventListener('pointerdown', onCreaturePointerDown);
+}
+
+function onCreaturePointerDown(e) {
+  if (state.isReleased || state.confirmOpen) return;
+  e.stopPropagation();
+  e.preventDefault();
+
+  const creature = document.getElementById('dragging-creature');
+  creature.setPointerCapture(e.pointerId);
+
+  dragState.isDragging = true;
+  dragState.pointerId = e.pointerId;
+
+  const rect = creature.getBoundingClientRect();
+  const riverRect = document.getElementById('phone-river').getBoundingClientRect();
+  dragState.startX = e.clientX;
+  dragState.startY = e.clientY;
+  dragState.creatureStartX = rect.left - riverRect.left + rect.width / 2;
+  dragState.creatureStartY = rect.top - riverRect.top + rect.height / 2;
+  dragState.currentX = dragState.creatureStartX;
+  dragState.currentY = dragState.creatureStartY;
+
+  creature.classList.add('dragging');
+  creature.classList.remove('floating', 'bounce-back');
+
+  document.addEventListener('pointermove', onCreaturePointerMove);
+  document.addEventListener('pointerup', onCreaturePointerUp);
+  document.addEventListener('pointercancel', onCreaturePointerUp);
+}
+
+function onCreaturePointerMove(e) {
+  if (!dragState.isDragging || e.pointerId !== dragState.pointerId) return;
+
+  const dx = e.clientX - dragState.startX;
+  const dy = e.clientY - dragState.startY;
+  const nx = dragState.creatureStartX + dx;
+  const ny = dragState.creatureStartY + dy;
+  dragState.currentX = nx;
+  dragState.currentY = ny;
+
+  setCreaturePosition(nx, ny, false);
+
+  const river = document.getElementById('phone-river');
+  const riverRect = river.getBoundingClientRect();
+  const elAtPoint = document.elementFromPoint(e.clientX, e.clientY);
+  let zoneEl = null;
+  if (elAtPoint) {
+    zoneEl = elAtPoint.closest('.water-zone');
+  }
+
+  if (dragState.hoverZone && dragState.hoverZone !== zoneEl) {
+    dragState.hoverZone.classList.remove('drag-over');
+  }
+  if (zoneEl && zoneEl !== dragState.hoverZone) {
+    zoneEl.classList.add('drag-over');
+  }
+  dragState.hoverZone = zoneEl;
+}
+
+function onCreaturePointerUp(e) {
+  if (!dragState.isDragging) return;
+
+  if (e.pointerId !== dragState.pointerId) return;
+
+  const creature = document.getElementById('dragging-creature');
+  try { creature.releasePointerCapture(e.pointerId); } catch(err) {}
+
+  document.removeEventListener('pointermove', onCreaturePointerMove);
+  document.removeEventListener('pointerup', onCreaturePointerUp);
+  document.removeEventListener('pointercancel', onCreaturePointerUp);
+
+  creature.classList.remove('dragging');
+
+  const dx = e.clientX - dragState.startX;
+  const dy = e.clientY - dragState.startY;
+  const moved = Math.abs(dx) > 8 || Math.abs(dy) > 8;
+
+  const hoverZone = dragState.hoverZone;
+  if (hoverZone) hoverZone.classList.remove('drag-over');
+  dragState.hoverZone = null;
+  dragState.isDragging = false;
+
+  if (moved && hoverZone) {
+    const waterKey = hoverZone.getAttribute('data-water');
+    selectWater(waterKey);
+    showConfirmCard();
+  } else {
+    creature.classList.add('floating');
+    setCreaturePosition(creatureHomeX, creatureHomeY, true);
+  }
+}
+
+/* ==================== 水域选择 ==================== */
+function selectWater(waterKey) {
+  if (state.isReleased) return;
+  const waterName = WATERS[waterKey] ? WATERS[waterKey].name : '拖锦鲤到水域';
+  state.selectedWater = waterKey;
+  state.selectedWaterName = waterName;
+  state.confirmCreature = state.matchedCreature || 'koi';
+  state.confirmTime = state.matchedTime || '3d';
+
+  document.querySelectorAll('.water-zone').forEach(z => {
+    z.classList.remove('selected');
+  });
+  const zone = document.getElementById('zone-' + waterKey);
+  if (zone) zone.classList.add('selected');
+
+  document.querySelectorAll('.hot-bubble').forEach(b => {
+    if (b.getAttribute('data-water') === waterKey) {
+      b.classList.add('active');
+    } else {
+      b.classList.remove('active');
+    }
+  });
+
+  document.getElementById('selected-water-name').textContent = waterName;
+
+  updateSmartUI();
+  updateEdgeIndicator();
+}
+
+function deselectWater() {
+  state.selectedWater = null;
+  state.selectedWaterName = '拖锦鲤到水域';
+  document.querySelectorAll('.water-zone').forEach(z => z.classList.remove('selected'));
+  document.querySelectorAll('.hot-bubble').forEach(b => b.classList.remove('active'));
+  document.getElementById('selected-water-name').textContent = '拖锦鲤到水域';
+  document.getElementById('edge-indicator').style.display = 'none';
+}
+
+/* ==================== 热门水域气泡 ==================== */
+function initHotBubbles() {
+  const container = document.getElementById('hot-bubbles');
+  container.innerHTML = '';
+  HOT_WATERS.forEach(key => {
+    const water = WATERS[key];
+    const bubble = document.createElement('div');
+    bubble.className = 'hot-bubble';
+    bubble.setAttribute('data-water', key);
+    bubble.innerHTML = '<span class="hot-icon">🔥</span>' + water.name;
+    bubble.addEventListener('click', function(e) {
+      e.stopPropagation();
+      onHotBubbleTap(key);
+    });
+    container.appendChild(bubble);
+  });
+}
+
+function onHotBubbleTap(waterKey) {
+  if (state.isReleased) return;
+  animateCreatureToZone(waterKey);
+}
+
+function animateCreatureToZone(waterKey) {
+  const zone = document.getElementById('zone-' + waterKey);
+  if (!zone) return;
+  const river = document.getElementById('phone-river');
+  const riverRect = river.getBoundingClientRect();
+  const bbox = zone.getBBox();
+  const svg = document.getElementById('map-svg');
+  const svgRect = svg.getBoundingClientRect();
+  const scaleX = svgRect.width / 355;
+  const scaleY = svgRect.height / 420;
+  const cx = (bbox.x + bbox.width / 2) * scaleX + (svgRect.left - riverRect.left);
+  const cy = (bbox.y + bbox.height / 2) * scaleY + (svgRect.top - riverRect.top);
+
+  const creature = document.getElementById('dragging-creature');
+  creature.classList.remove('floating');
+  setCreaturePosition(cx, cy, true);
+  setTimeout(() => {
+    selectWater(waterKey);
+    showConfirmCard();
+  }, 500);
+}
+
+/* ==================== 重置按钮 ==================== */
+function onMapReset() {
+  if (state.isReleased) return;
+  if (state.confirmOpen) {
+    hideConfirmCard();
+  }
+  deselectWater();
+  resetMapOffset();
+  resetCreaturePosition(false);
+  updateSmartUI();
+}
+
+/* ==================== 边缘指示器 ==================== */
+function updateEdgeIndicator() {
+  const indicator = document.getElementById('edge-indicator');
+  indicator.style.display = 'none';
+}
+
+function onEdgeIndicatorTap() {
+}
+
+/* ==================== 确认卡片 ==================== */
+function showConfirmCard() {
+  if (!state.selectedWater) return;
+  state.confirmOpen = true;
+
+  if (!state.matchedCreature && !state.feeling.trim()) {
+    state.confirmCreature = 'koi';
+  } else if (state.matchedCreature) {
+    state.confirmCreature = state.matchedCreature;
+  }
+  state.confirmTime = state.matchedTime || '3d';
+
+  updateConfirmCardUI();
+
+  const overlay = document.getElementById('confirm-overlay');
+  overlay.classList.add('show');
+}
+
+function hideConfirmCard() {
+  state.confirmOpen = false;
+  const overlay = document.getElementById('confirm-overlay');
+  overlay.classList.remove('show');
+  resetCreaturePosition(false);
+  deselectWater();
+  updateSmartUI();
+}
+
+function updateConfirmCardUI() {
+  const waterName = state.selectedWater ? WATERS[state.selectedWater].name : '';
+  document.getElementById('confirm-water-name').textContent = waterName;
+
+  const c = CREATURES[state.confirmCreature];
+  document.getElementById('confirm-creature-icon').textContent = c.emoji;
+  document.getElementById('confirm-creature-name').textContent = c.name;
+
+  document.getElementById('confirm-time-label').textContent = FB_LABELS[state.confirmTime];
+
+  const preview = document.getElementById('confirm-preview');
+  if (state.feeling.trim()) {
+    const text = state.feeling.trim();
+    preview.textContent = text.length > 20 ? text.substring(0, 20) + '...' : text;
+    preview.classList.remove('empty');
+  } else {
+    preview.textContent = '说说感受，让它带着你的情绪游走...';
+    preview.classList.add('empty');
+  }
+}
+
+function onConfirmOverlayTap(e) {
+  if (e.target === document.getElementById('confirm-overlay')) {
+    hideConfirmCard();
+  }
+}
+
+function onConfirmReselect() {
+  hideConfirmCard();
+}
+
+function onConfirmCycleCreature() {
+  const idx = CREATURE_CYCLE.indexOf(state.confirmCreature);
+  state.confirmCreature = CREATURE_CYCLE[(idx + 1) % CREATURE_CYCLE.length];
+  state.matchedCreature = state.confirmCreature;
+  setCreatureTo(state.confirmCreature, true);
+  updateConfirmCardUI();
+  updateSmartUI();
+}
+
+function onConfirmCycleTime() {
+  const idx = TIME_CYCLE.indexOf(state.confirmTime);
+  state.confirmTime = TIME_CYCLE[(idx + 1) % TIME_CYCLE.length];
+  state.matchedTime = state.confirmTime;
+  updateConfirmCardUI();
+  updateSmartUI();
+}
+
+function onConfirmCancel() {
+  hideConfirmCard();
+}
+
+function onConfirmRelease() {
+  if (state.isReleased) return;
+  if (!state.feeling.trim()) {
+    const ta = document.getElementById('feeling-textarea');
+    ta.focus();
+    showToast('说说你此刻的感受吧', 1500);
+    return;
+  }
+
+  state.matchedCreature = state.confirmCreature;
+  state.matchedTime = state.confirmTime;
+  state.isReleased = true;
+  state.confirmOpen = false;
+
+  const overlay = document.getElementById('confirm-overlay');
+  overlay.classList.remove('show');
+
+  const creature = document.getElementById('dragging-creature');
+  creature.classList.remove('floating', 'bounce-back');
+
+  const targetY = state.riverHeight + 60;
+  creature.style.transition = 'top 0.8s cubic-bezier(0.5, 0, 0.7, 1), left 0.8s cubic-bezier(0.5, 0, 0.7, 1)';
+  creature.style.top = targetY + 'px';
+  creature.classList.add('sinking');
+
+  setTimeout(function() {
+    showReceipt(state.confirmCreature, state.confirmTime);
+  }, 800);
+}
+
+/* ==================== 智能关键词提取 ==================== */
+const CREATURE_KEYWORDS = {
+  koi:    { words: ['紧张','考试','答辩','面试','offer','好运','加油','顺利','锦鲤','运气','焦虑','怕','冲','拼','上岸','挂科','出成绩','体检'], hint: '锦鲤替你带走紧张，带来好运' },
+  turtle: { words: ['累','疲惫','加班','熬','压力','慢','坚持','撑','扛','疲惫','不想动','乌龟','躺','卷','累瘫','累死','身体','脖子','腰'], hint: '乌龟说慢一点也没关系' },
+  cloud:  { words: ['烦','烦躁','郁闷','睡不着','想太多','放空','飘','浮云','云朵','想不开','憋','闷','难受','心塞','闹心','堵','乱','不开心'], hint: '让云朵把烦恼都飘走' }
+};
+
+const TIME_KEYWORDS = {
+  '24h': { words: ['明天','今晚','马上','紧急','答辩','考试','面试','今天','现在','立刻','尽快','急','快','今晚','明早'], label: '24小时后回信' },
+  '3d':  { words: ['这周','周末','几天','熬过去','扛过','撑过','这几天','周三','周四','周五','过几天'], label: '3天后回信' },
+  '7d':  { words: ['下周','不急','慢慢','以后','缓缓','不着急','有时间','慢慢来','等等','下周','月底','下个月'], label: '7天后回信' }
+};
+
+function matchCreature(text) {
+  if (!text || !text.trim()) return null;
+  let best = null, bestScore = 0;
+  for (const key of Object.keys(CREATURE_KEYWORDS)) {
+    let score = 0;
+    for (const w of CREATURE_KEYWORDS[key].words) {
+      if (text.indexOf(w) !== -1) score++;
+    }
+    if (score > bestScore) { bestScore = score; best = key; }
+  }
+  return best;
+}
+
+function matchTime(text) {
+  if (!text || !text.trim()) return null;
+  let best = null, bestScore = 0;
+  for (const key of Object.keys(TIME_KEYWORDS)) {
+    let score = 0;
+    for (const w of TIME_KEYWORDS[key].words) {
+      if (text.indexOf(w) !== -1) score++;
+    }
+    if (score > bestScore) { bestScore = score; best = key; }
+  }
+  return best;
+}
+
+/* ==================== 输入框自适应高度 ==================== */
+function initAutoResize() {
+  const ta = document.getElementById('feeling-textarea');
+  ta.addEventListener('input', function() {
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight, 80) + 'px';
+  });
+}
+
+/* ==================== 感受输入 + 智能匹配 ==================== */
+function onFeelingInput(textareaEl) {
+  const value = textareaEl.value;
+  state.feeling = value;
+
+  const prevCreature = state.matchedCreature;
+  const creature = matchCreature(value);
+  if (creature && creature !== prevCreature) {
+    state.matchedCreature = creature;
+    setCreatureTo(creature, true);
+    if (state.confirmOpen) {
+      state.confirmCreature = creature;
+    }
+  } else if (!value.trim() && prevCreature) {
+    state.matchedCreature = null;
+  }
+
+  const time = matchTime(value);
+  state.matchedTime = time;
+  if (state.confirmOpen && time) {
+    state.confirmTime = time;
+  }
+
+  if (state.confirmOpen) {
+    updateConfirmCardUI();
+  }
+  updateSmartTags();
+  updateInputHint();
+}
+
+function onFeelingFocus() {
+  textareaFocused = true;
+}
+
+function onFeelingBlur() {
+  textareaFocused = false;
+}
+
+function onTextareaKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (state.confirmOpen) {
+      onConfirmRelease();
+    }
+  }
+}
+
+/* ==================== 智能标签显示 ==================== */
+function updateSmartTags() {
+  const container = document.getElementById('smart-tags');
+  if (!container) return;
+  let html = '';
+
+  if (state.selectedWater) {
+    html += '<span class="smart-tag tag-water">🗺️ ' + state.selectedWaterName + '</span>';
+  }
+  const cKey = state.matchedCreature || (state.confirmOpen ? state.confirmCreature : null);
+  if (cKey) {
+    const name = CREATURES[cKey].name;
+    const emoji = CREATURES[cKey].emoji;
+    html += '<span class="smart-tag tag-creature">' + emoji + ' ' + name + '</span>';
+  }
+  const tKey = state.matchedTime || (state.confirmOpen ? state.confirmTime : null);
+  if (tKey) {
+    html += '<span class="smart-tag tag-time">⏱ ' + FB_LABELS[tKey].replace('回信','') + '</span>';
+  }
+
+  container.innerHTML = html;
+  if (html) {
+    container.classList.add('visible');
+  } else {
+    container.classList.remove('visible');
+  }
+}
+
+/* ==================== 输入提示文案 ==================== */
+function updateInputHint() {
+  const hint = document.getElementById('input-hint');
+  if (!hint) return;
+
+  if (state.confirmOpen) {
+    const c = CREATURES[state.confirmCreature];
+    hint.innerHTML = '<span class="hint-creature">' + c.emoji + ' 确认卡片已打开，拖动生物可重新选择水域</span>';
+    return;
+  }
+
+  if (!state.selectedWater && !state.feeling.trim()) {
+    hint.innerHTML = '把锦鲤拖到一片水域，说出感受，让它随水流走';
+  } else if (!state.selectedWater && state.feeling.trim()) {
+    const c = state.matchedCreature;
+    if (c) {
+      hint.innerHTML = '<span class="hint-creature">' + CREATURES[c].emoji + ' ' + CREATURE_KEYWORDS[c].hint + '，把它拖到水里 ↑</span>';
+    } else {
+      hint.innerHTML = '把生物拖到地图上的水域就可以放生了 ↑';
+    }
+  } else if (state.selectedWater && !state.feeling.trim()) {
+    const c = state.matchedCreature || 'koi';
+    hint.innerHTML = '<span class="hint-creature">' + CREATURES[c].emoji + ' ' + CREATURE_KEYWORDS[c].hint + '</span>';
+  } else if (state.selectedWater && state.feeling.trim()) {
+    const c = state.matchedCreature || 'koi';
+    hint.innerHTML = '<span class="hint-creature">' + CREATURES[c].emoji + ' ' + CREATURE_KEYWORDS[c].hint + '，按回车或点击确认放生</span>';
+  } else {
+    hint.innerHTML = '准备好了就确认放生 →';
+  }
+}
+
+/* ==================== 统一 UI 更新 ==================== */
+function updateSmartUI() {
+  updateSmartTags();
+  updateInputHint();
+}
+
+/* ==================== 回执 ==================== */
+function showReceipt(creature, fbTime) {
+  creature = creature || state.matchedCreature || 'koi';
+  fbTime = fbTime || state.matchedTime || '3d';
+
+  const id = generateId();
+  const sign = rand(SIGNS[creature]);
+  const fbLabel = FB_LABELS[fbTime];
+  const now = Date.now();
+
+  state.receiptData = {
+    id: id,
+    waterName: WATERS[state.selectedWater].name,
+    creatureEmoji: CREATURES[creature].emoji,
+    creatureName: CREATURES[creature].name,
+    timeStr: formatFullTime(now),
+    feeling: state.feeling,
+    sign: sign,
+    feedbackLabel: fbLabel
+  };
+
+  document.getElementById('receipt-rows').innerHTML =
+    '<div class="receipt-row"><span class="row-key">护生编号</span><span class="row-val mono">' + id + '</span></div>' +
+    '<div class="receipt-row"><span class="row-key">放生地点</span><span class="row-val serif">' + state.receiptData.waterName + '</span></div>' +
+    '<div class="receipt-row"><span class="row-key">生物</span><span class="row-val">' + state.receiptData.creatureEmoji + ' ' + state.receiptData.creatureName + '</span></div>' +
+    '<div class="receipt-row"><span class="row-key">放生时间</span><span class="row-val mono">' + state.receiptData.timeStr + '</span></div>';
+  document.getElementById('receipt-feeling-text').textContent = state.receiptData.feeling || '（这次没说，没关系）';
+  document.getElementById('receipt-sign-text').textContent = state.receiptData.sign;
+  document.getElementById('receipt-feedback-label').textContent = state.receiptData.feedbackLabel;
+
+  state.shareClicked = false;
+  document.getElementById('receipt-share').classList.remove('btn-line-active');
+  document.getElementById('receipt-share').textContent = '分享到群';
+
+  state.todayCount++;
+  document.getElementById('today-count').textContent = toLocaleString(state.todayCount);
+
+  state.showReceipt = true;
+  document.getElementById('receipt-overlay').classList.add('show');
+}
+
+function onReceiptOverlayTap(e) {
+  if (e.target === document.getElementById('receipt-overlay')) {
+  }
+}
+
+function onShareTap() {
+  if (state.shareClicked) return;
+  state.shareClicked = true;
+  const btn = document.getElementById('receipt-share');
+  btn.classList.add('btn-line-active');
+  btn.textContent = '✓ 已生成卡片';
+  showToast('分享卡片已生成', 1500);
+}
+
+function onAgainTap() {
+  document.getElementById('receipt-overlay').classList.remove('show');
+  state.showReceipt = false;
+
+  setTimeout(function() {
+    state.isReleased = false;
+    state.matchedCreature = null;
+    state.matchedTime = null;
+    state.confirmCreature = 'koi';
+    state.confirmTime = '3d';
+    state.confirmOpen = false;
+    state.feeling = '';
+    state.receiptData = null;
+
+    const ta = document.getElementById('feeling-textarea');
+    ta.value = '';
+    ta.style.height = 'auto';
+    ta.placeholder = '说说你此刻的感受...';
+
+    document.getElementById('confirm-overlay').classList.remove('show');
+    document.querySelectorAll('.water-zone').forEach(z => z.classList.remove('selected'));
+    document.querySelectorAll('.hot-bubble').forEach(b => b.classList.remove('active'));
+
+    deselectWater();
+    resetMapOffset();
+
+    const creature = document.getElementById('dragging-creature');
+    creature.classList.remove('sinking', 'dragging', 'bounce-back');
+    creature.style.transition = '';
+    creature.style.transform = '';
+    creature.style.opacity = '';
+    creature.style.top = '';
+    creature.style.left = '';
+    setCreatureTo('koi', false);
+    resetCreaturePosition(true);
+
+    document.getElementById('smart-tags').classList.remove('visible');
+    document.getElementById('smart-tags').innerHTML = '';
+
+    updateSmartUI();
+  }, 300);
+}
+
+/* ==================== 导航栏按钮 ==================== */
+function onBackTap() {
+}
+
+function onMoreTap() {
+  showToast('赛博放生 · 把情绪放进电子河流', 2000);
+}
+
+/* ==================== Tab 切换 ==================== */
+function onTabTap(pageName) {
+  document.querySelectorAll('.tab-item').forEach(t => {
+    if (t.getAttribute('data-page') === pageName) {
+      t.classList.add('active');
+    } else {
+      t.classList.remove('active');
+    }
+  });
+
+  const releasePage = document.getElementById('page-release');
+  const archivePage = document.getElementById('page-archive');
+
+  if (pageName === 'release') {
+    archivePage.classList.remove('active');
+    releasePage.classList.add('active');
+    if (state.confirmOpen) hideConfirmCard();
+    updateSmartUI();
+  } else if (pageName === 'archive') {
+    if (state.confirmOpen) hideConfirmCard();
+    releasePage.classList.remove('active');
+    archivePage.classList.add('active');
+    startCountdown();
+  }
+}
+
+/* ==================== 档案页 ==================== */
+function initArchiveRecords() {
+  const now = Date.now();
+  state.records = [
+    {
+      id: 'CR-2024-0622-3a7f',
+      creature: 'koi',
+      creatureEmoji: '🐟',
+      creatureName: '锦鲤',
+      water: 'pacific',
+      waterName: '太平洋',
+      feeling: '明天要答辩，紧张到胃疼...',
+      timeStr: '2024.06.22 14:32',
+      feedbackLabel: '24 小时后',
+      reply: REPLY_POOL[0],
+      expanded: false,
+      replyAt: now - 12 * 3600 * 1000
+    },
+    {
+      id: 'CR-2024-0623-8b2e',
+      creature: 'turtle',
+      creatureEmoji: '🐢',
+      creatureName: '乌龟',
+      water: 'baikal',
+      waterName: '贝加尔湖',
+      feeling: '又加班到十一点，脑子嗡嗡的...',
+      timeStr: '2024.06.23 09:15',
+      feedbackLabel: '3 天后',
+      reply: null,
+      replyAt: now + 2 * 24 * 3600 * 1000 + 5 * 3600 * 1000 + 1234,
+      countdown: '',
+      expanded: false
+    }
+  ];
+  renderArchiveList();
+}
+
+function renderArchiveList() {
+  const list = document.getElementById('archive-list');
+  list.innerHTML = '';
+
+  state.records.forEach(function(record, idx) {
+    const item = document.createElement('div');
+    item.className = 'archive-item' + (record.reply ? ' has-reply' : '');
+
+    let html = '';
+    html += '<div class="archive-item-head">';
+    html += '<span class="item-num">' + record.id + '</span>';
+    html += '<span class="archive-status ' + (record.reply ? 'done' : 'pending') + '">' + (record.reply ? '已回信' : '待回信') + '</span>';
+    html += '</div>';
+    html += '<div class="item-meta">' + record.creatureEmoji + ' ' + record.creatureName + ' · ' + record.waterName + ' · ' + record.timeStr + '</div>';
+    html += '<div class="feeling-preview">"' + record.feeling + '"</div>';
+
+    if (record.reply) {
+      html += '<div class="archive-reply' + (record.expanded ? ' expanded' : '') + '" id="reply-' + idx + '">';
+      html += '<div class="reply-label">📬 AI 回信 · ' + record.feedbackLabel + '</div>';
+      html += '<div class="reply-image" style="background: ' + record.reply.bg + ';">';
+      html += '<span class="reply-emoji">' + record.reply.emoji + '</span>';
+      html += '</div>';
+      html += '<span class="reply-text">' + record.reply.text + '</span>';
+      html += '<div class="destiny-entry" data-record-id="' + record.id + '" onclick="event.stopPropagation(); onDestinyTap(\'' + record.id + '\')">';
+      html += '<span class="destiny-entry-label">✨ 命运轨迹</span>';
+      html += '<span class="destiny-entry-progress">查看 ›</span>';
+      html += '</div>';
+      html += '</div>';
+    } else {
+      html += '<div class="archive-countdown">';
+      html += '<span>⏳ 回信倒计时</span>';
+      html += '<span class="countdown-time" id="countdown-' + idx + '">' + formatCountdown(record.replyAt) + '</span>';
+      html += '</div>';
+    }
+
+    item.innerHTML = html;
+    item.addEventListener('click', function() {
+      onCardTap(idx);
+    });
+    list.appendChild(item);
+  });
+}
+
+function onCardTap(idx) {
+  const record = state.records[idx];
+  if (!record.reply) return;
+  record.expanded = !record.expanded;
+  const replyEl = document.getElementById('reply-' + idx);
+  if (replyEl) {
+    if (record.expanded) {
+      replyEl.classList.add('expanded');
+    } else {
+      replyEl.classList.remove('expanded');
+    }
+  }
+}
+
+function formatCountdown(replyAt) {
+  const diff = replyAt - Date.now();
+  if (diff <= 0) return '00:00:00';
+  const hours = Math.floor(diff / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
+}
+
+function startCountdown() {
+  if (state.countdownTimer) clearInterval(state.countdownTimer);
+  state.countdownTimer = setInterval(function() {
+    state.records.forEach(function(record, idx) {
+      if (!record.reply) {
+        const el = document.getElementById('countdown-' + idx);
+        if (el) {
+          el.textContent = formatCountdown(record.replyAt);
+        }
+      }
+    });
+  }, 1000);
+}
+
+/* ==================== 命运轨迹页 ==================== */
+function onDestinyTap(recordId) {
+  state.destinyData = {
+    recordId: recordId,
+    segments: [
+      {
+        index: 0, locked: false, unlockType: 'free',
+        bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)',
+        emoji: '🌊',
+        title: '入水瞬间',
+        text: '你的锦鲤在太平洋水面轻轻破开一圈涟漪。它回头看了你一眼——不是告别，是确认。确认你真的愿意把这份情绪放走。水温和你的掌心一样温热。'
+      },
+      {
+        index: 1, locked: true, unlockType: 'ad',
+        bg: 'linear-gradient(135deg, #c7dbe2, #7fb6a4)',
+        emoji: '🌀',
+        title: '暗流涌动',
+        text: '水下三百米，光开始变少。你的锦鲤遇到了一股暗流——那不是危险，是深海在试探它的决心。它想起你说的话，调整了一下方向，继续往深处游。'
+      },
+      {
+        index: 2, locked: true, unlockType: 'ad',
+        bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)',
+        emoji: '🌙',
+        title: '月光下的对话',
+        text: '夜晚，月光穿透水面。锦鲤浮到浅水区，和一只路过的水母聊了起来。水母说：你主人放你的时候，手在抖。锦鲤说：我知道，所以我得游远一点，让他放心。'
+      },
+      {
+        index: 3, locked: true, unlockType: 'ad',
+        bg: 'linear-gradient(135deg, #fff3cd, #ffd970)',
+        emoji: '✨',
+        title: '命运回响',
+        text: '第七天，锦鲤游到了一片珊瑚礁。它在珊瑚丛中发现了一颗发光的珠子——那是你放生时落进水里的那滴眼泪化成的。它把珠子含在嘴里，决定替你保管，直到你不再需要它为止。'
+      }
+    ],
+    allUnlocked: false
+  };
+
+  document.getElementById('destiny-record-id').textContent = recordId;
+  renderDestinySegments();
+  document.getElementById('page-destiny').classList.add('active');
+}
+
+function renderDestinySegments() {
+  const container = document.getElementById('destiny-segments');
+  container.innerHTML = '';
+
+  state.destinyData.segments.forEach(function(seg) {
+    const el = document.createElement('div');
+    el.className = 'destiny-segment' + (seg.locked ? ' locked' : '');
+
+    let html = '';
+    html += '<div class="seg-banner" style="background: ' + seg.bg + ';">';
+    html += '<span class="seg-index">第 ' + (seg.index + 1) + ' 段</span>';
+    html += '<span class="seg-emoji">' + seg.emoji + '</span>';
+    if (seg.locked) {
+      html += '<div class="seg-lock-overlay">';
+      html += '<span class="lock-icon">🔒</span>';
+      html += '<span class="lock-hint">' + (seg.unlockType === 'free' ? '免费' : '看广告解锁') + '</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+    html += '<div class="seg-body">';
+    html += '<span class="seg-title">' + seg.title + '</span>';
+    if (!seg.locked) {
+      html += '<span class="seg-text">' + seg.text + '</span>';
+    } else {
+      html += '<button class="seg-unlock-btn" onclick="event.stopPropagation(); onUnlockSegment(' + seg.index + ')">' + (seg.unlockType === 'free' ? '免费解锁' : '📺 看广告解锁') + '</button>';
+    }
+    html += '</div>';
+
+    el.innerHTML = html;
+    container.appendChild(el);
+  });
+
+  const actions = document.getElementById('destiny-actions');
+  if (state.destinyData.allUnlocked) {
+    actions.innerHTML = '';
+  } else {
+    actions.innerHTML = '<button class="bundle-btn" onclick="onUnlockBundle()">📺 看广告 · 一次解锁全部</button>';
+  }
+}
+
+function onUnlockSegment(index) {
+  const seg = state.destinyData.segments[index];
+  if (!seg.locked) return;
+
+  if (seg.unlockType === 'free') {
+    seg.locked = false;
+    checkAllUnlocked();
+    renderDestinySegments();
+  } else {
+    showAd(function() {
+      seg.locked = false;
+      checkAllUnlocked();
+      renderDestinySegments();
+    });
+  }
+}
+
+function onUnlockBundle() {
+  showAd(function() {
+    state.destinyData.segments.forEach(function(s) { s.locked = false; });
+    state.destinyData.allUnlocked = true;
+    renderDestinySegments();
+  });
+}
+
+function checkAllUnlocked() {
+  const allUnlocked = state.destinyData.segments.every(function(s) { return !s.locked; });
+  state.destinyData.allUnlocked = allUnlocked;
+}
+
+function onDestinyBack() {
+  document.getElementById('page-destiny').classList.remove('active');
+}
+
+/* ==================== 广告模拟 ==================== */
+function showAd(callback) {
+  state.adVisible = true;
+  state.adCountdown = 15;
+  state.adReady = false;
+  state.adCallback = callback;
+
+  document.getElementById('ad-overlay').classList.add('show');
+  updateAdUI();
+
+  state.adTimer = setInterval(function() {
+    state.adCountdown--;
+    if (state.adCountdown <= 0) {
+      state.adCountdown = 0;
+      state.adReady = true;
+      clearInterval(state.adTimer);
+      state.adTimer = null;
+    }
+    updateAdUI();
+  }, 1000);
+}
+
+function updateAdUI() {
+  const countdownText = document.getElementById('ad-countdown-text');
+  const closeBtn = document.getElementById('ad-close-btn');
+
+  if (state.adReady) {
+    countdownText.innerHTML = '<span class="ad-ready-text">✓ 观看完成，可领取奖励</span>';
+    closeBtn.classList.add('ready');
+    closeBtn.textContent = '领取奖励';
+  } else {
+    countdownText.textContent = '剩余 ' + state.adCountdown + ' 秒';
+    closeBtn.classList.remove('ready');
+    closeBtn.textContent = '请观看 ' + state.adCountdown + 's';
+  }
+}
+
+function onAdClose() {
+  if (!state.adReady) return;
+
+  document.getElementById('ad-overlay').classList.remove('show');
+  state.adVisible = false;
+  if (state.adTimer) {
+    clearInterval(state.adTimer);
+    state.adTimer = null;
+  }
+  if (state.adCallback) {
+    const cb = state.adCallback;
+    state.adCallback = null;
+    setTimeout(cb, 300);
+  }
+}
+
+/* ==================== 启动 ==================== */
+window.addEventListener('load', function() {
+  init();
+  startCountdown();
+});
+</script>
+
+</body>
+</html>

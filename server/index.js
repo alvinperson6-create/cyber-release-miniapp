@@ -2,14 +2,20 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { initDb } = require('./db');
-const { generateReply, generateReplyImage, generateDestiny, isAIEnabled } = require('./ai');
-const { insertDestiny } = require('./db');
+const { isAIEnabled } = require('./ai');
+const { PRE_GENERATE_MS, generateReplyForRecord } = require('./reply-generator');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// 托管本地生成的图片
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
+
+// 托管前端公共资源（three.js 本地 vendor、globe 配置等）
+app.use(express.static(path.join(__dirname, 'public')));
 
 // 托管静态网页（项目根目录的 web-app.html）
 const WEB_DIR = path.join(__dirname, '..');
@@ -25,6 +31,7 @@ app.use('/api/release', require('./routes/release'));
 app.use('/api/records', require('./routes/records'));
 app.use('/api/reply', require('./routes/reply'));
 app.use('/api/destiny', require('./routes/destiny'));
+app.use('/api/world', require('./routes/world'));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -37,45 +44,20 @@ initDb();
 console.log(`[ai] ${isAIEnabled() ? 'AI 已启用' : 'AI 未启用（使用本地模板兜底，设置 AI_API_KEY 启用真实 AI）'}`);
 
 // Check pending replies every 10 seconds
-// 到期的放生记录会自动生成 AI 回信 + 命运轨迹
+// 在回信到期前 PRE_GENERATE_MS 就开始生成，到点即可直接推送
 setInterval(async () => {
-  const { getPendingReplies, updateReply, getDestinyByRecordId } = require('./db');
-  const pending = getPendingReplies();
+  const { getPendingReplies } = require('./db');
+  const pending = getPendingReplies(1, PRE_GENERATE_MS);
   for (const r of pending) {
     try {
-      const [reply, image] = await Promise.all([
-        generateReply({ feeling: r.feeling, creature: r.creature, water: r.water }),
-        generateReplyImage({ feeling: r.feeling, creature: r.creature, water: r.water })
-      ]);
-      updateReply(r.id, { ...reply, image });
-
-      // 同步生成命运轨迹（若不存在）
-      if (!getDestinyByRecordId(r.id)) {
-        try {
-          const segments = await generateDestiny({
-            feeling: r.feeling,
-            creature: r.creature,
-            water: r.water
-          });
-          insertDestiny({
-            id: `DST-${r.id}`,
-            recordId: r.id,
-            openid: r.openid,
-            segments
-          });
-        } catch (e) {
-          console.warn(`[reply] destiny generation failed for ${r.id}:`, e.message);
-        }
-      }
+      await generateReplyForRecord(r);
+      console.log(`[reply] pre-generated reply for ${r.id}`);
     } catch (err) {
       console.error(`[reply] generation failed for ${r.id}:`, err.message);
     }
   }
-  if (pending.length > 0) {
-    console.log(`[reply] Generated ${pending.length} AI replies`);
-  }
 }, 10000);
 
 app.listen(PORT, () => {
-  console.log(`赛博放生局 API running at http://localhost:${PORT}`);
+  console.log(`赛博放生 API running at http://localhost:${PORT}`);
 });

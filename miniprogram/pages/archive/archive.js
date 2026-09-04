@@ -1,4 +1,4 @@
-// 赛博放生局 · 档案页
+// 赛博放生 · 档案页
 const {
   CREATURES, WATERS
 } = require('../../utils/data.js');
@@ -170,7 +170,7 @@ Page({
   // ==================== 分享 ====================
   onShareAppMessage() {
     return {
-      title: '赛博放生局 · 我的电子放生档案',
+      title: '赛博放生 · 我的电子放生档案',
       path: '/pages/archive/archive'
     };
   }

@@ -1,8 +1,8 @@
-// 赛博放生局 · API 层
+// 赛博放生 · API 层
 // 优先使用 wx.request 调用后端, 失败时降级到 wx.storage 本地存储
 const storage = require('./storage.js');
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'http://localhost:3001/api';
 const USE_API = false; // 后端运行时改为 true
 
 // 复用 storage 模块的本地存储能力

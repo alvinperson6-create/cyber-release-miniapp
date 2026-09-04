@@ -52,6 +52,9 @@ router.get('/:id', (req, res) => {
     return res.json({
       id: destiny.id,
       recordId: destiny.recordId,
+      location: destiny.location,
+      visual: destiny.visual,
+      water: (getRecordById(destiny.recordId) || {}).water || null,
       segments,
       totalSegments: segments.length,
       unlockedCount: segments.filter(s => !s.locked).length,

@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { CREATURES, WATERS, SIGNS } = require('../data');
-const { insertRecord } = require('../db');
+const { insertRecord, getRecordById } = require('../db');
+const { shouldGenerateNow, generateReplyForRecord } = require('../reply-generator');
 
 function pad4(n) {
   return String(n).padStart(4, '0');
@@ -94,6 +95,14 @@ router.post('/', (req, res) => {
       created_at: createdAt,
       reply_at: replyAt
     });
+
+    // 如果回信到期时间很近，立即后台开始生成，避免用户到点等待
+    const freshRecord = getRecordById(id);
+    if (freshRecord && shouldGenerateNow(freshRecord)) {
+      generateReplyForRecord(freshRecord).catch(err => {
+        console.error(`[release] immediate generation failed for ${id}:`, err.message);
+      });
+    }
 
     return res.json({
       id,

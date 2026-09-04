@@ -5,7 +5,7 @@
     "pages/destiny/destiny"
   ],
   "window": {
-    "navigationBarTitleText": "赛博放生局",
+    "navigationBarTitleText": "赛博放生",
     "navigationStyle": "custom",
     "backgroundColor": "#d4e8e2",
     "backgroundColorTop": "#d4e8e2",

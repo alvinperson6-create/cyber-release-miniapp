@@ -196,7 +196,7 @@
   opacity: 0;
 }
 
-/* ==================== 电子生物浮动层 ==================== */
+/* ==================== 生物浮动层 ==================== */
 .creature-layer {
   position: absolute;
   bottom: 24rpx;
@@ -443,4 +443,22 @@
   60%, 100% {
     left: 100%;
   }
+}
+
+/* ===== 3D 地球容器 ===== */
+.globe-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+/* ===== 长按蓄力放生 ===== */
+.cta-btn.charging {
+  transform: scale(0.97);
+  animation: chargeGlow 1.2s ease-in-out infinite;
+}
+
+@keyframes chargeGlow {
+  0%, 100% { box-shadow: 0 8rpx 24rpx rgba(237, 125, 91, 0.45); }
+  50% { box-shadow: 0 8rpx 40rpx rgba(237, 125, 91, 0.95), 0 0 80rpx rgba(255, 179, 138, 0.5); }
 }

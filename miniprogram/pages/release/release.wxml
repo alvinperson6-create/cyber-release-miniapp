@@ -3,14 +3,23 @@
   <!-- 自定义导航栏 -->
   <view class="phone-header">
     <text class="header-back" catchtap="onBackTap">‹</text>
-    <text class="header-title">赛博放生局</text>
+    <text class="header-title">赛博放生</text>
     <text class="header-more" catchtap="onMoreTap">···</text>
   </view>
 
   <!-- 河流区域 -->
   <view class="phone-river" style="height: {{riverHeight}}px;">
-    <!-- 世界地图：可拖动 -->
-    <view class="world-map"
+    <!-- 3D 地球（canvas 初始化失败时自动降级回 2D 地图） -->
+    <view class="globe-wrap" wx:if="{{globe3dOn}}">
+      <globe3d id="globe"
+               selected-water="{{selectedWater}}"
+               disabled="{{isReleased}}"
+               bind:select="onGlobeSelect"
+               bind:fallback="onGlobeFallback"></globe3d>
+    </view>
+
+    <!-- 世界地图：可拖动（3D 降级备用） -->
+    <view class="world-map" wx:else
           bindtouchstart="onMapTouchStart"
           bindtouchmove="onMapTouchMove"
           bindtouchend="onMapTouchEnd">
@@ -46,10 +55,10 @@
 
     <!-- 地图提示 -->
     <view class="map-hint {{selectedWater ? 'hidden' : ''}}">
-      <text>拖动地图 · 点选水域</text>
+      <text>{{globe3dOn ? '转动地球 · 点选水域' : '拖动地图 · 点选水域'}}</text>
     </view>
 
-    <!-- 电子生物浮动层 -->
+    <!-- 生物浮动层 -->
     <view class="creature-layer {{isReleased ? 'released' : ''}}">
       <image class="creature-img" src="{{creatureImg}}" mode="aspectFit"></image>
     </view>
@@ -109,9 +118,12 @@
       <view class="fb-date">{{customDate || '选择日期'}}</view>
     </picker>
 
-    <!-- 放生按钮 -->
-    <view class="cta-btn {{!ready ? 'disabled' : ''}}" catchtap="onReleaseTap">
-      <text class="cta-btn-text">{{btnText}}</text>
+    <!-- 放生按钮：长按蓄力放生 -->
+    <view class="cta-btn {{!ready ? 'disabled' : ''}} {{charging ? 'charging' : ''}}"
+          bindtouchstart="onReleaseTouchStart"
+          bindtouchend="onReleaseTouchEnd"
+          catchtap="onReleaseTap">
+      <text class="cta-btn-text">{{charging ? '深呼吸 · 长按送它走' : btnText}}</text>
     </view>
   </view>
 

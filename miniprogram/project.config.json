@@ -1,5 +1,5 @@
 {
-  "description": "赛博放生局小程序",
+  "description": "赛博放生小程序",
   "miniprogramRoot": "./",
   "compileType": "miniprogram",
   "setting": {

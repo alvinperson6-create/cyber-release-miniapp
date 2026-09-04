@@ -1,4 +1,4 @@
-// 赛博放生局 · 本地存储封装
+// 赛博放生 · 本地存储封装
 // 使用 wx.setStorageSync / wx.getStorageSync 持久化放生记录
 const { REPLY_POOL, CREATURES } = require('./data.js');
 
@@ -133,7 +133,7 @@ function saveDestinies(d) {
 
 // 本地命运轨迹模板生成（与 server/ai.js templateDestiny 保持一致）
 function generateDestinySegments(creature) {
-  const creatureName = (CREATURES[creature] && CREATURES[creature].name) || '电子生物';
+  const creatureName = (CREATURES[creature] && CREATURES[creature].name) || '生物';
   const palettes = [
     { bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)', emoji: '🌿' },
     { bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)', emoji: '🌊' },

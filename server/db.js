@@ -28,27 +28,41 @@ function initDb() {
     )
   `).run();
 
-  // 兼容旧数据库：新增 reply_image 字段
-  try {
-    db.prepare(`ALTER TABLE records ADD COLUMN reply_image TEXT`).run();
-  } catch (e) {
-    // 字段已存在则忽略
+  // 兼容旧数据库：新增 reply_image / reply_generating_at 字段
+  for (const col of ['reply_image', 'reply_generating_at']) {
+    try {
+      db.prepare(`ALTER TABLE records ADD COLUMN ${col} TEXT`).run();
+    } catch (e) {
+      // 字段已存在则忽略
+    }
   }
 
   // 命运轨迹表：每条放生记录对应一段命运轨迹
   // segments: JSON 数组 [{title, text, emoji, bg}]
   // unlocked_indices: JSON 数组 [0,1,2,...] 已解锁的段索引（第 0 段默认免费）
+  // location/visual: AI 自选的真实地点与画面描述，用于对齐回信和配图
   db.prepare(`
     CREATE TABLE IF NOT EXISTS destinies (
       id TEXT PRIMARY KEY,
       record_id TEXT NOT NULL UNIQUE,
       openid TEXT NOT NULL,
       segments TEXT NOT NULL,
+      location TEXT,
+      visual TEXT,
       unlocked_indices TEXT NOT NULL DEFAULT '[0]',
       created_at INTEGER NOT NULL,
       FOREIGN KEY (record_id) REFERENCES records(id)
     )
   `).run();
+
+  // 兼容旧数据库：新增 location/visual/ending/reply/visual_for_image 字段
+  for (const col of ['location', 'visual', 'ending', 'reply', 'visual_for_image']) {
+    try {
+      db.prepare(`ALTER TABLE destinies ADD COLUMN ${col} TEXT`).run();
+    } catch (e) {
+      // 字段已存在则忽略
+    }
+  }
 
   seedDemoData();
 }
@@ -150,11 +164,13 @@ function seedDemoData() {
       id: 'DST-CRSB-DEMO-0001',
       record_id: 'CRSB-DEMO-0001',
       openid: DEMO_OPENID,
+      location: '西湖断桥',
+      visual: '锦鲤在西湖断桥下游动，粉色荷花盛开，远处有断桥轮廓',
       segments: [
         { title: '入水瞬间', text: '锦鲤从你的掌心滑进西湖，鳞片在晨光里闪了一下。它没有回头，但摆了摆尾巴，像是在说"放心"。', emoji: '🌿', bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)' },
         { title: '顺流而下', text: '它穿过一片水草，遇见一群透明的小鱼。它们互相打了个照面，又各自游开。西湖的水比它想象的温柔。', emoji: '🌊', bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)' },
         { title: '一次回望', text: '在断桥下面它停了一下。它想起你写"项目压力大"时的样子——它没法替你解决，但它决定替你记着，替你游得慢一点。', emoji: '🔥', bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)' },
-        { title: '准备回信', text: '它找到一块长满青苔的石头，靠着，开始想怎么把这一路的事讲给你听。回信已经在它嘴里成形了。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' }
+        { title: '离谱结局', text: '它游着游着被一位晨练大爷用网兜捞起，送进了白堤边的知味观。厨师正要动手，它掏出手机给你发了条语音。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' }
       ],
       unlocked_indices: '[0,1]'  // 前两段已解锁
     },
@@ -162,11 +178,13 @@ function seedDemoData() {
       id: 'DST-CRSB-DEMO-0003',
       record_id: 'CRSB-DEMO-0003',
       openid: DEMO_OPENID,
+      location: '贝加尔湖奥利洪岛',
+      visual: '云朵飘在贝加尔湖奥利洪岛上方，湖水湛蓝，岸边有萨满岩',
       segments: [
         { title: '升上天空', text: '云朵从你手心飘起来，越飘越高，最后停在贝加尔湖上空。它低头看了你一眼，然后被风推着走了。', emoji: '☁️', bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)' },
         { title: '随风漂泊', text: '它路过一座雪山，又路过一片云。云和云之间互相点头，像在说"你也来啦"。它觉得自己轻了一点。', emoji: '🌙', bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)' },
         { title: '装下你的事', text: '它把你写下的"脑子乱糟糟的"装进自己身体里。装着装着，它发现自己变重了——但不是坏事，是那种被需要的重。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' },
-        { title: '化作回信', text: '它飘回贝加尔湖上空，把自己拧了拧，拧出一封回信，轻轻丢向你的方向。', emoji: '🌙', bg: 'linear-gradient(135deg, #fff3cd, #ffd970)' }
+        { title: '离谱结局', text: '它飘到奥利洪岛萨满岩上空时被当地巫师当成祥瑞收进陶罐，罐口恰好能连上 WiFi，它赶紧给你写回信。', emoji: '🌙', bg: 'linear-gradient(135deg, #fff3cd, #ffd970)' }
       ],
       unlocked_indices: '[0]'  // 仅第一段已解锁
     },
@@ -174,19 +192,21 @@ function seedDemoData() {
       id: 'DST-CRSB-DEMO-0004',
       record_id: 'CRSB-DEMO-0004',
       openid: DEMO_OPENID,
+      location: '太平洋中途岛',
+      visual: '锦鲤在太平洋中途岛附近清澈海水中游动，热带鱼群环绕',
       segments: [
         { title: '入水瞬间', text: '锦鲤从你的掌心滑进太平洋，鳞片在正午的阳光里闪了一下。它没有回头，一头扎进了深蓝色的水里。', emoji: '🔥', bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)' },
         { title: '顺流而下', text: '太平洋很大，它游了很久没见到边。遇到一群海豚，海豚问它去哪，它说"去给一个人写封信"。', emoji: '🌊', bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)' },
         { title: '一次回望', text: '在一片珊瑚礁它停了一下。它想起你写"放生积德"时的样子——它决定替你把这份善意带去更远的海域。', emoji: '☀️', bg: 'linear-gradient(135deg, #fff3cd, #ffd970)' },
-        { title: '准备回信', text: '它找到一块温暖的礁石，靠着，开始想怎么把这一路的事讲给你听。回信已经在它嘴里成形了。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' }
+        { title: '离谱结局', text: '它游到中途岛时被一只信天翁当成漂流瓶叼走，鸟喙里信号不错，它就地给你写了回信。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' }
       ],
       unlocked_indices: '[0,1,2,3]'  // 全部已解锁
     }
   ];
 
   const insertDst = db.prepare(`
-    INSERT INTO destinies (id, record_id, openid, segments, unlocked_indices, created_at)
-    VALUES (@id, @record_id, @openid, @segments, @unlocked_indices, @created_at)
+    INSERT INTO destinies (id, record_id, openid, segments, location, visual, unlocked_indices, created_at)
+    VALUES (@id, @record_id, @openid, @segments, @location, @visual, @unlocked_indices, @created_at)
   `);
   const txDst = db.transaction((items) => {
     for (const d of items) {
@@ -195,6 +215,8 @@ function seedDemoData() {
         record_id: d.record_id,
         openid: d.openid,
         segments: JSON.stringify(d.segments),
+        location: d.location || null,
+        visual: d.visual || null,
         unlocked_indices: d.unlocked_indices,
         created_at: now
       });
@@ -242,21 +264,38 @@ function getRecordById(id) {
   return db.prepare(`SELECT * FROM records WHERE id = ?`).get(id);
 }
 
-function getPendingReplies() {
+function getAllRecords() {
+  return db.prepare('SELECT * FROM records ORDER BY created_at DESC').all();
+}
+
+function getPendingReplies(limit = 1, preGenerateMs = 0) {
   const now = Date.now();
+  const GENERATING_TIMEOUT_MS = 15 * 60 * 1000; // 15 分钟内认为还在生成中
   return db.prepare(`
     SELECT * FROM records
-    WHERE reply_at <= ? AND reply_text IS NULL
-  `).all(now);
+    WHERE reply_at - ? <= ?
+      AND reply_text IS NULL
+      AND (reply_generating_at IS NULL OR reply_generating_at < ?)
+    ORDER BY created_at ASC
+    LIMIT ?
+  `).all(preGenerateMs, now, now - GENERATING_TIMEOUT_MS, limit);
 }
 
 function updateReply(id, reply) {
   const now = Date.now();
   db.prepare(`
     UPDATE records
-    SET reply_bg = ?, reply_emoji = ?, reply_text = ?, reply_image = ?, reply_created_at = ?
+    SET reply_bg = ?, reply_emoji = ?, reply_text = ?, reply_image = ?, reply_created_at = ?, reply_generating_at = NULL
     WHERE id = ?
   `).run(reply.bg, reply.emoji, reply.text, reply.image || null, now, id);
+}
+
+function markReplyGenerating(id) {
+  db.prepare(`UPDATE records SET reply_generating_at = ? WHERE id = ?`).run(Date.now(), id);
+}
+
+function clearReplyGenerating(id) {
+  db.prepare(`UPDATE records SET reply_generating_at = NULL WHERE id = ?`).run(id);
 }
 
 function getStats(openid) {
@@ -271,26 +310,42 @@ function getStats(openid) {
 }
 
 // ==================== 命运轨迹 ====================
-function insertDestiny({ id, recordId, openid, segments }) {
+function insertDestiny({ id, recordId, openid, segments, location, visual, visualForImage, reply, ending }) {
   // 同一记录多次生成时直接覆盖，避免 UNIQUE constraint failed
   db.prepare(`
-    INSERT INTO destinies (id, record_id, openid, segments, unlocked_indices, created_at)
-    VALUES (?, ?, ?, ?, '[0]', ?)
+    INSERT INTO destinies (id, record_id, openid, segments, location, visual, visual_for_image, reply, ending, unlocked_indices, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '[0]', ?)
     ON CONFLICT(record_id) DO UPDATE SET
       segments = excluded.segments,
+      location = excluded.location,
+      visual = excluded.visual,
+      visual_for_image = excluded.visual_for_image,
+      reply = excluded.reply,
+      ending = excluded.ending,
       unlocked_indices = excluded.unlocked_indices,
       created_at = excluded.created_at
-  `).run(id, recordId, openid, JSON.stringify(segments), Date.now());
+  `).run(id, recordId, openid, JSON.stringify(segments), location || null, visual || null, JSON.stringify(visualForImage || {}), reply || ending || null, ending || null, Date.now());
 }
 
 function getDestinyByRecordId(recordId) {
   const row = db.prepare(`SELECT * FROM destinies WHERE record_id = ?`).get(recordId);
   if (!row) return null;
+  let visualForImage = null;
+  try {
+    visualForImage = JSON.parse(row.visual_for_image || '{}');
+  } catch (e) {
+    visualForImage = {};
+  }
   return {
     id: row.id,
     recordId: row.record_id,
     openid: row.openid,
     segments: JSON.parse(row.segments),
+    location: row.location,
+    visual: row.visual,
+    visualForImage,
+    reply: row.reply || null,
+    ending: row.ending,
     unlockedIndices: JSON.parse(row.unlocked_indices),
     createdAt: row.created_at
   };
@@ -307,8 +362,11 @@ module.exports = {
   insertRecord,
   getRecordsByOpenid,
   getRecordById,
+  getAllRecords,
   getPendingReplies,
   updateReply,
+  markReplyGenerating,
+  clearReplyGenerating,
   getStats,
   insertDestiny,
   getDestinyByRecordId,

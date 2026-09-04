@@ -1,4 +1,4 @@
-// 赛博放生局 · 命运轨迹页
+// 赛博放生 · 命运轨迹页
 const { apiGetDestiny, apiUnlockDestiny } = require('../../utils/api.js');
 
 Page({
@@ -149,7 +149,7 @@ Page({
   onShareAppMessage() {
     const d = this.data.destiny;
     return {
-      title: d ? `命运轨迹 · ${d.recordId}` : '赛博放生局 · 命运轨迹',
+      title: d ? `命运轨迹 · ${d.recordId}` : '赛博放生 · 命运轨迹',
       path: `/pages/destiny/destiny?recordId=${this.data.recordId}`
     };
   }

@@ -1,7 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const { getRecordById, updateReply, insertDestiny, getDestinyByRecordId } = require('../db');
-const { generateReply, generateReplyImage, generateDestiny, isAIEnabled } = require('../ai');
+const { generateReplyImage, generateDestiny, summarizeDestiny, isAIEnabled, pickReplyVisual, templateReplyText } = require('../ai');
+
+function getReplyTimeLabel(ms) {
+  if (ms == null) return '一天后';
+  const hours = Math.round(ms / (60 * 60 * 1000));
+  if (hours < 1) return '片刻后';
+  if (hours < 24) return `${hours} 小时后`;
+  if (hours === 24) return '一天后';
+  return `${Math.round(hours / 24)} 天后`;
+}
 
 // GET /api/reply/:id
 router.get('/:id', (req, res) => {
@@ -46,38 +55,56 @@ router.post('/generate', async (req, res) => {
       return res.status(404).json({ error: '记录不存在' });
     }
 
-    // 1. 生成 AI 回信 + 背景图（回信若已存在则跳过，图片若缺失则补生成）
-    let reply;
-    if (row.reply_text) {
-      reply = { bg: row.reply_bg, emoji: row.reply_emoji, text: row.reply_text, image: row.reply_image };
-      if (!reply.image) {
-        reply.image = await generateReplyImage({ feeling: row.feeling, creature: row.creature, water: row.water });
-        if (reply.image) updateReply(id, reply);
-      }
-    } else {
-      const [generatedReply, image] = await Promise.all([
-        generateReply({ feeling: row.feeling, creature: row.creature, water: row.water }),
-        generateReplyImage({ feeling: row.feeling, creature: row.creature, water: row.water })
-      ]);
-      reply = { ...generatedReply, image };
-      updateReply(id, reply);
-    }
-
-    // 2. 生成命运轨迹（若已存在则跳过）
+    // 1. 先生成命运轨迹（若已存在则跳过），它决定地点、画面、离谱结局
     let destiny = getDestinyByRecordId(id);
     if (!destiny) {
-      const segments = await generateDestiny({
+      const generated = await generateDestiny({
         feeling: row.feeling,
         creature: row.creature,
-        water: row.water
+        water: row.water,
+        replyTimeLabel: getReplyTimeLabel(row.reply_at - row.created_at)
       });
       insertDestiny({
         id: `DST-${id}`,
         recordId: id,
         openid: row.openid,
-        segments
+        segments: generated.segments,
+        location: generated.location,
+        visual: generated.visual,
+        visualForImage: generated.visualForImage,
+        reply: generated.reply,
+        ending: generated.ending
       });
       destiny = getDestinyByRecordId(id);
+    }
+    const destinySummary = summarizeDestiny(destiny);
+
+    // 2. 回信直接用命运轨迹里的 reply 字段，再生成配图
+    let reply;
+    if (row.reply_text) {
+      reply = { bg: row.reply_bg, emoji: row.reply_emoji, text: row.reply_text, image: row.reply_image };
+      if (!reply.image) {
+        reply.image = await generateReplyImage({
+          feeling: row.feeling,
+          creature: row.creature,
+          water: row.water,
+          destinySummary,
+          replyText: row.reply_text
+        });
+        if (reply.image) updateReply(id, reply);
+      }
+    } else {
+      const style = pickReplyVisual(row.creature);
+      const replyText = destinySummary.reply || templateReplyText(row.feeling, row.creature, row.water, destinySummary);
+      const image = await generateReplyImage({
+        feeling: row.feeling,
+        creature: row.creature,
+        water: row.water,
+        destinySummary,
+        replyText
+      });
+      reply = { bg: style.bg, emoji: style.emoji, text: replyText, image };
+      updateReply(id, reply);
     }
 
     return res.json({
