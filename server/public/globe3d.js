@@ -248,7 +248,7 @@
     const globeGroup = new THREE.Group();
     scene.add(globeGroup);
 
-    const sunDir = new THREE.Vector3(4.2, 1.6, 4.4).normalize();
+    const sunDir = new THREE.Vector3(4.0, 1.6, 5.4).normalize();
     const TEX = opts.textures || {};
     const aniso = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 4;
     for (const t of [TEX.day, TEX.night, TEX.water, TEX.clouds]) {
@@ -266,7 +266,8 @@
       uHasDay: { value: TEX.day ? 1 : 0 },
       uHasNight: { value: TEX.night ? 1 : 0 },
       uHasWater: { value: TEX.water ? 1 : 0 },
-      uHasCloudTex: { value: TEX.clouds ? 1 : 0 }
+      uHasCloudTex: { value: TEX.clouds ? 1 : 0 },
+      uStyle: { value: 0 }  // 0=真实卫星 1=卡通
     };
 
     // ---------- 星空 ----------
@@ -327,6 +328,7 @@
         uniform float uTime; uniform sampler2D uLand; uniform vec3 uSunDir; uniform vec3 uCamPos;
         uniform sampler2D uDay; uniform sampler2D uNight; uniform sampler2D uWater; uniform sampler2D uCloudTex;
         uniform float uHasDay; uniform float uHasNight; uniform float uHasWater; uniform float uHasCloudTex;
+        uniform float uStyle;
         varying vec2 vUv; varying vec3 vNormal; varying vec3 vWorldPos;
         ${GLSL_NOISE}
 
@@ -362,9 +364,45 @@
           float term = pow(clamp(1.0 - abs(NdL), 0.0, 1.0), 9.0);
           col += vec3(0.9, 0.36, 0.14) * term * 0.14;
 
-          // 菲涅尔边缘（蓝青大气，昼夜过渡）
-          float fres = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.4);
-          col += mix(vec3(0.10, 0.32, 0.55), vec3(0.30, 0.85, 0.78), dayF) * fres * 0.5;
+          // 极淡纯蓝大气（贴着球面的一层薄雾，无绿色）
+          float fres = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 3.5);
+          col += vec3(0.16, 0.38, 0.72) * fres * 0.22;
+          return col;
+        }
+
+        // ---- 卡通 3D：色块量化 + 三阶色阶光照 + 卡通高光 + 深色描边 ----
+        vec3 cartoon(vec2 uv, vec3 N, vec3 V) {
+          vec3 tex = pow(texture2D(uDay, uv).rgb, vec3(2.2));
+          // 色块化：每通道 6 级量化，产生手绘分区感
+          vec3 q = floor(tex * 6.0 + vec3(0.5)) / 6.0;
+          float l = dot(q, vec3(0.299, 0.587, 0.114));
+          vec3 sat = clamp(mix(vec3(l), q, 1.28), 0.0, 1.0);
+
+          float NdL = dot(N, uSunDir);
+          // 卡通用头灯照明：光源跟随相机，正面整体亮、边缘自然转暗
+          float NdLmix = mix(NdL, dot(N, V), 0.8);
+          float band = NdLmix > 0.30 ? 1.0 : (NdLmix > -0.08 ? 0.8 : 0.58);
+          vec3 col = sat * band + vec3(0.02, 0.05, 0.10) * (1.0 - band);
+
+          // 海洋风格化：明快卡通海蓝（按原亮度分浅海/深海两档）
+          float water = uHasWater > 0.5 ? texture2D(uWater, uv).r : 0.0;
+          float lb = dot(tex, vec3(0.299, 0.587, 0.114));
+          vec3 cartoonSea = mix(vec3(0.03, 0.16, 0.38), vec3(0.06, 0.34, 0.62), smoothstep(0.02, 0.3, lb));
+          col = mix(col, cartoonSea * band + vec3(0.02, 0.05, 0.10) * (1.0 - band), water * 0.88);
+
+          // 卡通高光：海面一小块干净的白斑（小而锐利）
+          vec3 H = normalize(uSunDir + V);
+          float spec = smoothstep(0.988, 0.998, dot(N, H)) * water * smoothstep(-0.05, 0.15, NdL);
+          col += vec3(1.0, 0.98, 0.9) * spec * 0.6;
+
+          // 夜面：城市灯光变成卡通暖色点
+          vec3 lights = uHasNight > 0.5 ? texture2D(uNight, uv).rgb : vec3(0.0);
+          float nightF = 1.0 - smoothstep(-0.05, 0.22, NdL);
+          col += pow(lights, vec3(1.3)) * vec3(1.0, 0.72, 0.42) * 1.6 * nightF;
+
+          // 深色描边（球体轮廓勾边，粗而干净）
+          float fres = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.0);
+          col = mix(col, vec3(0.02, 0.10, 0.15), smoothstep(0.55, 0.82, fres));
           return col;
         }
 
@@ -413,7 +451,8 @@
           vec2 uv = vec2(fract(vUv.x + uTime * 0.002), vUv.y);
           vec3 col;
           if (uHasDay > 0.5) {
-            col = pow(max(photoreal(vUv, N, V), vec3(0.0)), vec3(1.0 / 2.2));  // 卫星贴图：线性光照 -> sRGB 输出
+            vec3 lit = uStyle > 0.5 ? cartoon(vUv, N, V) : photoreal(vUv, N, V);
+            col = pow(max(lit, vec3(0.0)), vec3(1.0 / 2.2));  // 线性光照 -> sRGB 输出
           } else {
             col = procedural(uv, N, V);          // 程序化兜底：直接显示空间
           }
@@ -423,87 +462,58 @@
     const earth = new THREE.Mesh(new THREE.SphereGeometry(R, 96, 96), oceanMat);
     globeGroup.add(earth);
 
-    // ---------- 云层（真实云图 or 程序噪声） ----------
-    const clouds = new THREE.Mesh(
-      new THREE.SphereGeometry(R * 1.026, 64, 64),
-      new THREE.ShaderMaterial({
-        transparent: true, depthWrite: false,
-        uniforms: {
-          uTime: uniforms.uTime,
-          uMap: { value: TEX.clouds || buildCloudTexture() },
-          uSunDir: { value: sunDir },
-          uReal: { value: TEX.clouds ? 1 : 0 }
-        },
-        vertexShader: `
-          varying vec2 vUv; varying vec3 vNormal;
-          void main() {
-            vUv = uv; vNormal = normalize(mat3(modelMatrix) * normal);
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }`,
-        fragmentShader: `
-          uniform sampler2D uMap; uniform float uTime; uniform vec3 uSunDir; uniform float uReal;
-          varying vec2 vUv; varying vec3 vNormal;
-          void main() {
-            vec2 uv = vec2(fract(vUv.x + uTime * 0.0013), vUv.y);
-            vec4 c = texture2D(uMap, uv);
+    // ---------- 云层（真实云图 or 程序噪声；卡通模式为硬边白云团） ----------
+    const cloudsMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false,
+      uniforms: {
+        uTime: uniforms.uTime,
+        uMap: { value: TEX.clouds || buildCloudTexture() },
+        uSunDir: { value: sunDir },
+        uReal: { value: TEX.clouds ? 1 : 0 },
+        uStyle: { value: 0 }
+      },
+      vertexShader: `
+        varying vec2 vUv; varying vec3 vNormal;
+        void main() {
+          vUv = uv; vNormal = normalize(mat3(modelMatrix) * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }`,
+      fragmentShader: `
+        uniform sampler2D uMap; uniform float uTime; uniform vec3 uSunDir; uniform float uReal; uniform float uStyle;
+        varying vec2 vUv; varying vec3 vNormal;
+        ${GLSL_NOISE}
+        void main() {
+          vec2 uv = vec2(fract(vUv.x + uTime * 0.0013), vUv.y);
+          vec4 c = texture2D(uMap, uv);
+          if (uStyle > 0.5) {
+            // 卡通：阈值化 + fbm 强门控，把厚云盘撕成一坨坨蓬松积云
+            float a2 = smoothstep(0.55, 0.8, c.a);
+            a2 *= smoothstep(0.42, 0.62, fbm(uv * 14.0 + 3.7, 14.0));
+            if (a2 < 0.08) discard;
+            gl_FragColor = vec4(vec3(1.0), a2 * 0.92);
+          } else {
             float a = uReal > 0.5 ? c.a : c.a * 0.42;
             if (a < 0.015) discard;
             float NdL = dot(normalize(vNormal), uSunDir);
-            // 云被阳光照亮，夜面云近乎不可见（真实夜半球）
             float lit = 0.10 + 1.0 * smoothstep(-0.12, 0.25, NdL);
             vec3 rgb = uReal > 0.5 ? vec3(1.0) * lit : vec3(0.94, 0.99, 0.97);
             gl_FragColor = vec4(rgb, a * (uReal > 0.5 ? 0.88 : 1.0));
-          }`
-      })
-    );
+          }
+        }`
+    });
+    const clouds = new THREE.Mesh(new THREE.SphereGeometry(R * 1.026, 64, 64), cloudsMat);
     globeGroup.add(clouds);
 
-    // ---------- 大气：内层 + 外层光晕 ----------
-    const atmoInner = new THREE.Mesh(
-      new THREE.SphereGeometry(R * 1.075, 64, 64),
-      new THREE.ShaderMaterial({
-        transparent: true, side: THREE.BackSide, depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        uniforms: { uSunDir: { value: sunDir } },
-        vertexShader: `
-          varying vec3 vNormal; varying vec3 vView;
-          void main() {
-            vNormal = normalize(normalMatrix * normal);
-            vec4 mv = modelViewMatrix * vec4(position, 1.0);
-            vView = normalize(-mv.xyz);
-            gl_Position = projectionMatrix * mv;
-          }`,
-        fragmentShader: `
-          uniform vec3 uSunDir; varying vec3 vNormal; varying vec3 vView;
-          void main() {
-            float rim = pow(1.0 - abs(dot(vNormal, vView)), 3.0);
-            float sun = 0.55 + 0.45 * dot(vNormal, normalize((viewMatrix * vec4(uSunDir, 0.0)).xyz));
-            // 昼面蓝青、夜面深蓝，薄薄一层贴着球面
-            vec3 c = mix(vec3(0.15, 0.35, 0.62), vec3(0.42, 0.85, 0.88), clamp(sun, 0.0, 1.0));
-            gl_FragColor = vec4(c, rim * 0.5 * clamp(sun, 0.12, 1.0));
-          }`
-      })
-    );
-    scene.add(atmoInner);
-
-    const atmoHalo = new THREE.Mesh(
-      new THREE.SphereGeometry(R * 1.14, 48, 48),
-      new THREE.ShaderMaterial({
-        transparent: true, side: THREE.BackSide, depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        vertexShader: `
-          varying float vI;
-          void main() {
-            vec3 n = normalize(normalMatrix * normal);
-            vI = pow(clamp(0.62 - dot(n, vec3(0.0, 0.0, 1.0)), 0.0, 1.0), 3.2);
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }`,
-        fragmentShader: `
-          varying float vI;
-          void main() { gl_FragColor = vec4(vec3(0.30, 0.62, 0.86), clamp(vI, 0.0, 1.0) * 0.30); }`
-      })
-    );
-    scene.add(atmoHalo);
+    // 风格切换（0=真实卫星 1=卡通）
+    Globe3D.setStyle = function (style) {
+      const cartoon = style === 'cartoon' ? 1 : 0;
+      uniforms.uStyle.value = cartoon;
+      cloudsMat.uniforms.uStyle.value = cartoon;
+      if (composer && composer.passes && composer.passes[1]) {
+        composer.passes[1].strength = cartoon ? 0.28 : 0.42;  // 卡通少泛光，描边才干净
+      }
+    };
+    Globe3D._dbg = () => ({ uStyle: uniforms.uStyle.value, cloudStyle: cloudsMat.uniforms.uStyle.value });
 
     // ---------- 水域标记 ----------
     const TYPE_COLOR = { ocean: 0x35e0b8, lake: 0x4ee6c0, river: 0x4ee6c0, trench: 0xff8a5e };

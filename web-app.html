@@ -268,6 +268,28 @@ textarea, input { font-family: inherit; }
 
 .globe-canvas:active { cursor: grabbing; }
 
+/* 风格切换按钮（仅 3D 模式） */
+.style-toggle {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 8;
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(169, 210, 197, 0.4);
+  background: rgba(10, 40, 48, 0.55);
+  color: rgba(223, 243, 236, 0.9);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.style-toggle:active { transform: scale(0.95); }
+
+.water-canvas.mode-3d .style-toggle { display: block; }
+
 .water-canvas.mode-3d .globe-canvas { display: block; }
 .water-canvas.mode-3d .world-map { visibility: hidden; }
 
@@ -1757,7 +1779,7 @@ textarea, input { font-family: inherit; }
 <script src="/vendor/RenderPass.js" onerror="this.remove()"></script>
 <script src="/vendor/ShaderPass.js" onerror="this.remove()"></script>
 <script src="/vendor/UnrealBloomPass.js" onerror="this.remove()"></script>
-<script src="/globe3d.js"></script>
+<script src="/globe3d.js?v=14"></script>
 <script>
   // 加载与小程序共享的 3D 地球配置（失败则用 globe3d.js 内置兜底常量）
   (function () {
@@ -2451,6 +2473,7 @@ textarea, input { font-family: inherit; }
         </div>
         <div class="hot-bubbles">${hotBubblesHtml}</div>
         <div class="map-hint ${state.water ? 'hidden' : ''}" id="mapHint">拖动地图 · 点选水域</div>
+        <button class="style-toggle" id="globeStyleBtn" type="button"></button>
         <div class="creature-layer ${state.isReleased ? 'released' : ''}" id="creatureLayer">
           <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" id="creatureSvg">${creatureArt}</svg>
         </div>
@@ -2779,6 +2802,23 @@ textarea, input { font-family: inherit; }
       if (hint) { hint.style.visibility = 'visible'; hint.textContent = '转动地球 · 点选水域'; }
       if (state.water) Globe3D.setMarkersState(state.water);
       startWorldPulse();
+
+      // 风格切换（真实卫星 / 卡通 3D），持久化
+      const styleBtn = $('globeStyleBtn');
+      if (styleBtn) {
+        const cur = () => localStorage.getItem('globe_style') || 'real';
+        const paint = () => { styleBtn.textContent = cur() === 'cartoon' ? '🌍 真实' : '🎨 卡通'; };
+        paint();
+        Globe3D.setStyle(cur());
+        styleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const next = cur() === 'cartoon' ? 'real' : 'cartoon';
+          localStorage.setItem('globe_style', next);
+          Globe3D.setStyle(next);
+          paint();
+          Sfx.ripple();
+        });
+      }
     }
   }
 
