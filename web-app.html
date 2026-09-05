@@ -288,7 +288,8 @@ textarea, input { font-family: inherit; }
 
 .style-toggle:active { transform: scale(0.95); }
 
-.water-canvas.mode-3d .style-toggle { display: block; }
+/* 3D 初始化成功后显示切换按钮（两种模式下都要能切） */
+.water-canvas.has-3d .style-toggle { display: block; }
 
 .water-canvas.mode-3d .globe-canvas { display: block; }
 .water-canvas.mode-3d .world-map { visibility: hidden; }
@@ -1779,7 +1780,7 @@ textarea, input { font-family: inherit; }
 <script src="/vendor/RenderPass.js" onerror="this.remove()"></script>
 <script src="/vendor/ShaderPass.js" onerror="this.remove()"></script>
 <script src="/vendor/UnrealBloomPass.js" onerror="this.remove()"></script>
-<script src="/globe3d.js?v=14"></script>
+<script src="/globe3d.js?v=15"></script>
 <script>
   // 加载与小程序共享的 3D 地球配置（失败则用 globe3d.js 内置兜底常量）
   (function () {
@@ -2473,7 +2474,7 @@ textarea, input { font-family: inherit; }
         </div>
         <div class="hot-bubbles">${hotBubblesHtml}</div>
         <div class="map-hint ${state.water ? 'hidden' : ''}" id="mapHint">拖动地图 · 点选水域</div>
-        <button class="style-toggle" id="globeStyleBtn" type="button"></button>
+        <button class="style-toggle" id="globeModeBtn" type="button"></button>
         <div class="creature-layer ${state.isReleased ? 'released' : ''}" id="creatureLayer">
           <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" id="creatureSvg">${creatureArt}</svg>
         </div>
@@ -2797,25 +2798,31 @@ textarea, input { font-family: inherit; }
     });
     if (ok) {
       globeActive = true;
-      box.classList.add('mode-3d');
-      const hint = $('mapHint');
-      if (hint) { hint.style.visibility = 'visible'; hint.textContent = '转动地球 · 点选水域'; }
       if (state.water) Globe3D.setMarkersState(state.water);
       startWorldPulse();
 
-      // 风格切换（真实卫星 / 卡通 3D），持久化
-      const styleBtn = $('globeStyleBtn');
-      if (styleBtn) {
-        const cur = () => localStorage.getItem('globe_style') || 'real';
-        const paint = () => { styleBtn.textContent = cur() === 'cartoon' ? '🌍 真实' : '🎨 卡通'; };
-        paint();
-        Globe3D.setStyle(cur());
-        styleBtn.addEventListener('click', (e) => {
+      // 3D 地球 / 2D 平面地图切换（持久化；默认 3D）
+      const curMode = () => localStorage.getItem('globe_mode') === '2d' ? '2d' : '3d';
+      const applyGlobeMode = (mode) => {
+        const b = $('waterCanvasBox'), btn = $('globeModeBtn'), h = $('mapHint');
+        const is3d = mode === '3d';
+        if (b) {
+          b.classList.toggle('mode-3d', is3d);
+          b.classList.add('has-3d');
+        }
+        if (Globe3D.setPaused) Globe3D.setPaused(!is3d);
+        if (btn) btn.textContent = is3d ? '🗺️ 2D' : '🌐 3D';
+        if (h) { h.style.visibility = 'visible'; h.textContent = is3d ? '转动地球 · 点选水域' : '拖动地图 · 点选水域'; }
+      };
+      applyGlobeMode(curMode());
+
+      const modeBtn = $('globeModeBtn');
+      if (modeBtn) {
+        modeBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          const next = cur() === 'cartoon' ? 'real' : 'cartoon';
-          localStorage.setItem('globe_style', next);
-          Globe3D.setStyle(next);
-          paint();
+          const next = curMode() === '3d' ? '2d' : '3d';
+          localStorage.setItem('globe_mode', next);
+          applyGlobeMode(next);
           Sfx.ripple();
         });
       }
@@ -2941,14 +2948,22 @@ textarea, input { font-family: inherit; }
 
     const creatureLayer = $('creatureLayer');
     const finish = () => showReceipt();
+    const box = $('waterCanvasBox');
+    const use3D = globeActive && box && box.classList.contains('mode-3d') &&
+                  typeof Globe3D !== 'undefined' && Globe3D.playRelease;
 
-    if (globeActive && typeof Globe3D !== 'undefined' && Globe3D.playRelease) {
+    if (use3D) {
       if (creatureLayer) creatureLayer.style.opacity = '0';
       Sfx.dive();
       setTimeout(() => { Sfx.splash(); Sfx.ripple(); }, 1500);
       Globe3D.playRelease({ creature: state.creature, water: state.water }).then(finish);
     } else {
-      if (creatureLayer) creatureLayer.classList.add('released');
+      if (creatureLayer) {
+        creatureLayer.style.opacity = '';
+        creatureLayer.classList.remove('released');
+        void creatureLayer.offsetWidth; // 强制 reflow，重播下沉动画
+        creatureLayer.classList.add('released');
+      }
       Sfx.splash();
       setTimeout(finish, 800);
     }
