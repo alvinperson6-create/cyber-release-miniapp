@@ -2735,6 +2735,25 @@ textarea, input { font-family: inherit; }
 
   let globeActive = false;
 
+  // NASA 卫星贴图预加载（昼/夜/水/云；任一失败不阻塞，走程序化兜底）
+  async function loadEarthTextures() {
+    if (typeof THREE === 'undefined') return null;
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin('anonymous');
+    const load = (url) => new Promise((res) => {
+      loader.load(url, (t) => res(t), undefined, () => res(null));
+      setTimeout(() => res(null), 15000); // 超时兜底
+    });
+    const base = '/vendor/textures/';
+    const [day, night, water, clouds] = await Promise.all([
+      load(base + 'earth-blue-marble.jpg'),
+      load(base + 'earth-night.jpg'),
+      load(base + 'earth-water.png'),
+      load(base + 'clouds.png')
+    ]);
+    return day ? { day, night, water, clouds } : null;
+  }
+
   async function initGlobe3D() {
     const canvas = $('globeCanvas');
     const box = $('waterCanvasBox');
@@ -2743,8 +2762,10 @@ textarea, input { font-family: inherit; }
       await window.__globeConfigReady;
       if (window.__worldLandReady) await window.__worldLandReady;
     } catch(_) {}
+    const textures = await loadEarthTextures();
     const ok = Globe3D.init({
       canvas,
+      textures,
       onSelect: (waterId) => {
         if (state.isReleased) return;
         selectWater(waterId);

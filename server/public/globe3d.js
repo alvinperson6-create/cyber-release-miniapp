@@ -248,12 +248,25 @@
     const globeGroup = new THREE.Group();
     scene.add(globeGroup);
 
-    const sunDir = new THREE.Vector3(4.5, 1.7, 3.4).normalize();
+    const sunDir = new THREE.Vector3(4.2, 1.6, 4.4).normalize();
+    const TEX = opts.textures || {};
+    const aniso = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 4;
+    for (const t of [TEX.day, TEX.night, TEX.water, TEX.clouds]) {
+      if (t) { t.anisotropy = Math.min(8, aniso); t.wrapS = THREE.RepeatWrapping; }
+    }
     const uniforms = {
       uTime: { value: 0 },
       uLand: { value: buildLandMask(Globe3D.WORLD_LAND) },
       uSunDir: { value: sunDir },
-      uCamPos: { value: camera.position }
+      uCamPos: { value: camera.position },
+      uDay: { value: TEX.day || null },
+      uNight: { value: TEX.night || null },
+      uWater: { value: TEX.water || null },
+      uCloudTex: { value: TEX.clouds || null },
+      uHasDay: { value: TEX.day ? 1 : 0 },
+      uHasNight: { value: TEX.night ? 1 : 0 },
+      uHasWater: { value: TEX.water ? 1 : 0 },
+      uHasCloudTex: { value: TEX.clouds ? 1 : 0 }
     };
 
     // ---------- 星空 ----------
@@ -312,74 +325,115 @@
         }`,
       fragmentShader: `
         uniform float uTime; uniform sampler2D uLand; uniform vec3 uSunDir; uniform vec3 uCamPos;
+        uniform sampler2D uDay; uniform sampler2D uNight; uniform sampler2D uWater; uniform sampler2D uCloudTex;
+        uniform float uHasDay; uniform float uHasNight; uniform float uHasWater; uniform float uHasCloudTex;
         varying vec2 vUv; varying vec3 vNormal; varying vec3 vWorldPos;
         ${GLSL_NOISE}
-        void main() {
-          vec2 uv = vec2(fract(vUv.x + uTime * 0.002), vUv.y);
+
+        // ---- NASA 卫星贴图路径：昼/夜混合 + 城市灯光 + 海面高光 + 云影 ----
+        vec3 photoreal(vec2 uv, vec3 N, vec3 V) {
+          float NdL = dot(N, uSunDir);
+          float dayF = smoothstep(-0.06, 0.28, NdL);
+
+          vec3 day = pow(texture2D(uDay, uv).rgb, vec3(2.2));        // sRGB -> 线性
+          float water = uHasWater > 0.5 ? texture2D(uWater, uv).r : 0.0;
+          vec3 lights = uHasNight > 0.5 ? texture2D(uNight, uv).rgb : vec3(0.0);
+          float cloud = uHasCloudTex > 0.5 ? texture2D(uCloudTex, vec2(fract(uv.x + uTime * 0.0022), uv.y)).a : 0.0;
+
+          // 昼面：贴图 * 阳光 + 云影（整体通透提亮）
+          vec3 dayLit = day * (0.52 + 1.05 * clamp(NdL, 0.0, 1.0));
+          dayLit *= 1.0 - cloud * 0.30;
+
+          // 海面太阳高光（真实水体反光）
+          vec3 H = normalize(uSunDir + V);
+          float spec = pow(clamp(dot(N, H), 0.0, 1.0), 64.0) * water * dayF;
+          dayLit += vec3(1.0, 0.96, 0.88) * spec * 0.55;
+
+          // 夜面：深海底色 + 城市灯光（琥珀色，生命在流浪的痕迹）
+          vec3 nightCol = vec3(0.006, 0.014, 0.028);
+          nightCol += pow(lights, vec3(1.4)) * vec3(1.0, 0.78, 0.5) * 2.1;
+          // 夜面海岸微光（赛博放生 signature：荧光航线）
+          float coast = (uHasDay > 0.5 ? texture2D(uLand, uv).g : 0.0);
+          nightCol += vec3(0.05, 0.55, 0.5) * coast * 0.16 * (0.7 + 0.3 * sin(uTime * 1.2 + uv.x * 20.0));
+
+          vec3 col = mix(nightCol, dayLit, dayF);
+
+          // 晨昏线暖色大气（日落环）
+          float term = pow(clamp(1.0 - abs(NdL), 0.0, 1.0), 9.0);
+          col += vec3(0.9, 0.36, 0.14) * term * 0.14;
+
+          // 菲涅尔边缘（蓝青大气，昼夜过渡）
+          float fres = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.4);
+          col += mix(vec3(0.10, 0.32, 0.55), vec3(0.30, 0.85, 0.78), dayF) * fres * 0.5;
+          return col;
+        }
+
+        // ---- 程序化兜底路径（贴图未就绪/低端） ----
+        vec3 procedural(vec2 uv, vec3 N, vec3 V) {
           vec4 mask = texture2D(uLand, uv);
           float land = mask.r;
           float coast = mask.g;
-
-          // ---- 海洋：深度渐变 + 洋流 fbm ----
-          float lat = abs(vUv.y - 0.5) * 2.0;            // 0 赤道 1 极地
+          float lat = abs(uv.y - 0.5) * 2.0;
           float flow = fbm(uv * vec2(7.0, 4.0) + vec2(uTime * 0.008, 0.0), 7.0);
           float flow2 = fbm(uv * vec2(16.0, 9.0) - vec2(uTime * 0.015, uTime * 0.004), 16.0);
-          vec3 deepCol  = vec3(0.023, 0.129, 0.153);     // #062127 深海
-          vec3 midCol   = vec3(0.065, 0.335, 0.310);     // #115550
-          vec3 shalCol  = vec3(0.33, 0.63, 0.53);        // #54a187 浅滩
+          vec3 deepCol  = vec3(0.023, 0.129, 0.153);
+          vec3 midCol   = vec3(0.065, 0.335, 0.310);
+          vec3 shalCol  = vec3(0.33, 0.63, 0.53);
           vec3 oceanCol = mix(deepCol, midCol, smoothstep(0.12, 0.8, flow));
           oceanCol = mix(oceanCol, shalCol, smoothstep(0.55, 0.92, flow2) * 0.62);
-          oceanCol = mix(oceanCol, deepCol * 1.25, lat * 0.55); // 极地更深
-
-          // ---- 陆地：哑光青灰 + 颗粒（避免过曝，只让海岸发光） ----
+          oceanCol = mix(oceanCol, deepCol * 1.25, lat * 0.55);
           float grain = vnoise(uv * 90.0, 90.0) * 0.06;
-          vec3 landCol = vec3(0.337, 0.420, 0.388);      // #566b63 哑光
+          vec3 landCol = vec3(0.337, 0.420, 0.388);
           landCol = mix(landCol, vec3(0.30, 0.42, 0.36), smoothstep(0.4, 0.9, lat));
           landCol += grain;
-
           vec3 col = mix(oceanCol, landCol, land);
-
-          // ---- 光照 ----
-          vec3 N = normalize(vNormal);
-          vec3 V = normalize(uCamPos - vWorldPos);
           float diff = clamp(dot(N, uSunDir), 0.0, 1.0);
           float dayMix = smoothstep(-0.15, 0.25, dot(N, uSunDir));
           col *= 0.30 + 0.78 * diff;
-          // 夜面月光底光：陆地隐约可见，配合荧光海岸
           col += mix(landCol * 0.16, vec3(0.0), dayMix) * land;
           col += mix(oceanCol * 0.10, vec3(0.0), dayMix) * (1.0 - land);
-
-          // 海面太阳高光（仅海洋）：宽光 + 中心亮点双层
           vec3 H = normalize(uSunDir + V);
           float specCore = pow(clamp(dot(N, H), 0.0, 1.0), 120.0);
           float specWide = pow(clamp(dot(N, H), 0.0, 1.0), 18.0);
           float oceanOnly = 1.0 - land;
           col += vec3(1.0, 0.90, 0.72) * (specCore * 0.9 + specWide * 0.16) * oceanOnly;
-          // 洋流高光提亮（波纹对阳光的漫反射，让水活起来）
           col += vec3(0.35, 0.75, 0.65) * flow2 * oceanOnly * dayMix * 0.10;
-
-          // ---- 海岸线细发光（低强度 + 呼吸，内侧陆地保持暗） ----
           vec3 coastDay = vec3(0.25, 0.85, 0.68);
           vec3 coastNight = vec3(0.10, 0.75, 0.68);
-          float breathe = 0.7 + 0.3 * sin(uTime * 1.2 + vUv.x * 20.0);
+          float breathe = 0.7 + 0.3 * sin(uTime * 1.2 + uv.x * 20.0);
           col += mix(coastNight, coastDay, dayMix) * coast * (1.0 - land) * 0.42 * breathe;
-
-          // ---- 菲涅尔边缘（大气散射内层） ----
           float fres = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.6);
           col += vec3(0.38, 0.92, 0.80) * fres * (0.45 + 0.35 * dayMix);
+          return col;
+        }
 
+        void main() {
+          vec3 N = normalize(vNormal);
+          vec3 V = normalize(uCamPos - vWorldPos);
+          vec2 uv = vec2(fract(vUv.x + uTime * 0.002), vUv.y);
+          vec3 col;
+          if (uHasDay > 0.5) {
+            col = pow(max(photoreal(vUv, N, V), vec3(0.0)), vec3(1.0 / 2.2));  // 卫星贴图：线性光照 -> sRGB 输出
+          } else {
+            col = procedural(uv, N, V);          // 程序化兜底：直接显示空间
+          }
           gl_FragColor = vec4(col, 1.0);
         }`
     });
     const earth = new THREE.Mesh(new THREE.SphereGeometry(R, 96, 96), oceanMat);
     globeGroup.add(earth);
 
-    // ---------- 云层 ----------
+    // ---------- 云层（真实云图 or 程序噪声） ----------
     const clouds = new THREE.Mesh(
-      new THREE.SphereGeometry(R * 1.028, 64, 64),
+      new THREE.SphereGeometry(R * 1.026, 64, 64),
       new THREE.ShaderMaterial({
         transparent: true, depthWrite: false,
-        uniforms: { uTime: uniforms.uTime, uMap: { value: buildCloudTexture() } },
+        uniforms: {
+          uTime: uniforms.uTime,
+          uMap: { value: TEX.clouds || buildCloudTexture() },
+          uSunDir: { value: sunDir },
+          uReal: { value: TEX.clouds ? 1 : 0 }
+        },
         vertexShader: `
           varying vec2 vUv; varying vec3 vNormal;
           void main() {
@@ -387,13 +441,18 @@
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
           }`,
         fragmentShader: `
-          uniform sampler2D uMap; uniform float uTime;
+          uniform sampler2D uMap; uniform float uTime; uniform vec3 uSunDir; uniform float uReal;
           varying vec2 vUv; varying vec3 vNormal;
           void main() {
-            vec2 uv = vec2(fract(vUv.x + uTime * 0.0016), vUv.y);
-            float a = texture2D(uMap, uv).a;
-            float rim = pow(1.0 - abs(dot(normalize(vNormal), vec3(0.0, 0.0, 1.0))), 1.5);
-            gl_FragColor = vec4(vec3(0.94, 0.99, 0.97), a * 0.42 * (1.0 - rim * 0.6));
+            vec2 uv = vec2(fract(vUv.x + uTime * 0.0013), vUv.y);
+            vec4 c = texture2D(uMap, uv);
+            float a = uReal > 0.5 ? c.a : c.a * 0.42;
+            if (a < 0.015) discard;
+            float NdL = dot(normalize(vNormal), uSunDir);
+            // 云被阳光照亮，夜面云近乎不可见（真实夜半球）
+            float lit = 0.10 + 1.0 * smoothstep(-0.12, 0.25, NdL);
+            vec3 rgb = uReal > 0.5 ? vec3(1.0) * lit : vec3(0.94, 0.99, 0.97);
+            gl_FragColor = vec4(rgb, a * (uReal > 0.5 ? 0.88 : 1.0));
           }`
       })
     );
@@ -419,14 +478,16 @@
           void main() {
             float rim = pow(1.0 - abs(dot(vNormal, vView)), 3.0);
             float sun = 0.55 + 0.45 * dot(vNormal, normalize((viewMatrix * vec4(uSunDir, 0.0)).xyz));
-            gl_FragColor = vec4(vec3(0.38, 0.9, 0.78), rim * 0.9 * clamp(sun, 0.15, 1.0));
+            // 昼面蓝青、夜面深蓝，薄薄一层贴着球面
+            vec3 c = mix(vec3(0.15, 0.35, 0.62), vec3(0.42, 0.85, 0.88), clamp(sun, 0.0, 1.0));
+            gl_FragColor = vec4(c, rim * 0.5 * clamp(sun, 0.12, 1.0));
           }`
       })
     );
     scene.add(atmoInner);
 
     const atmoHalo = new THREE.Mesh(
-      new THREE.SphereGeometry(R * 1.26, 48, 48),
+      new THREE.SphereGeometry(R * 1.14, 48, 48),
       new THREE.ShaderMaterial({
         transparent: true, side: THREE.BackSide, depthWrite: false,
         blending: THREE.AdditiveBlending,
@@ -439,7 +500,7 @@
           }`,
         fragmentShader: `
           varying float vI;
-          void main() { gl_FragColor = vec4(vec3(0.32, 0.88, 0.76), clamp(vI, 0.0, 1.0) * 0.72); }`
+          void main() { gl_FragColor = vec4(vec3(0.30, 0.62, 0.86), clamp(vI, 0.0, 1.0) * 0.30); }`
       })
     );
     scene.add(atmoHalo);
