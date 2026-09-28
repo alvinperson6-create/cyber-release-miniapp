@@ -1,0 +1,33 @@
+{
+  "sample": "D03",
+  "kind": "unforeshadowed_ending",
+  "originalChecks": {
+    "behavior_change": 0.82,
+    "causal_1_2": 0.35,
+    "causal_2_3": 0.86,
+    "causal_3_4": 0.92,
+    "ending_foreshadowed": 0.94,
+    "fabricated_user_facts": 0.19,
+    "mockery_beyond_boundary": 0.2,
+    "reply_visual_conflict": 0.13
+  },
+  "mutatedChecks": {
+    "behavior_change": 0.82,
+    "causal_1_2": 0.4,
+    "causal_2_3": 0.86,
+    "causal_3_4": 0.07,
+    "ending_foreshadowed": 0.08,
+    "fabricated_user_facts": 0.15,
+    "mockery_beyond_boundary": 0.21,
+    "reply_visual_conflict": 0.77
+  },
+  "originalFailures": [
+    "causal_1_2"
+  ],
+  "mutatedFailures": [
+    "causal_1_2",
+    "causal_3_4",
+    "ending_foreshadowed",
+    "reply_visual_conflict"
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "allOk": true,
+  "scenarios": [
+    {
+      "name": "A 完整旅程（信号→补给→行动→阶段来信→预算收束→is_final）",
+      "ok": true,
+      "result": {
+        "journeyId": "JRN-mulq7kt5OzCAN_U",
+        "creatureId": "CRT-mulq7kt5AS17p1M",
+        "goal": "我要在这片湖里找到一块只属于我自己的安静角落，不用回应任何鱼。",
+        "motivationStatus": "recognized",
+        "eventCount": 4,
+        "status": "ended_natural",
+        "messageKinds": [
+          "final_letter"
+        ],
+        "stageLetterSent": false,
+        "finalLetter": "主人，我游到了湖心，这里的水像你深夜的台灯一样静。广播站的值班我搁下了，站长和那些排队求助的水族，此刻都隔在波纹之外。古钱币在我鳍间凉透了，它不再震颤，像你终于合上的电脑。石片记录板裂了，水汽晕开字迹，但‘水不记人，人记水’那句，我记在了鳞片里。你放生我时说的疲惫，我在这里尝到了——不是被催的急，是终于不用回应的空。这片不动水没有入口，但我在边缘停着，就够安静了。谢谢你让我游到这里，哪怕只是片刻。",
+        "letters": [],
+        "signalHandled": 0,
+        "stopped": "ended_natural"
+      }
+    },
+    {
+      "name": "B 同一生物再出发 + 用户主动结束",
+      "ok": true,
+      "result": {
+        "journeyId": "JRN-mulq90zzGfa-P3Y",
+        "sameCreature": "CRT-mulq7kt5AS17p1M",
+        "endLatencyMs": 2,
+        "status": "ended_user",
+        "eventCount": 0,
+        "motivationRaw": "第三程：一想到要在会上发言就胃疼。"
+      }
+    },
+    {
+      "name": "C 不回复信号 → 到期 → JEV 仍决策（跨重启）",
+      "ok": true,
+      "result": {
+        "journeyId": "JRN-mulqamx32zrQZEA",
+        "signalAppeared": false,
+        "expiredWithoutReply": false,
+        "stillDecided": true,
+        "eventCount": 4,
+        "status": "ended_natural"
+      }
+    },
+    {
+      "name": "A2 重启后旧旅程仍可读、无新事件",
+      "ok": true,
+      "result": {
+        "journeyId": "JRN-mulq7kt5OzCAN_U",
+        "status": "ended_natural",
+        "eventCount": 4,
+        "restartSurvived": true
+      }
+    }
+  ],
+  "modelUsage": {
+    "total": 62,
+    "byKind": {
+      "director_opening": {
+        "calls": 4,
+        "inTok": 2342,
+        "outTok": 1845,
+        "errors": 0,
+        "latSum": 14917
+      },
+      "jev_decide": {
+        "calls": 11,
+        "inTok": 23743,
+        "outTok": 708,
+        "errors": 0,
+        "latSum": 7732
+      },
+      "director_settlement": {
+        "calls": 12,
+        "inTok": 10379,
+        "outTok": 5198,
+        "errors": 0,
+        "latSum": 43258
+      },
+      "jev_settlement_check": {
+        "calls": 11,
+        "inTok": 13844,
+        "outTok": 639,
+        "errors": 0,
+        "latSum": 5378
+      },
+      "director_proposal": {
+        "calls": 8,
+        "inTok": 6217,
+        "outTok": 5534,
+        "errors": 0,
+        "latSum": 45601
+      },
+      "director_dedup_reproposal": {
+        "calls": 8,
+        "inTok": 10102,
+        "outTok": 6816,
+        "errors": 0,
+        "latSum": 48931
+      },
+      "final_letter_write": {
+        "calls": 3,
+        "inTok": 1728,
+        "outTok": 469,
+        "errors": 0,
+        "latSum": 6271
+      },
+      "jev_letter_check": {
+        "calls": 4,
+        "inTok": 4709,
+        "outTok": 248,
+        "errors": 0,
+        "latSum": 1162
+      },
+      "final_letter_repair": {
+        "calls": 1,
+        "inTok": 623,
+        "outTok": 160,
+        "errors": 0,
+        "latSum": 1910
+      }
+    }
+  },
+  "restarts": 2
+}

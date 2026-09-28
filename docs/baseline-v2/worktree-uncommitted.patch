@@ -1,0 +1,1044 @@
+diff --git a/server/ai.js b/server/ai.js
+index ea89d4b..113d15d 100644
+--- a/server/ai.js
++++ b/server/ai.js
+@@ -64,6 +64,14 @@ async function chatCompletion(messages, options = {}) {
+     max_tokens: options.max_tokens ?? 1200
+   };
+ 
++  // 千帆 DeepSeek-V4(如 -0731)是混合推理模型、默认开启深度思考：思考过程写入
++  // reasoning_content，会挤占 max_tokens，预算不足时正式 content 反而为空。
++  // 因此默认关闭思考(更快更省、结构化输出更稳)；仅当 options.thinking === true 时
++  // 保留推理——此时调用方必须把 max_tokens 调到足以同时容纳思维链与最终答案。
++  if (cfg.provider === 'qianfan' && options.thinking !== true) {
++    body.thinking = { type: 'disabled' };
++  }
++
+   // 调试日志：打印 provider/model/首条消息，便于确认调用是否真的发生
+   console.log(`[ai] → POST ${url}  model=${cfg.model}  provider=${cfg.provider}`);
+   console.log(`[ai] → system: ${String(messages[0]?.content || '').slice(0, 60)}...`);
+@@ -85,14 +93,56 @@ async function chatCompletion(messages, options = {}) {
+     throw new Error(`AI API ${resp.status}: ${text}`);
+   }
+   const data = await resp.json();
+-  const content = data.choices?.[0]?.message?.content || '';
+-  console.log(`[ai] ← 200  ${Date.now() - t0}ms  tokens=${data.usage?.total_tokens || '?'}  len=${content.length}`);
++  const msg0 = data.choices?.[0]?.message || {};
++  const content = msg0.content || '';
++  const reasoningLen = (msg0.reasoning_content || '').length;
++  const finishReason = data.choices?.[0]?.finish_reason;
++  console.log(`[ai] ← 200  ${Date.now() - t0}ms  tokens=${data.usage?.total_tokens || '?'}  finish=${finishReason}  思考=${reasoningLen}字  content=${content.length}字`);
+   if (!content) {
+     console.log('[ai] ← empty content, full response:', JSON.stringify(data).slice(0, 800));
+   } else {
+     console.log(`[ai] ← content: ${content.slice(0, 100)}...`);
+   }
+-  return content;
++  // 返回元数据对象：content + 用量/耗时，供生成预算与成本追踪使用
++  // usage 归一化为 input_tokens/output_tokens（千帆返回 OpenAI 风格 prompt/completion_tokens）
++  const rawUsage = data.usage || {};
++  return {
++    content,
++    usage: {
++      input_tokens: rawUsage.input_tokens ?? rawUsage.prompt_tokens ?? 0,
++      output_tokens: rawUsage.output_tokens ?? rawUsage.completion_tokens ?? 0,
++      total_tokens: rawUsage.total_tokens ?? null
++    },
++    model: data.model || cfg.model,
++    finishReason,
++    latencyMs: Date.now() - t0
++  };
++}
++
++// 模块级文本模型用量台账：记录每次调用的用途/用量/耗时，供对照评估统计成本
++// kind: reply | destiny | image_prompt | destiny_contract | destiny_repair | debug
++const usageLedger = [];
++function recordUsage(kind, meta) {
++  usageLedger.push({
++    kind,
++    model: meta.model,
++    usage: meta.usage,
++    latencyMs: meta.latencyMs,
++    at: Date.now()
++  });
++  if (usageLedger.length > 500) usageLedger.shift();
++}
++function getUsageLedger() {
++  return usageLedger.slice();
++}
++function sumUsage(entries) {
++  return entries.reduce((acc, e) => {
++    acc.calls += 1;
++    acc.inputTokens += e.usage?.input_tokens || 0;
++    acc.outputTokens += e.usage?.output_tokens || 0;
++    acc.latencyMs += e.latencyMs || 0;
++    return acc;
++  }, { calls: 0, inputTokens: 0, outputTokens: 0, latencyMs: 0 });
+ }
+ 
+ // ==================== 回信生成 ====================
+@@ -162,7 +212,9 @@ function pickReplyVisual(creature) {
+ }
+ 
+ // ==================== 命运轨迹生成 ====================
+-function buildDestinyPrompt({ feeling, creature, water, replyTimeLabel }) {
++// contractText（可选）：story-pipeline 编译的创作契约，追加在系统提示词末尾。
++// 无契约时行为与旧版完全一致，保证旧路径不受影响。
++function buildDestinyPrompt({ feeling, creature, water, replyTimeLabel, contractText }) {
+   const creatureName = CREATURES[creature]?.name || creature;
+   const waterName = WATERS[water]?.name || water;
+ 
+@@ -212,10 +264,22 @@ function buildDestinyPrompt({ feeling, creature, water, replyTimeLabel }) {
+   const seedPlace = pickRandom(randomPlaces, 1)[0];
+   const seedNPC = pickRandom(randomNPCs, 1)[0];
+ 
++  const systemContent = contractText
++    ? `【创作契约】（程序编译的创作约束，与下述任何规则冲突时以本契约为准）\n${contractText}\n\n---- 以下为常规编剧规则 ----\n` + DESTINY_SYSTEM_BODY({ feeling, creatureName, waterName, timePhrase, creatureVoice, seedProps, seedJob, seedPlace, seedNPC })
++    : DESTINY_SYSTEM_BODY({ feeling, creatureName, waterName, timePhrase, creatureVoice, seedProps, seedJob, seedPlace, seedNPC });
++
+   return [
++    { role: 'system', content: systemContent },
+     {
+-      role: 'system',
+-      content: `你是"赛博放生"的竖屏短剧编剧。用户把一只${creatureName}放生到${waterName}，你要写一个 4 集的"情绪因果反转短剧"。
++      role: 'user',
++      content: `玩家感受："${feeling}"\n生物：${creatureName}\n水域：${waterName}\n间隔时间：${replyTimeLabel || '一天后'}\n\n请按上面"情绪因果反转短剧"的规则生成命运轨迹 JSON，包含 location/visualForImage/segments。\n\n要求：\n1. 第4集结局必须是"${feeling}"直接导致的结果\n2. 反差维度至少组合2个以上，不能是单一老套路\n3. 必须自然融入随机元素（道具/职业/场景/NPC）\n4. 第4集既要炸反转，又要让用户有情绪共鸣`
++    }
++  ];
++}
++
++// 旧版系统提示词主体（拆出以便契约注入时复用；内容与历史版本一致）
++function DESTINY_SYSTEM_BODY({ feeling, creatureName, waterName, timePhrase, creatureVoice, seedProps, seedJob, seedPlace, seedNPC }) {
++  return `你是"赛博放生"的竖屏短剧编剧。用户把一只${creatureName}放生到${waterName}，你要写一个 4 集的"情绪因果反转短剧"。
+ 
+ 核心铁则（重中之重，必须严格执行）：
+ 1. 第 4 集的结局，必须是用户的感受"${feeling}"直接导致的 —— 不是顺便接一下，是正因为有这个情绪，它才落得这个下场。
+@@ -370,24 +434,47 @@ function buildDestinyPrompt({ feeling, creature, water, replyTimeLabel }) {
+     {"title":"第3集标题(短剧味，4-10字)","text":"第3集内容(80-120字，情绪爆发+推向结局)","emoji":"一个emoji"},
+     {"title":"第4集标题(短剧味，4-10字)","text":"第4集即最终回信，80-120字，${creatureName}发微信，情绪因果+多维反转结局","emoji":"一个emoji"}
+   ]
+-}`
++  ]`;
++}
++
++// 定向修复 prompt：只传入失败的验收维度与相关材料，要求保留未涉及部分，避免整篇无目标重写
++function buildDestinyRepairPrompt({ feeling, creatureName, waterName, replyTimeLabel, contractText, previousJson, failureReport }) {
++  return [
++    {
++      role: 'system',
++      content: `你是"赛博放生"短剧的修订编辑。上一版四集短剧在以下验收维度没有通过，你需要做定向修订：
++
++${failureReport}
++
++修订规则：
++- 只修改与失败维度相关的剧集/字段；未点名的部分尽量逐字保留
++- 保持原有 location/visualForImage/segments 的 JSON 结构与四集结构不变
++- 保持生物口吻与黑色幽默风格；不得虚构用户未提供的事实
++- 输出修订后的完整 JSON（与原 schema 一致），不要 markdown 包裹、不要解释`
+     },
+     {
+       role: 'user',
+-      content: `玩家感受："${feeling}"\n生物：${creatureName}\n水域：${waterName}\n间隔时间：${replyTimeLabel || '一天后'}\n\n请按上面"情绪因果反转短剧"的规则生成命运轨迹 JSON，包含 location/visualForImage/segments。\n\n要求：\n1. 第4集结局必须是"${feeling}"直接导致的结果\n2. 反差维度至少组合2个以上，不能是单一老套路\n3. 必须自然融入随机元素（道具/职业/场景/NPC）\n4. 第4集既要炸反转，又要让用户有情绪共鸣`
++      content: `用户原话："${feeling}"
++生物：${creatureName}　水域：${waterName}　回信时间：${replyTimeLabel || '一天后'}
++${contractText ? `创作契约：\n${contractText}\n` : ''}
++上一版 JSON：
++${previousJson}
++
++请输出修订后的完整 JSON。`
+     }
+   ];
+ }
+ 
+-function parseDestinySegments(text, creature, water, feeling) {
+-  // 尝试解析 JSON，失败则用模板兜底
++function parseDestinySegmentsStrict(text) {
++  // 严格解析：只负责解析，失败时返回错误信息，不做模板兜底（由调用方决定降级方式）
+   try {
+     let raw = String(text || '').trim();
+-    // 去掉可能的 markdown 代码块包裹
+     raw = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
+     const parsed = JSON.parse(raw);
+     const arr = parsed.segments || parsed;
+-    if (Array.isArray(arr) && arr.length >= 3) {
++    if (!Array.isArray(arr) || arr.length < 3) {
++      return { ok: false, error: `segments 应为数组且至少 3 段，实际 ${Array.isArray(arr) ? arr.length : typeof arr}` };
++    }
+       const palettes = [
+         'linear-gradient(135deg, #d4e8e2, #a9d2c5)',
+         'linear-gradient(135deg, #c7dbe2, #9bc8bd)',
+@@ -406,24 +493,33 @@ function parseDestinySegments(text, creature, water, feeling) {
+       // 第 4 段直接作为最终回信
+       const lastSegText = segments[3]?.text || '';
+       return {
+-        segments,
+-        location,
+-        visual: String(parsed.visual || '').slice(0, 200) || null,
+-        visualForImage: {
+-          style: String(vfi.style || parsed.style || '').slice(0, 60) || null,
+-          subject: String(vfi.subject || parsed.subject || '').slice(0, 200) || null,
+-          action: String(vfi.action || parsed.action || '').slice(0, 200) || null,
+-          place: String(vfi.place || parsed.place || '').slice(0, 200) || null,
+-          bgElements: String(vfi.bgElements || parsed.bgElements || '').slice(0, 200) || null,
+-          mood: String(vfi.mood || parsed.mood || '').slice(0, 100) || null
+-        },
+-        reply: lastSegText.slice(0, 300),
+-        ending: lastSegText.slice(0, 500)
++        ok: true,
++        destiny: {
++          segments,
++          location,
++          visual: String(parsed.visual || '').slice(0, 200) || null,
++          visualForImage: {
++            style: String(vfi.style || parsed.style || '').slice(0, 60) || null,
++            subject: String(vfi.subject || parsed.subject || '').slice(0, 200) || null,
++            action: String(vfi.action || parsed.action || '').slice(0, 200) || null,
++            place: String(vfi.place || parsed.place || '').slice(0, 200) || null,
++            bgElements: String(vfi.bgElements || parsed.bgElements || '').slice(0, 200) || null,
++            mood: String(vfi.mood || parsed.mood || '').slice(0, 100) || null
++          },
++          reply: lastSegText.slice(0, 300),
++          ending: lastSegText.slice(0, 500)
++        }
+       };
+-    }
+   } catch (e) {
+-    console.warn('[ai] parse destiny JSON failed, fallback to template:', e.message);
++    return { ok: false, error: `JSON 解析失败: ${e.message}` };
+   }
++}
++
++// 兼容旧签名：解析失败时退回本地模板（旧路径行为保持不变）
++function parseDestinySegments(text, creature, water, feeling) {
++  const r = parseDestinySegmentsStrict(text);
++  if (r.ok) return r.destiny;
++  console.warn('[ai] parse destiny JSON failed, fallback to template:', r.error);
+   return templateDestiny({ creature, water, feeling });
+ }
+ 
+@@ -514,10 +610,20 @@ async function downloadImage(remoteUrl) {
+ }
+ 
+ // 将 base64 图片数据保存到本地
++// 根据二进制魔数判断真实图片格式（OpenLux 等接口可能忽略 format 字段，实际返回 PNG）
++function detectImageExt(buffer) {
++  if (buffer.length >= 4 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47) return '.png';
++  if (buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) return '.jpg';
++  if (buffer.length >= 12 && buffer.toString('ascii', 0, 4) === 'RIFF' && buffer.toString('ascii', 8, 12) === 'WEBP') return '.webp';
++  if (buffer.length >= 6 && buffer.toString('ascii', 0, 6) === 'GIF89a') return '.gif';
++  return '.jpg';
++}
++
+ function saveBase64Image(b64Data) {
+   try {
+     const buffer = Buffer.from(b64Data, 'base64');
+-    const filename = `reply-${Date.now()}-${Math.random().toString(36).slice(2, 10)}.jpg`;
++    const ext = detectImageExt(buffer);
++    const filename = `reply-${Date.now()}-${Math.random().toString(36).slice(2, 10)}${ext}`;
+     const filepath = path.join(IMAGE_DIR, filename);
+     fs.writeFileSync(filepath, buffer);
+     console.log(`[ai] image saved from b64: ${filename} (${buffer.length} bytes)`);
+@@ -559,8 +665,9 @@ async function generateImagePromptFromReply({ feeling, creature, water, replyTex
+   ];
+ 
+   try {
+-    const raw = await chatCompletion(messages, { temperature: 0.3, max_tokens: 150 });
+-    return parseReplyText(raw);
++    const r = await chatCompletion(messages, { temperature: 0.3, max_tokens: 150 });
++    recordUsage('image_prompt', r);
++    return parseReplyText(r.content);
+   } catch (err) {
+     console.warn('[ai] generateImagePromptFromReply failed:', err.message);
+     return '';
+@@ -730,8 +837,9 @@ async function generateReply({ feeling, creature, water, replyTimeLabel, destiny
+   }
+   try {
+     const messages = buildReplyPrompt({ feeling, creature, water, replyTimeLabel, destinySummary });
+-    const raw = await chatCompletion(messages, { temperature: 0.9, max_tokens: 400 });
+-    const text = parseReplyText(raw);
++    const r = await chatCompletion(messages, { temperature: 0.9, max_tokens: 400 });
++    recordUsage('reply', r);
++    const text = parseReplyText(r.content);
+     if (!text) throw new Error('empty reply');
+     const style = pickReplyVisual(creature);
+     return { bg: style.bg, emoji: style.emoji, text };
+@@ -747,8 +855,10 @@ async function generateDestiny({ feeling, creature, water, replyTimeLabel }) {
+   }
+   try {
+     const messages = buildDestinyPrompt({ feeling, creature, water, replyTimeLabel });
+-    const raw = await chatCompletion(messages, { temperature: 0.85, max_tokens: 4000 });
+-    const result = parseDestinySegments(raw, creature, water, feeling);
++    // 命运轨迹是最复杂的生成任务，保留深度思考；16000 同时容纳思维链与完整 4 集 JSON
++    const r = await chatCompletion(messages, { temperature: 0.85, max_tokens: 16000, thinking: true });
++    recordUsage('destiny', r);
++    const result = parseDestinySegments(r.content, creature, water, feeling);
+     if (!result || !result.segments || result.segments.length < 3) throw new Error('invalid destiny');
+     return result;
+   } catch (err) {
+@@ -769,5 +879,14 @@ module.exports = {
+   templateReplyText,
+   // 暴露模板用于测试/兜底
+   templateReply,
+-  templateDestiny
++  templateDestiny,
++  // story-pipeline / 评估所需
++  chatCompletion,
++  parseDestinySegments,
++  parseDestinySegmentsStrict,
++  buildDestinyPrompt,
++  buildDestinyRepairPrompt,
++  recordUsage,
++  getUsageLedger,
++  sumUsage
+ };
+diff --git a/server/db.js b/server/db.js
+index 393d6e7..6db267c 100644
+--- a/server/db.js
++++ b/server/db.js
+@@ -2,7 +2,8 @@ const Database = require('better-sqlite3');
+ const path = require('path');
+ const { REPLY_POOL, SIGNS } = require('./data');
+ 
+-const DB_PATH = path.join(__dirname, 'data.db');
++// 数据库路径可配置（DB_PATH）：测试/评估使用独立库，避免混入真实用户记录
++const DB_PATH = process.env.DB_PATH ? path.resolve(process.env.DB_PATH) : path.join(__dirname, 'data.db');
+ const DEMO_OPENID = 'demo_user_001';
+ 
+ const db = new Database(DB_PATH);
+@@ -64,6 +65,42 @@ function initDb() {
+     }
+   }
+ 
++  // JEV 改造：语义验收状态与元数据（语义状态 ∈ accepted/repaired/degraded/judge_unavailable/legacy/template_fallback）
++  // frozen_at：故事版本冻结时间——冻结后不得再被重新生成覆盖
++  for (const col of ['semantic_status', 'judge_meta', 'contract_meta', 'frozen_at']) {
++    try {
++      db.prepare(`ALTER TABLE destinies ADD COLUMN ${col} TEXT`).run();
++    } catch (e) {
++      // 字段已存在则忽略
++    }
++  }
++
++  // 第二阶段：旅程实验表（JOURNEY_ENABLED 默认关闭；表结构提前就绪无害）
++  db.prepare(`
++    CREATE TABLE IF NOT EXISTS journeys (
++      id TEXT PRIMARY KEY,
++      record_id TEXT NOT NULL UNIQUE,
++      openid TEXT NOT NULL,
++      creature TEXT NOT NULL,
++      water TEXT NOT NULL,
++      feeling TEXT,
++      state_version INTEGER NOT NULL DEFAULT 0,
++      event_cursor INTEGER NOT NULL DEFAULT 0,
++      behavior_tendency TEXT NOT NULL DEFAULT 'compliant',
++      tendency_source TEXT NOT NULL DEFAULT 'default',
++      ledger TEXT NOT NULL DEFAULT '[]',
++      message_text TEXT,
++      message_meta TEXT,
++      seed INTEGER NOT NULL,
++      reply_at INTEGER NOT NULL,
++      terminal_status TEXT,
++      final_reply TEXT,
++      frozen_at INTEGER,
++      created_at INTEGER NOT NULL,
++      updated_at INTEGER NOT NULL
++    )
++  `).run();
++
+   seedDemoData();
+ }
+ 
+@@ -310,21 +347,44 @@ function getStats(openid) {
+ }
+ 
+ // ==================== 命运轨迹 ====================
+-function insertDestiny({ id, recordId, openid, segments, location, visual, visualForImage, reply, ending }) {
+-  // 同一记录多次生成时直接覆盖，避免 UNIQUE constraint failed
++function insertDestiny({ id, recordId, openid, segments, location, visual, visualForImage, reply, ending, semanticStatus, judgeMeta, contractMeta, frozenAt }) {
++  // 幂等修复：冲突时不再重置 unlocked_indices（旧实现会覆盖解锁状态），
++  // 已冻结(frozen_at)的版本不被覆盖——重复生成不得改写已公开故事
+   db.prepare(`
+-    INSERT INTO destinies (id, record_id, openid, segments, location, visual, visual_for_image, reply, ending, unlocked_indices, created_at)
+-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '[0]', ?)
++    INSERT INTO destinies (id, record_id, openid, segments, location, visual, visual_for_image, reply, ending, semantic_status, judge_meta, contract_meta, frozen_at, unlocked_indices, created_at)
++    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '[0]', ?)
+     ON CONFLICT(record_id) DO UPDATE SET
+-      segments = excluded.segments,
+-      location = excluded.location,
+-      visual = excluded.visual,
+-      visual_for_image = excluded.visual_for_image,
+-      reply = excluded.reply,
+-      ending = excluded.ending,
+-      unlocked_indices = excluded.unlocked_indices,
+-      created_at = excluded.created_at
+-  `).run(id, recordId, openid, JSON.stringify(segments), location || null, visual || null, JSON.stringify(visualForImage || {}), reply || ending || null, ending || null, Date.now());
++      segments = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.segments ELSE excluded.segments END,
++      location = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.location ELSE excluded.location END,
++      visual = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.visual ELSE excluded.visual END,
++      visual_for_image = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.visual_for_image ELSE excluded.visual_for_image END,
++      reply = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.reply ELSE excluded.reply END,
++      ending = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.ending ELSE excluded.ending END,
++      semantic_status = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.semantic_status ELSE excluded.semantic_status END,
++      judge_meta = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.judge_meta ELSE excluded.judge_meta END,
++      contract_meta = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.contract_meta ELSE excluded.contract_meta END,
++      created_at = CASE WHEN destinies.frozen_at IS NOT NULL THEN destinies.created_at ELSE excluded.created_at END
++  `).run(id, recordId, openid, JSON.stringify(segments), location || null, visual || null, JSON.stringify(visualForImage || {}), reply || ending || null, ending || null,
++    semanticStatus || null, judgeMeta ? JSON.stringify(judgeMeta) : null, contractMeta ? JSON.stringify(contractMeta) : null, frozenAt || null, Date.now());
++}
++
++// 幂等插入：已存在（含他人并发先写入）时什么都不做，返回是否真的插入。
++// 调用方必须以重新读取到的库内版本为准（race-safe）。
++function insertDestinyOnce(payload) {
++  const info = db.prepare(`
++    INSERT INTO destinies (id, record_id, openid, segments, location, visual, visual_for_image, reply, ending, semantic_status, judge_meta, contract_meta, frozen_at, unlocked_indices, created_at)
++    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '[0]', ?)
++    ON CONFLICT(record_id) DO NOTHING
++  `).run(payload.id, payload.recordId, payload.openid, JSON.stringify(payload.segments), payload.location || null, payload.visual || null,
++    JSON.stringify(payload.visualForImage || {}), payload.reply || payload.ending || null, payload.ending || null,
++    payload.semanticStatus || null, payload.judgeMeta ? JSON.stringify(payload.judgeMeta) : null,
++    payload.contractMeta ? JSON.stringify(payload.contractMeta) : null, payload.frozenAt || null, Date.now());
++  return info.changes > 0;
++}
++
++// 版本冻结：故事被展示（回信已写）后调用；之后 insertDestiny 不再覆盖该行
++function freezeDestiny(recordId) {
++  db.prepare(`UPDATE destinies SET frozen_at = ? WHERE record_id = ? AND frozen_at IS NULL`).run(Date.now(), recordId);
+ }
+ 
+ function getDestinyByRecordId(recordId) {
+@@ -336,6 +396,10 @@ function getDestinyByRecordId(recordId) {
+   } catch (e) {
+     visualForImage = {};
+   }
++  let judgeMeta = null;
++  try { judgeMeta = row.judge_meta ? JSON.parse(row.judge_meta) : null; } catch (e) { judgeMeta = null; }
++  let contractMeta = null;
++  try { contractMeta = row.contract_meta ? JSON.parse(row.contract_meta) : null; } catch (e) { contractMeta = null; }
+   return {
+     id: row.id,
+     recordId: row.record_id,
+@@ -346,6 +410,10 @@ function getDestinyByRecordId(recordId) {
+     visualForImage,
+     reply: row.reply || null,
+     ending: row.ending,
++    semanticStatus: row.semantic_status || null,
++    judgeMeta,
++    contractMeta,
++    frozenAt: row.frozen_at ? parseInt(row.frozen_at, 10) : null,
+     unlockedIndices: JSON.parse(row.unlocked_indices),
+     createdAt: row.created_at
+   };
+@@ -357,6 +425,48 @@ function updateDestinyUnlocked(recordId, indices) {
+   `).run(JSON.stringify(indices), recordId);
+ }
+ 
++// ==================== 旅程（第二阶段实验） ====================
++function createJourney({ id, recordId, openid, creature, water, feeling, seed, createdAt, replyAt }) {
++  db.prepare(`
++    INSERT INTO journeys (id, record_id, openid, creature, water, feeling, seed, created_at, reply_at, updated_at)
++    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
++    ON CONFLICT(record_id) DO NOTHING
++  `).run(id, recordId, openid, creature, water, feeling, seed, createdAt, replyAt, Date.now());
++}
++
++function getJourneyByRecordId(recordId) {
++  return db.prepare(`SELECT * FROM journeys WHERE record_id = ?`).get(recordId) || null;
++}
++
++function getActiveJourneys(limit = 20) {
++  return db.prepare(`SELECT * FROM journeys WHERE terminal_status IS NULL ORDER BY created_at ASC LIMIT ?`).all(limit);
++}
++
++// 全量保存（旅程是单写者模型：推进入口互斥由进程内串行 + 幂等时间轴保证）
++function saveJourney(j) {
++  db.prepare(`
++    UPDATE journeys SET
++      state_version = ?, event_cursor = ?, behavior_tendency = ?, tendency_source = ?,
++      ledger = ?, message_text = ?, message_meta = ?,
++      terminal_status = ?, final_reply = ?, frozen_at = ?, updated_at = ?
++    WHERE id = ?
++  `).run(j.state_version, j.event_cursor, j.behavior_tendency, j.tendency_source,
++    j.ledger, j.message_text || null, j.message_meta || null,
++    j.terminal_status || null, j.final_reply || null, j.frozen_at || null, Date.now(), j.id);
++  return getJourneyByRecordId(j.record_id);
++}
++
++// 留言专用原子写：仅当尚无留言时生效（并发留言/一词千金的数据库级守卫）
++function saveJourneyMessage(recordId, { messageText, messageMeta, behaviorTendency, tendencySource }) {
++  const info = db.prepare(`
++    UPDATE journeys SET
++      message_text = ?, message_meta = ?, behavior_tendency = ?, tendency_source = ?,
++      state_version = state_version + 1, updated_at = ?
++    WHERE record_id = ? AND message_text IS NULL AND terminal_status IS NULL
++  `).run(messageText, messageMeta, behaviorTendency, tendencySource, Date.now(), recordId);
++  return info.changes > 0;
++}
++
+ module.exports = {
+   initDb,
+   insertRecord,
+@@ -369,7 +479,14 @@ module.exports = {
+   clearReplyGenerating,
+   getStats,
+   insertDestiny,
++  insertDestinyOnce,
++  freezeDestiny,
+   getDestinyByRecordId,
+   updateDestinyUnlocked,
++  createJourney,
++  getJourneyByRecordId,
++  getActiveJourneys,
++  saveJourney,
++  saveJourneyMessage,
+   DEMO_OPENID
+ };
+diff --git a/server/index.js b/server/index.js
+index 99ee438..e2af168 100644
+--- a/server/index.js
++++ b/server/index.js
+@@ -32,10 +32,12 @@ app.use('/api/records', require('./routes/records'));
+ app.use('/api/reply', require('./routes/reply'));
+ app.use('/api/destiny', require('./routes/destiny'));
+ app.use('/api/world', require('./routes/world'));
++app.use('/api/journey', require('./routes/journey'));
+ 
+ // Health check
+ app.get('/api/health', (req, res) => {
+-  res.json({ status: 'ok', time: new Date().toISOString(), aiEnabled: isAIEnabled() });
++  const { journeyEnabled } = require('./flags');
++  res.json({ status: 'ok', time: new Date().toISOString(), aiEnabled: isAIEnabled(), journeyEnabled: journeyEnabled() });
+ });
+ 
+ // Initialize DB
+@@ -56,6 +58,20 @@ setInterval(async () => {
+       console.error(`[reply] generation failed for ${r.id}:`, err.message);
+     }
+   }
++
++  // 旅程实验（默认关闭）：调度器让不在线用户的旅程也继续推进（复用同一生产函数）
++  const { journeyEnabled } = require('./flags');
++  if (journeyEnabled()) {
++    const { getActiveJourneys } = require('./db');
++    const journey = require('./journey');
++    for (const j of getActiveJourneys(10)) {
++      try {
++        await journey.advanceJourney(j.record_id);
++      } catch (err) {
++        console.error(`[journey] advance failed for ${j.record_id}:`, err.message);
++      }
++    }
++  }
+ }, 10000);
+ 
+ app.listen(PORT, () => {
+diff --git a/server/reply-generator.js b/server/reply-generator.js
+index 8d31850..5bfa57c 100644
+--- a/server/reply-generator.js
++++ b/server/reply-generator.js
+@@ -1,17 +1,23 @@
+ // 赛博放生 · 回信生成器
+-// 封装命运轨迹 + 回信文本 + 配图生成的完整链路，供调度器和放生接口复用
++// 封装「故事编排 → 落库冻结 → 派生回信 → 配图生成」的完整链路。
++// 调度器（index.js）与 HTTP 入口（routes/reply.js /generate）都必须走这里，
++// 保证两条入口复用同一核心编排（handoff §4.3/§10）。
+ 
+ const {
+   generateReplyImage,
+-  generateDestiny,
+   summarizeDestiny,
+   pickReplyVisual,
+   templateReplyText
+ } = require('./ai');
+-const { insertDestiny, getDestinyByRecordId, updateReply, markReplyGenerating, clearReplyGenerating } = require('./db');
++const db = require('./db');
++const { createStoryForRecord } = require('./story-pipeline');
++const { journeyEnabled } = require('./flags');
+ 
+ const PRE_GENERATE_MS = 10 * 60 * 1000; // 提前 10 分钟开始生成
+ 
++// 进程内互斥：同一记录的生成并发去重（调度器与 HTTP 入口同进程竞态时只跑一次）
++const inflight = new Map();
++
+ function getReplyTimeLabel(ms) {
+   if (ms == null) return '一天后';
+   const minutes = Math.round(ms / (60 * 1000));
+@@ -27,57 +33,124 @@ function shouldGenerateNow(record, preGenerateMs = PRE_GENERATE_MS) {
+   return record.reply_at - Date.now() <= preGenerateMs;
+ }
+ 
+-async function generateReplyForRecord(record) {
+-  markReplyGenerating(record.id);
+-  try {
+-    // 1. 先生成命运轨迹（决定地点、画面、离谱结局）
+-    let destiny = getDestinyByRecordId(record.id);
+-    if (!destiny) {
+-      const generated = await generateDestiny({
++/**
++ * 统一核心：确保记录有已冻结的故事版本，并派生回信与配图。
++ * - 故事已存在（含旧数据）→ 直接复用，不重新生成、不重置解锁
++ * - 回信已写、仅缺图 → 只补图，不重写故事
++ * - 新故事经 story-pipeline 编排（处境判断→契约→生成→验收→修复/降级）
++ */
++async function ensureStoryAndReply(record) {
++  // 并发去重：同记录的第二次调用等待第一次的结果
++  if (inflight.has(record.id)) {
++    return inflight.get(record.id);
++  }
++  const job = (async () => {
++    db.markReplyGenerating(record.id);
++    try {
++      // 1. 已回信的记录：故事与回信都已冻结，最多补图
++      if (record.reply_text) {
++        if (record.reply_image) {
++          return { bg: record.reply_bg, emoji: record.reply_emoji, text: record.reply_text, image: record.reply_image };
++        }
++        const destiny = db.getDestinyByRecordId(record.id);
++        const destinySummary = destiny ? summarizeDestiny(destiny) : null;
++        const image = await generateReplyImage({
++          feeling: record.feeling,
++          creature: record.creature,
++          water: record.water,
++          destinySummary,
++          replyText: record.reply_text
++        });
++        const reply = { bg: record.reply_bg, emoji: record.reply_emoji, text: record.reply_text, image };
++        if (image) db.updateReply(record.id, reply);
++        return reply;
++      }
++
++      // 2. 已有故事（旧数据或此前已生成）→ 冻结版本直接复用
++      let destiny = db.getDestinyByRecordId(record.id);
++      let storyMeta = null;
++      if (!destiny) {
++        // 3. 新生成：走统一编排核心（处境判断→契约→生成→验收→修复/降级）
++        const journeyContext = journeyEnabled()
++          ? require('./journey').buildJourneyContext(record.id)
++          : null;
++        const result = await createStoryForRecord({
++          feeling: record.feeling,
++          creature: record.creature,
++          water: record.water,
++          replyTimeLabel: getReplyTimeLabel(record.reply_at - record.created_at),
++          journeyContext
++        });
++        storyMeta = result.meta;
++        // 幂等落库：并发下若他人已写入，以库内版本为准（race-safe）
++        db.insertDestinyOnce({
++          id: `DST-${record.id}`,
++          recordId: record.id,
++          openid: record.openid,
++          segments: result.destiny.segments,
++          location: result.destiny.location,
++          visual: result.destiny.visual,
++          visualForImage: result.destiny.visualForImage,
++          reply: result.destiny.reply,
++          ending: result.destiny.ending,
++          semanticStatus: result.meta.status,
++          judgeMeta: {
++            pipelineVersion: result.meta.pipelineVersion,
++            status: result.meta.status,
++            notes: result.meta.notes,
++            repairs: result.meta.repairs,
++            semantics: result.meta.semantics,
++            situation: result.meta.situation,
++            usage: { generation: result.meta.generation, judging: result.meta.judging },
++            totalLatencyMs: result.meta.totalLatencyMs,
++            textModel: result.meta.textModel,
++            journeyApplied: result.meta.journeyApplied
++          },
++          contractMeta: result.meta.contract,
++          frozenAt: Date.now() // 生成即冻结：后续重复调用不得覆盖
++        });
++        destiny = db.getDestinyByRecordId(record.id);
++        if (storyMeta) {
++          console.log(`[pipeline] ${record.id} status=${storyMeta.status} situation=${storyMeta.situation?.supported?.length ?? '?'} repairs=${storyMeta.repairs?.length ?? 0} gen=${storyMeta.generation?.calls ?? 0} judge=${storyMeta.judging?.calls ?? 0} ${storyMeta.totalLatencyMs ?? '?'}ms`);
++        }
++      }
++
++      // 4. 回信与画面描述都从同一个已接受版本派生
++      const destinySummary = summarizeDestiny(destiny);
++      const style = pickReplyVisual(record.creature);
++      const reply = {
++        bg: style.bg,
++        emoji: style.emoji,
++        text: destinySummary.reply || templateReplyText(record.feeling, record.creature, record.water, destinySummary)
++      };
++      const image = await generateReplyImage({
+         feeling: record.feeling,
+         creature: record.creature,
+         water: record.water,
+-        replyTimeLabel: getReplyTimeLabel(record.reply_at - record.created_at)
+-      });
+-      insertDestiny({
+-        id: `DST-${record.id}`,
+-        recordId: record.id,
+-        openid: record.openid,
+-        segments: generated.segments,
+-        location: generated.location,
+-        visual: generated.visual,
+-        visualForImage: generated.visualForImage,
+-        reply: generated.reply,
+-        ending: generated.ending
++        destinySummary,
++        replyText: reply.text
+       });
+-      destiny = getDestinyByRecordId(record.id);
+-    }
+-    const destinySummary = summarizeDestiny(destiny);
++      db.updateReply(record.id, { ...reply, image });
+ 
+-    // 2. 回信直接用命运轨迹里的 reply 字段，再生成配图
+-    const style = pickReplyVisual(record.creature);
+-    const reply = {
+-      bg: style.bg,
+-      emoji: style.emoji,
+-      text: destinySummary.reply || templateReplyText(record.feeling, record.creature, record.water, destinySummary)
+-    };
+-    const image = await generateReplyImage({
+-      feeling: record.feeling,
+-      creature: record.creature,
+-      water: record.water,
+-      destinySummary,
+-      replyText: reply.text
+-    });
+-    updateReply(record.id, { ...reply, image });
+-    return { ...reply, image };
+-  } finally {
+-    clearReplyGenerating(record.id);
+-  }
++      // 5. 回信已公开展示 → 冻结故事版本（展示过的事件和结局不可改写）
++      db.freezeDestiny(record.id);
++      return { ...reply, image };
++    } finally {
++      db.clearReplyGenerating(record.id);
++      inflight.delete(record.id);
++    }
++  })();
++  inflight.set(record.id, job);
++  return job;
+ }
+ 
++// 兼容旧名：调度器与既有调用方语义不变
++const generateReplyForRecord = ensureStoryAndReply;
++
+ module.exports = {
+   PRE_GENERATE_MS,
+   getReplyTimeLabel,
+   shouldGenerateNow,
++  ensureStoryAndReply,
+   generateReplyForRecord
+ };
+diff --git a/server/routes/release.js b/server/routes/release.js
+index ce17659..a3bf572 100644
+--- a/server/routes/release.js
++++ b/server/routes/release.js
+@@ -104,6 +104,17 @@ router.post('/', (req, res) => {
+       });
+     }
+ 
++    // 旅程实验（默认关闭）：开关开启时为本次放生创建旅程
++    let journeyInfo = null;
++    if (require('../flags').journeyEnabled()) {
++      try {
++        const j = require('../journey').createJourney(freshRecord);
++        journeyInfo = { id: j.id, enabled: true, totalEvents: require('../journey').EVENT_NODES.length };
++      } catch (err) {
++        console.error(`[release] journey create failed for ${id}:`, err.message);
++      }
++    }
++
+     return res.json({
+       id,
+       creature,
+@@ -116,7 +127,8 @@ router.post('/', (req, res) => {
+       sign,
+       feedbackLabel,
+       createdAt,
+-      replyAt
++      replyAt,
++      journey: journeyInfo
+     });
+   } catch (err) {
+     console.error('[release] error:', err);
+diff --git a/server/routes/reply.js b/server/routes/reply.js
+index 1500e25..89ad753 100644
+--- a/server/routes/reply.js
++++ b/server/routes/reply.js
+@@ -1,16 +1,8 @@
+ const express = require('express');
+ const router = express.Router();
+-const { getRecordById, updateReply, insertDestiny, getDestinyByRecordId } = require('../db');
+-const { generateReplyImage, generateDestiny, summarizeDestiny, isAIEnabled, pickReplyVisual, templateReplyText } = require('../ai');
+-
+-function getReplyTimeLabel(ms) {
+-  if (ms == null) return '一天后';
+-  const hours = Math.round(ms / (60 * 60 * 1000));
+-  if (hours < 1) return '片刻后';
+-  if (hours < 24) return `${hours} 小时后`;
+-  if (hours === 24) return '一天后';
+-  return `${Math.round(hours / 24)} 天后`;
+-}
++const { getRecordById } = require('../db');
++const { isAIEnabled, getConfig } = require('../ai');
++const { ensureStoryAndReply, getReplyTimeLabel } = require('../reply-generator');
+ 
+ // GET /api/reply/:id
+ router.get('/:id', (req, res) => {
+@@ -33,6 +25,7 @@ router.get('/:id', (req, res) => {
+       bg: row.reply_bg,
+       emoji: row.reply_emoji,
+       text: row.reply_text,
++      image: row.reply_image,
+       createdAt: row.reply_created_at
+     });
+   } catch (err) {
+@@ -42,7 +35,7 @@ router.get('/:id', (req, res) => {
+ });
+ 
+ // POST /api/reply/generate
+-// 内部调用 AI 生成回信 + 命运轨迹，写入 DB
++// 与调度器共用同一核心编排 ensureStoryAndReply（故事→落库冻结→派生回信→配图）
+ // body: { id: 记录ID }
+ router.post('/generate', async (req, res) => {
+   try {
+@@ -55,63 +48,17 @@ router.post('/generate', async (req, res) => {
+       return res.status(404).json({ error: '记录不存在' });
+     }
+ 
+-    // 1. 先生成命运轨迹（若已存在则跳过），它决定地点、画面、离谱结局
+-    let destiny = getDestinyByRecordId(id);
+-    if (!destiny) {
+-      const generated = await generateDestiny({
+-        feeling: row.feeling,
+-        creature: row.creature,
+-        water: row.water,
+-        replyTimeLabel: getReplyTimeLabel(row.reply_at - row.created_at)
+-      });
+-      insertDestiny({
+-        id: `DST-${id}`,
+-        recordId: id,
+-        openid: row.openid,
+-        segments: generated.segments,
+-        location: generated.location,
+-        visual: generated.visual,
+-        visualForImage: generated.visualForImage,
+-        reply: generated.reply,
+-        ending: generated.ending
+-      });
+-      destiny = getDestinyByRecordId(id);
+-    }
+-    const destinySummary = summarizeDestiny(destiny);
+-
+-    // 2. 回信直接用命运轨迹里的 reply 字段，再生成配图
+-    let reply;
+-    if (row.reply_text) {
+-      reply = { bg: row.reply_bg, emoji: row.reply_emoji, text: row.reply_text, image: row.reply_image };
+-      if (!reply.image) {
+-        reply.image = await generateReplyImage({
+-          feeling: row.feeling,
+-          creature: row.creature,
+-          water: row.water,
+-          destinySummary,
+-          replyText: row.reply_text
+-        });
+-        if (reply.image) updateReply(id, reply);
+-      }
+-    } else {
+-      const style = pickReplyVisual(row.creature);
+-      const replyText = destinySummary.reply || templateReplyText(row.feeling, row.creature, row.water, destinySummary);
+-      const image = await generateReplyImage({
+-        feeling: row.feeling,
+-        creature: row.creature,
+-        water: row.water,
+-        destinySummary,
+-        replyText
+-      });
+-      reply = { bg: style.bg, emoji: style.emoji, text: replyText, image };
+-      updateReply(id, reply);
+-    }
++    const reply = await ensureStoryAndReply(row);
++    const destiny = require('../db').getDestinyByRecordId(id);
+ 
+     return res.json({
+       ok: true,
+       reply,
+-      destinyId: destiny.id,
+-      aiEnabled: isAIEnabled()
++      destinyId: destiny ? destiny.id : null,
++      semanticStatus: destiny ? destiny.semanticStatus : null,
++      aiEnabled: isAIEnabled(),
++      replyTimeLabel: getReplyTimeLabel(row.reply_at - row.created_at),
++      config: { provider: getConfig().provider, model: getConfig().model }
+     });
+   } catch (err) {
+     console.error('[reply/generate] error:', err);
+diff --git a/web-app.html b/web-app.html
+index c911dae..7449f5f 100644
+--- a/web-app.html
++++ b/web-app.html
+@@ -1153,6 +1153,41 @@ textarea, input { font-family: inherit; }
+   gap: 10px;
+   margin-top: 16px;
+ }
++
++/* ---------- 旅途实况面板（实验玩法） ---------- */
++.receipt-journey {
++  margin-top: 18px;
++  padding-top: 14px;
++  border-top: 1px dashed var(--line);
++}
++.journey-body { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
++.journey-empty { font-size: 12px; color: var(--ink-mute); }
++.journey-event {
++  padding: 10px 12px;
++  border: 1px solid var(--line);
++  border-radius: 12px;
++  background: rgba(255,255,255,0.5);
++}
++.journey-evt-title { font-size: 13px; font-weight: 600; color: var(--ink); }
++.journey-evt-title strong { color: var(--coral); }
++.journey-evt-desc { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
++.journey-evt-outcome { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
++.journey-pending { font-size: 12px; color: var(--ink-mute); }
++.journey-msg { font-size: 12px; color: var(--teal-deep); }
++.journey-msg-note { color: var(--ink-mute); font-size: 11px; }
++.journey-msg-input { display: flex; gap: 8px; }
++.journey-msg-input input {
++  flex: 1;
++  padding: 9px 12px;
++  border: 1px solid var(--line);
++  border-radius: 99px;
++  font-size: 12px;
++  outline: none;
++}
++.journey-msg-input input:focus { border-color: var(--teal); }
++.journey-msg-input .btn-line { flex: 0 0 auto; padding: 8px 18px; }
++.journey-frozen { font-size: 12px; color: var(--ink-mute); }
++
+ .btn-line {
+   flex: 1;
+   padding: 12px 0;
+@@ -2277,6 +2312,98 @@ textarea, input { font-family: inherit; }
+     return { ok: true, adId: 'LOCAL-AD-' + Date.now(), unlockedIndices: d.unlockedIndices, adWatched: idx !== 0 };
+   }
+ 
++  // ==================== 旅程（实验玩法，JOURNEY_ENABLED 开启时可用） ====================
++  async function apiGetJourney(recordId) {
++    if (!USE_API) return { ok: false, code: 'local_mode' };
++    const res = await fetch(`${API_BASE}/journey/${recordId}`);
++    return await res.json();
++  }
++
++  async function apiLeaveMessage(recordId, text) {
++    const res = await fetch(`${API_BASE}/journey/${recordId}/message`, {
++      method: 'POST',
++      headers: { 'Content-Type': 'application/json' },
++      body: JSON.stringify({ text })
++    });
++    return await res.json();
++  }
++
++  let journeyPanelToken = 0; // 关闭回执后使轮询失效
++
++  function mountJourneyPanel(recordId) {
++    const card = $('receiptCard');
++    if (!card) return;
++    const anchor = card.querySelector('.receipt-actions');
++    if (!anchor || card.querySelector('#journeyPanel')) return;
++    const panel = document.createElement('div');
++    panel.id = 'journeyPanel';
++    panel.className = 'receipt-journey';
++    panel.innerHTML = `<div class="block-label">— 旅途实况 · 实验玩法 —</div><div id="journeyBody" class="journey-body">正在连接水域信号……</div>`;
++    anchor.parentNode.insertBefore(panel, anchor);
++    const token = ++journeyPanelToken;
++    const tick = async () => {
++      if (token !== journeyPanelToken) return;
++      const body = document.getElementById('journeyBody');
++      if (!body || !state.showReceipt) return;
++      try {
++        const r = await apiGetJourney(recordId);
++        if (!r || !r.ok || !r.journey) {
++          body.innerHTML = `<div class="journey-empty">旅途信号弱（${(r && r.message) || '实验未开启'}）</div>`;
++          return;
++        }
++        renderJourney(body, recordId, r.journey);
++        if (!r.journey.terminalStatus) setTimeout(tick, 5000);
++      } catch (e) {
++        body.innerHTML = `<div class="journey-empty">旅途信号弱（${e.message}）</div>`;
++      }
++    };
++    tick();
++  }
++
++  function renderJourney(body, recordId, j) {
++    const evHtml = j.events.map(e => `
++      <div class="journey-event">
++        <div class="journey-evt-title">${e.index + 1}. ${e.title} → <strong>${e.action}</strong></div>
++        <div class="journey-evt-desc">${e.desc}</div>
++        <div class="journey-evt-outcome">${e.outcome}</div>
++      </div>`).join('');
++    const pendingHtml = j.nextEvent && !j.terminalStatus
++      ? `<div class="journey-pending">⏳ 下一站：${j.nextEvent.title} · ${new Date(j.nextEvent.at).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })} 抵达（不在线也会继续）</div>`
++      : '';
++    const frozenHtml = j.terminalStatus
++      ? `<div class="journey-frozen">🔒 旅程已定格，这段经历已写进它的命运轨迹，去档案里解锁最终回信。</div>`
++      : '';
++    let msgHtml;
++    if (j.message) {
++      msgHtml = `<div class="journey-msg">🗣 你留过话：「${j.message.text}」<span class="journey-msg-note">${j.message.effect && j.message.effect !== 'none' ? '（它听进去了）' : '（它收到了）'}</span></div>`;
++    } else if (!j.terminalStatus) {
++      msgHtml = `
++        <div class="journey-msg-input">
++          <input id="journeyMsgInput" maxlength="50" placeholder="可选：给它留一句话，如「这次你可以拒绝」">
++          <button id="journeyMsgBtn" class="btn-line">捎话</button>
++        </div>`;
++    } else {
++      msgHtml = '';
++    }
++    body.innerHTML = `${evHtml}${pendingHtml}${msgHtml}${frozenHtml}`;
++    const btn = document.getElementById('journeyMsgBtn');
++    if (btn) {
++      btn.addEventListener('click', async () => {
++        const input = document.getElementById('journeyMsgInput');
++        const text = (input.value || '').trim();
++        if (!text) return;
++        btn.disabled = true;
++        const r = await apiLeaveMessage(recordId, text);
++        if (!r.ok) {
++          alert(r.message || '留言没送到');
++          btn.disabled = false;
++          return;
++        }
++        renderJourney(body, recordId, r.journey);
++      });
++    }
++  }
++
+   function localGenerateReply(id) {
+     const records = loadRecords();
+     const r = records.find(x => x.id === id);
+@@ -3006,8 +3133,14 @@ textarea, input { font-family: inherit; }
+       reply: null
+     };
+ 
+-    // Use API with localStorage fallback
+-    apiRelease(recordData);
++    // Use API with localStorage fallback（旅程面板在响应返回后挂载，见 .then）
++    apiRelease(recordData).then(relResp => {
++      state.lastReleaseResp = relResp || null;
++      // 回执 DOM 已在上方同步渲染；实验开关开启时后端返回 journey 字段
++      if (state.showReceipt && relResp && relResp.journey && relResp.journey.enabled) {
++        mountJourneyPanel(relResp.id);
++      }
++    }).catch(() => { /* apiRelease 内部已提示 */ });
+ 
+     $('receiptCard').innerHTML = `
+       <div class="receipt-header">
+@@ -3161,6 +3294,7 @@ textarea, input { font-family: inherit; }
+   }
+ 
+   function closeReceipt() {
++    journeyPanelToken++; // 停止旅途面板轮询
+     $('receiptOverlay').classList.remove('show');
+     state.showReceipt = false;
+     state.receipt = null;

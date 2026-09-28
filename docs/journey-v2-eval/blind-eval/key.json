@@ -1,0 +1,20 @@
+[
+  {
+    "label": "A",
+    "journeyId": "JRN-mulqqmxaH54Iq1Y",
+    "creatureId": "CRT-mulqqmx96EwhOzI",
+    "status": "ended_natural"
+  },
+  {
+    "label": "B",
+    "journeyId": "JRN-mulqrot8i98u6Ps",
+    "creatureId": "CRT-mulqrot7TnxL4UM",
+    "status": "ended_natural"
+  },
+  {
+    "label": "C",
+    "journeyId": "JRN-mulqtftd4tkn6V4",
+    "creatureId": "CRT-mulqtftdy3XvOt4",
+    "status": "ended_natural"
+  }
+]

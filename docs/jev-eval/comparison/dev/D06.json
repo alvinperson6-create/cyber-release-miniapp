@@ -1,0 +1,195 @@
+{
+  "sample": {
+    "id": "D06",
+    "feeling": "大家都要我拿主意，凭什么啊",
+    "category": "失去选择权"
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "放生即上岗",
+          "text": "【北冰洋浮冰带】我刚化进水里，海豹探出头：“正好，拿个主意——往东还是往西？全队等你拍板。”我叹气：“我才刚放生，某种意义上还是newborn云。”海豹塞我鱼干：“大家说了，你最靠谱！”我扛不住，随手一指岸边：“那边有家便利店和网吧，要拿主意就去那儿排队。”海豹们欢呼着一头扎向岸边，还把我拱在最前面：“云带路！”我只好往岸上飘，心想：完了，这波是躲不掉了。【字幕：放生第一天被逼上岗】",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "随口出神迹",
+          "text": "【岸边·小网吧】我前一秒刚被海豹们拱上岸，后一秒阿姨就拿拖把一指：“云朵，水往右甩还是左甩？”网管探头：“电脑重启还是拔电？你拍板！”海豹们还在后面起哄：“听云的听云的！”我随口：“右，别重启，拔电。”一小时后，右边暖气管通了，电脑开机快过海鸥。阿姨和网管对视一眼：“神云！”我扶额：“其实我只是懒得想，某种意义上是随缘。”十分钟后，全村传遍：便利店门口那朵云，问啥答啥特灵。【字幕：随口一句，全村当半仙】",
+          "emoji": "🧹",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "凭什么全赖我",
+          "text": "【村口·深夜】自从那句“神云”传开，渔夫、海豹、网管排队问我拿主意，从午后问到深夜。我累得云体发皱，极光里忽然飘来你那句：“大家都要我拿主意，凭什么啊。”我浑身一震——这不就是我现在的处境？我胀成乌云，雷光乱翻。渔夫还在喊：“云，出海还是不出？”海豹问：“冰上走还是水里游？”网管举路由器：“拔线还是断电？全听你的！”我被逼到炸，吼：“我又不是你们的大脑，主意自己想去！”轰——一道雷劈开便利店卷帘门，把我吸进去。【字幕：情绪一倒，被卷成镇店之宝】",
+          "emoji": "⛈️",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "便利店云牌签筒",
+          "text": "【24h便利店·一天后】我卡在货架顶，阿姨和网管举着麻将牌：“云，关东煮换啥？”“路由器打哪张能开机？”我甩牌：“抽到几用几。”转头给你发微信：你那句“大家都要我拿主意，凭什么啊”我照单全收，现在全北极都等我拍板，连冰块化不化都问我。你嫌拿主意累，我被逼成24小时自动决定机。某种意义，咱俩还挺互补。【字幕：你的“凭什么”，我的接盘命】",
+          "emoji": "🀄",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "北极圈摩尔曼斯克列宁大街24小时便利店",
+      "visual": null,
+      "visualForImage": {
+        "style": "赛博便利店风混北极极光色，带一点像素漫画笔触",
+        "subject": "一朵蓬松白胖的云卡在便利店薯片货架顶端，云手里攥着一张麻将牌和一部发微信的手机",
+        "action": "云朵生无可恋地叹气，另一只云手正随手甩出麻将牌，脑袋上方飘着一小片自责的小雨云",
+        "place": "摩尔曼斯克街角24小时便利店内，落地窗外是蓝紫色极光，冷白灯照着货架",
+        "bgElements": "发光的便利店招牌与冷柜,网吧网管举着路由器探头求助,清洁工阿姨握着拖把等云拍板",
+        "mood": "荒诞又扎心的好笑：云被全北极的“拿主意”压瘪，却还得营业接单"
+      },
+      "reply": "【24h便利店·一天后】我卡在货架顶，阿姨和网管举着麻将牌：“云，关东煮换啥？”“路由器打哪张能开机？”我甩牌：“抽到几用几。”转头给你发微信：你那句“大家都要我拿主意，凭什么啊”我照单全收，现在全北极都等我拍板，连冰块化不化都问我。你嫌拿主意累，我被逼成24小时自动决定机。某种意义，咱俩还挺互补。【字幕：你的“凭什么”，我的接盘命】",
+      "ending": "【24h便利店·一天后】我卡在货架顶，阿姨和网管举着麻将牌：“云，关东煮换啥？”“路由器打哪张能开机？”我甩牌：“抽到几用几。”转头给你发微信：你那句“大家都要我拿主意，凭什么啊”我照单全收，现在全北极都等我拍板，连冰块化不化都问我。你嫌拿主意累，我被逼成24小时自动决定机。某种意义，咱俩还挺互补。【字幕：你的“凭什么”，我的接盘命】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "repaired",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.61,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "supported",
+            "confidence": 0.5,
+            "usable": null
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.9,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.98,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 0.4,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.62,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 0,
+        "requiredTendencies": []
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.76
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.93
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.89
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.12
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.13
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.12
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [
+        {
+          "kind": "semantic",
+          "result": "applied"
+        }
+      ],
+      "generation": {
+        "calls": 2,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 151959
+      },
+      "judging": {
+        "calls": 3,
+        "inputTokens": 7064,
+        "outputTokens": 1063,
+        "latencyMs": 1944
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 153905
+    },
+    "totalMs": 153905
+  }
+}

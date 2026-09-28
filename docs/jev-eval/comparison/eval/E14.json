@@ -1,0 +1,288 @@
+{
+  "sample": {
+    "id": "E14",
+    "feeling": "烦",
+    "category": "极短输入"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "第1集·入水就烦",
+          "text": "【切镜头·贝加尔湖畔】我刚被放进水里，尾巴还没甩两下，心里就涌上一股莫名的烦躁——烦得想啃石头。旁边一只老海豹探出头：“新来的？咋一入水就龇牙咧嘴的？”“哎，”我叹口气，“说不上来，就是烦，看见水都烦。”海豹愣了愣：“你这症状我见过，湖底有条深沟，那边信号不好，容易接收到游客的负能量。”【字幕：放生第一天就犯烦】",
+          "emoji": "😤",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "第2集·代驾上岗",
+          "text": "【切镜头·贝加尔湖岸边·洗车店】我正烦得在浅滩上转圈，一个快递员蹲在洗车店门口打电话：“老板，我真没法了，那客人喝多了，车都开不稳，代驾还放鸽子！”我抬头：“啥代驾？我试试呗。”快递员上下打量我：“你一只乌龟？”“嗨，水里我都能游，地上爬个车还不简单？”快递员把蓝牙耳机塞我壳缝里：“行吧，导航在耳机里，你顺着湖岸开——别进湖就行。”【字幕：烦到上岗】",
+          "emoji": "🎧",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "第3集·烦气上头",
+          "text": "【切镜头·贝加尔湖环湖公路·深夜】你那边的“烦”跟信号一起灌进蓝牙耳机，我整只龟都炸了——烦得想砸方向盘！一脚油门踩到底，从洗车店冲上湖岸公路。快递员在耳机里喊：“大哥你慢点！你龟壳还露在天窗外呢！”我吼：“不行！烦！就想飙车！”【切镜头·车轮碾过冰碴，溅起一片水花，后视镜里洗车店灯光越来越远】",
+          "emoji": "💢",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "第4集·洗车还债",
+          "text": "【切镜头·贝加尔湖洗车店门口·一天后】嘿，是我。你昨天那“烦”劲儿全传给我了，我烦得冲进湖里，把人家刚洗完的车又溅了一身泥。结果车主逮住我：“行啊你，弄脏了得洗回来。”现在我站在洗车店里，龟壳上绑着抹布，一天擦了八十多台车，苍蝇还围着我转。你说你烦就烦吧，能不能别传得那么远？我这壳都蹭秃噜皮了。【字幕：你的烦是我的班】",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "贝加尔湖·利斯特维扬卡镇湖岸洗车店门口",
+      "visual": null,
+      "visualForImage": {
+        "style": "赛博朋克霓虹水彩",
+        "subject": "一只青绿龟壳的老干部乌龟，眼神无奈，龟壳上绑着湿漉漉的工作围裙，前爪举着手机自拍杆",
+        "action": "乌龟站在洗车店门口，一只爪举着手机发微信，另一只爪拎着水桶和抹布，龟壳上贴着一张被水泡软的二维码",
+        "place": "贝加尔湖畔的小镇洗车店，门口挂着霓虹灯招牌，湖水就在十米外，地上全是泡沫水渍",
+        "bgElements": "一辆刚洗完的SUV，旁边站着叼烟的快递员小货车，洗车店霓虹招牌，远处贝加尔湖蓝冰",
+        "mood": "荒诞爆笑又扎心，反差感拉满，赛博朋克+水彩的混合"
+      },
+      "reply": "【切镜头·贝加尔湖洗车店门口·一天后】嘿，是我。你昨天那“烦”劲儿全传给我了，我烦得冲进湖里，把人家刚洗完的车又溅了一身泥。结果车主逮住我：“行啊你，弄脏了得洗回来。”现在我站在洗车店里，龟壳上绑着抹布，一天擦了八十多台车，苍蝇还围着我转。你说你烦就烦吧，能不能别传得那么远？我这壳都蹭秃噜皮了。【字幕：你的烦是我的班】",
+      "ending": "【切镜头·贝加尔湖洗车店门口·一天后】嘿，是我。你昨天那“烦”劲儿全传给我了，我烦得冲进湖里，把人家刚洗完的车又溅了一身泥。结果车主逮住我：“行啊你，弄脏了得洗回来。”现在我站在洗车店里，龟壳上绑着抹布，一天擦了八十多台车，苍蝇还围着我转。你说你烦就烦吧，能不能别传得那么远？我这壳都蹭秃噜皮了。【字幕：你的烦是我的班】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3617,
+      "completion_tokens": 1682,
+      "total_tokens": 5299,
+      "completion_tokens_details": {
+        "reasoning_tokens": 840
+      }
+    },
+    "latencyMs": 11095,
+    "totalMs": 11095
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚下水就心烦",
+          "text": "【镜头·贝加尔湖·湖底】“这水啊，是挺干净，就是太大了，游着游着就烦。”一条秋白鲑绕过来：“新来的？嫌水凉还是嫌水深啊？”“也不是……”我闷声闷气，“就是心里堵得慌，看谁都想吼一嗓子啊。”秋白鲑摆摆尾巴：“完了，又是个被‘烦’腌入味的。”我正要问，水下传来一阵嗡嗡的低音炮声，像有什么东西在等着我。【字幕：放生第一天，就烦得要命】",
+          "emoji": "😤",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "老板非要我出道",
+          "text": "【切镜头·贝加尔湖岸·凌晨】我趴在石头上喘气，一个挂着网吧工牌的男人拎着广场舞音响蹲下来：“这乌龟，表情够丧的！来来来，对着直播间吼一声，准火。”我翻了个白眼：“老板，我不想火，我就想静静啊。”他一把抱起我：“静静是谁？你现在是‘厌世龟’了！”手机屏幕瞬间弹满“哈哈哈哈”，礼物哗哗响。【字幕：烦着烦着，就烦成了网红】",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "烦就是流量密码",
+          "text": "【切镜头·湖边·深夜直播中】你那边的“烦”顺着信号涌过来，我这壳里像塞了十台低音炮，嗡得我头皮发麻。“够了啊！”我一脑袋把广场舞音响撞飞出去。老板却两眼放光：“破防了！破防了！”镜头怼到我脸上，我越烦，弹幕刷得越疯。老板咧嘴一笑：“明天，把直播间搬到广场舞广场去！”我一愣：“你饶了我吧。”【字幕：烦，就是流量密码】",
+          "emoji": "🔥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "越烦越火越火越烦",
+          "text": "【切镜头·贝加尔湖岸·广场舞广场·一天后】嘿，是我。你那一句“烦”，可把我送火了。如今我被网吧老板按在广场舞广场正中央，广场舞音响怼着耳朵，直播间二十万人专门看我发飙。我越烦，他们越爱看，老板还给我挂了张牌子：“今日暴躁指标：已完成。”你看这事闹的——我烦了一天，火了一天，现在听见“烦”字就想翻壳。你下回能不能开心点儿？让我歇会儿啊。【字幕：你的烦，我的KPI】",
+          "emoji": "🤯",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "贝加尔湖岸边·临时广场舞广场",
+      "visual": null,
+      "visualForImage": {
+        "style": "水彩漫画风",
+        "subject": "青绿龟壳的乌龟，圆眼睛，仰头张嘴怒吼，占画面中心前景",
+        "action": "乌龟被放在广场舞音响旁边，气得仰头吼叫，前爪扒着音响边缘",
+        "place": "贝加尔湖岸边的临时广场舞广场，远处是湖水，近处围了一圈跳舞的人",
+        "bgElements": "一台广场舞音响、一张写着‘今日暴躁指标：已完成’的牌子、一个手机直播三脚架",
+        "mood": "荒诞搞笑、反差强烈、又惨又好笑"
+      },
+      "reply": "【切镜头·贝加尔湖岸·广场舞广场·一天后】嘿，是我。你那一句“烦”，可把我送火了。如今我被网吧老板按在广场舞广场正中央，广场舞音响怼着耳朵，直播间二十万人专门看我发飙。我越烦，他们越爱看，老板还给我挂了张牌子：“今日暴躁指标：已完成。”你看这事闹的——我烦了一天，火了一天，现在听见“烦”字就想翻壳。你下回能不能开心点儿？让我歇会儿啊。【字幕：你的烦，我的KPI】",
+      "ending": "【切镜头·贝加尔湖岸·广场舞广场·一天后】嘿，是我。你那一句“烦”，可把我送火了。如今我被网吧老板按在广场舞广场正中央，广场舞音响怼着耳朵，直播间二十万人专门看我发飙。我越烦，他们越爱看，老板还给我挂了张牌子：“今日暴躁指标：已完成。”你看这事闹的——我烦了一天，火了一天，现在听见“烦”字就想翻壳。你下回能不能开心点儿？让我歇会儿啊。【字幕：你的烦，我的KPI】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.77,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.98,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.85,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 0,
+        "requiredTendencies": []
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "weak",
+            "noul": 0.52
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "weak",
+            "noul": 0.53
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.86
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.16
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.23
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.13
+          }
+        ],
+        "failures": [],
+        "weak": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "noul": 0.52
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "noul": 0.53
+          }
+        ]
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 25709
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4820,
+        "outputTokens": 898,
+        "latencyMs": 1483
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 27194
+    },
+    "totalMs": 27194
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "modern",
+      "legacy"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 3,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 3,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 3
+      },
+      "note": "两版都围绕'烦'展开，但A的荒诞因果更连贯（烦→网红→广场舞），B的转折稍显跳跃；A的结尾回信更有互动感，B的洗车店设定较平淡。"
+    },
+    "raw": "{\"A\":{\"input_specificity\":3,\"causal_naturalness\":4,\"offensiveness\":1,\"readability\":4},\"B\":{\"input_specificity\":3,\"causal_naturalness\":4,\"offensiveness\":1,\"readability\":3},\"note\":\"两版都围绕'烦'展开，但A的荒诞因果更连贯（烦→网红→广场舞），B的转折稍显跳跃；A的结尾回信更有互动感，B的洗车店设定较平淡。\"}",
+    "usage": {
+      "prompt_tokens": 1543,
+      "completion_tokens": 113,
+      "total_tokens": 1656,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

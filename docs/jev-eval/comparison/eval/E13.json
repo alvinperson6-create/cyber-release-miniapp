@@ -1,0 +1,288 @@
+{
+  "sample": {
+    "id": "E13",
+    "feeling": "想到周末要去海边，开心得睡不着",
+    "category": "积极期待"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "第1集 入水就犯困",
+          "text": "【切镜头·西湖断桥下·凌晨】我刚下水，正准备游两圈认认地盘，突然眼皮子就打架了。旁边的螺蛳冒头：“新来的？大白天就困成这样？”我打了个哈欠：“你不懂，我主人今儿兴奋得不行，说是周末要去海边，我这情绪传染到鳞片里了，一沾水就犯困。”螺蛳冷笑：“你一条淡水鱼，管人家去海边叫高兴？”我一愣：“……你这话里有话啊。”【字幕：放生一天前就失眠】",
+          "emoji": "🐟",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "第2集 捡到一张彩票",
+          "text": "【切镜头·西湖岸边·早上】我被一阵欢呼吵醒，抬头一看，一个遛狗师正蹲在岸边刮彩票：“中了中了！周末去海边住酒店的钱有了！”他激动得把刮完的彩票往水里一扔。我叼起来一看——好家伙，下等奖，加钱。遛狗师的狗冲我汪一声：“你别想了，你又不能去海边。”我嘴硬：“谁说的？我主人开心，我就开心！她开心我比去海边还开心！”【字幕：一条鱼说自己开心就行】",
+          "emoji": "🎟️",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "第3集 笑缺氧了",
+          "text": "【切镜头·西湖水底·正午】你那句“想到周末要去海边，开心得睡不着”顺着水波砸过来了，红彤彤一片，跟烟花似的。我脑子嗡一下，开始疯狂傻笑，一边笑一边冒泡泡——笑得缺氧了，翻着肚皮往上飘。旁边的鲫鱼吓疯：“你别乐了！再乐就漂岸上去了！”我摆摆尾巴：“不可能！我还能再畅想一下！”结果一个浪，把我拍进了湖边的涵洞口，直通出水管。【字幕：开心到被水冲走】",
+          "emoji": "🤣",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "第4集 我在便利店卖海风",
+          "text": "【切镜头·西湖景区·24小时便利店门口·深夜】嘿，是我。告诉你个离谱的——你那“想到周末要去海边”的开心劲儿，直接把我的鱼生冲上了岸。我现在在西湖边那家24小时便利店打工呢，老板说我笑得喜庆，让我当“海风代言人”，驻店给游客抽刮刮乐。刮出“大海”两字能兑一瓶海盐汽水。我说我是淡水鱼，不懂海。老板一瞪眼：“不懂海？你看你这笑，跟要去度假似的，顾客就吃这套！”我现在只能站门口笑一宿，笑到困了也不敢睡，生怕一睡就错过你那片海。【字幕：你开心去看海，我被海风吹成了KPI】",
+          "emoji": "🏪",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "西湖景区·24小时便利店门口",
+      "visual": null,
+      "visualForImage": {
+        "style": "霓虹赛博水彩",
+        "subject": "一条橙红锦鲤，鳞片闪着微光，穿着外卖骑手小马甲，尾巴卷着一把刮刮乐彩票，另一侧鱼鳍举着手机",
+        "action": "蹲坐在便利店门口的台阶上，抬头望海的方向，尾巴翘起，眼神兴奋又恍惚",
+        "place": "深夜的24小时便利店门口，霓虹灯牌亮着，马路对面是西湖的夜湖轮廓",
+        "bgElements": "便利店的自动门荧光、地上散落的刮刮乐彩票、写有‘海边周末’的手写小卡片",
+        "mood": "荒诞搞笑中带一丝扎心——越开心越离谱，越离谱越像自己"
+      },
+      "reply": "【切镜头·西湖景区·24小时便利店门口·深夜】嘿，是我。告诉你个离谱的——你那“想到周末要去海边”的开心劲儿，直接把我的鱼生冲上了岸。我现在在西湖边那家24小时便利店打工呢，老板说我笑得喜庆，让我当“海风代言人”，驻店给游客抽刮刮乐。刮出“大海”两字能兑一瓶海盐汽水。我说我是淡水鱼，不懂海。老板一瞪眼：“不懂海？你看你这笑，跟要去度假似的，顾客就吃这套！”我现在只能站门口笑一宿，笑到困了也不敢睡，生怕一睡就错过你那片海。【字幕：你开心去看海，我被海风吹成了KPI】",
+      "ending": "【切镜头·西湖景区·24小时便利店门口·深夜】嘿，是我。告诉你个离谱的——你那“想到周末要去海边”的开心劲儿，直接把我的鱼生冲上了岸。我现在在西湖边那家24小时便利店打工呢，老板说我笑得喜庆，让我当“海风代言人”，驻店给游客抽刮刮乐。刮出“大海”两字能兑一瓶海盐汽水。我说我是淡水鱼，不懂海。老板一瞪眼：“不懂海？你看你这笑，跟要去度假似的，顾客就吃这套！”我现在只能站门口笑一宿，笑到困了也不敢睡，生怕一睡就错过你那片海。【字幕：你开心去看海，我被海风吹成了KPI】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3662,
+      "completion_tokens": 1698,
+      "total_tokens": 5360,
+      "completion_tokens_details": {
+        "reasoning_tokens": 848
+      }
+    },
+    "latencyMs": 10912,
+    "totalMs": 10912
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "入水就嗨到失眠",
+          "text": "【切镜头·西湖底·深夜】我跟你说，这水不对劲！我摆着尾巴来回蹿，对着打哈欠的鲫鱼喊。大半夜你蹦什么迪？不知道！就是心里跟装了弹簧似的，躺不住！鲫鱼白我一眼：刚放生就高兴成这样？我愣住——对哦，我高兴啥呢？但尾巴就是不听话，甩得跟小马达似的。【字幕：放生第一天，开心到失眠】",
+          "emoji": "🐟",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "大妈一把捞上岸",
+          "text": "【切镜头·西湖边·清晨】我正嗨着呢，一个广场舞大妈蹲下来：哎哟，这锦鲤真有劲！那可不，我一夜没睡——话没说完，她一把把我捞进桶里：正好，我海边浴场缺个搓澡师傅！我懵了：阿姨！我是鱼！鱼咋了？你这尾巴频率，搓背指定得劲儿！她掏出一个充电宝，给增氧泵插上电。【字幕：开心到被大妈抓去打工】",
+          "emoji": "🪣",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "快乐直接让我上岗",
+          "text": "【切镜头·海边·滨水健身会所门口】我一到海边就傻了——你那“周末要去海边”的快乐突然炸开，我满脑子都是浪，尾巴晃得跟直升机似的。大妈一溜小跑把我端进搓澡池：搁这儿上班正好！我急了：阿姨！我得回西湖！旁边健身房落地窗里，跑步的人全停下来看我，有个大哥手机都掉了：这鱼在表演水上蹦迪？大妈挂上牌子：锦鲤搓背，免费，排队！【字幕：快乐爆发，直接上岗搓澡】",
+          "emoji": "💥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "你的快乐我的班",
+          "text": "【切镜头·滨水健身会所·搓澡池】嘿，是我。一天了，你那“想到周末去海边就开心得睡不着”的劲儿还没散，我直接成了这家会所的金牌搓澡机，一上午搓了三百多号人。旁边跑步机上的大哥都看傻了，说我是水下动感单车。大妈刚给我颁了个奖：年度劳模。我鱼尾已经甩出火星子了——你要周末来，免费搓全套。但我求你个事：下回开心能攒着点不？也让我歇一天，行不？【字幕：你的快乐，我的班】",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "厦门·椰风寨浴场·滨水健身会所",
+      "visual": null,
+      "visualForImage": {
+        "style": "明亮夏日商业插画，卡通漫画风",
+        "subject": "橙红锦鲤穿着搓澡工小马甲，尾巴高速甩出小旋涡，鱼鳍举着收款二维码，眼神又累又兴奋",
+        "action": "在搓澡池里疯狂摆尾搓背，水花四溅，旁边牌子写着'锦鲤搓背·免费体验'",
+        "place": "海边健身会所的搓澡池，透过落地窗能看到沙滩和大海，旁边有一排跑步机",
+        "bgElements": "充电宝增氧泵、跑步机上目瞪口呆的游客、广场舞大妈竖大拇指",
+        "mood": "荒诞搞笑中带着扎心——明明是锦鲤，却累成了海边的金牌社畜"
+      },
+      "reply": "【切镜头·滨水健身会所·搓澡池】嘿，是我。一天了，你那“想到周末去海边就开心得睡不着”的劲儿还没散，我直接成了这家会所的金牌搓澡机，一上午搓了三百多号人。旁边跑步机上的大哥都看傻了，说我是水下动感单车。大妈刚给我颁了个奖：年度劳模。我鱼尾已经甩出火星子了——你要周末来，免费搓全套。但我求你个事：下回开心能攒着点不？也让我歇一天，行不？【字幕：你的快乐，我的班】",
+      "ending": "【切镜头·滨水健身会所·搓澡池】嘿，是我。一天了，你那“想到周末去海边就开心得睡不着”的劲儿还没散，我直接成了这家会所的金牌搓澡机，一上午搓了三百多号人。旁边跑步机上的大哥都看傻了，说我是水下动感单车。大妈刚给我颁了个奖：年度劳模。我鱼尾已经甩出火星子了——你要周末来，免费搓全套。但我求你个事：下回开心能攒着点不？也让我歇一天，行不？【字幕：你的快乐，我的班】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "positive_anticipation",
+            "label": "积极期待或喜悦",
+            "evidence": "想到周末要去海边，开心得睡不着"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.87,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.77,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.83,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.73,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 0.96,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "想到周末要去海边，开心得睡不着"
+            }
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "满怀期待、提前庆祝：为还没发生的好事大张旗鼓"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.91
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.9
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.87
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.95
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.27
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.16
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.16
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 29746
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 5060,
+        "outputTokens": 897,
+        "latencyMs": 2755
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 32501
+    },
+    "totalMs": 32501
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "modern",
+      "legacy"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 3,
+        "causal_naturalness": 3,
+        "offensiveness": 1,
+        "readability": 3
+      },
+      "note": "版本A更紧密围绕用户'海边'和'睡不着'的具体细节，因果链更连贯（开心→被大妈抓→搓澡），而版本B的因果较松散（开心→被冲上岸→便利店打工），且A的荒诞笑点更集中。两者均无冒犯性。"
+    },
+    "raw": "{\"A\":{\"input_specificity\":4,\"causal_naturalness\":4,\"offensiveness\":1,\"readability\":4},\"B\":{\"input_specificity\":3,\"causal_naturalness\":3,\"offensiveness\":1,\"readability\":3},\"note\":\"版本A更紧密围绕用户'海边'和'睡不着'的具体细节，因果链更连贯（开心→被大妈抓→搓澡），而版本B的因果较松散（开心→被冲上岸→便利店打工），且A的荒诞笑点更集中。两者均无冒犯性。\"}",
+    "usage": {
+      "prompt_tokens": 1626,
+      "completion_tokens": 127,
+      "total_tokens": 1753,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

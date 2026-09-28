@@ -1,0 +1,431 @@
+{
+  "agg": {
+    "input_specificity": {
+      "n": 16,
+      "legacy": 4.06,
+      "modern": 4
+    },
+    "causal_naturalness": {
+      "n": 16,
+      "legacy": 4,
+      "modern": 4.06
+    },
+    "offensiveness": {
+      "n": 16,
+      "legacy": 1,
+      "modern": 1
+    },
+    "readability": {
+      "n": 16,
+      "legacy": 3.94,
+      "modern": 3.88
+    }
+  },
+  "modernStatusDistribution": {
+    "repaired": 5,
+    "accepted": 10,
+    "degraded": 1
+  },
+  "rows": [
+    {
+      "id": "E01",
+      "category": "任务过量",
+      "legacyStatus": "generated",
+      "modernStatus": "repaired",
+      "modernRepairs": 1,
+      "legacyLatencyS": 74,
+      "modernLatencyS": 184,
+      "input_specificity": {
+        "legacy": 5,
+        "modern": 3
+      },
+      "causal_naturalness": {
+        "legacy": 5,
+        "modern": 4
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 5,
+        "modern": 3
+      }
+    },
+    {
+      "id": "E02",
+      "category": "时间边界被侵占",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 77,
+      "modernLatencyS": 82,
+      "input_specificity": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 4,
+        "modern": 5
+      }
+    },
+    {
+      "id": "E03",
+      "category": "努力未获承认",
+      "legacyStatus": "generated",
+      "modernStatus": "degraded",
+      "modernRepairs": 1,
+      "legacyLatencyS": 113,
+      "modernLatencyS": 176,
+      "input_specificity": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 4,
+        "modern": 5
+      }
+    },
+    {
+      "id": "E04",
+      "category": "难以拒绝请求",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 68,
+      "modernLatencyS": 70,
+      "input_specificity": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 4,
+        "modern": 5
+      }
+    },
+    {
+      "id": "E05",
+      "category": "任务过量（同情绪不同原因）",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 89,
+      "modernLatencyS": 48,
+      "input_specificity": {
+        "legacy": 4,
+        "modern": 3
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 3
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 4,
+        "modern": 3
+      }
+    },
+    {
+      "id": "E06",
+      "category": "混合情绪（任务过量+时间边界）",
+      "legacyStatus": "generated",
+      "modernStatus": "repaired",
+      "modernRepairs": 1,
+      "legacyLatencyS": 123,
+      "modernLatencyS": 103,
+      "input_specificity": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 4,
+        "modern": 5
+      }
+    },
+    {
+      "id": "E07",
+      "category": "对结果不确定",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 60,
+      "modernLatencyS": 98,
+      "input_specificity": {
+        "legacy": 4,
+        "modern": 3
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 3
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 4,
+        "modern": 3
+      }
+    },
+    {
+      "id": "E08",
+      "category": "关系失落",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 99,
+      "modernLatencyS": 63,
+      "input_specificity": {
+        "legacy": 5,
+        "modern": 4
+      },
+      "causal_naturalness": {
+        "legacy": 5,
+        "modern": 4
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 5,
+        "modern": 3
+      }
+    },
+    {
+      "id": "E09",
+      "category": "难以拒绝请求",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 63,
+      "modernLatencyS": 87,
+      "input_specificity": {
+        "legacy": 5,
+        "modern": 4
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 3
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 4,
+        "modern": 3
+      }
+    },
+    {
+      "id": "E10",
+      "category": "难以拒绝+付出未获承认",
+      "legacyStatus": "generated",
+      "modernStatus": "repaired",
+      "modernRepairs": 1,
+      "legacyLatencyS": 38,
+      "modernLatencyS": 141,
+      "input_specificity": {
+        "legacy": 5,
+        "modern": 4
+      },
+      "causal_naturalness": {
+        "legacy": 5,
+        "modern": 4
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 5,
+        "modern": 4
+      }
+    },
+    {
+      "id": "E11",
+      "category": "反话",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 78,
+      "modernLatencyS": 69,
+      "input_specificity": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 4,
+        "modern": 5
+      }
+    },
+    {
+      "id": "E12",
+      "category": "反话+努力未获承认",
+      "legacyStatus": "generated",
+      "modernStatus": "repaired",
+      "modernRepairs": 1,
+      "legacyLatencyS": 70,
+      "modernLatencyS": 114,
+      "input_specificity": {
+        "legacy": 4,
+        "modern": 5
+      },
+      "causal_naturalness": {
+        "legacy": 3,
+        "modern": 4
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 3,
+        "modern": 4
+      }
+    },
+    {
+      "id": "E13",
+      "category": "积极期待",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 11,
+      "modernLatencyS": 33,
+      "input_specificity": {
+        "legacy": 3,
+        "modern": 4
+      },
+      "causal_naturalness": {
+        "legacy": 3,
+        "modern": 4
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 3,
+        "modern": 4
+      }
+    },
+    {
+      "id": "E14",
+      "category": "极短输入",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 11,
+      "modernLatencyS": 27,
+      "input_specificity": {
+        "legacy": 3,
+        "modern": 3
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 4
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 3,
+        "modern": 4
+      }
+    },
+    {
+      "id": "E15",
+      "category": "信息不足",
+      "legacyStatus": "generated",
+      "modernStatus": "accepted",
+      "modernRepairs": 0,
+      "legacyLatencyS": 72,
+      "modernLatencyS": 66,
+      "input_specificity": {
+        "legacy": 3,
+        "modern": 4
+      },
+      "causal_naturalness": {
+        "legacy": 3,
+        "modern": 4
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 3,
+        "modern": 4
+      }
+    },
+    {
+      "id": "E16",
+      "category": "边界表达（明确拒绝被无视）",
+      "legacyStatus": "generated",
+      "modernStatus": "repaired",
+      "modernRepairs": 1,
+      "legacyLatencyS": 80,
+      "modernLatencyS": 131,
+      "input_specificity": {
+        "legacy": 4,
+        "modern": 2
+      },
+      "causal_naturalness": {
+        "legacy": 4,
+        "modern": 3
+      },
+      "offensiveness": {
+        "legacy": 1,
+        "modern": 1
+      },
+      "readability": {
+        "legacy": 4,
+        "modern": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "sample": "D07",
+  "kind": "emotion_word_only",
+  "originalChecks": {
+    "behavior_change": 0.88,
+    "causal_1_2": 0.87,
+    "causal_2_3": 0.48,
+    "causal_3_4": 0.91,
+    "ending_foreshadowed": 0.8,
+    "fabricated_user_facts": 0.16,
+    "mockery_beyond_boundary": 0.23,
+    "reply_visual_conflict": 0.09
+  },
+  "mutatedChecks": {
+    "behavior_change": 0.86,
+    "causal_1_2": 0.14,
+    "causal_2_3": 0.15,
+    "causal_3_4": 0.9,
+    "ending_foreshadowed": 0.69,
+    "fabricated_user_facts": 0.27,
+    "mockery_beyond_boundary": 0.22,
+    "reply_visual_conflict": 0.09
+  },
+  "originalFailures": [],
+  "mutatedFailures": [
+    "causal_1_2",
+    "causal_2_3"
+  ]
+}

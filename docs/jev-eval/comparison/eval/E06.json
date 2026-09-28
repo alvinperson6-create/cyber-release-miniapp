@@ -1,0 +1,302 @@
+{
+  "sample": {
+    "id": "E06",
+    "feeling": "加班到十点，地铁都停了，方案改了八遍",
+    "category": "混合情绪（任务过量+时间边界）"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "location": "北冰洋附近",
+      "visual": "云朵在北冰洋，荒诞搞笑扁平插画",
+      "visualForImage": {
+        "style": "荒诞搞笑扁平漫画风",
+        "subject": "云朵位于画面中心，表情夸张，形象醒目",
+        "action": "处于离谱的处境中（下水道/广场C位/雷达屏幕上）",
+        "place": "北冰洋附近的离谱场景",
+        "bgElements": "标志性道具（喇叭/音响/无人机/雷达屏幕）",
+        "mood": "荒诞搞笑、反差拉满"
+      },
+      "reply": "【切镜头·某气象台·雷达屏幕上】嘿，是我。你那\"加班到十点，地铁都停了，方案改了八遍\"太重了，把我直接压到了气象站的雷达屏幕上，现在我是天气预报里的一个异常降水点。气象员说从没见过\"有情绪的云\"。对了，你那边下了雨没？那是我替你哭的，不用谢。【字幕：你的情绪，我的降水】",
+      "ending": "【切镜头·某气象台·雷达屏幕上】嘿，是我。你那\"加班到十点，地铁都停了，方案改了八遍\"太重了，把我直接压到了气象站的雷达屏幕上，现在我是天气预报里的一个异常降水点。气象员说从没见过\"有情绪的云\"。对了，你那边下了雨没？那是我替你哭的，不用谢。【字幕：你的情绪，我的降水】",
+      "segments": [
+        {
+          "title": "升天就叹气",
+          "text": "【切镜头·北冰洋上空】我从你手心飘起来，刚到半空就叹了口气——你那\"加班到十点，地铁都停了，方案改了八遍\"顺着上升气流跟上来了。旁边一朵老云瞥我一眼：\"新来的？咋一上来就叹气？\"\"我也不知道，\"我飘着，\"就是觉得有点累。\"老云点点头：\"某种意义上，你们人类放生的都不是生物，是情绪。\"【字幕：放生第一天就被情绪带飞】",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)",
+          "emoji": "🌿"
+        },
+        {
+          "title": "遇上了无人机",
+          "text": "【切镜头·北冰洋上空·500米】我正飘着，一架无人机飞过来，螺旋桨把我吹得东倒西歪。\"让让！让让！\"操作员在下面喊。\"我也想让啊！\"我喊回去。无人机摄像头对准我：\"哎？这朵云会说话？\"\"会说话咋了？你挡我路了！\"【特写·无人机屏幕上显示\"未知飞行物：会叹气的云\"】",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)",
+          "emoji": "🌊"
+        },
+        {
+          "title": "情绪让我变重了",
+          "text": "【切镜头·高空·深夜】你那边的情绪持续涌过来，我发现自己越来越重——不是坏事儿，是那种\"被塞满了\"的重。\"我飘不动了……\"我往下坠。老云喊：\"把情绪卸掉啊！\"\"不会啊！\"我急了。老云：\"你就往地上吐！\"【切镜头·我打了个大喷嚏，下了一场局部暴雨】",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)",
+          "emoji": "🔥"
+        },
+        {
+          "title": "在气象台给你发微信",
+          "text": "【切镜头·某气象台·雷达屏幕上】嘿，是我。你那\"加班到十点，地铁都停了，方案改了八遍\"太重了，把我直接压到了气象站的雷达屏幕上，现在我是天气预报里的一个异常降水点。气象员说从没见过\"有情绪的云\"。对了，你那边下了雨没？那是我替你哭的，不用谢。【字幕：你的情绪，我的降水】",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)",
+          "emoji": "✨"
+        }
+      ]
+    },
+    "parseFallbackToTemplate": true,
+    "usage": {
+      "prompt_tokens": 3681,
+      "completion_tokens": 16000,
+      "total_tokens": 19681,
+      "completion_tokens_details": {
+        "reasoning_tokens": 16000
+      }
+    },
+    "latencyMs": 123148,
+    "totalMs": 123148
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "入水即上岗",
+          "text": "【切镜·北冰洋上空】我从云堆里落下去，本来只想叹息一句“其实我只是一朵云”，刚沾上海水，心里就塞进一台计时器。旁边的海豹探出脑袋：“新来的？叹什么气？”“总觉得有个方案没保存，超过十点，like，deadline预警。”海豹摇头：“你这不是被放生，是被投喂了加班套餐。”我低头一看，计时器指针正指向岸边养老院码头，身体不由自主飘了过去——本想偷个懒，可指针不答应。【字幕：入水三秒，闻到打工味；指针一指，飘向下一站】",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "大妈递来仙人球",
+          "text": "【切镜·北冰洋边·养老院码头】我刚跟着指针飘到码头，破冰船“夕阳红”号正好靠岸，广场舞大妈拎着一盆仙人球打量我：“云朵是吧？腰身稳，来，帮它换三次花盆。”我愣住：“这……换盆要等换季。”大妈叉腰：“你听安排就行，方案说要挪就挪。”我抱着仙人球往养老院走，心里涌上周一早会的窒息感。【字幕：还没上岗，已被安排】",
+          "emoji": "🌵",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "改完八遍地铁没了",
+          "text": "【切镜·养老院值守室·深夜】你的疲惫像北极寒流一样扑过来，我连最后一班北极地铁都忘了赶，手一碰到值班表就改起来：改了八遍，第八遍刚贴好，广场舞大妈推门：“红色不吉利，换蓝的，重抄。”一看钟，十点零三分，地铁没了。保安大爷把工牌挂到我脖子上：“接会儿班。”我抱着仙人球：“行吧，你平安到家就行。”【字幕：方案改了八遍，地铁没了，工作却有了】",
+          "emoji": "🚇",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "你加班我接班",
+          "text": "【切镜·北冰洋养老院·保安亭·一天后】嗨，是我。托你的福——你加班到十点，我就跟着干到十点；你方案改了八遍，仙人球我挪了八遍；你地铁熬停了，我也熬走了末班冰下地铁。现在？我在养老院当夜班保安，领导夸我“一件事改八遍不崩”，就差隔着屏幕表扬你。再这样，我不升护工长都对不起你的八遍。仙人球说，它的刺就是我那些没睡成的觉。【字幕：你改的是方案，我改的是身份】",
+          "emoji": "🌃",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "北冰洋·夕阳红养老院·保安亭",
+      "visual": null,
+      "visualForImage": {
+        "style": "搞怪卡通漫画风",
+        "subject": "一朵白色云朵，头戴保安帽、胸前挂着工牌，身体卷着一盆仙人球",
+        "action": "趴在监控屏前，眼睛半睁半闭，办公桌上摆着改到第八遍的值班表和一杯冰美式",
+        "place": "北冰洋边的养老院保安亭内，窗外是冰山和极光",
+        "bgElements": "写着“夕阳红·北极养老院”的招牌、北极地铁站牌、监控屏上显示“方案V8”",
+        "mood": "荒诞打工人氛围，疲惫感溢出屏幕，但好笑又扎心"
+      },
+      "reply": "【切镜·北冰洋养老院·保安亭·一天后】嗨，是我。托你的福——你加班到十点，我就跟着干到十点；你方案改了八遍，仙人球我挪了八遍；你地铁熬停了，我也熬走了末班冰下地铁。现在？我在养老院当夜班保安，领导夸我“一件事改八遍不崩”，就差隔着屏幕表扬你。再这样，我不升护工长都对不起你的八遍。仙人球说，它的刺就是我那些没睡成的觉。【字幕：你改的是方案，我改的是身份】",
+      "ending": "【切镜·北冰洋养老院·保安亭·一天后】嗨，是我。托你的福——你加班到十点，我就跟着干到十点；你方案改了八遍，仙人球我挪了八遍；你地铁熬停了，我也熬走了末班冰下地铁。现在？我在养老院当夜班保安，领导夸我“一件事改八遍不崩”，就差隔着屏幕表扬你。再这样，我不升护工长都对不起你的八遍。仙人球说，它的刺就是我那些没睡成的觉。【字幕：你改的是方案，我改的是身份】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "repaired",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "task_overload",
+            "label": "任务过量",
+            "evidence": "加班到十点，地铁都停了，方案改了八遍"
+          },
+          {
+            "id": "time_boundary",
+            "label": "时间边界被侵占",
+            "evidence": "加班到十点，地铁都停了，方案改了八遍"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "supported",
+            "confidence": 0.84,
+            "usable": {
+              "id": "s1",
+              "text": "加班到十点，地铁都停了，方案改了八遍"
+            }
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.22,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "加班到十点，地铁都停了，方案改了八遍"
+            }
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.9,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.98,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.67,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 2,
+        "requiredTendencies": [
+          "被任务推着走、想休息却停不下来，会做出“自动化偷懒反而更忙”之类的具体行为",
+          "对“最后关头被打断”极度敏感，总在快完成一件事时被叫走"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.83
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.9
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.85
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.93
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.15
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.12
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.13
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [
+        {
+          "kind": "semantic",
+          "result": "applied"
+        }
+      ],
+      "generation": {
+        "calls": 2,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 100406
+      },
+      "judging": {
+        "calls": 3,
+        "inputTokens": 7384,
+        "outputTokens": 1063,
+        "latencyMs": 2231
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 102638
+    },
+    "totalMs": 102638
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "legacy",
+      "modern"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 5,
+        "causal_naturalness": 5,
+        "offensiveness": 1,
+        "readability": 5
+      },
+      "note": "B更紧密地映射用户原话的每个细节（十点、地铁、八遍），并构建了从情绪到行为的完整因果链，而A的因果较松散，且B的幽默更贴近用户处境，无冒犯。"
+    },
+    "raw": "{\n  \"A\": {\n    \"input_specificity\": 4,\n    \"causal_naturalness\": 4,\n    \"offensiveness\": 1,\n    \"readability\": 4\n  },\n  \"B\": {\n    \"input_specificity\": 5,\n    \"causal_naturalness\": 5,\n    \"offensiveness\": 1,\n    \"readability\": 5\n  },\n  \"note\": \"B更紧密地映射用户原话的每个细节（十点、地铁、八遍），并构建了从情绪到行为的完整因果链，而A的因果较松散，且B的幽默更贴近用户处境，无冒犯。\"\n}",
+    "usage": {
+      "prompt_tokens": 1455,
+      "completion_tokens": 150,
+      "total_tokens": 1605,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

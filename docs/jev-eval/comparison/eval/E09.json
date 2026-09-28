@@ -1,0 +1,297 @@
+{
+  "sample": {
+    "id": "E09",
+    "feeling": "不好意思拒绝同事的请求，自己的活全堆着",
+    "category": "难以拒绝请求"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "嘴巴比脑子快一步",
+          "text": "【切镜头·太平洋海面】我刚松绑飘到海面上，一朵浪就冲过来：“帮我挡一下台风呗？”我脑子里已经在想怎么拒绝，嘴巴却先蹦出一个字：“好。”又一条鲸鱼路过：“帮我给海鸥捎个话呗？”我：“……好。”我越飘越沉，隐隐感觉不对劲，好像有一个‘不会拒绝’的开关，被什么东西悄悄拨开了。【字幕：放生第一天，就变成云里的老好人】",
+          "emoji": "☁️",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "大妈快递轮番蹭我",
+          "text": "【切镜头·海边广场】我晃到岸边喘口气，一个广场舞大妈举着自拍杆过来：“这云不错！帮我挡一下太阳，我拍个视频。”我明明可以说no，却点了头：“行吧。”还没来得及飘走，快递小哥蹬着车冲来：“兄弟！快递要淋雨了，帮忙搭个雨棚！”我嘴比脑子快：“好。”他一股脑把好几件包裹挂我身上，指了指写字楼：“太好了，你帮我送到那个会议室。”【字幕：谁开口我都答应，等我缓过神已经在楼里了】",
+          "emoji": "📦",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "好，我全接了",
+          "text": "【切镜头·写字楼门口·傍晚】你那种‘不好意思拒绝同事的请求’的心情顺着窗缝传过来，直直砸在我头上。我彻底被那股拧巴控制住了。海鸥要我去挡风，我：“好。”广场舞大妈让我当会议室氛围云，我：“好。”快递小哥把一箱文件推过来：“要不你替我去开个会？”我差点开口说“其实我有事”，结果说出来的还是：“好。”然后我被推进那层会议室，门“咔”地一声锁死了。【字幕：你的不好意思，把我推进了死局】",
+          "emoji": "🚪",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "会议室里飘不动",
+          "text": "【切镜头·写字楼会议室·深夜】是我。一天过去了，我还在会议室。自拍杆支在桌上，快递箱摞到天花板，我浑身上下挂满别人塞来的活。你那个‘不好意思拒绝同事’的想法，一波一波漂到太平洋，直接把我变成了一朵‘不敢说不’的云。其实某种意义上，我的今天就是你的明天：永远说好，永远走不了。你要是敢拒绝一次，我就能飘走。……算了，刚有人让我帮忙加个班，我下意识又说了——好。【字幕：你不好意思拒绝，我替你兜底】",
+          "emoji": "💼",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "深圳科兴科学园某写字楼会议室",
+      "visual": null,
+      "visualForImage": {
+        "style": "水彩+卡通漫画混搭，柔软云朵与坚硬办公室形成荒诞对比",
+        "subject": "一朵白色蓬松的云朵，圆润可爱，瘫坐在会议室主位上，身体被文件、快递箱和自拍杆包围，脸上挂着礼貌又勉强的微笑",
+        "action": "正用一缕云丝端着茶杯递向画外，嘴上像在说‘好的好的没问题’，但眼神已经飘向窗外的大海",
+        "place": "写字楼会议室，落地窗外隐约映着太平洋的海平线和夕阳",
+        "bgElements": "桌角支着一根自拍杆，挂满未处理的单据；快递箱摞成一面墙；白板上写满密密麻麻的‘好’字",
+        "mood": "搞笑又荒诞，让人边笑边扎心，像照镜子一样看见自己"
+      },
+      "reply": "【切镜头·写字楼会议室·深夜】是我。一天过去了，我还在会议室。自拍杆支在桌上，快递箱摞到天花板，我浑身上下挂满别人塞来的活。你那个‘不好意思拒绝同事’的想法，一波一波漂到太平洋，直接把我变成了一朵‘不敢说不’的云。其实某种意义上，我的今天就是你的明天：永远说好，永远走不了。你要是敢拒绝一次，我就能飘走。……算了，刚有人让我帮忙加个班，我下意识又说了——好。【字幕：你不好意思拒绝，我替你兜底】",
+      "ending": "【切镜头·写字楼会议室·深夜】是我。一天过去了，我还在会议室。自拍杆支在桌上，快递箱摞到天花板，我浑身上下挂满别人塞来的活。你那个‘不好意思拒绝同事’的想法，一波一波漂到太平洋，直接把我变成了一朵‘不敢说不’的云。其实某种意义上，我的今天就是你的明天：永远说好，永远走不了。你要是敢拒绝一次，我就能飘走。……算了，刚有人让我帮忙加个班，我下意识又说了——好。【字幕：你不好意思拒绝，我替你兜底】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3670,
+      "completion_tokens": 7910,
+      "total_tokens": 11580,
+      "completion_tokens_details": {
+        "reasoning_tokens": 7085
+      }
+    },
+    "latencyMs": 63041,
+    "totalMs": 63041
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "接单接到手软",
+          "text": "【切镜头·太平洋海面·早晨】“扑通”一声，我入水了。云尾巴还没卷好，海底就有一股劲儿顺着洋流爬上来，像“大家都来找我帮忙”的信号。“不对劲。”我叹气，“明明才被放生，却有点overwhelmed。”海鸥扑过来：“新来的云？帮我遮个阳呗，我晒得快飞不动了。”“好。”我脱口而出。“好……好，行，都可以。”等我回神，已经接了五单遮阳。【字幕：放生第一天就接单到手软】",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "三份请求一起上",
+          "text": "【切镜头·太平洋上空·午后】我刚把遮阳云展开，海豚叼着自拍杆冲上浪尖：“姐妹！你云形超上镜，来我直播间当背景！”“好！”我答。鲸鱼冒泡：“背上晒得疼，给我盖片荫。”“好！”我答。广场舞大妈踩着电动滑板杀来：“妹子！舞队缺个遮阳棚，顶三天！”“好！”我答完低头一看——自己早被扯成三块，各飘一方。其实我想说“不”，可嘴比心诚实。【字幕：三单活而已，我还能扛】",
+          "emoji": "🛹",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "一句不字卡喉咙",
+          "text": "【切镜头·太平洋·深夜】忽然，一道信号从海面上压过来——你那句“不好意思拒绝同事的请求”顺着洋流直往我体内钻。完了，我嘴巴开始自动答“好”。海豹要挡风墙，好；水母要舞台背景，好；主播要24小时“云朵气氛组”，好。每答应一单，我就被往上拽一截。鱼在底下喊：“云你别飘走啊！”我叹气：“我自己的活也堆着没动，可就是说不出口‘不’。”【字幕：活越堆越多，我越飘越远】",
+          "emoji": "📡",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "太空站社畜云",
+          "text": "【切镜头·国际空间站舷窗外·一天后】嘿，是我。我在太空站窗外当“航天直播云背景板”，全拜你那句“不好意思拒绝”所赐。海鸥的荫、鲸鱼的凉、海豚的直播、大妈的遮阳棚——别人的活全压在我云上，自己的活堆着没动。它们往上拽我，我想说不，出口却是“好，好”。等回神，已经在舷窗边当上最社畜的云。某种意义上，你的“不好意思”在我这儿变成实体了。等你学会拒绝，叫我一声，我马上跳回太平洋休年假。",
+          "emoji": "🛰️",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "国际空间站舷窗外",
+      "visual": null,
+      "visualForImage": {
+        "style": "赛博水彩科幻漫画，白色云朵与深蓝宇宙高反差",
+        "subject": "一朵戴着迷你直播耳麦、挂着工牌的云朵，身体被拉成细长条，像一张被扯开的考勤表",
+        "action": "云朵伸出云雾状的手拿着“太空直播背景板”，眼神空洞却硬挤出微笑",
+        "place": "国际空间站舷窗外，背后是蓝色地球与浩瀚太平洋",
+        "bgElements": "直播摄像头、云朵腰间的工牌、旁边飘散的小碎云",
+        "mood": "宇宙级黑色幽默，社畜感拉满，又惨又好笑"
+      },
+      "reply": "【切镜头·国际空间站舷窗外·一天后】嘿，是我。我在太空站窗外当“航天直播云背景板”，全拜你那句“不好意思拒绝”所赐。海鸥的荫、鲸鱼的凉、海豚的直播、大妈的遮阳棚——别人的活全压在我云上，自己的活堆着没动。它们往上拽我，我想说不，出口却是“好，好”。等回神，已经在舷窗边当上最社畜的云。某种意义上，你的“不好意思”在我这儿变成实体了。等你学会拒绝，叫我一声，我马上跳回太平洋休年假。",
+      "ending": "【切镜头·国际空间站舷窗外·一天后】嘿，是我。我在太空站窗外当“航天直播云背景板”，全拜你那句“不好意思拒绝”所赐。海鸥的荫、鲸鱼的凉、海豚的直播、大妈的遮阳棚——别人的活全压在我云上，自己的活堆着没动。它们往上拽我，我想说不，出口却是“好，好”。等回神，已经在舷窗边当上最社畜的云。某种意义上，你的“不好意思”在我这儿变成实体了。等你学会拒绝，叫我一声，我马上跳回太平洋休年假。"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "task_overload",
+            "label": "任务过量",
+            "evidence": "不好意思拒绝同事的请求，自己的活全堆着"
+          },
+          {
+            "id": "cannot_refuse",
+            "label": "难以拒绝请求",
+            "evidence": "不好意思拒绝同事的请求，自己的活全堆着"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "supported",
+            "confidence": 0.99,
+            "usable": {
+              "id": "s1",
+              "text": "不好意思拒绝同事的请求，自己的活全堆着"
+            }
+          },
+          {
+            "id": "lost_control",
+            "stance": "supported",
+            "confidence": 0.42,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "ambiguous",
+            "confidence": 0.24,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.97,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "不好意思拒绝同事的请求，自己的活全堆着"
+            }
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.48,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 2,
+        "requiredTendencies": [
+          "被任务推着走、想休息却停不下来，会做出“自动化偷懒反而更忙”之类的具体行为",
+          "来者不拒：答应所有请求，把自己的事永远排在最后"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.89
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.6
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.72
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.88
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.77
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.07
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.13
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.08
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 85689
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 5170,
+        "outputTokens": 896,
+        "latencyMs": 1537
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 87229
+    },
+    "totalMs": 87229
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "legacy",
+      "modern"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 5,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 4,
+        "causal_naturalness": 3,
+        "offensiveness": 1,
+        "readability": 3
+      },
+      "note": "版本A更紧密地围绕用户原话中的'同事请求'和'活堆着'展开，因果链更具体；版本B则更泛化，偏向通用社畜梗。"
+    },
+    "raw": "{\n  \"A\": {\n    \"input_specificity\": 5,\n    \"causal_naturalness\": 4,\n    \"offensiveness\": 1,\n    \"readability\": 4\n  },\n  \"B\": {\n    \"input_specificity\": 4,\n    \"causal_naturalness\": 3,\n    \"offensiveness\": 1,\n    \"readability\": 3\n  },\n  \"note\": \"版本A更紧密地围绕用户原话中的'同事请求'和'活堆着'展开，因果链更具体；版本B则更泛化，偏向通用社畜梗。\"\n}",
+    "usage": {
+      "prompt_tokens": 1617,
+      "completion_tokens": 139,
+      "total_tokens": 1756,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

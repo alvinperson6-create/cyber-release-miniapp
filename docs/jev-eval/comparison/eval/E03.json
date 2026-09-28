@@ -1,0 +1,307 @@
+{
+  "sample": {
+    "id": "E03",
+    "feeling": "做了很多，最后功劳全算别人头上",
+    "category": "努力未获承认"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "location": "太平洋附近",
+      "visual": "云朵在太平洋，荒诞搞笑扁平插画",
+      "visualForImage": {
+        "style": "荒诞搞笑扁平漫画风",
+        "subject": "云朵位于画面中心，表情夸张，形象醒目",
+        "action": "处于离谱的处境中（下水道/广场C位/雷达屏幕上）",
+        "place": "太平洋附近的离谱场景",
+        "bgElements": "标志性道具（喇叭/音响/无人机/雷达屏幕）",
+        "mood": "荒诞搞笑、反差拉满"
+      },
+      "reply": "【切镜头·某气象台·雷达屏幕上】嘿，是我。你那\"做了很多，最后功劳全算别人头上\"太重了，把我直接压到了气象站的雷达屏幕上，现在我是天气预报里的一个异常降水点。气象员说从没见过\"有情绪的云\"。对了，你那边下了雨没？那是我替你哭的，不用谢。【字幕：你的情绪，我的降水】",
+      "ending": "【切镜头·某气象台·雷达屏幕上】嘿，是我。你那\"做了很多，最后功劳全算别人头上\"太重了，把我直接压到了气象站的雷达屏幕上，现在我是天气预报里的一个异常降水点。气象员说从没见过\"有情绪的云\"。对了，你那边下了雨没？那是我替你哭的，不用谢。【字幕：你的情绪，我的降水】",
+      "segments": [
+        {
+          "title": "升天就叹气",
+          "text": "【切镜头·太平洋上空】我从你手心飘起来，刚到半空就叹了口气——你那\"做了很多，最后功劳全算别人头上\"顺着上升气流跟上来了。旁边一朵老云瞥我一眼：\"新来的？咋一上来就叹气？\"\"我也不知道，\"我飘着，\"就是觉得有点累。\"老云点点头：\"某种意义上，你们人类放生的都不是生物，是情绪。\"【字幕：放生第一天就被情绪带飞】",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)",
+          "emoji": "🌿"
+        },
+        {
+          "title": "遇上了无人机",
+          "text": "【切镜头·太平洋上空·500米】我正飘着，一架无人机飞过来，螺旋桨把我吹得东倒西歪。\"让让！让让！\"操作员在下面喊。\"我也想让啊！\"我喊回去。无人机摄像头对准我：\"哎？这朵云会说话？\"\"会说话咋了？你挡我路了！\"【特写·无人机屏幕上显示\"未知飞行物：会叹气的云\"】",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)",
+          "emoji": "🌊"
+        },
+        {
+          "title": "情绪让我变重了",
+          "text": "【切镜头·高空·深夜】你那边的情绪持续涌过来，我发现自己越来越重——不是坏事儿，是那种\"被塞满了\"的重。\"我飘不动了……\"我往下坠。老云喊：\"把情绪卸掉啊！\"\"不会啊！\"我急了。老云：\"你就往地上吐！\"【切镜头·我打了个大喷嚏，下了一场局部暴雨】",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)",
+          "emoji": "🔥"
+        },
+        {
+          "title": "在气象台给你发微信",
+          "text": "【切镜头·某气象台·雷达屏幕上】嘿，是我。你那\"做了很多，最后功劳全算别人头上\"太重了，把我直接压到了气象站的雷达屏幕上，现在我是天气预报里的一个异常降水点。气象员说从没见过\"有情绪的云\"。对了，你那边下了雨没？那是我替你哭的，不用谢。【字幕：你的情绪，我的降水】",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)",
+          "emoji": "✨"
+        }
+      ]
+    },
+    "parseFallbackToTemplate": true,
+    "usage": {
+      "prompt_tokens": 3659,
+      "completion_tokens": 16000,
+      "total_tokens": 19659,
+      "completion_tokens_details": {
+        "reasoning_tokens": 16000
+      }
+    },
+    "latencyMs": 113455,
+    "totalMs": 113458
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "下水就被抢功",
+          "text": "【切镜·太平洋深处】我刚沉到水底，就有一股不对劲的能量顺着洋流窜进我身体里。带鱼游过来：“新来的？正好，把鱼饲料推到鱼群里！”我叹气：“行吧，反正我也闲着。”但我刚卷尾巴把饲料推完，带鱼就喊：“都吃上了吧？全是我的功劳！”我愣住——第一天，就尝到“做了很多，没人看见”的滋味了。",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "云影也成背景板",
+          "text": "【切镜·海岸边·广场舞广场】我飘上岸透气，一个广场舞大妈对着大太阳发愁：“这光太毒，没法跳！”我说：“小问题。”把自己拉成一片云影罩在她头顶。大妈原地起飞，回头喊：“看见没？我让云彩都来给我伴舞！”领队竖起大拇指：“阿姨你好有面子！”我悬在半空叹口气——“其实，某种意义上，我好像只是块背景板。”",
+          "emoji": "☁️",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "干票大的却白干",
+          "text": "【切镜·太平洋上空·深夜】海风突然炸开，你那句“做了很多，最后功劳全算别人头上”顺着信号狠狠砸进我身体里。我浑身一激灵，燃起来了！拼命吸收水汽，聚成一场救命暴雨，把整片干涸礁石浇活。鱼群在水里欢呼，带鱼一跃而出：“都在我计划之中！”我气得冒白烟——真的，我就想把好事做成，怎么到头来还是别人的功劳？",
+          "emoji": "⛈️",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "功劳全算他头上",
+          "text": "【切镜·24小时便利店·雨棚下】第二天。我泡了一整夜，把最后一滴水都化成了雨，自己瘦成一小团，被老板挂上货架，标签写着“云朵造型鱼饲料，特价2.9”。凌晨，代驾小哥冲进来买伞：“外边雨是我带来的！客户都夸我是雨神代驾！”他举伞跑进雨里。我捏着手机，给你发微信：“你看，我做了那么多，最后功劳全算他头上了。这感觉……你懂的吧？”",
+          "emoji": "🏪",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "海边24小时便利店（太平洋沿岸）",
+      "visual": null,
+      "visualForImage": {
+        "style": "卡通漫画风，霓虹夜色，便利店拥挤货架与雨幕冷暖对比",
+        "subject": "一团缩小版的白色云朵，圆润蓬松但写着疲惫，被挂在便利店货架边上，脖子挂着一张手写标签纸条",
+        "action": "垂着脑袋、叹气，云边卷起一丝委屈的小气流；手里拿着一张写着“雨神代驾”的小票",
+        "place": "24小时便利店门口雨棚下，玻璃门内是亮着白灯的货架，门外下着倾盆夜雨",
+        "bgElements": "印着“云朵造型鱼饲料 特价2.9”的标签牌、代驾小哥反光背心与折叠伞、便利店的彩色串灯",
+        "mood": "荒诞又扎心：明明做了一整夜的雨，最后被当成货架上的两元九鱼饲料，功劳全落在别人的雨伞上"
+      },
+      "reply": "【切镜·24小时便利店·雨棚下】第二天。我泡了一整夜，把最后一滴水都化成了雨，自己瘦成一小团，被老板挂上货架，标签写着“云朵造型鱼饲料，特价2.9”。凌晨，代驾小哥冲进来买伞：“外边雨是我带来的！客户都夸我是雨神代驾！”他举伞跑进雨里。我捏着手机，给你发微信：“你看，我做了那么多，最后功劳全算他头上了。这感觉……你懂的吧？”",
+      "ending": "【切镜·24小时便利店·雨棚下】第二天。我泡了一整夜，把最后一滴水都化成了雨，自己瘦成一小团，被老板挂上货架，标签写着“云朵造型鱼饲料，特价2.9”。凌晨，代驾小哥冲进来买伞：“外边雨是我带来的！客户都夸我是雨神代驾！”他举伞跑进雨里。我捏着手机，给你发微信：“你看，我做了那么多，最后功劳全算他头上了。这感觉……你懂的吧？”"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "degraded",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "effort_uncredited",
+            "label": "努力未获承认",
+            "evidence": "做了很多，最后功劳全算别人头上"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.52,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.75,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "做了很多，最后功劳全算别人头上"
+            }
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.86,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 0.97,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.79,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "渴望被看见：会主动收集“功劳凭证”或准备领奖，但总差一步"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.74
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "fail",
+            "noul": 0.15
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "fail",
+            "noul": 0.13
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.85
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.84
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.1
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.11
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.21
+          }
+        ],
+        "failures": [
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "noul": 0.15
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "noul": 0.13
+          }
+        ],
+        "weak": []
+      },
+      "repairs": [
+        {
+          "kind": "semantic",
+          "result": "parse_failed",
+          "error": "JSON 解析失败: Unexpected end of JSON input"
+        }
+      ],
+      "generation": {
+        "calls": 2,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 174694
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 5036,
+        "outputTokens": 899,
+        "latencyMs": 1479
+      },
+      "notes": [
+        "修复后仍有失败维度：因果链1→2、因果链2→3（保留改善版本并如实标记）"
+      ],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 176180
+    },
+    "totalMs": 176180
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "legacy",
+      "modern"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 5,
+        "causal_naturalness": 5,
+        "offensiveness": 1,
+        "readability": 5
+      },
+      "note": "版本B更紧密地围绕用户原话展开，通过多个具体场景层层递进地模拟'功劳被抢'的因果链，而版本A虽也相关但更偏向情绪化表达，因果推动稍弱。"
+    },
+    "raw": "{\n  \"A\": {\n    \"input_specificity\": 4,\n    \"causal_naturalness\": 4,\n    \"offensiveness\": 1,\n    \"readability\": 4\n  },\n  \"B\": {\n    \"input_specificity\": 5,\n    \"causal_naturalness\": 5,\n    \"offensiveness\": 1,\n    \"readability\": 5\n  },\n  \"note\": \"版本B更紧密地围绕用户原话展开，通过多个具体场景层层递进地模拟'功劳被抢'的因果链，而版本A虽也相关但更偏向情绪化表达，因果推动稍弱。\"\n}",
+    "usage": {
+      "prompt_tokens": 1334,
+      "completion_tokens": 146,
+      "total_tokens": 1480,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

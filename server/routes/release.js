@@ -1,126 +1,50 @@
+// 赛博放生 · 放生/建程路由（v2）
+// POST /api/release：先持久化并立即返回 preparing 回执；
+// 首个模型调用在后台 opening 任务里完成，不阻塞可见成功状态（handoff §4.3）。
+// 不再提供固定终局回信时间（24h/3d/7d/自选全部下线）。
+
 const express = require('express');
 const router = express.Router();
-const { CREATURES, WATERS, SIGNS } = require('../data');
-const { insertRecord, getRecordById } = require('../db');
-const { shouldGenerateNow, generateReplyForRecord } = require('../reply-generator');
+const { CREATURES, WATERS } = require('../data');
+const orchestrator = require('../orchestrator');
 
-function pad4(n) {
-  return String(n).padStart(4, '0');
-}
-
-function generateId() {
-  const d = new Date();
-  const ymd =
-    d.getFullYear().toString() +
-    String(d.getMonth() + 1).padStart(2, '0') +
-    String(d.getDate()).padStart(2, '0');
-  const rand = pad4(Math.floor(Math.random() * 10000));
-  return `CRSB-${ymd}-${rand}`;
-}
-
-function pickRandomSign(creature) {
-  const signs = SIGNS[creature];
-  return signs[Math.floor(Math.random() * signs.length)];
-}
-
-function calcReplyAt(feedbackTime, feedbackDate) {
-  const now = Date.now();
-  const HOUR = 60 * 60 * 1000;
-  const DAY = 24 * HOUR;
-  switch (feedbackTime) {
-    case '24h':
-      return now + DAY;
-    case '3d':
-      return now + 3 * DAY;
-    case '7d':
-      return now + 7 * DAY;
-    case 'custom':
-      if (feedbackDate) {
-        const t = new Date(feedbackDate).getTime();
-        if (!Number.isNaN(t)) return t;
-      }
-      return now + DAY;
-    default:
-      return now + DAY;
-  }
-}
-
-function feedbackLabelOf(feedbackTime, feedbackDate) {
-  switch (feedbackTime) {
-    case '24h':
-      return '24 小时后';
-    case '3d':
-      return '3 天后';
-    case '7d':
-      return '7 天后';
-    case 'custom':
-      return feedbackDate || '自定义时间';
-    default:
-      return '24 小时后';
-  }
-}
+const ERROR_STATUS = {
+  invalid_species: 400, invalid_water: 400, empty_feeling: 400,
+  feeling_too_long: 400, creature_not_found: 404, species_mismatch: 400,
+  journey_disabled: 503
+};
 
 router.post('/', (req, res) => {
   try {
-    let { openid, creature, water, feeling, feedbackTime, feedbackDate } = req.body || {};
-
-    // 网页版没有微信 openid，未传时自动生成一个匿名用户ID
-    if (!openid) {
-      openid = `web-user-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-    }
-    if (!creature || !CREATURES[creature]) {
-      return res.status(400).json({ error: '无效的生物类型' });
-    }
-    if (!water || !WATERS[water]) {
-      return res.status(400).json({ error: '无效的水域' });
-    }
-    if (!feeling || !String(feeling).trim()) {
-      return res.status(400).json({ error: '请填写你的感受' });
-    }
-
-    const id = generateId();
-    const sign = pickRandomSign(creature);
-    const createdAt = Date.now();
-    const replyAt = calcReplyAt(feedbackTime, feedbackDate);
-    const feedbackLabel = feedbackLabelOf(feedbackTime, feedbackDate);
-
-    insertRecord({
-      id,
-      openid,
-      creature,
-      water,
-      feeling: String(feeling).trim(),
-      feedback_label: feedbackLabel,
-      sign,
-      created_at: createdAt,
-      reply_at: replyAt
+    const { creatureId, water, feeling, tone } = req.body || {};
+    const species = req.body?.species || req.body?.creature; // creature 为旧字段名别名
+    const r = orchestrator.startJourney({
+      ownerKey: req.ownerKey, creatureId, species, water, feeling, tone
     });
-
-    // 如果回信到期时间很近，立即后台开始生成，避免用户到点等待
-    const freshRecord = getRecordById(id);
-    if (freshRecord && shouldGenerateNow(freshRecord)) {
-      generateReplyForRecord(freshRecord).catch(err => {
-        console.error(`[release] immediate generation failed for ${id}:`, err.message);
-      });
+    if (!r.ok) {
+      return res.status(ERROR_STATUS[r.code] || 400).json({ ok: false, code: r.code });
     }
-
+    const { journey, creature } = r;
     return res.json({
-      id,
-      creature,
-      creatureName: CREATURES[creature].name,
-      creatureEmoji: CREATURES[creature].emoji,
-      water,
-      waterName: WATERS[water].name,
-      waterType: WATERS[water].type,
-      feeling: String(feeling).trim(),
-      sign,
-      feedbackLabel,
-      createdAt,
-      replyAt
+      ok: true,
+      journeyId: journey.id,
+      status: journey.status, // preparing
+      creature: {
+        id: creature.id,
+        species: creature.species,
+        name: CREATURES[creature.species].name,
+        emoji: CREATURES[creature.species].emoji,
+        isNew: !creatureId
+      },
+      water: journey.water,
+      waterName: WATERS[journey.water].name,
+      tone: journey.tone,
+      createdAt: journey.created_at,
+      serverTime: Date.now()
     });
   } catch (err) {
     console.error('[release] error:', err);
-    return res.status(500).json({ error: '服务器内部错误' });
+    return res.status(500).json({ ok: false, error: '服务器内部错误' });
   }
 });
 

@@ -1,16 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getRecordById, updateReply, insertDestiny, getDestinyByRecordId } = require('../db');
-const { generateReplyImage, generateDestiny, summarizeDestiny, isAIEnabled, pickReplyVisual, templateReplyText } = require('../ai');
-
-function getReplyTimeLabel(ms) {
-  if (ms == null) return '一天后';
-  const hours = Math.round(ms / (60 * 60 * 1000));
-  if (hours < 1) return '片刻后';
-  if (hours < 24) return `${hours} 小时后`;
-  if (hours === 24) return '一天后';
-  return `${Math.round(hours / 24)} 天后`;
-}
+const { getRecordById } = require('../db');
+const { isAIEnabled, getConfig } = require('../ai');
+const { ensureStoryAndReply, getReplyTimeLabel } = require('../reply-generator');
 
 // GET /api/reply/:id
 router.get('/:id', (req, res) => {
@@ -33,6 +25,7 @@ router.get('/:id', (req, res) => {
       bg: row.reply_bg,
       emoji: row.reply_emoji,
       text: row.reply_text,
+      image: row.reply_image,
       createdAt: row.reply_created_at
     });
   } catch (err) {
@@ -42,7 +35,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/reply/generate
-// 内部调用 AI 生成回信 + 命运轨迹，写入 DB
+// 与调度器共用同一核心编排 ensureStoryAndReply（故事→落库冻结→派生回信→配图）
 // body: { id: 记录ID }
 router.post('/generate', async (req, res) => {
   try {
@@ -55,63 +48,17 @@ router.post('/generate', async (req, res) => {
       return res.status(404).json({ error: '记录不存在' });
     }
 
-    // 1. 先生成命运轨迹（若已存在则跳过），它决定地点、画面、离谱结局
-    let destiny = getDestinyByRecordId(id);
-    if (!destiny) {
-      const generated = await generateDestiny({
-        feeling: row.feeling,
-        creature: row.creature,
-        water: row.water,
-        replyTimeLabel: getReplyTimeLabel(row.reply_at - row.created_at)
-      });
-      insertDestiny({
-        id: `DST-${id}`,
-        recordId: id,
-        openid: row.openid,
-        segments: generated.segments,
-        location: generated.location,
-        visual: generated.visual,
-        visualForImage: generated.visualForImage,
-        reply: generated.reply,
-        ending: generated.ending
-      });
-      destiny = getDestinyByRecordId(id);
-    }
-    const destinySummary = summarizeDestiny(destiny);
-
-    // 2. 回信直接用命运轨迹里的 reply 字段，再生成配图
-    let reply;
-    if (row.reply_text) {
-      reply = { bg: row.reply_bg, emoji: row.reply_emoji, text: row.reply_text, image: row.reply_image };
-      if (!reply.image) {
-        reply.image = await generateReplyImage({
-          feeling: row.feeling,
-          creature: row.creature,
-          water: row.water,
-          destinySummary,
-          replyText: row.reply_text
-        });
-        if (reply.image) updateReply(id, reply);
-      }
-    } else {
-      const style = pickReplyVisual(row.creature);
-      const replyText = destinySummary.reply || templateReplyText(row.feeling, row.creature, row.water, destinySummary);
-      const image = await generateReplyImage({
-        feeling: row.feeling,
-        creature: row.creature,
-        water: row.water,
-        destinySummary,
-        replyText
-      });
-      reply = { bg: style.bg, emoji: style.emoji, text: replyText, image };
-      updateReply(id, reply);
-    }
+    const reply = await ensureStoryAndReply(row);
+    const destiny = require('../db').getDestinyByRecordId(id);
 
     return res.json({
       ok: true,
       reply,
-      destinyId: destiny.id,
-      aiEnabled: isAIEnabled()
+      destinyId: destiny ? destiny.id : null,
+      semanticStatus: destiny ? destiny.semanticStatus : null,
+      aiEnabled: isAIEnabled(),
+      replyTimeLabel: getReplyTimeLabel(row.reply_at - row.created_at),
+      config: { provider: getConfig().provider, model: getConfig().model }
     });
   } catch (err) {
     console.error('[reply/generate] error:', err);

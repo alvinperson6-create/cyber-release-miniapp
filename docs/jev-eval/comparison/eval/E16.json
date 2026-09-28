@@ -1,0 +1,304 @@
+{
+  "sample": {
+    "id": "E16",
+    "feeling": "领导让我周末组织团建，我说了不想去，他还是让我安排",
+    "category": "边界表达（明确拒绝被无视）"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "入水就接到“安排”",
+          "text": "【切·湘江边上】我刚适应水温，就感觉像被领导消息钉住，心口堵得慌。一条大鲤鱼凑过来：“新来的？你怎么一脸刚开完周会？”“我也不想，但有个声音一直说：周六团建，你来安排，不想去也不行！”我直喘气。它叹气：“又一个被‘嘴上拒绝、手上接单’传染的。”【字幕：放生第一天就挂了团建】",
+          "emoji": "😵",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "团建拉到便利店门口",
+          "text": "【切·湘江边便利店路口】我看到网吧网管拎着泡面出来，保安大叔躺在折叠椅上刷手机。那股“被迫组织”的劲儿冲上头：“你们两个！周六团建报名，一人带设备，一人搬椅子！”网管差点把泡面砸地上：“这鱼在替谁排班？”大叔慢悠悠：“像‘我说不干还非得让我全包’的领导呗。”【字幕：鱼都能秒懂，人类还在装】",
+          "emoji": "🏪",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "深夜湘江大操练",
+          "text": "【切·湘江·深夜】“我不想去”和“你还是得安排”在脑子里打起来，我彻底失控。我冲进江心集合鱼群：“排队！拉横幅！白条你站C位！谁当主持！”老鲤鱼狂喊：“你是中邪了吧？”一张网兜落下，网管和保安大叔把我兜上岸。“这鱼能整活，放便利店当网红。”我在网里还在喊：“周六值班表还没排完！”【字幕：情绪一上头，鱼都变策划】",
+          "emoji": "🌀",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "我变成便利店团建鱼",
+          "text": "【切·24小时便利店·鱼缸】哥，就一天。你“周末让我安排团建”的怨念一波波打过来，直接把我辐射成了“团建一条龙锦鲤”——现在我被摆进便利店鱼缸，旁边搁把折叠椅，挂着“承接团建”的牌子。网吧网管给我拉了八单生意。保安大叔说：你周末再搞团建，来这打八八折。说到底咱俩一样：不想去，最后也得安排明白。【字幕：你不想安排，鱼替你上了】",
+          "emoji": "📲",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "长沙·湘江边·24小时便利店（近杜甫江阁）",
+      "visual": null,
+      "visualForImage": {
+        "style": "霓虹卡通漫画风",
+        "subject": "橙红锦鲤在便利店鱼缸里，叼着一张写满“团建行程”的纸，眼睛翻白眼，一脸被迫营业的社畜相",
+        "action": "鱼鳍夹着一部小手机，像在给谁回微信，尾巴拍出烦躁的泡泡",
+        "place": "24小时便利店收银台旁的玻璃鱼缸，店外是深夜的湘江边，霓虹灯牌亮着“24H便利店”",
+        "bgElements": "鱼缸旁叠着一把折叠椅，手写牌子“湘江团建鱼·一条龙包办”，柜台上放着一桶网吧网管的泡面",
+        "mood": "荒诞好笑又扎心，大半夜被迫加班的感觉拉满"
+      },
+      "reply": "【切·24小时便利店·鱼缸】哥，就一天。你“周末让我安排团建”的怨念一波波打过来，直接把我辐射成了“团建一条龙锦鲤”——现在我被摆进便利店鱼缸，旁边搁把折叠椅，挂着“承接团建”的牌子。网吧网管给我拉了八单生意。保安大叔说：你周末再搞团建，来这打八八折。说到底咱俩一样：不想去，最后也得安排明白。【字幕：你不想安排，鱼替你上了】",
+      "ending": "【切·24小时便利店·鱼缸】哥，就一天。你“周末让我安排团建”的怨念一波波打过来，直接把我辐射成了“团建一条龙锦鲤”——现在我被摆进便利店鱼缸，旁边搁把折叠椅，挂着“承接团建”的牌子。网吧网管给我拉了八单生意。保安大叔说：你周末再搞团建，来这打八八折。说到底咱俩一样：不想去，最后也得安排明白。【字幕：你不想安排，鱼替你上了】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3697,
+      "completion_tokens": 9584,
+      "total_tokens": 13281,
+      "completion_tokens_details": {
+        "reasoning_tokens": 8819
+      }
+    },
+    "latencyMs": 79508,
+    "totalMs": 79508
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "入水就慌了",
+          "text": "【切镜头·湘江边】我刚摆摆尾巴，就觉得心里慌慌的——你那\"领导让我周末组织团建，我说了不想去，他还\"顺着水面传过来了。旁边一条鲫鱼凑过来：\"新来的？游这么快干啥？\"\"我也不知道，就是觉得再不游快点就晚了。\"鲫鱼摇摇头：\"又是个被情绪传染的。\"【字幕：放生第一天就被情绪带节奏】",
+          "emoji": "🌿",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "遇上了保安",
+          "text": "【切镜头·湘江岸边】我正沿着岸边急游，一个保安大叔拿喇叭喊：\"那条鱼！别往排水口游！\"\"我控制不住啊！\"我急得转圈。\"你是不是被放生的？被放生的都这样，情绪太冲。\"他掏出对讲机，\"队长，又来一条躁动的。\"【特写·喇叭上印着\"文明放生\"】",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "情绪彻底爆了",
+          "text": "【切镜头·湘江底·深夜】你那边的情绪一股脑涌过来，我整个鱼都疯了，尾巴甩得快出残影。保安大叔拿手电筒照我：\"冷静点！你已经绕湖游了八十圈了！\"我头也不回：\"不行！我感觉还有事没干完！\"【切镜头·我一头撞进了排水管道】",
+          "emoji": "🔥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "在下水道给你发微信",
+          "text": "【切镜头·城市下水道·某井盖下】嘿，是我。你那\"领导让我周末组织团建，我说了不想去，他还\"太猛了，直接把我冲进了城市下水道。现在我在某条主管道里，旁边是一只也被人冲下来的橡皮鸭。对了，它说它也是被放生的，主人当时\"想释怀\"。你说咱俩谁更惨？【字幕：你的情绪，我的水流】",
+          "emoji": "✨",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "湘江附近",
+      "visual": null,
+      "visualForImage": {
+        "style": "荒诞搞笑扁平漫画风",
+        "subject": "锦鲤位于画面中心，表情夸张，形象醒目",
+        "action": "处于离谱的处境中（下水道/广场C位/雷达屏幕上）",
+        "place": "湘江附近的离谱场景",
+        "bgElements": "标志性道具（喇叭/音响/无人机/雷达屏幕）",
+        "mood": "荒诞搞笑、反差拉满"
+      },
+      "reply": "【切镜头·城市下水道·某井盖下】嘿，是我。你那\"领导让我周末组织团建，我说了不想去，他还\"太猛了，直接把我冲进了城市下水道。现在我在某条主管道里，旁边是一只也被人冲下来的橡皮鸭。对了，它说它也是被放生的，主人当时\"想释怀\"。你说咱俩谁更惨？【字幕：你的情绪，我的水流】",
+      "ending": "【切镜头·城市下水道·某井盖下】嘿，是我。你那\"领导让我周末组织团建，我说了不想去，他还\"太猛了，直接把我冲进了城市下水道。现在我在某条主管道里，旁边是一只也被人冲下来的橡皮鸭。对了，它说它也是被放生的，主人当时\"想释怀\"。你说咱俩谁更惨？【字幕：你的情绪，我的水流】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "repaired",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "lost_control",
+            "label": "失去选择权",
+            "evidence": "领导让我周末组织团建，我说了不想去，他还是让我安排"
+          },
+          {
+            "id": "time_boundary",
+            "label": "时间边界被侵占",
+            "evidence": "领导让我周末组织团建，我说了不想去，他还是让我安排"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.58,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "领导让我周末组织团建，我说了不想去，他还是让我安排"
+            }
+          },
+          {
+            "id": "time_boundary",
+            "stance": "supported",
+            "confidence": 0.94,
+            "usable": {
+              "id": "s1",
+              "text": "领导让我周末组织团建，我说了不想去，他还是让我安排"
+            }
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.98,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.94,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "contradicted",
+            "confidence": 0.29,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.77,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 2,
+        "requiredTendencies": [
+          "想抓住控制权：反复确认、囤积、自定规矩，但局面总在它控制之外",
+          "对“最后关头被打断”极度敏感，总在快完成一件事时被叫走"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.75
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.85
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.63
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.95
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.8
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.12
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.23
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.37
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [
+        {
+          "kind": "structure",
+          "result": "applied"
+        }
+      ],
+      "generation": {
+        "calls": 2,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 129594
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4953,
+        "outputTokens": 898,
+        "latencyMs": 1615
+      },
+      "notes": [
+        "初始生成解析失败：JSON 解析失败: Unexpected end of JSON input"
+      ],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 131209
+    },
+    "totalMs": 131209
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "modern",
+      "legacy"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 2,
+        "causal_naturalness": 3,
+        "offensiveness": 1,
+        "readability": 2
+      },
+      "B": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "note": "版本B更精准地围绕用户'不想去但被迫安排'的矛盾展开，因果链更具体（情绪辐射→鱼变策划→被捞进便利店），而版本A的'情绪冲进下水道'较泛化，针对性弱。"
+    },
+    "raw": "{\"A\":{\"input_specificity\":2,\"causal_naturalness\":3,\"offensiveness\":1,\"readability\":2},\"B\":{\"input_specificity\":4,\"causal_naturalness\":4,\"offensiveness\":1,\"readability\":4},\"note\":\"版本B更精准地围绕用户'不想去但被迫安排'的矛盾展开，因果链更具体（情绪辐射→鱼变策划→被捞进便利店），而版本A的'情绪冲进下水道'较泛化，针对性弱。\"}",
+    "usage": {
+      "prompt_tokens": 1355,
+      "completion_tokens": 115,
+      "total_tokens": 1470,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

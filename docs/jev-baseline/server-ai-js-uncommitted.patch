@@ -1,0 +1,65 @@
+diff --git a/server/ai.js b/server/ai.js
+index ea89d4b..d3b7392 100644
+--- a/server/ai.js
++++ b/server/ai.js
+@@ -64,6 +64,14 @@ async function chatCompletion(messages, options = {}) {
+     max_tokens: options.max_tokens ?? 1200
+   };
+ 
++  // 千帆 DeepSeek-V4(如 -0731)是混合推理模型、默认开启深度思考：思考过程写入
++  // reasoning_content，会挤占 max_tokens，预算不足时正式 content 反而为空。
++  // 因此默认关闭思考(更快更省、结构化输出更稳)；仅当 options.thinking === true 时
++  // 保留推理——此时调用方必须把 max_tokens 调到足以同时容纳思维链与最终答案。
++  if (cfg.provider === 'qianfan' && options.thinking !== true) {
++    body.thinking = { type: 'disabled' };
++  }
++
+   // 调试日志：打印 provider/model/首条消息，便于确认调用是否真的发生
+   console.log(`[ai] → POST ${url}  model=${cfg.model}  provider=${cfg.provider}`);
+   console.log(`[ai] → system: ${String(messages[0]?.content || '').slice(0, 60)}...`);
+@@ -85,8 +93,11 @@ async function chatCompletion(messages, options = {}) {
+     throw new Error(`AI API ${resp.status}: ${text}`);
+   }
+   const data = await resp.json();
+-  const content = data.choices?.[0]?.message?.content || '';
+-  console.log(`[ai] ← 200  ${Date.now() - t0}ms  tokens=${data.usage?.total_tokens || '?'}  len=${content.length}`);
++  const msg0 = data.choices?.[0]?.message || {};
++  const content = msg0.content || '';
++  const reasoningLen = (msg0.reasoning_content || '').length;
++  const finishReason = data.choices?.[0]?.finish_reason;
++  console.log(`[ai] ← 200  ${Date.now() - t0}ms  tokens=${data.usage?.total_tokens || '?'}  finish=${finishReason}  思考=${reasoningLen}字  content=${content.length}字`);
+   if (!content) {
+     console.log('[ai] ← empty content, full response:', JSON.stringify(data).slice(0, 800));
+   } else {
+@@ -514,10 +525,20 @@ async function downloadImage(remoteUrl) {
+ }
+ 
+ // 将 base64 图片数据保存到本地
++// 根据二进制魔数判断真实图片格式（OpenLux 等接口可能忽略 format 字段，实际返回 PNG）
++function detectImageExt(buffer) {
++  if (buffer.length >= 4 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47) return '.png';
++  if (buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) return '.jpg';
++  if (buffer.length >= 12 && buffer.toString('ascii', 0, 4) === 'RIFF' && buffer.toString('ascii', 8, 12) === 'WEBP') return '.webp';
++  if (buffer.length >= 6 && buffer.toString('ascii', 0, 6) === 'GIF89a') return '.gif';
++  return '.jpg';
++}
++
+ function saveBase64Image(b64Data) {
+   try {
+     const buffer = Buffer.from(b64Data, 'base64');
+-    const filename = `reply-${Date.now()}-${Math.random().toString(36).slice(2, 10)}.jpg`;
++    const ext = detectImageExt(buffer);
++    const filename = `reply-${Date.now()}-${Math.random().toString(36).slice(2, 10)}${ext}`;
+     const filepath = path.join(IMAGE_DIR, filename);
+     fs.writeFileSync(filepath, buffer);
+     console.log(`[ai] image saved from b64: ${filename} (${buffer.length} bytes)`);
+@@ -747,7 +768,8 @@ async function generateDestiny({ feeling, creature, water, replyTimeLabel }) {
+   }
+   try {
+     const messages = buildDestinyPrompt({ feeling, creature, water, replyTimeLabel });
+-    const raw = await chatCompletion(messages, { temperature: 0.85, max_tokens: 4000 });
++    // 命运轨迹是最复杂的生成任务，保留深度思考；16000 同时容纳思维链与完整 4 集 JSON
++    const raw = await chatCompletion(messages, { temperature: 0.85, max_tokens: 16000, thinking: true });
+     const result = parseDestinySegments(raw, creature, water, feeling);
+     if (!result || !result.segments || result.segments.length < 3) throw new Error('invalid destiny');
+     return result;

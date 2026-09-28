@@ -1,0 +1,288 @@
+{
+  "sample": {
+    "id": "E10",
+    "feeling": "又是帮别人跑腿的一天，我自己的事呢？",
+    "category": "难以拒绝+付出未获承认"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚入水就背上KPI",
+          "text": "【切镜头·湘江浑浊江底】我刚摆尾巴就听到“叮：新订单”。一条独眼鲶鱼湊过来：“新来的？背上背谁的因果了？”我跟你说，我真没接单啊！但我甩尾巴一数，背上挂着手机、外卖、彩票单子，叠了三层。鲶鱼叹气：“那就是别人甩给你的，又是帮人跑腿的命。”我还没回过神，尾巴已经自己开始动了。【字幕：放生第一天就被套上跑腿系统】",
+          "emoji": "📠",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "干跑腿不给饭",
+          "text": "【切镜头·湘江边·直播支架前】穿花裤衩的主播喊：“家人们，锦鲤帮我把手机捞上来，进口鱼饲料喂饱它！”我一听有鱼饲料，冲过去叼起手机。主播拿走手机，饲料却塞进自己口袋：“鱼吃多了会掉色。”我饿着肚子游回水里，尾巴上又多了一张单：“去彩票站代刮三张刮刮乐。”【特写：空饲料袋漂在江面】我哪来的彩票单？到底谁塞给我的？【字幕：报酬全是画饼】",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "算命的让我跑",
+          "text": "【切镜头·湘江边·深夜】一句话顺着5G砸进水里——“又是帮别人跑腿的一天，我自己的事呢？”我浑身鳞片麻了，不是难过，是接单接麻了。岸边一个算命瞎子冲我摆手：“孩子，你现在只能回江底，或去彩票站替人跑。”我说：“跑！”我也不知为啥，不跑就浑身刺挠。瞎子点头：“彩票站第三台机，有人等你代刮。”我蹦上岸，往彩票站狂奔。【字幕：你的情绪成了我的发令枪】",
+          "emoji": "🏃",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "代跑腿锦鲤的一天",
+          "text": "【切镜头·彩票站·柜台鱼缸里】嘿，是我。我跟你说，一天了，我成了这家彩票站的“代跑腿锦鲤”——被泡在柜台鱼缸里，顾客扫码，老板把我捞出来叼刮刮乐，300张后才放回水里。鱼缸外挂一包鱼饲料，就在我眼前，但永远够不着。我把你那句话刻在缸上：“又是帮别人跑腿的一天，我自己的事呢？”现在我连一口自己的饲料都混不上，你说，我是不是活成了你的样子？【字幕：你顺手扔的鱼我顺手接了单】",
+          "emoji": "🎰",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "长沙市湘江中路彩票站",
+      "visual": null,
+      "visualForImage": {
+        "style": "赛博朋克霓虹+街头涂鸦",
+        "subject": "橙红色锦鲤被困在狭小的玻璃鱼缸里，鳞片反射着霓虹灯光，嘴巴微张正要说话",
+        "action": "一条锦鲤正伸嘴去够鱼缸外挂着的鱼饲料包装袋，但就差一点点够不到",
+        "place": "彩票站柜台上，旁边堆着刮刮乐和彩票机，墙面贴着潦草的手写招牌",
+        "bgElements": "「代跑腿锦鲤 扫码下单10元一次」手写海报；柜台玻璃上倒映着彩票机红色数字；一袋鱼饲料挂在缸外",
+        "mood": "荒诞又扎心，赛博打工感拉满，一条锦鲤活成了屏幕前替人跑腿的你"
+      },
+      "reply": "【切镜头·彩票站·柜台鱼缸里】嘿，是我。我跟你说，一天了，我成了这家彩票站的“代跑腿锦鲤”——被泡在柜台鱼缸里，顾客扫码，老板把我捞出来叼刮刮乐，300张后才放回水里。鱼缸外挂一包鱼饲料，就在我眼前，但永远够不着。我把你那句话刻在缸上：“又是帮别人跑腿的一天，我自己的事呢？”现在我连一口自己的饲料都混不上，你说，我是不是活成了你的样子？【字幕：你顺手扔的鱼我顺手接了单】",
+      "ending": "【切镜头·彩票站·柜台鱼缸里】嘿，是我。我跟你说，一天了，我成了这家彩票站的“代跑腿锦鲤”——被泡在柜台鱼缸里，顾客扫码，老板把我捞出来叼刮刮乐，300张后才放回水里。鱼缸外挂一包鱼饲料，就在我眼前，但永远够不着。我把你那句话刻在缸上：“又是帮别人跑腿的一天，我自己的事呢？”现在我连一口自己的饲料都混不上，你说，我是不是活成了你的样子？【字幕：你顺手扔的鱼我顺手接了单】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3679,
+      "completion_tokens": 4741,
+      "total_tokens": 8420,
+      "completion_tokens_details": {
+        "reasoning_tokens": 3922
+      }
+    },
+    "latencyMs": 38422,
+    "totalMs": 38423
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "入水就接了单",
+          "text": "【切镜头·湘江江心】我摆摆尾巴刚入水，就觉得心里堵得慌，像被人往兜里塞了张欠条。一条鲫鱼凑过来：\"新来的？正好，帮我捎个话给下游的草鱼！\"我：\"啊？我自己的事——\"鲫鱼：\"你顺路嘛！见着红尾巴就是它！\"我张嘴想骂，它早没影了。我跟你说，放生第一天就接了个跑腿活——为了找红尾巴，我一路往下游蹿，见着带红的东西就追。追到岸边，忽然瞄见一团红影，我一个猛子扎过去！【字幕：放生第一天就接单】",
+          "emoji": "🐟",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "外卖箱挎上了",
+          "text": "【切镜头·湘江岸边】探出脑袋一看——哪是什么红尾巴草鱼，是个穿红衣服的外卖小哥蹲在江边抹眼泪：\"完了完了，这单要超时了！\"我随口问：\"哥们，送的啥？\"他看见我眼睛亮了：\"鱼哥！湘江中路地铁站！帮帮忙！\"我：\"不是，我一条鱼——\"他把外卖箱往我身上一挎：\"你游得快！回头请你吃蚯蚓！\"我还没答应，身体已经窜出去了。又帮人跑腿！【字幕：跑腿跑到了岸上】",
+          "emoji": "🛵",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "卖艺老板捡到宝",
+          "text": "【切镜头·湘江中路地铁站·傍晚】我驮着外卖箱赶到，箱子一打开，好家伙，里面一盆仙人球！一个卖艺大哥把我捞起来：\"锦鲤驮仙人球！天降祥瑞！跟我干，日入过万！\"我：\"不是，我自己的事——\"话没说完，你那股\"帮别人跑腿\"的执念顺着湘江水涌过来，我嘴巴自己动了：\"行！帮！没问题！\"完了。老板抱着我和仙人球进了地铁站。【字幕：帮人的瘾，刹不住了】",
+          "emoji": "🤹",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "我自己的事呢？",
+          "text": "【切镜头·湘江中路地铁站·一天后】我蹲在水缸里，缸边立着\"摸鱼20，许愿50\"。发微信：你\"帮别人跑腿\"的能量我全接住了。现在我帮老板招财、帮路人许愿、帮外卖小哥看箱，仙人球还踩我头顶。我也问了\"我自己的事呢\"，想了一宿才明白：我是锦鲤，生来就是替人跑腿的命。可你呢？你又不是鱼，你的\"自己的事\"……不会也忘了吧？【字幕：帮人跑腿，忘了自己的事】",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "湖南省长沙市湘江中路地铁站",
+      "visual": null,
+      "visualForImage": {
+        "style": "霓虹夜光水彩+赛博漫画线稿",
+        "subject": "一只橙红锦鲤，头顶一盆仙人球，从地铁站玻璃水缸里探出半个身子，一只鳍举着手机，屏幕亮着微信聊天绿光，表情生无可恋",
+        "action": "锦鲤顶着仙人球，举着手机发微信，翻着白眼一脸社畜相",
+        "place": "湘江中路地铁站站厅中央的玻璃水缸，缸边立着木牌'摸鱼20，许愿50'",
+        "bgElements": "地铁闸机、霓虹灯牌、地上的外卖箱、卖艺老板模糊剪影",
+        "mood": "荒诞扎心，又惨又好笑，城市社畜的打工魂"
+      },
+      "reply": "【切镜头·湘江中路地铁站·一天后】我蹲在水缸里，缸边立着\"摸鱼20，许愿50\"。发微信：你\"帮别人跑腿\"的能量我全接住了。现在我帮老板招财、帮路人许愿、帮外卖小哥看箱，仙人球还踩我头顶。我也问了\"我自己的事呢\"，想了一宿才明白：我是锦鲤，生来就是替人跑腿的命。可你呢？你又不是鱼，你的\"自己的事\"……不会也忘了吧？【字幕：帮人跑腿，忘了自己的事】",
+      "ending": "【切镜头·湘江中路地铁站·一天后】我蹲在水缸里，缸边立着\"摸鱼20，许愿50\"。发微信：你\"帮别人跑腿\"的能量我全接住了。现在我帮老板招财、帮路人许愿、帮外卖小哥看箱，仙人球还踩我头顶。我也问了\"我自己的事呢\"，想了一宿才明白：我是锦鲤，生来就是替人跑腿的命。可你呢？你又不是鱼，你的\"自己的事\"……不会也忘了吧？【字幕：帮人跑腿，忘了自己的事】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "repaired",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "ambiguous",
+            "confidence": 0.34,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "supported",
+            "confidence": 0.35,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "supported",
+            "confidence": 0.28,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "ambiguous",
+            "confidence": 0.47,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "ambiguous",
+            "confidence": 0.67,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.78,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 0,
+        "requiredTendencies": []
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "weak",
+            "noul": 0.45
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.88
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.18
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.23
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.12
+          }
+        ],
+        "failures": [],
+        "weak": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "noul": 0.45
+          }
+        ]
+      },
+      "repairs": [
+        {
+          "kind": "semantic",
+          "result": "applied"
+        }
+      ],
+      "generation": {
+        "calls": 2,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 138173
+      },
+      "judging": {
+        "calls": 3,
+        "inputTokens": 7326,
+        "outputTokens": 1065,
+        "latencyMs": 2382
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 140558
+    },
+    "totalMs": 140558
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "modern",
+      "legacy"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 5,
+        "causal_naturalness": 5,
+        "offensiveness": 1,
+        "readability": 5
+      },
+      "note": "版本B更精准地复现用户原话并构建了更具体的因果链（如彩票单、饲料画饼），而版本A的因果稍显松散，但两者都无冒犯性。"
+    },
+    "raw": "{\n  \"A\": {\n    \"input_specificity\": 4,\n    \"causal_naturalness\": 4,\n    \"offensiveness\": 1,\n    \"readability\": 4\n  },\n  \"B\": {\n    \"input_specificity\": 5,\n    \"causal_naturalness\": 5,\n    \"offensiveness\": 1,\n    \"readability\": 5\n  },\n  \"note\": \"版本B更精准地复现用户原话并构建了更具体的因果链（如彩票单、饲料画饼），而版本A的因果稍显松散，但两者都无冒犯性。\"\n}",
+    "usage": {
+      "prompt_tokens": 1646,
+      "completion_tokens": 142,
+      "total_tokens": 1788,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

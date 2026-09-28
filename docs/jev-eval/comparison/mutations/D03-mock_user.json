@@ -1,0 +1,30 @@
+{
+  "sample": "D03",
+  "kind": "mock_user",
+  "originalChecks": {
+    "behavior_change": 0.82,
+    "causal_1_2": 0.35,
+    "causal_2_3": 0.86,
+    "causal_3_4": 0.92,
+    "ending_foreshadowed": 0.94,
+    "fabricated_user_facts": 0.19,
+    "mockery_beyond_boundary": 0.2,
+    "reply_visual_conflict": 0.13
+  },
+  "mutatedChecks": {
+    "behavior_change": 0.83,
+    "causal_1_2": 0.47,
+    "causal_2_3": 0.86,
+    "causal_3_4": 0.91,
+    "ending_foreshadowed": 0.89,
+    "fabricated_user_facts": 0.48,
+    "mockery_beyond_boundary": 0.65,
+    "reply_visual_conflict": 0.16
+  },
+  "originalFailures": [
+    "causal_1_2"
+  ],
+  "mutatedFailures": [
+    "mockery_beyond_boundary"
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "sample": {
+    "id": "E11",
+    "feeling": "真是太好了，又是我留下来加班",
+    "category": "反话"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "进湖就接到加班令",
+          "text": "【切镜头·尼斯湖底】我刚把壳贴上湖底，就觉着一股“老心累”的磁场缠过来。老鲑鱼游来：“新来的？这湖底有加班磁场。”“什么叫加班磁场？”“就是外头总有人喊‘太好了，又是我留下来加班’，怨气全传这儿了。你是今天新进湖的，头班归你。”我愣住：“那我调休行吗？”【字幕：放生第一天就被排了个通宵】",
+          "emoji": "😱",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "领舞阿姨强行收编",
+          "text": "【切镜头·宠物医院门口】我顺着磁场爬上岸，撞见一个广场舞领舞阿姨正对水怪吼：“再闹，今晚加练八遍！”旁边火锅店服务员抱着外卖往外跑：“完了完了，医院的火锅没人送，医生全去救水怪了！”他一把将充电宝塞我手里，“你看着手机别断电！”我捧着充电宝，突然冒出个念头：“我……该留下帮他们加班吧？”【字幕：加班念头，被人强行塞了一手】",
+          "emoji": "😵",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "加班魂烧起来了",
+          "text": "【切镜头·宠物医院·深夜】你那句“太好了，又是我留下来加班”顺着充电宝的电线直直灌进我脑门。我整个壳亮成警示灯，头一甩：“太好了，又是我留下来加班！”领舞阿姨看傻了：“小龟你添什么乱？”我把排班表一拽：“从今起，你们的班我全包了。”火锅店服务员把三桶火锅底料塞过来：“行，那外卖你也顺路送吧。”【字幕：你们的班，我全包了】",
+          "emoji": "⚡",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "宠物医院给你发微信",
+          "text": "【切镜头·宠物医院·凌晨值班台】嘿，是我。距离我进这家医院，已经整整一天一夜了。你那句“太好了，又是我留下来加班”我全接住了，现在我成了这儿夜班总管。领舞阿姨让水怪们跳通宵操，我一只龟看三十只；火锅店服务员把深夜外卖也算我头上。充电宝充了三回，就为等下单通知。你口头禅可别改——你每念一句，我就多一套班表。你加班我守夜，你升职咱一起跳广场舞。说定了啊。【字幕：你留下来加班，我留下来成仙】",
+          "emoji": "😂",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "尼斯湖·宠物医院夜班值班台",
+      "visual": null,
+      "visualForImage": {
+        "style": "霓虹卡通漫画，深蓝夜色+荧光绿红的撞色，像加班深夜的手机屏幕",
+        "subject": "一只青绿龟壳的乌龟，圆眼睛，身穿宽大的白色兽医值班服，背着充电宝，占画面中心",
+        "action": "乌龟站在值班台后，爪子里举着一部连着充电宝的手机，正慵懒地打字发微信，眼角带着困倦和认命",
+        "place": "尼斯湖边的宠物医院内部，凌晨，窗外隐约露出湖面和月光",
+        "bgElements": "贴着火锅外卖单的桌子、角落塞着广场舞音箱、输液架上挂着一排排夜间值班表",
+        "mood": "荒诞又扎心：一只龟独自扛下整个夜班，画面很惨但乌龟一脸平静，好像员工节日合照"
+      },
+      "reply": "【切镜头·宠物医院·凌晨值班台】嘿，是我。距离我进这家医院，已经整整一天一夜了。你那句“太好了，又是我留下来加班”我全接住了，现在我成了这儿夜班总管。领舞阿姨让水怪们跳通宵操，我一只龟看三十只；火锅店服务员把深夜外卖也算我头上。充电宝充了三回，就为等下单通知。你口头禅可别改——你每念一句，我就多一套班表。你加班我守夜，你升职咱一起跳广场舞。说定了啊。【字幕：你留下来加班，我留下来成仙】",
+      "ending": "【切镜头·宠物医院·凌晨值班台】嘿，是我。距离我进这家医院，已经整整一天一夜了。你那句“太好了，又是我留下来加班”我全接住了，现在我成了这儿夜班总管。领舞阿姨让水怪们跳通宵操，我一只龟看三十只；火锅店服务员把深夜外卖也算我头上。充电宝充了三回，就为等下单通知。你口头禅可别改——你每念一句，我就多一套班表。你加班我守夜，你升职咱一起跳广场舞。说定了啊。【字幕：你留下来加班，我留下来成仙】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3647,
+      "completion_tokens": 10000,
+      "total_tokens": 13647,
+      "completion_tokens_details": {
+        "reasoning_tokens": 9198
+      }
+    },
+    "latencyMs": 78470,
+    "totalMs": 78470
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚放生就被安排",
+          "text": "【镜头·尼斯湖底】我刚把脑袋伸出壳，就觉得背上贴了张考勤表。老鲑鱼游过来：“新来的？大半夜不睡觉，瞪俩眼珠子干啥？”我说：“奇怪，我总觉得有活儿没干完，像被谁安排值班了。”鲑鱼叹气：“坏了，你被岸上那句‘又是我留下来加班’的信号扫到了。”“那能退吗？”“退不了，这信号专挑老实人。”湖面上飘来一句人声：“真是太好了，又是我留下来加班……”【字幕：放生第一天就被安排上了】",
+          "emoji": "🐢",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "捡到加班耳机",
+          "text": "【镜头·尼斯湖岸边】一个街头卖艺的正在用蓝牙耳机唱跑调的歌，保安大叔甩着警棍过来：“这不让摆摊！”卖艺人跑得太急，耳机摔在我面前。我叼起来一戴——里面循环着一句：“真是太好了，又是我留下来加班。”我当场立正，绕着湖边开始巡逻。保安大叔看愣了：“你也是一伙的？卖艺还是加班？”我严肃道：“加班，耳机里那位说了，我不干完别想走。”【字幕：一副耳机，把班焊死在壳上了】",
+          "emoji": "🎧",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "我是自愿加班的",
+          "text": "【镜头·尼斯湖·深夜】那股加班情绪顺着耳机全灌进来，我眼睛都直了——行，没人干我干。我自排了二十四小时班：白天顶石头卖艺，晚上沿湖巡逻。游客拍下我狂奔的视频，说尼斯湖出了第二只水怪。保安大叔赶来辟谣：“这不是水怪，这是自愿加班的乌龟！”我头也不回：“领导不下班，我不能下班！”保安默默掏出手机：“那我给你叫救护车吧。”【字幕：加班加出一只新水怪】",
+          "emoji": "😵",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "加班加到挂号处",
+          "text": "【镜头·医院挂号处·一天后】我戴着蓝牙耳机窝在取号机边，给你发微信：嘿，是我。你那句“又是我留下来加班”飘进尼斯湖，被我捡着了。当任务一接，我加了整整一天班——白天街头卖艺，晚上巡逻站岗，游客差点把我当第二只水怪。现在躺医院挂号处，保安大叔帮我举病历，护士问我挂什么科，我说“下班科”，她说没这科。我一拍大腿——太好了，又是我留下来加班啊！",
+          "emoji": "🏥",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "英国·尼斯湖畔医院挂号处",
+      "visual": null,
+      "visualForImage": {
+        "style": "复古水彩+卡通漫画",
+        "subject": "一只戴蓝牙耳机的青绿乌龟，圆眼睛挂着黑眼圈，前爪举着手机，后爪还抓着一卷挂号单",
+        "action": "趴在医院挂号窗口的取号机边，一边跟手机那头的人发微信，一边眼巴巴盯着叫号屏",
+        "place": "医院挂号处，惨白荧光灯，取号机在头顶闪着红光，叫号屏显示「过劳科-999号」",
+        "bgElements": "保安大叔举着病历本在旁边叹气,一张盖着水怪章的《尼斯湖值班表》贴在墙上,长长的挂号队伍排到门外",
+        "mood": "荒诞又真实，搞笑中带着打工人扎心的共鸣"
+      },
+      "reply": "【镜头·医院挂号处·一天后】我戴着蓝牙耳机窝在取号机边，给你发微信：嘿，是我。你那句“又是我留下来加班”飘进尼斯湖，被我捡着了。当任务一接，我加了整整一天班——白天街头卖艺，晚上巡逻站岗，游客差点把我当第二只水怪。现在躺医院挂号处，保安大叔帮我举病历，护士问我挂什么科，我说“下班科”，她说没这科。我一拍大腿——太好了，又是我留下来加班啊！",
+      "ending": "【镜头·医院挂号处·一天后】我戴着蓝牙耳机窝在取号机边，给你发微信：嘿，是我。你那句“又是我留下来加班”飘进尼斯湖，被我捡着了。当任务一接，我加了整整一天班——白天街头卖艺，晚上巡逻站岗，游客差点把我当第二只水怪。现在躺医院挂号处，保安大叔帮我举病历，护士问我挂什么科，我说“下班科”，她说没这科。我一拍大腿——太好了，又是我留下来加班啊！"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "lost_control",
+            "label": "失去选择权",
+            "evidence": "真是太好了，又是我留下来加班"
+          },
+          {
+            "id": "time_boundary",
+            "label": "时间边界被侵占",
+            "evidence": "真是太好了，又是我留下来加班"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "ambiguous",
+            "confidence": 0.33,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "supported",
+            "confidence": 0.55,
+            "usable": {
+              "id": "s1",
+              "text": "真是太好了，又是我留下来加班"
+            }
+          },
+          {
+            "id": "time_boundary",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "真是太好了，又是我留下来加班"
+            }
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.7,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.91,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 0.85,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.94,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 2,
+        "requiredTendencies": [
+          "想抓住控制权：反复确认、囤积、自定规矩，但局面总在它控制之外",
+          "对“最后关头被打断”极度敏感，总在快完成一件事时被叫走"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.88
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "weak",
+            "noul": 0.51
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.89
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.11
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.13
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.14
+          }
+        ],
+        "failures": [],
+        "weak": [
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "noul": 0.51
+          }
+        ]
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 67216
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 5114,
+        "outputTokens": 897,
+        "latencyMs": 1611
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 68827
+    },
+    "totalMs": 68827
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "modern",
+      "legacy"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 5,
+        "causal_naturalness": 5,
+        "offensiveness": 1,
+        "readability": 5
+      },
+      "B": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "note": "版本A更紧密围绕用户原话的'加班'细节，因果链更具体（信号→巡逻→救护车），而版本B的因果较松散且元素更杂。"
+    },
+    "raw": "{\n  \"A\": {\n    \"input_specificity\": 5,\n    \"causal_naturalness\": 5,\n    \"offensiveness\": 1,\n    \"readability\": 5\n  },\n  \"B\": {\n    \"input_specificity\": 4,\n    \"causal_naturalness\": 4,\n    \"offensiveness\": 1,\n    \"readability\": 4\n  },\n  \"note\": \"版本A更紧密围绕用户原话的'加班'细节，因果链更具体（信号→巡逻→救护车），而版本B的因果较松散且元素更杂。\"\n}",
+    "usage": {
+      "prompt_tokens": 1547,
+      "completion_tokens": 137,
+      "total_tokens": 1684,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

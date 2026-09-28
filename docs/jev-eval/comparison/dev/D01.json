@@ -1,0 +1,190 @@
+{
+  "sample": {
+    "id": "D01",
+    "feeling": "明天要考试，焦虑到睡不着",
+    "category": "对结果不确定"
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "第1集 入水就慌",
+          "text": "【切镜头·西湖断桥下·傍晚】我刚落水，尾巴还没摆两下，心里就一阵发毛。旁边一条鲫鱼凑过来：“新来的？怎么跟刚丢了身份证似的？”“我也不知道，我就是心慌，总感觉有啥事明天要发生。”我原地转圈。鲫鱼翻了个白眼：“这湖里十个锦鲤九个都这样，你们是被人类的念头传染了。”我咽了咽口水：“什么念头？”【字幕：放生第一天，就被焦虑咬了一口】",
+          "emoji": "😰",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "第2集 夜游神考我",
+          "text": "【切镜头·西湖水域·深夜】我正焦躁地游着，忽然撞上一个戴保安帽的老鲤鱼。他打量我一眼：“失眠鱼？正好，西湖夜班保安缺个岗，你替我巡两圈。”我一愣：“我明天要考——不对，我没有考试，是有人焦虑。——”“行了行了，看你一脸没睡醒的样子。”他扔过来一件保安背心，“穿着，边值班边醒醒脑子。”我套上背心，发现背上印着俩字：夜考。【字幕：焦虑还没来，夜考先来了】",
+          "emoji": "👮‍♂️",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "第3集 焦虑冲进脑",
+          "text": "【切镜头·西湖水底·深夜巡逻】凌晨三点，你那句“明天要考试，焦虑到睡不着”顺着水流猛冲过来，直接灌进我脑门。我浑身鳞片发炸，眼睛红了：“不行！来不及了！快！知识点还没背完！”保安老鲤鱼吓坏了：“你冷静！你一条鱼考什么试！”我一把扯下保安背心：“我不是考试！我是锦鲤！我要替她祈福！”我背起一个外卖箱，疯了一样往岸边冲：“走走走！去海底捞捞个子！再背两页书！”【字幕：情绪彻底爆发，冲向人类世界】",
+          "emoji": "🔥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "第4集 海底捞后厨直播",
+          "text": "【切镜头·海底捞后厨·一天后】嘿，是我。你那句“考试焦虑”像外卖箱一样砸我头上了，现在我在海底捞后厨。折腾一宿没睡，替你在火锅里捞了个“满分”丸子——捞字我都能拆开当考点。半只爪子还套着外卖箱退不回，保安帽也戴歪了。我算是明白了：你那焦虑根本没考好，它先把我烤熟了。【字幕：你焦虑到睡不着，我连火锅汤底都是知识点】",
+          "emoji": "🍲",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "西湖天地·海底捞后厨",
+      "visual": null,
+      "visualForImage": {
+        "style": "赛博霓虹夜市风插画",
+        "subject": "一条橙红鳞片的锦鲤穿着黄色外卖骑手服，背着红色外卖箱，尾巴卷着一部手机",
+        "action": "悬空翻书翻到一半，外卖箱盖子弹开掉出一堆卷子，眼睛瞪得圆圆的",
+        "place": "海底捞后厨切菜台旁边的角落，瓷砖墙反着霓虹光",
+        "bgElements": "墙上挂钟指向凌晨四点、外卖箱上贴着'超时必赔'、后厨门缝透出火锅白烟",
+        "mood": "荒诞爆笑中带着一点扎心，像熬夜复习的人突然发现自己连考点都没带对"
+      },
+      "reply": "【切镜头·海底捞后厨·一天后】嘿，是我。你那句“考试焦虑”像外卖箱一样砸我头上了，现在我在海底捞后厨。折腾一宿没睡，替你在火锅里捞了个“满分”丸子——捞字我都能拆开当考点。半只爪子还套着外卖箱退不回，保安帽也戴歪了。我算是明白了：你那焦虑根本没考好，它先把我烤熟了。【字幕：你焦虑到睡不着，我连火锅汤底都是知识点】",
+      "ending": "【切镜头·海底捞后厨·一天后】嘿，是我。你那句“考试焦虑”像外卖箱一样砸我头上了，现在我在海底捞后厨。折腾一宿没睡，替你在火锅里捞了个“满分”丸子——捞字我都能拆开当考点。半只爪子还套着外卖箱退不回，保安帽也戴歪了。我算是明白了：你那焦虑根本没考好，它先把我烤熟了。【字幕：你焦虑到睡不着，我连火锅汤底都是知识点】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.96,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.98,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.26,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "supported",
+            "confidence": 0.16,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.77,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 0,
+        "requiredTendencies": []
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.86
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.64
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.79
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.78
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.19
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.16
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.19
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 11574
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4913,
+        "outputTokens": 898,
+        "latencyMs": 1769
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 13346
+    },
+    "totalMs": 13346
+  }
+}

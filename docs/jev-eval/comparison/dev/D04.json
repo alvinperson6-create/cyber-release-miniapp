@@ -1,0 +1,196 @@
+{
+  "sample": {
+    "id": "D04",
+    "feeling": "我没事，挺好的。",
+    "category": "否定+信息不足"
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "好得有点过头",
+          "text": "【湘江·岸边】我跟你说，我刚入水就中了邪——一股电波砸下来：“没事没事没事。”一条草鱼凑过来：“新来的？你脸咋这么红？”“我感觉挺好，浑身是劲！”草鱼缩回去：“坏了，‘我没事’信号又来了，沾上的鱼都爱逞强。”【字幕：放生第一天，好得过头了】",
+          "emoji": "🤨",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "硬拽老干部",
+          "text": "【湘江边·柳树下】我正游得欢，岸上退休老干部压腿，“哎哟”一声。我探头：“咋了？”他吓一跳：“鱼会说话？”“别管！你哪不行？”“髋关节疼，儿子非让我去健身房……”“我没事！我拉你去！”我叼绳拽他就跑。他喊：“这鱼疯了！”“没事！挺好！”【字幕：退休老干部被一条鱼拖走】",
+          "emoji": "🏋️",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "鱼也逃不过打工",
+          "text": "【江边健身房·门口】越靠近，那股“我没事挺好的”电波越猛，直接上头。我蹦进门，搬杠铃、擦跑步机。前台呆：“这鱼要上班？”老干部喘：“别拦，它说没事……”我把鼠标垫垫身下当滑板喊：“老板！我还能兼职送外卖！旁边健身餐我游着送！”老板呆：“行……吧？”【字幕：“我没事”彻底上头了】",
+          "emoji": "📦",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "你的没事，我的工伤",
+          "text": "嘿，是我。才一天，你那句“我没事挺好的”我全收了——白天当私教，叼鼠标垫递毛巾；晚上送外卖，一百多单。腹肌起来了，尾巴抽筋了，鳞片掉仨，三十小时没合眼。你到底真没事还是嘴硬？你要是装的，我可被你坑惨了。往后你再敢说“没事”，我尾巴就疼。【字幕：你嘴上的没事，成我的工伤】",
+          "emoji": "😵‍💫",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "长沙·湘江边·某24小时健身房（近橘子洲）",
+      "visual": null,
+      "visualForImage": {
+        "style": "赛博朋克霓虹漫画风",
+        "subject": "橙红锦鲤，鳞片闪着汗光，肚子上隐约六块腹肌，眼带黑眼圈，嘴角叼着一块鼠标垫，尾巴微颤却还翘着",
+        "action": "锦鲤斜挎外卖配送箱，踩着鼠标垫当滑板在健身房器械区里冲刺，像刚送完外卖又要赶去带私教课",
+        "place": "长沙湘江边的24小时健身房内，器械区，跑步机、杠铃片、霓虹灯管",
+        "bgElements": "鼠标垫、外卖配送箱、杠铃片和跑步机",
+        "mood": "搞笑、荒诞、反差，卷到冒烟的扎心感"
+      },
+      "reply": "嘿，是我。才一天，你那句“我没事挺好的”我全收了——白天当私教，叼鼠标垫递毛巾；晚上送外卖，一百多单。腹肌起来了，尾巴抽筋了，鳞片掉仨，三十小时没合眼。你到底真没事还是嘴硬？你要是装的，我可被你坑惨了。往后你再敢说“没事”，我尾巴就疼。【字幕：你嘴上的没事，成我的工伤】",
+      "ending": "嘿，是我。才一天，你那句“我没事挺好的”我全收了——白天当私教，叼鼠标垫递毛巾；晚上送外卖，一百多单。腹肌起来了，尾巴抽筋了，鳞片掉仨，三十小时没合眼。你到底真没事还是嘴硬？你要是装的，我可被你坑惨了。往后你再敢说“没事”，我尾巴就疼。【字幕：你嘴上的没事，成我的工伤】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.41,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.92,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.33,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 0.93,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "unexpressed",
+            "confidence": 0.25,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 0,
+        "requiredTendencies": []
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "weak",
+            "noul": 0.53
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.72
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.93
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.12
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.29
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.18
+          }
+        ],
+        "failures": [],
+        "weak": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "noul": 0.53
+          }
+        ]
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 81642
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4695,
+        "outputTokens": 898,
+        "latencyMs": 1061
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 82706
+    },
+    "totalMs": 82706
+  }
+}

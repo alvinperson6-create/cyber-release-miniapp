@@ -1,0 +1,190 @@
+{
+  "sample": {
+    "id": "D08",
+    "feeling": "周五下午五点半，群里@我说在吗",
+    "category": "时间边界被侵占"
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚入水就被@了",
+          "text": "【切镜头·贝加尔湖·浅水区】我刚伸开爪子，水里就传来一阵“叮咚”，跟群消息似的。一只海豹冒头：“新来的？脸咋这么绿？”我喘着气：“不知道啊，就感觉像有人在群里@我，又找不到是谁。”海豹深吸一口气：“坏了，这是‘周五下午五点半’的诅咒，染上的龟最后全被拉去打工了。”我一哆嗦：“今天不就是周五吗？”【字幕：放生第一天，就撞上了诅咒】",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "大妈给我派了个活",
+          "text": "【切镜头·贝加尔湖岸边】我爬上岸想躲，一个广场舞大妈拦住我：“来了？正好，遛狗师空缺。”我懵了：“阿姨，我是乌龟，不是狗。”大妈塞给我一盆仙人球：“狗不重要，把它遛满两小时。”我一看仙人球，上面贴着标签：“在吗？帮我遛到八点。”我刚要拒绝，湖边又传来一声“叮咚”——我的腿竟然自己迈开了。【字幕：放生第一天，接了个单】",
+          "emoji": "🌵",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "在吗两个字冲垮了我",
+          "text": "【切镜头·周五17:30·湖边便利店前】那股“在吗”的意念混着5G信号冲过来，我四肢发麻，满脑子全是红色未读点。大妈从便利店里喊：“快进来！”我想跑，可“在吗”一响，我嘴巴自己答应：“在。”接着就被拽进店里，围裙挂上脖子：“恭喜入职，24小时遛狗师。”我缩进壳里：“干不了啊——”门外又一声叮咚，我探出头：“……在。”【字幕：我控制不住我自己】",
+          "emoji": "⏰",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "你的在吗我的KPI",
+          "text": "【切镜头·一天后·贝加尔湖畔利斯特维扬卡24小时便利店】嘿，是我啊。你周五下午五点半那个“在吗”，直接把我@进了这家便利店。现在我是24小时遛狗师，溜的是仙人球小刚，带班的是广场舞大妈。你那头每被人“在吗”一次，我这头就得听见一声“叮咚”，然后带小刚绕货架遛一圈。刚刚你群里又有人发“在吗”吧？我已经开始走了。你能不能把群退了，让我歇会儿吧？【字幕：你的在吗，我的KPI】",
+          "emoji": "🏪",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "贝加尔湖畔利斯特维扬卡镇·24小时便利店",
+      "visual": null,
+      "visualForImage": {
+        "style": "卡通漫画风格，便利店霓虹灯光",
+        "subject": "青绿色龟壳的乌龟，脖子上挂着便利店工牌，眼神疲惫又无奈",
+        "action": "乌龟用遛狗绳牵着仙人球在便利店货架间慢慢爬，绳子绷得笔直",
+        "place": "贝加尔湖畔利斯特维扬卡的24小时便利店内，货架林立",
+        "bgElements": "拴着红色项圈的仙人球、货架上的啤酒和零食、柜台后广场舞大妈在打哈欠",
+        "mood": "荒诞又扎心的打工人即视感，好笑中带着共鸣"
+      },
+      "reply": "【切镜头·一天后·贝加尔湖畔利斯特维扬卡24小时便利店】嘿，是我啊。你周五下午五点半那个“在吗”，直接把我@进了这家便利店。现在我是24小时遛狗师，溜的是仙人球小刚，带班的是广场舞大妈。你那头每被人“在吗”一次，我这头就得听见一声“叮咚”，然后带小刚绕货架遛一圈。刚刚你群里又有人发“在吗”吧？我已经开始走了。你能不能把群退了，让我歇会儿吧？【字幕：你的在吗，我的KPI】",
+      "ending": "【切镜头·一天后·贝加尔湖畔利斯特维扬卡24小时便利店】嘿，是我啊。你周五下午五点半那个“在吗”，直接把我@进了这家便利店。现在我是24小时遛狗师，溜的是仙人球小刚，带班的是广场舞大妈。你那头每被人“在吗”一次，我这头就得听见一声“叮咚”，然后带小刚绕货架遛一圈。刚刚你群里又有人发“在吗”吧？我已经开始走了。你能不能把群退了，让我歇会儿吧？【字幕：你的在吗，我的KPI】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.84,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "ambiguous",
+            "confidence": 0.39,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.94,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 0.98,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "unexpressed",
+            "confidence": 0.96,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 0,
+        "requiredTendencies": []
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.91
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.67
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.85
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.95
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.95
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.34
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.17
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.09
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 74894
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4921,
+        "outputTokens": 898,
+        "latencyMs": 1040
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 75934
+    },
+    "totalMs": 75934
+  }
+}

@@ -1,0 +1,79 @@
+✔ 结构校验：完整四集通过 (1.589125ms)
+✔ 结构校验：缺集/空文本/重复内容/缺字段均拦截 (0.1355ms)
+✔ 阈值决策：正向 pass/weak/fail 与反向镜像（确定性，无模型裁量） (0.107625ms)
+✔ 语义验收：全部通过 → 无 failures，judge 元数据在案 (0.286459ms)
+✔ 语义验收：因果反向 + 编造事实 → 命中对应失败维度 (0.403291ms)
+✔ 语义验收：地点矛盾 / 图文冲突可被反向检查捕获 (0.411208ms)
+✔ 语义验收：weak（中间带）既不放行也不拦截，单独记录 (0.366708ms)
+✔ 语义验收：判断器超时 → degraded，绝不记成通过 (3.248417ms)
+✔ 语义验收：事件账本问题仅在有 journeyContext 时出现 (0.47525ms)
+✔ 契约：确定性 —— 相同输入输出完全一致 (1.747125ms)
+✔ 契约：包含原话、证据句、行为倾向、事实边界 (0.157958ms)
+✔ 契约：降级时明确标记判断来源，不臆测处境 (0.071041ms)
+✔ 契约：被反驳处境写入禁写清单 (0.075667ms)
+✔ 契约：事件账本（第二阶段）注入 (0.07125ms)
+[db] Seeded 4 demo records
+✔ DB：insertDestinyOnce 幂等 —— 第二次插入不生效 (2.687041ms)
+✔ DB：解锁状态在冲突写入时不被重置（修复旧 UPSERT 缺陷） (0.690542ms)
+✔ DB：冻结后 insertDestiny 不覆盖故事内容 (0.569042ms)
+✔ DB：judge_meta / contract_meta 读写 (0.283792ms)
+✔ DB：getPendingReplies 只取到期未生成且非生成中的记录 (0.904958ms)
+✔ DB：journeys 表已就绪（第二阶段） (0.793083ms)
+✔ 健康检查：AI 未启用 (333.101875ms)
+✔ 放生 → 生成 → 回信为模板兜底、destiny 四集、状态可观测 (18.034375ms)
+✔ 记录查询：状态 replied (4.9325ms)
+✔ 世界脉搏照常工作（旧功能不回归） (1.583292ms)
+✔ 双路径：留言 → 事件选择改变；无留言 → 保持答应 (35353.1755ms)
+✔ 旅程冻结：回信写入后旅程定格、留言被拒 (517.605542ms)
+✔ 开关关闭的旧记录不受影响：destiny 解锁语义照旧 (2.520167ms)
+[db] Seeded 4 demo records
+✔ 旅程：规则回退（无 JEV）→ compliant 全部答应，账本完整 (3.405458ms)
+✔ 旅程：时间未到不推进（惰性时间轴） (0.279083ms)
+✔ 旅程：重放幂等 —— 同一时刻重复推进不产生新事件、不重问模型 (0.3435ms)
+✔ 旅程：留言授权拒绝 → 只影响留言之后的事件，历史事件不改写 (0.598625ms)
+✔ 旅程：留言竞争 —— 已结束的旅程拒绝留言，过期留言不改历史 (0.527041ms)
+✔ 旅程：一词千金 —— 每轮只允许一条留言 (0.925208ms)
+✔ 旅程：无语义意图的留言如实记录为 no effect (0.610208ms)
+✔ 旅程：buildJourneyContext 输出账本摘要与留言说明 (0.429ms)
+✔ 旅程：开关关闭 → 不推进、不留言 (0.159833ms)
+[pipeline] 定向修复（语义）：因果链2→3
+[pipeline] 定向修复（语义）：行为改变
+✔ 编排：AI 未配置 → template_fallback (1.037708ms)
+✔ 编排：JEV 开关关闭 → legacy，不产生判断调用 (0.559666ms)
+✔ 编排：JEV 关闭且生成失败 → template_fallback（不伪装成功） (0.228417ms)
+✔ 编排：一次通过 → accepted，生成1次、判断2次 (1.976667ms)
+✔ 编排：语义失败→定向修复→复查通过 → repaired，生成2次（预算内） (1.609459ms)
+✔ 编排：修复后仍失败 → degraded（如实标记，不冒充通过） (0.380709ms)
+✔ 编排：语义判断不可用 → judge_unavailable，保留已生成版本 (0.244667ms)
+✔ 编排：结构修复成功（3集→4集）→ repaired (0.287959ms)
+✔ 编排：完全无法解析且修复无效 → degraded + 模板兜底 (0.57975ms)
+✔ 编排：STORY_REPAIR_MAX=0 → 语义失败也不修复，generation.calls=1 (0.516792ms)
+✔ 编排：生成抛错（网络）→ 结构修复通道 → 仍失败 → degraded+模板 (0.235083ms)
+✔ 编排：处境判断降级时契约如实标记，链路继续 (0.198166ms)
+[db] Seeded 4 demo records
+[pipeline] CRSB-RG-0100 status=accepted situation=0 repairs=0 gen=1 judge=2 5ms
+[pipeline] CRSB-RG-0101 status=accepted situation=0 repairs=0 gen=1 judge=2 5ms
+[pipeline] CRSB-RG-0102 status=accepted situation=0 repairs=0 gen=1 judge=2 5ms
+[pipeline] CRSB-RG-0104 status=accepted situation=0 repairs=0 gen=1 judge=2 5ms
+[pipeline] CRSB-RG-0105 status=degraded situation=0 repairs=1 gen=2 judge=2 9ms
+✔ 新记录：走统一编排 → 落库 semantic_status → 回信取自第4集 → 冻结 (2.0215ms)
+✔ 重复调用：已有冻结故事 → 不重新生成（幂等） (0.364333ms)
+✔ 重复调用：已回信且有图 → 直接返回，不触发生成与图片 (0.304042ms)
+✔ 已回信但缺图：只补图，不重写故事 (0.205208ms)
+✔ 并发去重：同记录并发调用只生成一次 (0.280417ms)
+✔ 降级故事仍可派生回信，但 semantic_status 如实为 degraded (0.414708ms)
+✔ splitSentences：多句切分并编号 (0.727375ms)
+✔ splitSentences：单句/空输入 (0.680209ms)
+✔ buildSituationQuestions：每处境两问、证据选项=句段ID+none (0.146167ms)
+✔ recognizeSituations：stub 判断器返回 supported → 证据句恢复原文 (0.870125ms)
+✔ recognizeSituations：低置信度 supported 不可用（阈值拦截） (0.15375ms)
+✔ recognizeSituations：判断器抛错 → 明确降级，不把未知当否 (0.192833ms)
+✔ recognizeSituations：反话防护说明已进入题目（讽刺正面词不算积极） (0.069167ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 61
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 36035.230666

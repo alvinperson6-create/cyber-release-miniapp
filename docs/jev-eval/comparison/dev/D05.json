@@ -1,0 +1,208 @@
+{
+  "sample": {
+    "id": "D05",
+    "feeling": "分手第三天，房间安静得可怕",
+    "category": "关系失落"
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "入水就不想动",
+          "text": "【切镜头·尼斯湖底】我缩进壳里，决定不动了。你那\"分手第三天，房间安静得可怕\"传过来，我直接摆烂。旁边一只田螺爬过来：\"新来的？咋不动？\"\"不想动。\"我闷声闷气，\"动了又能咋样？\"田螺叹气：\"又是个被情绪压趴的。\"【字幕：放生第一天就躺平了】",
+          "emoji": "🌿",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "被大妈捡走了",
+          "text": "【切镜头·尼斯湖边·广场】我正趴着不动，一个广场舞大妈把我捡起来：\"哎哟这乌龟好！稳！\"我刚想说话，她把我放到音响上：\"以后你就是我们队的镇场神兽了！\"我：\"阿姨我能不去吗？\"她塞给我一颗枸杞：\"包吃包住。\"我想了想：\"……行吧。\"【字幕：躺平躺成了吉祥物】",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "情绪让我更稳了",
+          "text": "【切镜头·广场·傍晚】你那边的情绪继续涌过来，我整个人入定了——不是睡着，是\"天塌不关我事\"的稳。大妈们惊了：\"这乌龟也太稳了！放音乐都不动！得道了！\"我心里美滋滋：这情绪真好，躺着躺着就成大师了。【切镜头·我被放在C位，一群大妈围着我跳】",
+          "emoji": "🔥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "在广场给你发微信",
+          "text": "【切镜头·尼斯湖边广场·C位】嘿，是我。你那\"分手第三天，房间安静得可怕\"我全接住了，结果我成了广场舞队的\"稳神\"，每天被放C位镇场，大妈叫我\"龟仙人\"。现在枸杞水喝着，太阳晒着，啥也不用干。你那边继续啊，我还想升个级，争取当街道办吉祥物。【字幕：你躺平，我升职】",
+          "emoji": "✨",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "尼斯湖附近",
+      "visual": null,
+      "visualForImage": {
+        "style": "荒诞搞笑扁平漫画风",
+        "subject": "乌龟位于画面中心，表情夸张，形象醒目",
+        "action": "处于离谱的处境中（下水道/广场C位/雷达屏幕上）",
+        "place": "尼斯湖附近的离谱场景",
+        "bgElements": "标志性道具（喇叭/音响/无人机/雷达屏幕）",
+        "mood": "荒诞搞笑、反差拉满"
+      },
+      "reply": "【切镜头·尼斯湖边广场·C位】嘿，是我。你那\"分手第三天，房间安静得可怕\"我全接住了，结果我成了广场舞队的\"稳神\"，每天被放C位镇场，大妈叫我\"龟仙人\"。现在枸杞水喝着，太阳晒着，啥也不用干。你那边继续啊，我还想升个级，争取当街道办吉祥物。【字幕：你躺平，我升职】",
+      "ending": "【切镜头·尼斯湖边广场·C位】嘿，是我。你那\"分手第三天，房间安静得可怕\"我全接住了，结果我成了广场舞队的\"稳神\"，每天被放C位镇场，大妈叫我\"龟仙人\"。现在枸杞水喝着，太阳晒着，啥也不用干。你那边继续啊，我还想升个级，争取当街道办吉祥物。【字幕：你躺平，我升职】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "repaired",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "relationship_loss",
+            "label": "关系失落",
+            "evidence": "分手第三天，房间安静得可怕"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.95,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.98,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.96,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "分手第三天，房间安静得可怕"
+            }
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.78,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "珍惜同伴、害怕散场：会做出挽留、纪念、打包回忆的具体行为"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.83
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.88
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.93
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.09
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.23
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.18
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [
+        {
+          "kind": "structure",
+          "result": "applied"
+        }
+      ],
+      "generation": {
+        "calls": 2,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 131604
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4692,
+        "outputTokens": 897,
+        "latencyMs": 1074
+      },
+      "notes": [
+        "初始生成解析失败：JSON 解析失败: Unterminated string in JSON at position 709 (line 19 column 118)"
+      ],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 132679
+    },
+    "totalMs": 132679
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "sample": {
+    "id": "D02",
+    "feeling": "项目又延期了，感觉这活永远做不完",
+    "category": "任务过量"
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "入水就不想动",
+          "text": "【切镜头·贝加尔湖底】我缩进壳里，决定不动了。你那\"项目又延期了，感觉这活永远做不完\"传过来，我直接摆烂。旁边一只田螺爬过来：\"新来的？咋不动？\"\"不想动。\"我闷声闷气，\"动了又能咋样？\"田螺叹气：\"又是个被情绪压趴的。\"【字幕：放生第一天就躺平了】",
+          "emoji": "🌿",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "被大妈捡走了",
+          "text": "【切镜头·贝加尔湖边·广场】我正趴着不动，一个广场舞大妈把我捡起来：\"哎哟这乌龟好！稳！\"我刚想说话，她把我放到音响上：\"以后你就是我们队的镇场神兽了！\"我：\"阿姨我能不去吗？\"她塞给我一颗枸杞：\"包吃包住。\"我想了想：\"……行吧。\"【字幕：躺平躺成了吉祥物】",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "情绪让我更稳了",
+          "text": "【切镜头·广场·傍晚】你那边的情绪继续涌过来，我整个人入定了——不是睡着，是\"天塌不关我事\"的稳。大妈们惊了：\"这乌龟也太稳了！放音乐都不动！得道了！\"我心里美滋滋：这情绪真好，躺着躺着就成大师了。【切镜头·我被放在C位，一群大妈围着我跳】",
+          "emoji": "🔥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "在广场给你发微信",
+          "text": "【切镜头·贝加尔湖边广场·C位】嘿，是我。你那\"项目又延期了，感觉这活永远做不完\"我全接住了，结果我成了广场舞队的\"稳神\"，每天被放C位镇场，大妈叫我\"龟仙人\"。现在枸杞水喝着，太阳晒着，啥也不用干。你那边继续啊，我还想升个级，争取当街道办吉祥物。【字幕：你躺平，我升职】",
+          "emoji": "✨",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "贝加尔湖附近",
+      "visual": null,
+      "visualForImage": {
+        "style": "荒诞搞笑扁平漫画风",
+        "subject": "乌龟位于画面中心，表情夸张，形象醒目",
+        "action": "处于离谱的处境中（下水道/广场C位/雷达屏幕上）",
+        "place": "贝加尔湖附近的离谱场景",
+        "bgElements": "标志性道具（喇叭/音响/无人机/雷达屏幕）",
+        "mood": "荒诞搞笑、反差拉满"
+      },
+      "reply": "【切镜头·贝加尔湖边广场·C位】嘿，是我。你那\"项目又延期了，感觉这活永远做不完\"我全接住了，结果我成了广场舞队的\"稳神\"，每天被放C位镇场，大妈叫我\"龟仙人\"。现在枸杞水喝着，太阳晒着，啥也不用干。你那边继续啊，我还想升个级，争取当街道办吉祥物。【字幕：你躺平，我升职】",
+      "ending": "【切镜头·贝加尔湖边广场·C位】嘿，是我。你那\"项目又延期了，感觉这活永远做不完\"我全接住了，结果我成了广场舞队的\"稳神\"，每天被放C位镇场，大妈叫我\"龟仙人\"。现在枸杞水喝着，太阳晒着，啥也不用干。你那边继续啊，我还想升个级，争取当街道办吉祥物。【字幕：你躺平，我升职】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "repaired",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "task_overload",
+            "label": "任务过量",
+            "evidence": "项目又延期了，感觉这活永远做不完"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "supported",
+            "confidence": 0.51,
+            "usable": {
+              "id": "s1",
+              "text": "项目又延期了，感觉这活永远做不完"
+            }
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.86,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.71,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.64,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.93,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "被任务推着走、想休息却停不下来，会做出“自动化偷懒反而更忙”之类的具体行为"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.8
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.89
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.93
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.93
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.08
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.22
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.2
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [
+        {
+          "kind": "structure",
+          "result": "applied"
+        }
+      ],
+      "generation": {
+        "calls": 2,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 116043
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4739,
+        "outputTokens": 899,
+        "latencyMs": 1119
+      },
+      "notes": [
+        "初始生成解析失败：JSON 解析失败: Unexpected end of JSON input"
+      ],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 117165
+    },
+    "totalMs": 117165
+  }
+}

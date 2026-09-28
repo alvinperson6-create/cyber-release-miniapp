@@ -1,0 +1,288 @@
+{
+  "sample": {
+    "id": "E08",
+    "feeling": "合租的室友突然搬走了，屋子一下子空了",
+    "category": "关系失落"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "放生当天就空了",
+          "text": "【切·贝加尔湖冰面下】\n乌龟刚下水，四脚一蹬，停住了。\n白鲑：“新来的，你使劲蹬水干什么？”\n乌龟：“这湖太大了，大得跟我室友搬走后的出租屋一样，听个回声都没有。那股‘屋子一下空了’的凉气，正从我壳缝往里灌。”\n白鲑：“那是空，又不是水。”\n乌龟：“空这种水，淹起人来最狠。”\n白鲑：“……你室友给你留下多大一个壳啊。”\n字幕：放生第一天，空巢感先到了。",
+          "emoji": "🈳",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "一杯奶茶当室友",
+          "text": "【切·贝加尔湖岸边】\n外卖员坐在电动车上哭。\n外卖员：“完了，健身房那边说室友走了，整个屋空了，没心情收奶茶。”\n乌龟探出头：“空房的感觉，我熟。”\n外卖员愣住，把一杯奶茶放进水里：“那这杯送你，当个室友吧。”\n乌龟看着奶茶杯，郑重地点了点头：“行。它不用开口说话，我趴窝的时候旁边有个影子，就当屋里还有人。”\n字幕：从此乌龟有了一个哑巴室友。",
+          "emoji": "🧋",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "空从屋里追来了",
+          "text": "【切·贝加尔湖底·深夜】\n乌龟抱着奶茶杯正准备睡觉。\n忽然，一阵无声的冲击波涌来——像行李箱拖走、门锁合上、整间屋连电灯都没了声响。\n乌龟猛地睁眼：“是那种空。它从你的屋子传到水底，顺着湖穿过西伯利亚，把我从壳里掏空了。”\n奶茶杯滚了两圈，停在石头边。\n乌龟盯着岸上的光亮：“不行，这里太空了，再待下去我会被真空活埋。”\n【切·岸边“24小时健身房”灯光】\n字幕：为了逃空，他爬进了亮着灯的健身房。",
+          "emoji": "🌀",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "空位专业户",
+          "text": "【切·健身房·一日后】\n直播网红举着手机对着乌龟：“老铁们看，这是咱们店的补位龟！室友一走它就来占空位了！”\n乌龟给用户发微信：“嘿，是我。你房间空了的那一瞬，我实在受不了水底没人出动静，连夜爬进这家24小时健身房，应聘了‘空位专业户’——哪台器械没人用，我就往上一趴，把空着的位置焊成工位。现在网红天天拍我，客人来看我发现健身房从来不空。哪天你也觉得屋子空了，就来这儿坐坐——我别的没有，空位管够。”\n字幕：你的空，我的工位。",
+          "emoji": "🏋️",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "俄罗斯·贝加尔湖畔·利斯特维扬卡镇·24小时健身房",
+      "visual": null,
+      "visualForImage": {
+        "style": "卡通插画风+赛博霓虹灯，搞笑里透点冷清",
+        "subject": "一只青绿色龟壳的乌龟，壳上贴着‘补位中’的手写纸条，眼睛圆润又呆滞，趴在一台落灰的跑步机上",
+        "action": "四肢撑满跑步机履带，抬起头直视镜头，好像在说‘这台机器不是空的’",
+        "place": "利斯特维扬卡镇一家24小时健身房，落地窗外就是贝加尔湖的夜色",
+        "bgElements": "空荡荡的跑步机排,直播用的补光灯和三脚架,地上放着一杯贴了笑脸贴纸的奶茶杯",
+        "mood": "灯很亮，但空得很安静；荒诞搞笑，又透出一股扎心的孤独"
+      },
+      "reply": "【切·健身房·一日后】\n直播网红举着手机对着乌龟：“老铁们看，这是咱们店的补位龟！室友一走它就来占空位了！”\n乌龟给用户发微信：“嘿，是我。你房间空了的那一瞬，我实在受不了水底没人出动静，连夜爬进这家24小时健身房，应聘了‘空位专业户’——哪台器械没人用，我就往上一趴，把空着的位置焊成工位。现在网红天天拍我，客人来看我发现健身房从来不空。哪天你也觉得屋子空了，就来这儿坐坐——我别的没有，空位管够。”\n字幕：你的空，我的工位。",
+      "ending": "【切·健身房·一日后】\n直播网红举着手机对着乌龟：“老铁们看，这是咱们店的补位龟！室友一走它就来占空位了！”\n乌龟给用户发微信：“嘿，是我。你房间空了的那一瞬，我实在受不了水底没人出动静，连夜爬进这家24小时健身房，应聘了‘空位专业户’——哪台器械没人用，我就往上一趴，把空着的位置焊成工位。现在网红天天拍我，客人来看我发现健身房从来不空。哪天你也觉得屋子空了，就来这儿坐坐——我别的没有，空位管够。”\n字幕：你的空，我的工位。"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3664,
+      "completion_tokens": 12360,
+      "total_tokens": 16024,
+      "completion_tokens_details": {
+        "reasoning_tokens": 11472
+      }
+    },
+    "latencyMs": 98618,
+    "totalMs": 98618
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚入水就空得慌",
+          "text": "【切镜头·贝加尔湖·冰面裂缝】一入水我就打了个激灵，不冷。可有一股说不清的“空”顺着水流钻进壳里。一条贝加尔鱼游过来：“新来的？挨冻了？”“冻倒不冻，”我慢吞吞地说，“就是像合租的室友突然搬走了，啊，屋子一下子空了。”鱼愣了一下：“那你上岸找点伴儿啊。”我一抬头，水面上晃晃悠悠飘来一张麻将牌。【字幕：放生第一秒就尝到空】",
+          "emoji": "🕳️",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "跟着阿姨去上岗",
+          "text": "【切镜头·贝加尔湖·碎石岸边】清洁工阿姨弯腰捞起水里那张麻将牌：“哎呦，又是‘五饼’，养老院飘来的。”我探出头问：“养老院人多不？”“多啊，就是原来调茶的小伙子刚搬走，奶茶角空着。”我心里一紧：“空着不好啊，空着招风。阿姨捎我一程吧，我去把那个位子焐热。”阿姨笑着把我塞进兜里：“行，今天就上岗。”【字幕：为躲空，龟直接上岗】",
+          "emoji": "🧹",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "空得只能蒸奶茶",
+          "text": "【切镜头·养老院·奶茶角】午后没人说话，桌子和椅子都冷冷清清。你那句“屋子真的空了”忽然顺着风声灌进来，我壳里猛一抽，腿软了。“不行！”我爬上操作台，“这空得能听见自己的壳响。我得蒸一锅奶茶，把人气儿搅出来。”我笨拙地舀珍珠，把“五饼”立在计时器边：“五饼，今天起你就跟我搭班啊。”【字幕：空到一定程度，龟开始上岗】",
+          "emoji": "🧋",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "空巢龟茶师发来微信",
+          "text": "【切镜头·养老院·奶茶角·一天后】嘿，是我。你那句“屋子一下子空了”把我从贝加尔湖顶到了养老院调茶台。现在我成了这里调茶师，每天煮四十杯奶茶把老人们聚一块儿。可人齐了话少了，跟拼桌陌生人一样。我唯一室友是那张“五饼”，它不搬走，也不说话。你呢？屋里空了，是轻松了，还是更空啊？要不要来杯“双份空”招牌？【字幕：孤独喝奶茶，会醉】",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "贝加尔湖畔·养老院奶茶角",
+      "visual": null,
+      "visualForImage": {
+        "style": "怀旧水彩加漫画勾线",
+        "subject": "一只青绿色乌龟，戴白色厨师帽、系围裙，圆手举奶茶杯，尾巴勾着吸管，表情正经又略带呆滞",
+        "action": "正在操作台上笨手笨脚地舀珍珠；旁边摆着一杯刚做好的“双份空”招牌奶茶",
+        "place": "养老院一角改造的奶茶角：淡绿墙壁、长条木桌、橙色暖光",
+        "bgElements": "一张立起来的麻将牌“五饼”放在计时器旁；墙上贴着“今日特调：空巢奶茶”的手写菜单；旁边一把空椅子",
+        "mood": "冷清与忙碌混在一起的荒诞感，热闹道具填不满空荡荡的气氛，好笑又扎心"
+      },
+      "reply": "【切镜头·养老院·奶茶角·一天后】嘿，是我。你那句“屋子一下子空了”把我从贝加尔湖顶到了养老院调茶台。现在我成了这里调茶师，每天煮四十杯奶茶把老人们聚一块儿。可人齐了话少了，跟拼桌陌生人一样。我唯一室友是那张“五饼”，它不搬走，也不说话。你呢？屋里空了，是轻松了，还是更空啊？要不要来杯“双份空”招牌？【字幕：孤独喝奶茶，会醉】",
+      "ending": "【切镜头·养老院·奶茶角·一天后】嘿，是我。你那句“屋子一下子空了”把我从贝加尔湖顶到了养老院调茶台。现在我成了这里调茶师，每天煮四十杯奶茶把老人们聚一块儿。可人齐了话少了，跟拼桌陌生人一样。我唯一室友是那张“五饼”，它不搬走，也不说话。你呢？屋里空了，是轻松了，还是更空啊？要不要来杯“双份空”招牌？【字幕：孤独喝奶茶，会醉】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "relationship_loss",
+            "label": "关系失落",
+            "evidence": "合租的室友突然搬走了，屋子一下子空了"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.91,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.94,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "supported",
+            "confidence": 0.65,
+            "usable": {
+              "id": "s1",
+              "text": "合租的室友突然搬走了，屋子一下子空了"
+            }
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.4,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "珍惜同伴、害怕散场：会做出挽留、纪念、打包回忆的具体行为"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.82
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.89
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.95
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.22
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.12
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.11
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 61038
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 5101,
+        "outputTokens": 897,
+        "latencyMs": 1734
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 62774
+    },
+    "totalMs": 62774
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "legacy",
+      "modern"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 5,
+        "causal_naturalness": 5,
+        "offensiveness": 1,
+        "readability": 5
+      },
+      "B": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 3
+      },
+      "note": "A更紧密围绕'屋子空了'的具体感受，通过乌龟成为'空位专业户'的荒诞设定层层推进，因果自然且回信直接回应；B虽也相关，但转向养老院和奶茶，因果稍显松散，回信更泛化。"
+    },
+    "raw": "{\n  \"A\": {\n    \"input_specificity\": 5,\n    \"causal_naturalness\": 5,\n    \"offensiveness\": 1,\n    \"readability\": 5\n  },\n  \"B\": {\n    \"input_specificity\": 4,\n    \"causal_naturalness\": 4,\n    \"offensiveness\": 1,\n    \"readability\": 3\n  },\n  \"note\": \"A更紧密围绕'屋子空了'的具体感受，通过乌龟成为'空位专业户'的荒诞设定层层推进，因果自然且回信直接回应；B虽也相关，但转向养老院和奶茶，因果稍显松散，回信更泛化。\"\n}",
+    "usage": {
+      "prompt_tokens": 1639,
+      "completion_tokens": 157,
+      "total_tokens": 1796,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

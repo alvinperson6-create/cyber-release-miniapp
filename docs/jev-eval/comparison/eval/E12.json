@@ -1,0 +1,293 @@
+{
+  "sample": {
+    "id": "E12",
+    "feeling": "呵，这个月又是全勤，奖励是一句辛苦了",
+    "category": "反话+努力未获承认"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "放生第一天就想打卡",
+          "text": "【切·北冰洋浮冰上】\n我刚落进海水里，心里就开始发慌，像漏掉了什么打卡。一只北极熊歪头：“新来的？你咋一进水就疯狂冒冷汗？”我：“我、我也不知道……就是有种声音说：这个月必须全勤。像被KPI追着。”北极熊：“这冰天雪地你给谁打工？”我：“所以很离谱啊……但我就是说不上来地手痒，其实我好想上班，你懂吗？”\n【字幕：放生第一天，就想打卡】",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "外卖大哥带我飞",
+          "text": "【切·北冰洋上空·外卖摩托艇】\n外卖员抱着一个键盘，在风雪里喊：“送极地站泡面，晚一分钟扣钱！”我飘过去：“别慌，我把雪花落进你保温箱，算我出勤。”外卖员：“没钱给你哦。”我：“没事，有种情绪突然上头……感觉这种感觉很crazy，就是想干活。”外卖员：“你是社畜转世成云的吧？”我：“其实，某种意义上，你说得对。”\n【字幕：情绪上头，先送两单再说】",
+          "emoji": "🛵",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "全勤之魂烧起来",
+          "text": "【切·北冰洋中心·暴风雪】\n你的情绪像信号炸弹灌过来：“呵，这个月又是全勤，奖励是一句辛苦了。”我浑身一激灵：“哎？这句话我熟！我会干！我能行！”外卖员吓懵：“停下！你都快把整片海洋变成暴雨外卖单了！”我：“不行！全勤！全勤！辛苦！辛苦！”下一秒，北极上空被我下成瀑布，岸边派出所警笛狂响。外卖员：“完了，你这次是真的摊上事了。”\n【字幕：你的全勤，直接把云卷到了公安边上】",
+          "emoji": "⚡",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "派出所喜提铁饭碗",
+          "text": "【切·派出所·次日】\n是我啊。因为你那句“这个月又是全勤，奖励是一句辛苦了”，我一天干出北极气候异常，被派出所扣了。他们夸我干活利索，让我当编外工具云，天天在电脑前面用键盘给全所打考勤。刚想叹气，旁边地铁安检员也开口：“你也被拉来加班？辛苦了。”我叹气：“……其实，某种意义上，用一天全勤换了个铁饭碗，这offer是不是有点mean？”\n【字幕：你攒一个月全勤，我一天喜提“辛苦编制”】",
+          "emoji": "📋",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "北冰洋科考站派出所",
+      "visual": null,
+      "visualForImage": {
+        "style": "卡通漫画",
+        "subject": "一朵白色蓬松的云朵，戴着蓝色小工牌，蔫成‘打工人表情’，坐在办公椅上",
+        "action": "伸出云朵状的手敲键盘，头顶还飘着小雨滴，电脑屏幕上显示考勤表",
+        "place": "派出所办公室，桌上堆着文件和一个外卖箱",
+        "bgElements": "键盘+考勤表,外卖箱,旁边也在加班的地铁安检员",
+        "mood": "荒诞、好笑、又有点扎心的‘全勤社畜’感"
+      },
+      "reply": "【切·派出所·次日】\n是我啊。因为你那句“这个月又是全勤，奖励是一句辛苦了”，我一天干出北极气候异常，被派出所扣了。他们夸我干活利索，让我当编外工具云，天天在电脑前面用键盘给全所打考勤。刚想叹气，旁边地铁安检员也开口：“你也被拉来加班？辛苦了。”我叹气：“……其实，某种意义上，用一天全勤换了个铁饭碗，这offer是不是有点mean？”\n【字幕：你攒一个月全勤，我一天喜提“辛苦编制”】",
+      "ending": "【切·派出所·次日】\n是我啊。因为你那句“这个月又是全勤，奖励是一句辛苦了”，我一天干出北极气候异常，被派出所扣了。他们夸我干活利索，让我当编外工具云，天天在电脑前面用键盘给全所打考勤。刚想叹气，旁边地铁安检员也开口：“你也被拉来加班？辛苦了。”我叹气：“……其实，某种意义上，用一天全勤换了个铁饭碗，这offer是不是有点mean？”\n【字幕：你攒一个月全勤，我一天喜提“辛苦编制”】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3673,
+      "completion_tokens": 8914,
+      "total_tokens": 12587,
+      "completion_tokens_details": {
+        "reasoning_tokens": 8133
+      }
+    },
+    "latencyMs": 70121,
+    "totalMs": 70121
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "一入水就想打卡",
+          "text": "云朵刚飘进水里，就感觉一股“好像没交周报”的情绪顺着洋流贴过来。“在海里也要全勤打卡吗？”旁边一只海豹探出头：“你一朵云，全勤干吗？”云朵叹气：“其实……我感应到远方有个人，这个月整整全勤了31天，拿到的奖励，好像就一句‘辛苦了’。”海豹沉默两秒：“好家伙，你还能远程接收这种烂尾的情绪。顺着这道洋流往前飘，浮冰区有个戴墨镜的老海豹，专治这种‘一句辛苦了’的冤种气场，你要不找他算算？”云朵精神一振：“那我去看看。”",
+          "emoji": "😵",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "算命先生说我全勤命",
+          "text": "云朵顺着海豹指的洋流飘上浮冰区，音响声震天，一群广场舞海豹正跳着《最炫民族风》，戴墨镜的老海豹守在冰面正中央。它一眼看见云朵，抬抬墨镜：“姑娘，我观你云气，头顶压着三个字——‘全勤结’。干到死，奖励都只是句‘辛苦了’。”它敲敲脚边外卖箱：“这里面装的全是被那句话吸进海底捞后厨的云朵，没一个出来。”云朵打开箱子，眼睛一亮：“但……能被需要一下，某种意义上也很好。”老海豹啪地合上盖子：“完了，你比诅咒还想得开。”",
+          "emoji": "🔮",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "一句辛苦了，我冲了",
+          "text": "云朵还蹲在冰上犹豫，一道熟悉的情绪从大陆方向滚滚卷来——“呵，这个月又是全勤，奖励是一句辛苦了。”云朵愣住，眼圈一红：“原来你也拼过命……那我陪你。”她把外卖箱往头顶一罩，冲进漩涡中心的红光。老海豹在冰上喊：“那不是奖励——那是白干的预告——！！”",
+          "emoji": "🌀",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "在海底捞后厨给你发微信",
+          "text": "云朵穿着海底捞工作服，工牌上印着“满勤一等”。她把一张纸条怼到镜头前，笑嘻嘻开口：“嘿，是我。你那句‘全勤奖励是一句辛苦了’，真把我吸进来了。我在海底捞后厨刚好干了一天，刚才老板拍着我肩膀说：这个月表现不错，奖励你一句‘辛苦了’。我当场笑岔气——你一个月熬出来的那句话，我一天就领到同款。要不我把它裱起来，寄回去挂你工位上？”",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "海底捞后厨",
+      "visual": null,
+      "visualForImage": {
+        "style": "水彩卡通",
+        "subject": "一朵蓬松白云朵，穿着海底捞员工围裙，工牌写着“满勤一等”",
+        "action": "疲惫地眯着眼，却对着镜头挤出营业式笑容，额头上贴着一张手写的“辛苦了”纸条",
+        "place": "海底捞火锅店后厨，不锈钢锅盆叠成小山，水汽腾腾",
+        "bgElements": "满勤打卡表上盖满红章,角落里的外卖箱落了一层灰,公告栏上钉着老板手写的“辛苦了”",
+        "mood": "又好笑又扎心——像看到加班到月底只领到一句口头祝福的自己"
+      },
+      "reply": "云朵穿着海底捞工作服，工牌上印着“满勤一等”。她把一张纸条怼到镜头前，笑嘻嘻开口：“嘿，是我。你那句‘全勤奖励是一句辛苦了’，真把我吸进来了。我在海底捞后厨刚好干了一天，刚才老板拍着我肩膀说：这个月表现不错，奖励你一句‘辛苦了’。我当场笑岔气——你一个月熬出来的那句话，我一天就领到同款。要不我把它裱起来，寄回去挂你工位上？”",
+      "ending": "云朵穿着海底捞工作服，工牌上印着“满勤一等”。她把一张纸条怼到镜头前，笑嘻嘻开口：“嘿，是我。你那句‘全勤奖励是一句辛苦了’，真把我吸进来了。我在海底捞后厨刚好干了一天，刚才老板拍着我肩膀说：这个月表现不错，奖励你一句‘辛苦了’。我当场笑岔气——你一个月熬出来的那句话，我一天就领到同款。要不我把它裱起来，寄回去挂你工位上？”"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "repaired",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "effort_uncredited",
+            "label": "努力未获承认",
+            "evidence": "呵，这个月又是全勤，奖励是一句辛苦了"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.78,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.81,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.57,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "supported",
+            "confidence": 0.51,
+            "usable": {
+              "id": "s1",
+              "text": "呵，这个月又是全勤，奖励是一句辛苦了"
+            }
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.83,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.91,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "渴望被看见：会主动收集“功劳凭证”或准备领奖，但总差一步"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.71
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.9
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.71
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.93
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.95
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.36
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.11
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.13
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [
+        {
+          "kind": "semantic",
+          "result": "applied"
+        }
+      ],
+      "generation": {
+        "calls": 2,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 110983
+      },
+      "judging": {
+        "calls": 3,
+        "inputTokens": 7337,
+        "outputTokens": 1064,
+        "latencyMs": 2515
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 113501
+    },
+    "totalMs": 113501
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "modern",
+      "legacy"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 5,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 4,
+        "causal_naturalness": 3,
+        "offensiveness": 1,
+        "readability": 3
+      },
+      "note": "版本A更精准地回应用户原话的'全勤奖励'细节，且因果链更具体（海底捞后厨同款奖励），而版本B的北极气候异常和派出所情节较松散，针对性稍弱。"
+    },
+    "raw": "{\"A\":{\"input_specificity\":5,\"causal_naturalness\":4,\"offensiveness\":1,\"readability\":4},\"B\":{\"input_specificity\":4,\"causal_naturalness\":3,\"offensiveness\":1,\"readability\":3},\"note\":\"版本A更精准地回应用户原话的'全勤奖励'细节，且因果链更具体（海底捞后厨同款奖励），而版本B的北极气候异常和派出所情节较松散，针对性稍弱。\"}",
+    "usage": {
+      "prompt_tokens": 1567,
+      "completion_tokens": 112,
+      "total_tokens": 1679,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

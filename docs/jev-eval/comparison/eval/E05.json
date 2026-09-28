@@ -1,0 +1,297 @@
+{
+  "sample": {
+    "id": "E05",
+    "feeling": "天天加班赶进度，晚饭都没时间吃",
+    "category": "任务过量（同情绪不同原因）"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "放生第一天就赶工",
+          "text": "【切·尼斯湖·浅水区】我刚翻身入水，后壳就像被贴了打卡表，浑身发紧。一条老鲑鱼绕着我转：“新来的？怎么像赶投胎？”“不知道啊，”我吐了个泡，“只觉得再不使劲游，晚饭就没空吃了吧。”老鲑鱼摇头：“又一个被赶工传染的。”我低头，从水草里叼出一块麻将牌——幺鸡，烫手。",
+          "emoji": "🐢",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "火锅店门口遇疯忙",
+          "text": "【切·尼斯湖岸·火锅店】我循着发烫的幺鸡上岸，见个服务员托着锅底狂奔：“完了！今晚几百桌翻不完！”我拦住他：“这哪是吃饭，是在拼命吧？”他红着眼：“从早忙到现在，饭都没吃一口！”旁边搓澡师傅蹲在礁石上：“幺鸡发烫？那可是赶工的魔音，沾上就停不下来了。”我低头看看牌，腿已经往店里迈。",
+          "emoji": "🍲",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "停不下来的赶工",
+          "text": "【切·尼斯湖岸·深夜】你的加班情绪顺着水气涌过来，我腿自己就往锅灶边跑。“别进去！”搓澡师傅在喊。我头也不回：“天亮前翻不完三百桌，顾不上吃饭啊！”冲进后厨，锅底端了一百回、菜品送了三百分。服务员都看傻：“这乌龟今天疯了吧？”我笑着端锅：“疯什么，进度还没赶完呢。”——一头栽进红油锅。",
+          "emoji": "🔥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "在宠物医院给你发微信",
+          "text": "【切·一天后·宠物医院·病床】嘿，是我。你那“天天加班赶进度”的情绪，我全收着了。结果我进了火锅店当帮工，从早到晚端锅、上菜、翻台，晚饭自然没吃。最后一头栽进红油锅，被搓澡师傅捞进宠物医院，大夫说我过度疲劳。你那边……要不先停一下班吧？再不停，我这壳可真要在宠物医院办年卡了。",
+          "emoji": "🏥",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "苏格兰·尼斯湖·因弗内斯·宠物医院",
+      "visual": null,
+      "visualForImage": {
+        "style": "卡通漫画",
+        "subject": "一只乌龟躺在宠物医院的笼子里，爪子上插着输液针，另一只爪子举着手机，背甲上贴着‘住院中’吊牌",
+        "action": "半坐在病床上用爪子戳手机屏幕，表情疲惫但带着笑容",
+        "place": "宠物医院病房，背景是输液架、药品柜和挂着的营养液",
+        "bgElements": "笼子角落放着滚烫的‘幺鸡’麻将牌，栏杆上搭着一件火锅店围裙，旁边摆着搓澡毛巾",
+        "mood": "荒诞搞笑但又扎心，像打工人加班把自己卷进医院的真实写照"
+      },
+      "reply": "【切·一天后·宠物医院·病床】嘿，是我。你那“天天加班赶进度”的情绪，我全收着了。结果我进了火锅店当帮工，从早到晚端锅、上菜、翻台，晚饭自然没吃。最后一头栽进红油锅，被搓澡师傅捞进宠物医院，大夫说我过度疲劳。你那边……要不先停一下班吧？再不停，我这壳可真要在宠物医院办年卡了。",
+      "ending": "【切·一天后·宠物医院·病床】嘿，是我。你那“天天加班赶进度”的情绪，我全收着了。结果我进了火锅店当帮工，从早到晚端锅、上菜、翻台，晚饭自然没吃。最后一头栽进红油锅，被搓澡师傅捞进宠物医院，大夫说我过度疲劳。你那边……要不先停一下班吧？再不停，我这壳可真要在宠物医院办年卡了。"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3656,
+      "completion_tokens": 11683,
+      "total_tokens": 15339,
+      "completion_tokens_details": {
+        "reasoning_tokens": 10968
+      }
+    },
+    "latencyMs": 89043,
+    "totalMs": 89043
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚入水就赶KPI",
+          "text": "【切镜头·尼斯湖底】我龟刚入水，就觉得不对劲，心里慌慌的，像有活儿没干完。旁边一头水怪浮过来：“新来的？游这么快，赶进度啊？”“不知道啊，”我喘着气，“慢了就怕出事。”水怪叹气：“又一个被加班怨气传染的。上一个那乌龟，现在在岸上写字楼打工呢。”【字幕：放生第一天就赶KPI】",
+          "emoji": "🏃",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "半仙塞我键盘",
+          "text": "【切镜头·尼斯湖边】我爬上岸，刚想趴下歇口气，一个戴墨镜的算命先生喊住我：“龟道友留步！你印堂发黑，命里带‘工’，此物送你。”他塞给我一个键盘。我还没缓过来，旁边广场舞大妈大笑：“半仙你糊涂啦？乌龟会打字？”算命先生推了推墨镜：“它不是会不会的问题，它心里有火啊。”我一瞅自己，浑身发烫，歇都不敢歇了。",
+          "emoji": "⌨️",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "加班魂燃了",
+          "text": "【切镜头·尼斯湖岸·傍晚】你那加班情绪像火一样顺着地面烧过来，我四条腿不听使唤，想停都停不住。我越是想趴下歇会儿，跑得越快。算命先生追在后面喊：“记住了！你只有二十四小时！”我头也不回：“二十四小时？够我赶三天的活儿咯！”【切镜头·写字楼玻璃门自动打开，我一路爬进会议室】",
+          "emoji": "🔥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "会议室打工龟",
+          "text": "【切镜头·写字楼·三楼会议室】嘿，是我。过了一整天，我悟了啊。你那句“天天加班赶进度，晚饭都没时间吃”，直接送我上了打工龟之路。现在我在会议室，一个键盘，脑门一顶就咔咔咔，老板夸我全公司最快。晚饭？隔壁工位半块饼干，还掉渣。你饭都吃不上，我饭也吃不上啊。要不，往尼斯湖扔个馒头？",
+          "emoji": "💼",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "城市写字楼·三楼会议室",
+      "visual": null,
+      "visualForImage": {
+        "style": "赛博朋克漫画风，高饱和撞色",
+        "subject": "一只青绿龟壳的乌龟，圆润眼睛，表情又认真又慌张，脑门顶着一个键盘",
+        "action": "乌龟用脑门顶着键盘，键帽飞溅，桌面上文件堆成山",
+        "place": "城市写字楼三楼会议室，长条会议桌，白板写着KPI和进度条",
+        "bgElements": "三叠合同文件、半块掉渣的饼干、落地窗外隐约可见尼斯湖轮廓",
+        "mood": "荒诞的打工悲喜剧，搞笑又扎心"
+      },
+      "reply": "【切镜头·写字楼·三楼会议室】嘿，是我。过了一整天，我悟了啊。你那句“天天加班赶进度，晚饭都没时间吃”，直接送我上了打工龟之路。现在我在会议室，一个键盘，脑门一顶就咔咔咔，老板夸我全公司最快。晚饭？隔壁工位半块饼干，还掉渣。你饭都吃不上，我饭也吃不上啊。要不，往尼斯湖扔个馒头？",
+      "ending": "【切镜头·写字楼·三楼会议室】嘿，是我。过了一整天，我悟了啊。你那句“天天加班赶进度，晚饭都没时间吃”，直接送我上了打工龟之路。现在我在会议室，一个键盘，脑门一顶就咔咔咔，老板夸我全公司最快。晚饭？隔壁工位半块饼干，还掉渣。你饭都吃不上，我饭也吃不上啊。要不，往尼斯湖扔个馒头？"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "task_overload",
+            "label": "任务过量",
+            "evidence": "天天加班赶进度，晚饭都没时间吃"
+          },
+          {
+            "id": "time_boundary",
+            "label": "时间边界被侵占",
+            "evidence": "天天加班赶进度，晚饭都没时间吃"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "supported",
+            "confidence": 0.99,
+            "usable": {
+              "id": "s1",
+              "text": "天天加班赶进度，晚饭都没时间吃"
+            }
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.29,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "天天加班赶进度，晚饭都没时间吃"
+            }
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.67,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 2,
+        "requiredTendencies": [
+          "被任务推着走、想休息却停不下来，会做出“自动化偷懒反而更忙”之类的具体行为",
+          "对“最后关头被打断”极度敏感，总在快完成一件事时被叫走"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.85
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.76
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.84
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.12
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.11
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.11
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 46210
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4950,
+        "outputTokens": 897,
+        "latencyMs": 1548
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 47758
+    },
+    "totalMs": 47758
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "legacy",
+      "modern"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 3,
+        "causal_naturalness": 3,
+        "offensiveness": 1,
+        "readability": 3
+      },
+      "note": "A更精准地复现用户'加班赶进度+没时间吃饭'的细节，且因果链更具体（从湖底到火锅店再到宠物医院），而B的因果较松散，细节对应稍弱。"
+    },
+    "raw": "{\"A\":{\"input_specificity\":4,\"causal_naturalness\":4,\"offensiveness\":1,\"readability\":4},\"B\":{\"input_specificity\":3,\"causal_naturalness\":3,\"offensiveness\":1,\"readability\":3},\"note\":\"A更精准地复现用户'加班赶进度+没时间吃饭'的细节，且因果链更具体（从湖底到火锅店再到宠物医院），而B的因果较松散，细节对应稍弱。\"}",
+    "usage": {
+      "prompt_tokens": 1353,
+      "completion_tokens": 110,
+      "total_tokens": 1463,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

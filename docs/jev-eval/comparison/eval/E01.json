@@ -1,0 +1,293 @@
+{
+  "sample": {
+    "id": "E01",
+    "feeling": "每天都干不完，我真的想歇一下",
+    "category": "任务过量"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "放生即入职",
+          "text": "【切·西湖断桥边】我刚入水就想找石头歇会儿，水底手机叮咚响。鲫鱼游来：“新来的？跑啥？”“歇……想歇会儿。”“你听——”手机又亮：西湖滴滴派单。鲫鱼叹气：“上一个想歇的，派单量翻了三倍！”我哆嗦：“那我接还不行吗？”【字幕：放生第一天，就被KPI咬了】",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "签收一时爽",
+          "text": "【切·西湖湖面·清晨】快递员划小船到湖中央，掏出防水纸盒：“锦鲤！滴滴装备到了，签收！”“我没报名！”“西湖新规矩，放生的都得打工。”他塞我自拍杆和迷你工服：“直播摄像头，好评率就是工资。”我瞪他：“我不跑！我想歇！”他指指手机：“这句话系统已记录，罚款200，加跑800单。”我尾巴一软：“……我签。”【字幕：签收一时爽，派单一辈子】",
+          "emoji": "📦",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "想歇一下而已",
+          "text": "【切·西湖湖底·深夜】你那股“每天都干不完”的疲惫顺着5G信号涌过来，我整个鱼泡在班味里，越游越沉。老鲤鱼劝：“歇一会儿吧。”我红着眼：“我一歇系统就加单！”可实在撑不住，往水底一栽，闭眼只剩一个念头：睡五分钟。再睁眼——西湖湖底隧道被我撞塌一截。系统提示音：事故单+999，累计三万单。【字幕：想歇一下，反而更忙了】",
+          "emoji": "😴",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "派出所里接着干",
+          "text": "【切·派出所大厅】嘿，是我。我跟你说，你那句“干不完，真想歇一下”，我全接住了。我当了西湖滴滴司机，想歇一下，撞塌湖底隧道，坐进派出所。民警问：“挺能歇啊？”我摊手：“就想睡五分钟。”民警把自拍杆扔我：“明天三万单，你欠的。”我看一眼窗外，西湖还亮灯——明天，还能歇吗？【字幕：你想休息，我帮你休息到派出所】",
+          "emoji": "🚓",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "杭州市北山街派出所大厅",
+      "visual": null,
+      "visualForImage": {
+        "style": "赛博像素漫画风",
+        "subject": "一条橙红锦鲤，穿着迷你滴滴司机马甲，戴着印有派单App的小帽子，鱼眼里布满血丝，鱼尾塌成社畜样",
+        "action": "瘫趴在派出所办公桌上，一只鱼鳍举着自拍杆，嘴边冒着泡泡：“让我歇五分钟”",
+        "place": "杭州市北山街派出所大厅，蓝白冷光灯，金属办公桌，墙上有值班表和警徽",
+        "bgElements": "桌上堆成山的滴滴派单单据、墙钟指针指向凌晨三点、自拍杆插在透明证物袋里",
+        "mood": "黑色幽默+过劳社畜共鸣，又惨又好笑，荒诞扎心"
+      },
+      "reply": "【切·派出所大厅】嘿，是我。我跟你说，你那句“干不完，真想歇一下”，我全接住了。我当了西湖滴滴司机，想歇一下，撞塌湖底隧道，坐进派出所。民警问：“挺能歇啊？”我摊手：“就想睡五分钟。”民警把自拍杆扔我：“明天三万单，你欠的。”我看一眼窗外，西湖还亮灯——明天，还能歇吗？【字幕：你想休息，我帮你休息到派出所】",
+      "ending": "【切·派出所大厅】嘿，是我。我跟你说，你那句“干不完，真想歇一下”，我全接住了。我当了西湖滴滴司机，想歇一下，撞塌湖底隧道，坐进派出所。民警问：“挺能歇啊？”我摊手：“就想睡五分钟。”民警把自拍杆扔我：“明天三万单，你欠的。”我看一眼窗外，西湖还亮灯——明天，还能歇吗？【字幕：你想休息，我帮你休息到派出所】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3656,
+      "completion_tokens": 9611,
+      "total_tokens": 13267,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 8870
+      }
+    },
+    "latencyMs": 73768,
+    "totalMs": 73768
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚下水就怕停",
+          "text": "【切·西湖断桥旁】我刚进水里，尾巴一收就慌得不行，总觉得五十件事在排队等我。一条草鱼绕着我转：“兄弟你咋跟被催命似的？”我猛地抖了一下：“我跟你说，我一停就背上发凉，像有人按着我不许卸担子。”草鱼叹气：“又一个泡了内卷水的。”话没落，水面上漂来一张金灿灿的刮刮乐。",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "遛狗师气疯了",
+          "text": "【切·西湖边】我追上刮刮乐一看：“好运？好个鬼。”岸上狗叫和人声忽然炸开：“你今天两万步没跑完就想歇？！”遛狗师在拽一条瘫成地毯的狗。心里那股劲儿按不住了，我甩水跳上岸，一口咬住牵引绳：“我来遛！”遛狗师瞪眼：“鱼遛狗？你疯了吧？”我：“我跟你说，我再不把劲儿使完就要炸了。还有几条？全排上！”狗大概没见过咬着牵引绳的鱼，吓得炸了毛，连滚带爬往西湖里冲，我咬着绳子被它扽进水里。",
+          "emoji": "🐕",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "你的累把我怼飞了",
+          "text": "【切·夜西湖底】我被扽得晕头转向，刚松嘴甩开狗绳，你那句“每天都干不完，我真的想歇一下”顺着水脉灌进来，我愣了两秒，然后乐了：“歇？歇了活儿就真干不完了！”湖底老龟在后面喊：“你悠着点！”我早蹿出水面，横穿马路冲向地铁口，安检员一把拦住：“站住！活物先过安检！”我一扭头看见隔壁大门：“健身房！这地方能让我继续卷！”",
+          "emoji": "💨",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "跑步机上替你卷",
+          "text": "【切·一天后·健身房跑步机】鱼缸搁在跑步机上，我尾巴把皮带抡出了火星子，旁边全是手机怼着拍。遛狗师举着那张刮刮乐喊：“中了！安慰奖！给你加个温泉钟！”我按住语音键发微信：“嘿，是我。你那句‘想歇一下’传到我这儿被浪打掉仨字儿，就剩‘干不完’。一天六张台，还没蹬完。你歇着吧，你的活儿我替你卷。就是……麻烦你也分我一句‘歇一下’。”",
+          "emoji": "🐟",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "杭州·西湖区·黄龙万科中心·健身房跑步机区",
+      "visual": null,
+      "visualForImage": {
+        "style": "漫画风，夸张动态线+高饱和撞色，赛博霓虹感",
+        "subject": "一条橙红锦鲤，泡在鱼缸里用大尾巴疯狂蹬跑步机皮带，尾鳍甩出残影，黑眼圈深得像画了烟熏妆",
+        "action": "鱼嘴咬着手机按住语音键，一脸生无可恋但尾巴完全停不下来",
+        "place": "健身房跑步机区，鱼缸就搁在跑步机台面上，旁边一圈手机怼着拍",
+        "bgElements": "遛狗师举着彩票刮刮乐当门票收费，地铁安检员在门口探头围观，跑步机上贴着“今日KPI：10km”",
+        "mood": "爆笑、荒诞、卷到心酸的强烈共鸣"
+      },
+      "reply": "【切·一天后·健身房跑步机】鱼缸搁在跑步机上，我尾巴把皮带抡出了火星子，旁边全是手机怼着拍。遛狗师举着那张刮刮乐喊：“中了！安慰奖！给你加个温泉钟！”我按住语音键发微信：“嘿，是我。你那句‘想歇一下’传到我这儿被浪打掉仨字儿，就剩‘干不完’。一天六张台，还没蹬完。你歇着吧，你的活儿我替你卷。就是……麻烦你也分我一句‘歇一下’。”",
+      "ending": "【切·一天后·健身房跑步机】鱼缸搁在跑步机上，我尾巴把皮带抡出了火星子，旁边全是手机怼着拍。遛狗师举着那张刮刮乐喊：“中了！安慰奖！给你加个温泉钟！”我按住语音键发微信：“嘿，是我。你那句‘想歇一下’传到我这儿被浪打掉仨字儿，就剩‘干不完’。一天六张台，还没蹬完。你歇着吧，你的活儿我替你卷。就是……麻烦你也分我一句‘歇一下’。”"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "repaired",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "task_overload",
+            "label": "任务过量",
+            "evidence": "每天都干不完，我真的想歇一下"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "每天都干不完，我真的想歇一下"
+            }
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.69,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "ambiguous",
+            "confidence": 0.25,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 0.96,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.66,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "被任务推着走、想休息却停不下来，会做出“自动化偷懒反而更忙”之类的具体行为"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.78
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.89
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.9
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.88
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.21
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.13
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.13
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [
+        {
+          "kind": "semantic",
+          "result": "applied"
+        }
+      ],
+      "generation": {
+        "calls": 2,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 181135
+      },
+      "judging": {
+        "calls": 3,
+        "inputTokens": 7299,
+        "outputTokens": 1064,
+        "latencyMs": 2660
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 183799
+    },
+    "totalMs": 183799
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "legacy",
+      "modern"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 5,
+        "causal_naturalness": 5,
+        "offensiveness": 1,
+        "readability": 5
+      },
+      "B": {
+        "input_specificity": 3,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 3
+      },
+      "note": "版本A精准回应用户原话细节并构建了荒诞但自洽的因果链，而版本B对原话的回应较为模糊，因果推进稍显松散。"
+    },
+    "raw": "{\n  \"A\": {\n    \"input_specificity\": 5,\n    \"causal_naturalness\": 5,\n    \"offensiveness\": 1,\n    \"readability\": 5\n  },\n  \"B\": {\n    \"input_specificity\": 3,\n    \"causal_naturalness\": 4,\n    \"offensiveness\": 1,\n    \"readability\": 3\n  },\n  \"note\": \"版本A精准回应用户原话细节并构建了荒诞但自洽的因果链，而版本B对原话的回应较为模糊，因果推进稍显松散。\"\n}",
+    "usage": {
+      "prompt_tokens": 1488,
+      "completion_tokens": 137,
+      "total_tokens": 1625
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

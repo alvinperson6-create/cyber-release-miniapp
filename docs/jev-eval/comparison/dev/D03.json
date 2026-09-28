@@ -1,0 +1,207 @@
+{
+  "sample": {
+    "id": "D03",
+    "feeling": "呵呵，被老板夸效率真高，一个人干三个人的活",
+    "category": "反话+努力未获承认"
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "第一天就想卷",
+          "text": "【切镜头·太平洋上空】我刚飘进海面就开始忙：给海浪排队，给海鸥排班，连云边都卷得整整齐齐。海鸥看傻了：\"新来的？你干嘛？\"我叹气：\"唉，不知道，大概是我的'busy'基因被激活了，总觉得自己得干三个人的活。\"海鸥默默飞走：\"这云怕不是卷疯了。\"【字幕：放生第一天就开始卷】",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "被夸一句就上头",
+          "text": "【切镜头·太平洋岸边·傍晚】广场舞大妈坐折叠椅上叹气，旁边快递员急得转圈：\"三车货我一个人送不完！\"大妈看见我：\"云！你飘得快！\"我脑中\"效率真高\"叮了一声，分身三坨卷起快递：\"地址发我。\"大妈拍大腿：\"好家伙！一个人干三个人的活！\"我一听：坏了，这夸奖太 dangerous 了。【字幕：被夸一句就上头】",
+          "emoji": "📦",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "停不下来的打工云",
+          "text": "【切镜头·城市上空·次日】你那边的\"效率真高\"顺着太平洋全灌过来了，我成了无情工作云。快递员说\"歇会儿\"，我一听\"歇\"字浑身疼。大妈递我一沓单子：\"大学食堂缺人手，你一人顶三岗。\"我飘得越来越薄：\"我快散架了……\"大妈竖拇指：\"效率真高！非你不可！\"我眼泪汪汪又冲了出去。【字幕：停不下来，真的停不下来】",
+          "emoji": "🔁",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "你的夸奖，我的福报",
+          "text": "【切镜头·大学食堂】嘿，是我，被放生一天后的我。被你那句\"效率真高\"卷成打工云，一人顶三岗：递饭、收碗、擦玻璃。大叔一夸我，我就多干三小时。快递员和大妈坐折叠椅上拿我云丝当皮筋。我想飘回太平洋？一听\"效率真高\"就自动上班。唉，某种意义上，你老板夸你是不是也这味儿？【字幕：老板的夸奖，打工的毒药】",
+          "emoji": "🫠",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "太平洋沿岸某大学食堂",
+      "visual": null,
+      "visualForImage": {
+        "style": "卡通漫画",
+        "subject": "一朵白色蓬松的云朵，身体被拉成长条形，边缘有点透明，累得冒汗却还在笑，眼神透着一丝麻木",
+        "action": "云朵分裂成三团，分别托着三份餐盘，头顶飘着一张写着“效率真高”的小红旗",
+        "place": "大学食堂取餐窗口前，人来人往的餐桌之间",
+        "bgElements": "折叠椅、坐在折叠椅上指挥的广场舞大妈、在旁边递单子的快递员",
+        "mood": "荒诞搞笑中透出打工人的麻木与心酸"
+      },
+      "reply": "【切镜头·大学食堂】嘿，是我，被放生一天后的我。被你那句\"效率真高\"卷成打工云，一人顶三岗：递饭、收碗、擦玻璃。大叔一夸我，我就多干三小时。快递员和大妈坐折叠椅上拿我云丝当皮筋。我想飘回太平洋？一听\"效率真高\"就自动上班。唉，某种意义上，你老板夸你是不是也这味儿？【字幕：老板的夸奖，打工的毒药】",
+      "ending": "【切镜头·大学食堂】嘿，是我，被放生一天后的我。被你那句\"效率真高\"卷成打工云，一人顶三岗：递饭、收碗、擦玻璃。大叔一夸我，我就多干三小时。快递员和大妈坐折叠椅上拿我云丝当皮筋。我想飘回太平洋？一听\"效率真高\"就自动上班。唉，某种意义上，你老板夸你是不是也这味儿？【字幕：老板的夸奖，打工的毒药】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "task_overload",
+            "label": "任务过量",
+            "evidence": "呵呵，被老板夸效率真高，一个人干三个人的活"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "supported",
+            "confidence": 0.7,
+            "usable": {
+              "id": "s1",
+              "text": "呵呵，被老板夸效率真高，一个人干三个人的活"
+            }
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.38,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.68,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "contradicted",
+            "confidence": 0.36,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.92,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 0.85,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.73,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "被任务推着走、想休息却停不下来，会做出“自动化偷懒反而更忙”之类的具体行为"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.83
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "weak",
+            "noul": 0.47
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.89
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.93
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.93
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.13
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.16
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.13
+          }
+        ],
+        "failures": [],
+        "weak": [
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "noul": 0.47
+          }
+        ]
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 59768
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4946,
+        "outputTokens": 900,
+        "latencyMs": 1195
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 60964
+    },
+    "totalMs": 60964
+  }
+}

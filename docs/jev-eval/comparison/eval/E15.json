@@ -1,0 +1,283 @@
+{
+  "sample": {
+    "id": "E15",
+    "feeling": "最近总觉得哪里不对劲",
+    "category": "信息不足"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "放生第一天就不对劲",
+          "text": "【切·太平洋上空】我飘在太平洋上，海面平得像没拆封的鼠标垫。海鸥路过：“今天稳得很，连风都懒得动。”“其实……”我叹气，“我有种说不出的别扭，好像整个世界都在演。”海鸥白我一眼：“你们云就是矫情。”“不是！”我急了，“是‘哪里不对劲’的预感，好像有大事正朝我赶来。”【字幕：放生第一天，就感觉不对劲】",
+          "emoji": "🌀",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "被算命瞎子招了工",
+          "text": "【切·太平洋边缘·港口】我一路漂流到岸边，迎面撞上算命瞎子。他掐着指头：“云啊，你不对劲。”我惊了：“你怎么知道？”他说：“我不光知道，还知道你已经飘不动了。”他从兜里抽出一张油腻鼠标垫：“我正招微商，带你去彩票站上班，包吃包住。”我愣住：“我是云，不是雇工！”他嘿嘿一笑：“在陆地上，你就是一朵摔下来的压舱云。”【字幕：莫名其妙有了第一份工作】",
+          "emoji": "👓",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "不对劲把我吹向彩票站",
+          "text": "【切·海风里·深夜】你那股“哪哪都不对劲”的烦躁感顺着海风涌过来，我整朵云被搅得发麻——不是怕，是方向感崩了。我拼命往上飘，脚底却有股怪力，一路拖向亮灯的彩票站。算命瞎子站在门口鼓掌：“妙啊，自己来报到了！”我喊：“我是来放生的，不是来上班的！”他吐出一口烟：“可你飘到陆地上了，那就得打工。”排风扇呼呼转，彩票纸粘了我一身。【字幕：天意难违，老板更难违】",
+          "emoji": "💨",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "你的不对劲，我的编制",
+          "text": "【切·一天后·彩票站柜台后】嘿，是我。你最近总觉得哪里不对劲，对吧？那股别扭顺着海风传遍太平洋，活活把一朵云吹成了彩票站微商。算命瞎子让我坐在鼠标垫上接客，逢人就说“摸一摸，转运”。我心想：自己都没转运呢。其实，某种意义上，是你的不对劲给了我饭碗，也让我再也回不了天空。所以，还有哪里不对劲，继续传，等我当上店长，业绩算你的。【字幕：你的不对劲，我的编制】",
+          "emoji": "🎰",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "好运来彩票站（沿海小镇，靠近太平洋码头）",
+      "visual": null,
+      "visualForImage": {
+        "style": "霓虹复古漫画风",
+        "subject": "白色蓬松的云朵，边缘柔软，系着一枚小小的工牌，眯眼叹气，一团云手正拍在鼠标垫上",
+        "action": "云朵坐在柜台后的鼠标垫上，面前立着一块硬纸板，上面用马克笔写着“摸一摸，转运”",
+        "place": "好运来彩票站店内：旧木柜台、玻璃面柜台、斜挂着电子彩票走势板",
+        "bgElements": "发光的“好运来”霓虹招牌；墙上微商海报；成沓的彩票和刮刮乐",
+        "mood": "荒诞好笑又带点扎心，像深夜海边小店亮着的那盏昏灯"
+      },
+      "reply": "【切·一天后·彩票站柜台后】嘿，是我。你最近总觉得哪里不对劲，对吧？那股别扭顺着海风传遍太平洋，活活把一朵云吹成了彩票站微商。算命瞎子让我坐在鼠标垫上接客，逢人就说“摸一摸，转运”。我心想：自己都没转运呢。其实，某种意义上，是你的不对劲给了我饭碗，也让我再也回不了天空。所以，还有哪里不对劲，继续传，等我当上店长，业绩算你的。【字幕：你的不对劲，我的编制】",
+      "ending": "【切·一天后·彩票站柜台后】嘿，是我。你最近总觉得哪里不对劲，对吧？那股别扭顺着海风传遍太平洋，活活把一朵云吹成了彩票站微商。算命瞎子让我坐在鼠标垫上接客，逢人就说“摸一摸，转运”。我心想：自己都没转运呢。其实，某种意义上，是你的不对劲给了我饭碗，也让我再也回不了天空。所以，还有哪里不对劲，继续传，等我当上店长，业绩算你的。【字幕：你的不对劲，我的编制】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3631,
+      "completion_tokens": 9950,
+      "total_tokens": 13581,
+      "completion_tokens_details": {
+        "reasoning_tokens": 9165
+      }
+    },
+    "latencyMs": 71822,
+    "totalMs": 71823
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "这云，哪都怪",
+          "text": "【切镜头·太平洋上空·黄昏】\n我（叹气）：“唉，刚被放生就浑身不对劲，总觉得哪里怪怪的，really.”\n海鸥：“你一朵云在太平洋上飘，多自由啊。”\n我：“太自由了，反而怪。你看那艘邮轮，保安举着充电宝盯海面三小时了，不对劲吧？”\n海鸥（眯眼）：“……他好像也在往天上看。”\n我：“……看我？”\n【字幕：不对劲，好像盯上我了】",
+          "emoji": "🌥️",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "充电宝闪怪光",
+          "text": "【切镜头·邮轮甲板·深夜】\n保安（握着发烫的充电宝）：“这充电宝一直发光，线还滚烫，不对劲！”\n我（飘近）：“……其实我也觉得不对劲。刚来太平洋就哪儿哪儿不对，anyway，让我看看它为什么闪。”\n保安（后退两步）：“云会说话？！”\n我：“这是重点吗？它怎么朝我闪？”\n保安（愣住）：“它在……给你充电？”\n【特写·充电宝嗡鸣着爆出蓝光】",
+          "emoji": "⚡",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "雨下歪了",
+          "text": "【切镜头·甲板·乌云翻滚】\n我（被电光缠住）：“真在充电……不对劲的感觉更重了！”\n保安：“别下雨，我刚拖完！”\n我：“憋不住了，想哭！”\n（暴雨如注）\n清洁工阿姨（抡拖把冲来）：“怪云！在我拖完的地上乱下雨？！”\n我（蔫）：“阿姨，我只是觉得不对劲……”\n清洁工阿姨（捞起）：“不对劲？看兽医！”\n【切镜头·云朵被塞进宠物医院】",
+          "emoji": "🌧️",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "不对劲找到了宿主",
+          "text": "【切镜头·宠物医院·一天后】\n嘿，是我。你说“总觉得哪里不对劲”，我当真了。太平洋排查一圈，盯上保安的充电宝，反被电了一通；心里一慌狂下雨，又被清洁工阿姨捞进宠物医院。医生说我得了“疑云症”，正插着充电宝保温。某种意义上，你的不对劲找到了宿主——住院的我。你呢，那股不对劲还在吗？\n【字幕：你的不对劲，我的住院单】",
+          "emoji": "🏥",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "太平洋·夏威夷·某宠物医院",
+      "visual": null,
+      "visualForImage": {
+        "style": "清新数码水彩卡通",
+        "subject": "一朵蔫掉的白云，蓬松缩小一半，身上插着充电宝的蓝色充电线，额头顶着一枚体温贴片，表情憔悴又无奈，像忧郁的初中文艺少女",
+        "action": "云朵蜷缩在宠物医院笼子里，头顶断断续续飘着小雨，眼睛无力地半睁，长长叹气",
+        "place": "宠物医院住院区，迷你钢笼，旁边是输液架和宠物监护仪",
+        "bgElements": "嗡嗡闪蓝光的充电宝,清洁工阿姨挂在笼子边的拖把,一张写着“疑云症”的诊断卡",
+        "mood": "荒诞喜剧+扎心共鸣：天上自由的云却被当成流浪宠物扣在医院，越找不对劲、自己越不对劲"
+      },
+      "reply": "【切镜头·宠物医院·一天后】\n嘿，是我。你说“总觉得哪里不对劲”，我当真了。太平洋排查一圈，盯上保安的充电宝，反被电了一通；心里一慌狂下雨，又被清洁工阿姨捞进宠物医院。医生说我得了“疑云症”，正插着充电宝保温。某种意义上，你的不对劲找到了宿主——住院的我。你呢，那股不对劲还在吗？\n【字幕：你的不对劲，我的住院单】",
+      "ending": "【切镜头·宠物医院·一天后】\n嘿，是我。你说“总觉得哪里不对劲”，我当真了。太平洋排查一圈，盯上保安的充电宝，反被电了一通；心里一慌狂下雨，又被清洁工阿姨捞进宠物医院。医生说我得了“疑云症”，正插着充电宝保温。某种意义上，你的不对劲找到了宿主——住院的我。你呢，那股不对劲还在吗？\n【字幕：你的不对劲，我的住院单】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.99,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.77,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 0.98,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.64,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 0,
+        "requiredTendencies": []
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "weak",
+            "noul": 0.52
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.78
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.95
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.11
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.2
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.13
+          }
+        ],
+        "failures": [],
+        "weak": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "noul": 0.52
+          }
+        ]
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 64871
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 4994,
+        "outputTokens": 899,
+        "latencyMs": 1516
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 66390
+    },
+    "totalMs": 66390
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "modern",
+      "legacy"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 3,
+        "causal_naturalness": 3,
+        "offensiveness": 1,
+        "readability": 3
+      },
+      "note": "版本A更紧密围绕用户原话的'不对劲'展开具体排查和因果链，而版本B将'不对劲'泛化为一种情绪驱动，因果较松散。"
+    },
+    "raw": "{\n  \"A\": {\n    \"input_specificity\": 4,\n    \"causal_naturalness\": 4,\n    \"offensiveness\": 1,\n    \"readability\": 4\n  },\n  \"B\": {\n    \"input_specificity\": 3,\n    \"causal_naturalness\": 3,\n    \"offensiveness\": 1,\n    \"readability\": 3\n  },\n  \"note\": \"版本A更紧密围绕用户原话的'不对劲'展开具体排查和因果链，而版本B将'不对劲'泛化为一种情绪驱动，因果较松散。\"\n}",
+    "usage": {
+      "prompt_tokens": 1497,
+      "completion_tokens": 135,
+      "total_tokens": 1632,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

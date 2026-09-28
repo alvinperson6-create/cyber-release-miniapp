@@ -2,3846 +2,967 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>赛博放生 · 电子河流</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>赛博放生 · 单生物文字旅程</title>
 <style>
-/* ==================== Reset & Base ==================== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; width: 100%; }
-body {
-  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
-  color: var(--ink);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
-  position: relative;
-}
-button { font-family: inherit; border: none; background: none; cursor: pointer; color: inherit; }
-textarea, input { font-family: inherit; }
-
-/* ==================== Tokens ==================== */
-:root {
-  --teal: #2c8a7a;
-  --teal-deep: #1f3a36;
-  --teal-light: #d4e8e2;
-  --coral: #ed7d5b;
-  --coral-soft: #fce8df;
-  --lake: #3e7a96;
-  --paper: #faf6ec;
-  --paper-warm: #f5ede0;
-  --ink: #2a2a2a;
-  --ink-soft: #555;
-  --ink-mute: #999;
-  --line: #e0ddd5;
-  --line-soft: #eeebe5;
-  --glass-bg: rgba(255, 255, 255, 0.78);
-  --glass-bg-strong: rgba(255, 255, 255, 0.88);
-  --glass-border: rgba(255, 255, 255, 0.55);
-  --shadow-glass: 0 12px 40px rgba(31, 58, 54, 0.18), 0 4px 12px rgba(31, 58, 54, 0.08);
-  --shadow-card: 0 2px 8px rgba(31, 58, 54, 0.06);
-}
-
-.serif { font-family: "Kaiti SC", "STKaiti", "Songti SC", "STSong", serif; }
-.mono { font-family: "SF Mono", "Monaco", "Menlo", "Consolas", monospace; letter-spacing: 0.02em; }
-
-/* ==================== Water Background ==================== */
-.water-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse at 20% 10%, rgba(212, 232, 226, 0.55) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 90%, rgba(62, 122, 150, 0.35) 0%, transparent 55%),
-    linear-gradient(160deg, #d4e8e2 0%, #a9d2c5 35%, #6fae9c 70%, #3e7a7e 100%);
-  overflow: hidden;
-}
-.water-bg::before,
-.water-bg::after {
-  content: '';
-  position: absolute;
-  inset: -50%;
-  background:
-    radial-gradient(ellipse 60% 40% at 30% 40%, rgba(255,255,255,0.18), transparent 60%),
-    radial-gradient(ellipse 50% 35% at 70% 60%, rgba(255,255,255,0.12), transparent 60%);
-  animation: waterShimmer 18s ease-in-out infinite alternate;
-  will-change: transform;
-  transform: translateZ(0);
-}
-.water-bg::after {
-  animation: waterShimmer2 24s ease-in-out infinite alternate;
-  background:
-    radial-gradient(ellipse 45% 30% at 60% 30%, rgba(212,232,226,0.22), transparent 60%),
-    radial-gradient(ellipse 55% 40% at 25% 70%, rgba(212,232,226,0.18), transparent 60%);
-  opacity: 0.7;
-}
-@keyframes waterShimmer {
-  0%   { transform: translate(0, 0) rotate(0deg); }
-  100% { transform: translate(4%, -3%) rotate(2deg); }
-}
-@keyframes waterShimmer2 {
-  0%   { transform: translate(0, 0) rotate(0deg); }
-  100% { transform: translate(-3%, 4%) rotate(-2deg); }
-}
-
-/* Subtle ripple lines */
-.water-ripples {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 80px,
-      rgba(255,255,255,0.04) 80px,
-      rgba(255,255,255,0.04) 81px,
-      transparent 81px,
-      transparent 160px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 120px,
-      rgba(255,255,255,0.03) 120px,
-      rgba(255,255,255,0.03) 121px,
-      transparent 121px,
-      transparent 240px
-    );
-  animation: rippleDrift 30s linear infinite;
-  will-change: transform;
-  transform: translateZ(0);
-}
-@keyframes rippleDrift {
-  0%   { transform: translate(0, 0); }
-  100% { transform: translate(80px, 0); }
-}
-
-/* ==================== App Shell ==================== */
-.app-shell {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ==================== Top Nav ==================== */
-.top-nav {
-  flex-shrink: 0;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  background: rgba(255, 255, 255, 0.92);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-  position: relative;
-  z-index: 10;
-}
-.nav-logo {
-  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--teal-deep);
-  letter-spacing: 0.12em;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.nav-logo .logo-mark {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--teal), var(--teal-deep));
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(31, 58, 54, 0.25);
-}
-.nav-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 99px;
-  padding: 4px;
-  box-shadow: var(--shadow-card);
-}
-.nav-toggle .nav-pill {
-  padding: 7px 22px;
-  font-size: 13px;
-  color: var(--ink-soft);
-  border-radius: 99px;
-  letter-spacing: 0.08em;
-  transition: all 0.25s ease;
-  font-weight: 500;
-}
-.nav-toggle .nav-pill.active {
-  background: linear-gradient(135deg, var(--teal), var(--teal-deep));
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(31, 58, 54, 0.25);
-}
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.nav-avatar {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--teal-light), var(--teal));
-  color: var(--teal-deep);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(31, 58, 54, 0.18);
-}
-.nav-login-tag {
-  font-size: 10px;
-  color: var(--teal);
-  background: rgba(212, 232, 226, 0.7);
-  padding: 4px 10px;
-  border-radius: 99px;
-  letter-spacing: 0.08em;
-  border: 1px solid rgba(44, 138, 122, 0.2);
-}
-
-/* ==================== View Container ==================== */
-.view-container {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  min-height: 0;
-}
-.view {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-  display: flex;
-}
-.view.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* ==================== Release View ==================== */
-.release-view {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
-/* Water canvas (left, 60%) */
-.water-canvas {
-  flex: 0 0 60%;
-  position: relative;
-  overflow: hidden;
-  min-height: 0;
-}
-.water-canvas {
-  position: relative;
-}
-
-.globe-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  touch-action: none;
-  cursor: grab;
-  z-index: 5;
-}
-
-.globe-canvas:active { cursor: grabbing; }
-
-/* 风格切换按钮（仅 3D 模式） */
-.style-toggle {
-  display: none;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 8;
-  padding: 6px 14px;
-  font-size: 12px;
-  border-radius: 16px;
-  border: 1px solid rgba(169, 210, 197, 0.4);
-  background: rgba(10, 40, 48, 0.55);
-  color: rgba(223, 243, 236, 0.9);
-  backdrop-filter: blur(6px);
-  cursor: pointer;
-  letter-spacing: 1px;
-}
-
-.style-toggle:active { transform: scale(0.95); }
-
-/* 3D 初始化成功后显示切换按钮（两种模式下都要能切） */
-.water-canvas.has-3d .style-toggle { display: block; }
-
-.water-canvas.mode-3d .globe-canvas { display: block; }
-.water-canvas.mode-3d .world-map { visibility: hidden; }
-
-/* 3D 模式深海背景，衬托发光地球 */
-.water-canvas.mode-3d {
-  background:
-    radial-gradient(130% 100% at 50% 26%, rgba(23, 74, 82, 0.55) 0%, rgba(8, 34, 46, 0.85) 46%, rgba(4, 16, 28, 0.96) 100%);
-}
-
-.water-canvas.mode-3d .river-stat {
-  background: rgba(6, 22, 30, 0.45);
-  backdrop-filter: blur(6px);
-  border-radius: 12px;
-}
-
-.water-canvas.mode-3d .river-stat .stat-line { color: rgba(223, 243, 236, 0.9); }
-.water-canvas.mode-3d .river-stat .muted { color: rgba(223, 243, 236, 0.55); }
-
-/* 3D 模式下热门水域改为玻璃胶囊，不抢地球的戏；沉到底部统计栏上方 */
-.water-canvas.mode-3d .hot-bubbles {
-  top: auto;
-  bottom: 48px;
-  left: 10px;
-  right: 10px;
-  gap: 5px;
-}
-
-.water-canvas.mode-3d .hot-bubble {
-  background: rgba(10, 40, 48, 0.55);
-  border: 1px solid rgba(169, 210, 197, 0.35);
-  color: rgba(223, 243, 236, 0.85);
-  backdrop-filter: blur(6px);
-  font-size: 10px;
-}
-
-.water-canvas.mode-3d .hot-bubble.active {
-  background: rgba(237, 125, 91, 0.85);
-  border-color: rgba(255, 200, 170, 0.8);
-  color: #fff;
-}
-
-.water-canvas.mode-3d .map-hint {
-  color: rgba(223, 243, 236, 0.75);
-  background: rgba(10, 40, 48, 0.35);
-  backdrop-filter: blur(4px);
-}
-
-.world-map {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  cursor: grab;
-  touch-action: none;
-  background: linear-gradient(180deg, rgba(207, 228, 221, 0.4) 0%, rgba(169, 210, 197, 0.5) 60%, rgba(127, 182, 164, 0.6) 100%);
-}
-.world-map.dragging { cursor: grabbing; }
-.map-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-/* Water markers */
-.water-marker { cursor: pointer; }
-.water-marker circle.dot {
-  fill: #3e7a96;
-  stroke: #fff;
-  stroke-width: 1.5;
-  transition: r 0.2s ease;
-}
-.water-marker.lake circle.dot { fill: #2c8a7a; }
-.water-marker.river circle.dot { fill: #2c8a7a; }
-.water-marker.trench circle.dot { fill: #ed7d5b; }
-.water-marker.selected circle.dot {
-  fill: #ed7d5b;
-  stroke: #fff;
-  stroke-width: 2.5;
-  r: 7;
-}
-.water-marker .pulse {
-  fill: none;
-  stroke: #ed7d5b;
-  stroke-width: 1.2;
-  opacity: 0;
-}
-.water-marker.selected .pulse { animation: mapPulse 1.8s ease-out infinite; }
-@keyframes mapPulse {
-  0% { r: 7; opacity: 0.7; }
-  100% { r: 20; opacity: 0; }
-}
-.water-label {
-  font-size: 9px;
-  fill: #1f3a36;
-  text-anchor: middle;
-  pointer-events: none;
-  font-family: "PingFang SC", sans-serif;
-  font-weight: 600;
-  paint-order: stroke;
-  stroke: #faf6ec;
-  stroke-width: 2.5;
-  stroke-linejoin: round;
-}
-.water-marker.selected .water-label { fill: #ed7d5b; }
-
-/* Hot bubbles */
-.hot-bubbles {
-  position: absolute;
-  top: 16px; left: 16px; right: 16px;
-  display: flex;
-  gap: 6px;
-  z-index: 5;
-  flex-wrap: wrap;
-  pointer-events: none;
-}
-.hot-bubble {
-  pointer-events: auto;
-  padding: 5px 12px;
-  background: rgba(255,255,255,0.92);
-  border: 1px solid #ed7d5b;
-  border-radius: 99px;
-  font-size: 11px;
-  color: #ed7d5b;
-  white-space: nowrap;
-  transition: all 0.2s;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  box-shadow: 0 2px 8px rgba(237, 125, 91, 0.15);
-}
-.hot-bubble:hover { transform: translateY(-1px); }
-.hot-bubble:active { transform: scale(0.95); }
-.hot-bubble.active { background: #ed7d5b; color: #fff; }
-
-/* Map hint */
-.map-hint {
-  position: absolute;
-  bottom: 80px; left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  color: rgba(31, 58, 54, 0.7);
-  letter-spacing: 0.12em;
-  pointer-events: none;
-  z-index: 2;
-  background: rgba(255,255,255,0.85);
-  padding: 4px 14px;
-  border-radius: 99px;
-  transition: opacity 0.4s;
-  white-space: nowrap;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-.map-hint.hidden { opacity: 0; }
-
-/* Creature layer */
-.creature-layer {
-  position: absolute;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 38%;
-  max-width: 280px;
-  pointer-events: none;
-  z-index: 3;
-  transition: all 0.9s cubic-bezier(0.5, 0, 0.3, 1);
-  filter: drop-shadow(0 8px 16px rgba(31, 58, 54, 0.25));
-}
-.creature-layer.released {
-  bottom: -60%;
-  opacity: 0;
-  transform: translateX(-50%) scale(0.5);
-}
-.creature-layer svg {
-  width: 100%;
-  height: auto;
-  animation: float 4s ease-in-out infinite;
-}
-
-/* River stat bar */
-.river-stat {
-  position: absolute;
-  bottom: 16px; left: 16px;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 12px;
-  color: var(--ink-soft);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  z-index: 4;
-  border: 1px solid rgba(255,255,255,0.5);
-  box-shadow: var(--shadow-card);
-}
-.river-stat .num { color: var(--teal); font-weight: 600; font-family: "SF Mono", "Monaco", monospace; }
-.river-stat .stat-line { display: flex; align-items: center; gap: 6px; }
-.river-stat .stat-line.muted { color: var(--ink-mute); font-size: 11px; }
-
-/* Control panel (right, 40%) */
-.control-panel {
-  flex: 0 0 40%;
-  padding: 24px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  display: flex;
-  flex-direction: column;
-}
-.control-panel::-webkit-scrollbar { width: 4px; }
-.control-panel::-webkit-scrollbar-thumb { background: rgba(31, 58, 54, 0.2); border-radius: 2px; }
-
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: var(--shadow-glass);
-  width: 100%;
-  max-width: 460px;
-  margin: 0 auto;
-}
-
-.section-block { margin-bottom: 22px; }
-.section-block:last-child { margin-bottom: 0; }
-.section-label {
-  font-size: 12px;
-  color: var(--ink-mute);
-  margin-bottom: 10px;
-  letter-spacing: 0.1em;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.section-label .label-hint {
-  font-size: 11px;
-  color: var(--coral);
-  font-weight: 400;
-}
-.section-label .label-num {
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--teal-light);
-  color: var(--teal-deep);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 600;
-}
-
-/* Feeling input */
-.feeling-row {
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
-  margin-bottom: 8px;
-}
-.mic-btn {
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  background: rgba(212, 232, 226, 0.7);
-  border: 1px solid var(--teal);
-  color: var(--teal-deep);
-  font-size: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.2s;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-.mic-btn:hover { transform: translateY(-1px); }
-.mic-btn:active { transform: scale(0.92); }
-.mic-btn.recording {
-  background: var(--coral);
-  border-color: var(--coral);
-  color: #fff;
-  animation: micPulse 1.2s ease-in-out infinite;
-}
-@keyframes micPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(237, 125, 91, 0.4); }
-  50% { box-shadow: 0 0 0 10px rgba(237, 125, 91, 0); }
-}
-.feeling-textarea {
-  flex: 1;
-  min-height: 52px;
-  max-height: 120px;
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: rgba(255, 253, 247, 0.85);
-  font-size: 14px;
-  color: var(--ink);
-  line-height: 1.5;
-  resize: none;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-.feeling-textarea:focus {
-  border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(44, 138, 122, 0.12);
-}
-.feeling-textarea::placeholder { color: var(--ink-mute); opacity: 0.75; }
-.feeling-hint {
-  font-size: 11px;
-  color: var(--ink-mute);
-  line-height: 1.5;
-}
-.feeling-hint .dot { color: var(--coral); margin-right: 2px; }
-
-/* Creature chips */
-.creature-chips {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.chip {
-  padding: 10px 16px;
-  background: rgba(255, 253, 247, 0.7);
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  font-size: 13px;
-  color: var(--ink-soft);
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-.chip:hover { transform: translateY(-1px); border-color: var(--coral); }
-.chip:active { transform: scale(0.96); }
-.chip.coral.active {
-  background: var(--coral);
-  color: #fff;
-  border-color: var(--coral);
-  box-shadow: 0 4px 12px rgba(237, 125, 91, 0.35);
-}
-
-/* Feedback options */
-.feedback-options {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.fb-opt {
-  padding: 8px 14px;
-  background: rgba(255, 253, 247, 0.7);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  font-size: 12px;
-  color: var(--ink-soft);
-  transition: all 0.2s;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-.fb-opt:hover { border-color: var(--teal); }
-.fb-opt:active { transform: scale(0.95); }
-.fb-opt.active {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-}
-.fb-date {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  font-size: 13px;
-  color: var(--ink-soft);
-  background: rgba(255, 253, 247, 0.85);
-  outline: none;
-  transition: border-color 0.2s;
-}
-.fb-date:focus { border-color: var(--teal); }
-
-/* Release button */
-.release-btn {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  margin-top: 6px;
-  padding: 16px;
-  background: linear-gradient(180deg, var(--coral) 0%, #d96d4d 100%);
-  color: #fff;
-  border-radius: 99px;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  box-shadow: 0 6px 20px rgba(237, 125, 91, 0.4);
-  transition: all 0.2s;
-  position: relative;
-  overflow: hidden;
-}
-.release-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(237, 125, 91, 0.5); }
-.release-btn:active:not(:disabled) { transform: translateY(0); }
-.release-btn:disabled {
-  background: #d8d0bf;
-  color: #faf6ec;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-.release-btn::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  animation: shine 3.5s infinite;
-}
-@keyframes shine {
-  0% { left: -100%; }
-  60%, 100% { left: 100%; }
-}
-
-/* ==================== Archive View ==================== */
-.archive-view {
-  width: 100%;
-  height: 100%;
-  padding: 24px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.archive-view::-webkit-scrollbar { width: 6px; }
-.archive-view::-webkit-scrollbar-thumb { background: rgba(31, 58, 54, 0.2); border-radius: 3px; }
-
-.archive-panel {
-  background: var(--glass-bg-strong);
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: var(--shadow-glass);
-  width: 100%;
-  max-width: 1100px;
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 112px);
-}
-
-.user-bar {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--line-soft);
-}
-.user-avatar {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--teal-light), var(--teal));
-  color: var(--teal-deep);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 600;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(31, 58, 54, 0.15);
-}
-.user-info { flex: 1; min-width: 0; }
-.user-name { font-size: 16px; font-weight: 600; color: var(--ink); }
-.user-id { font-size: 11px; color: var(--ink-mute); font-family: "SF Mono", "Monaco", monospace; letter-spacing: 0.04em; margin-top: 2px; }
-.login-tag {
-  font-size: 10px;
-  color: var(--teal);
-  background: var(--teal-light);
-  padding: 4px 10px;
-  border-radius: 99px;
-  letter-spacing: 0.08em;
-  flex-shrink: 0;
-}
-
-.stats-row {
-  flex-shrink: 0;
-  display: flex;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--line-soft);
-  gap: 16px;
-}
-.stat-item {
-  flex: 1;
-  text-align: center;
-  padding: 8px 12px;
-  background: rgba(255, 253, 247, 0.5);
-  border-radius: 12px;
-  transition: transform 0.2s;
-}
-.stat-item:hover { transform: translateY(-2px); }
-.stat-num {
-  font-family: "Kaiti SC", "STKaiti", "Songti SC", serif;
-  font-size: 32px;
-  line-height: 1;
-  font-weight: 400;
-}
-.stat-num.teal { color: var(--teal); }
-.stat-num.coral { color: var(--coral); }
-.stat-label {
-  font-size: 11px;
-  color: var(--ink-mute);
-  margin-top: 6px;
-  letter-spacing: 0.06em;
-}
-
-.record-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 4px 8px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-  -webkit-overflow-scrolling: touch;
-  align-content: start;
-  align-items: start;
-}
-.record-list::-webkit-scrollbar { width: 4px; }
-.record-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
-
-.empty-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 80px 20px;
-  color: var(--ink-mute);
-  font-size: 14px;
-  line-height: 2;
-}
-
-.record-card {
-  background: rgba(255, 253, 247, 0.95);
-  border: 1px solid var(--line-soft);
-  border-radius: 14px;
-  padding: 16px;
-  transition: box-shadow 0.2s, border-color 0.2s;
-}
-.record-card:hover { box-shadow: var(--shadow-card); border-color: var(--line); }
-.record-card.has-reply { cursor: pointer; }
-.record-card.has-reply:hover { border-color: var(--teal); }
-
-.record-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.record-id {
-  font-size: 11px;
-  color: var(--ink-mute);
-  letter-spacing: 0.02em;
-  font-family: "SF Mono", "Monaco", monospace;
-}
-.record-status {
-  font-size: 10px;
-  padding: 3px 10px;
-  border-radius: 99px;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  font-weight: 500;
-}
-.record-status.replied { background: var(--teal-light); color: var(--teal-deep); }
-.record-status.pending { background: var(--coral-soft); color: var(--coral); }
-
-.record-meta {
-  font-size: 12px;
-  color: var(--ink-soft);
-  margin-bottom: 6px;
-}
-.record-feeling {
-  font-size: 12px;
-  color: var(--ink);
-  font-style: italic;
-  line-height: 1.5;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.reply-block {
-  max-height: 600px;
-  overflow: hidden;
-  opacity: 1;
-  margin-top: 12px;
-  transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
-}
-.reply-block.collapsed {
-  max-height: 0;
-  opacity: 0;
-  margin-top: 0;
-}
-.reply-inner {
-  padding: 12px;
-  background: var(--paper-warm);
-  border-radius: 10px;
-  border-left: 3px solid var(--teal);
-}
-.reply-label {
-  font-size: 10px;
-  color: var(--teal);
-  letter-spacing: 0.1em;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-/* ===== 漂流瓶拆封 ===== */
-.bottle-block {
-  margin: 10px 0 4px;
-  padding: 22px 12px;
-  text-align: center;
-  background: linear-gradient(180deg, rgba(207,228,221,.5), rgba(169,210,197,.35));
-  border: 1px dashed var(--teal, #4a9c86);
-  border-radius: 14px;
-}
-
-.bottle-visual {
-  font-size: 44px;
-  animation: bottleBob 2.6s ease-in-out infinite;
-}
-
-@keyframes bottleBob {
-  0%, 100% { transform: translateY(0) rotate(-4deg); }
-  50% { transform: translateY(-8px) rotate(4deg); }
-}
-
-.bottle-text {
-  margin: 8px 0 12px;
-  font-size: 13px;
-  color: var(--ink, #2f4f48);
-}
-
-.bottle-open-btn {
-  padding: 8px 18px;
-  font-size: 13px;
-  border-radius: 18px;
-  border: 1px solid var(--coral, #ed7d5b);
-  background: transparent;
-  color: var(--coral, #ed7d5b);
-  cursor: pointer;
-  transition: all .25s;
-}
-
-.bottle-open-btn:hover { background: var(--coral, #ed7d5b); color: #fff; }
-
-.tts-btn {
-  margin-left: 8px;
-  padding: 2px 10px;
-  font-size: 11px;
-  border-radius: 12px;
-  border: 1px solid var(--teal, #4a9c86);
-  background: transparent;
-  color: var(--teal, #4a9c86);
-  cursor: pointer;
-  vertical-align: middle;
-}
-
-.reply-image {  width: 100%;
-  aspect-ratio: 4 / 3;
-  max-height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  display: block;
-  cursor: zoom-in;
-  background: rgba(0,0,0,0.05);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-.reply-image-fallback {
-  width: 100%;
-  height: 120px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-@keyframes previewFadeIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
-}
-.preview-image-full {
-  animation: previewFadeIn 0.25s ease;
-}
-.reply-text {
-  font-size: 12px;
-  color: var(--ink);
-  line-height: 1.6;
-}
-
-.countdown-block {
-  margin-top: 10px;
-  padding: 10px 12px;
-  background: var(--coral-soft);
-  border-radius: 8px;
-  font-size: 11px;
-  color: var(--coral);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.countdown-time {
-  font-family: "SF Mono", "Monaco", monospace;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ==================== Receipt Modal ==================== */
-.receipt-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(31, 58, 54, 0.55);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 100;
-  padding: 24px;
-}
-.receipt-overlay.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-.receipt-card {
-  width: 100%;
-  max-width: 420px;
-  max-height: 90vh;
-  overflow-y: auto;
-  background: var(--paper);
-  border-radius: 20px;
-  padding: 28px 24px 20px;
-  transform: translateY(40px) scale(0.96);
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
-  position: relative;
-}
-.receipt-overlay.show .receipt-card { transform: translateY(0) scale(1); }
-.receipt-card::-webkit-scrollbar { width: 4px; }
-.receipt-card::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
-
-/* Perforated edges */
-.receipt-card::before, .receipt-card::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  height: 8px;
-  background-image: radial-gradient(circle, var(--paper) 4px, transparent 4px);
-  background-size: 14px 8px;
-  background-repeat: repeat-x;
-  z-index: 1;
-}
-.receipt-card::before { top: -4px; }
-.receipt-card::after { bottom: -4px; transform: rotate(180deg); }
-
-.receipt-header {
-  text-align: center;
-  padding-bottom: 16px;
-  border-bottom: 1px dashed var(--line);
-  margin-bottom: 16px;
-}
-.receipt-stamp {
-  display: inline-block;
-  font-family: "Kaiti SC", "STKaiti", serif;
-  font-size: 24px;
-  color: var(--coral);
-  letter-spacing: 0.4em;
-  padding: 6px 16px 6px 20px;
-  border: 2px solid var(--coral);
-  border-radius: 4px;
-  transform: rotate(-3deg);
-  margin-bottom: 10px;
-}
-.receipt-subtitle {
-  font-size: 10px;
-  color: var(--ink-mute);
-  letter-spacing: 0.16em;
-}
-
-.receipt-rows { margin-bottom: 4px; }
-.receipt-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  padding: 8px 0;
-}
-.receipt-row .row-key { color: var(--ink-mute); }
-.receipt-row .row-val { color: var(--ink); }
-.receipt-row .row-val.mono { font-family: "SF Mono", "Monaco", monospace; font-size: 12px; }
-.receipt-row .row-val.serif { font-family: "Kaiti SC", "STKaiti", serif; font-size: 14px; }
-
-.receipt-feeling {
-  margin: 14px 0;
-  padding: 12px 14px;
-  background: var(--paper-warm);
-  border-radius: 8px;
-  border-left: 3px solid var(--coral);
-}
-.receipt-sign {
-  margin: 14px 0;
-  padding: 14px;
-  background: var(--teal-light);
-  border-radius: 8px;
-  text-align: center;
-}
-.receipt-feedback {
-  margin: 14px 0 0;
-  padding: 12px 14px;
-  background: var(--teal-light);
-  border-radius: 8px;
-}
-.block-label {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  margin-bottom: 6px;
-}
-.receipt-feeling .block-label { color: var(--coral); }
-.receipt-sign .block-label { color: var(--teal-deep); }
-.receipt-feedback .block-label { color: var(--teal-deep); }
-.block-text {
-  font-size: 13px;
-  color: var(--ink);
-  line-height: 1.6;
-}
-.receipt-feeling .block-text { font-style: italic; }
-.receipt-sign .block-text {
-  font-family: "Kaiti SC", "STKaiti", serif;
-  font-size: 16px;
-  line-height: 1.5;
-}
-.receipt-feedback .block-text strong { color: var(--teal-deep); }
-.receipt-feedback .block-text .mute { color: var(--ink-mute); font-size: 12px; }
-
-.receipt-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-}
-.btn-line {
-  flex: 1;
-  padding: 12px 0;
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  font-size: 13px;
-  color: var(--ink-soft);
-  transition: all 0.2s;
-}
-.btn-line:hover { border-color: var(--teal); color: var(--teal); }
-.btn-line:active { transform: scale(0.97); }
-.btn-primary {
-  flex: 1;
-  padding: 12px 0;
-  background: var(--teal-deep);
-  color: var(--paper);
-  border-radius: 99px;
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  transition: all 0.2s;
-}
-.btn-primary:hover { background: var(--teal); }
-.btn-primary:active { transform: scale(0.97); }
-
-.receipt-footer {
-  text-align: center;
-  font-size: 10px;
-  color: var(--ink-mute);
-  margin-top: 14px;
-  letter-spacing: 0.02em;
-  line-height: 1.6;
-}
-
-/* ==================== Destiny Entry (on archive card) ==================== */
-.destiny-entry {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: linear-gradient(135deg, #e8d5f0, #c4a8d8);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.destiny-entry:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(196, 168, 216, 0.4); }
-.destiny-entry:active { transform: scale(0.98); }
-.destiny-entry-label {
-  font-size: 11px;
-  color: var(--ink);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.destiny-entry-arrow {
-  font-size: 14px;
-  color: var(--ink-soft);
-}
-.destiny-entry-progress {
-  font-size: 10px;
-  color: var(--ink-mute);
-  background: rgba(255,255,255,0.6);
-  padding: 2px 8px;
-  border-radius: 99px;
-}
-
-/* ==================== Destiny Modal ==================== */
-.destiny-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(31, 58, 54, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 110;
-  padding: 20px;
-}
-.destiny-overlay.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-.destiny-modal {
-  width: 100%;
-  max-width: 440px;
-  max-height: 90vh;
-  overflow-y: auto;
-  background: var(--paper);
-  border-radius: 20px;
-  padding: 24px 20px 18px;
-  transform: translateY(40px) scale(0.96);
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
-  position: relative;
-}
-.destiny-overlay.show .destiny-modal { transform: translateY(0) scale(1); }
-.destiny-modal::-webkit-scrollbar { width: 4px; }
-.destiny-modal::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
-
-/* ===== 命运航线图 ===== */
-.destiny-route {
-  margin: 0 0 12px;
-  padding: 8px;
-  background: rgba(255,255,255,0.5);
-  border-radius: 12px;
-}
-
-.destiny-route svg { width: 100%; display: block; }
-
-.destiny-route-line {
-  animation: routeFlow 2.2s linear infinite;
-}
-
-@keyframes routeFlow {
-  to { stroke-dashoffset: -16; }
-}
-
-.destiny-route-hint {
-  text-align: center;
-  font-size: 11px;
-  color: rgba(47,79,72,0.6);
-  margin-top: 2px;
-}
-
-/* ===== 年度放生报告 ===== */
-.annual-report-btn {
-  margin-left: auto;
-  padding: 4px 10px;
-  font-size: 11px;
-  border-radius: 12px;
-  border: 1px solid var(--coral, #ed7d5b);
-  background: transparent;
-  color: var(--coral, #ed7d5b);
-  cursor: pointer;
-}
-
-.annual-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  background: rgba(15,35,32,0.72);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  animation: previewFadeIn .3s ease;
-}
-
-.annual-card {
-  width: 100%;
-  max-width: 340px;
-  max-height: 82vh;
-  overflow-y: auto;
-  background: linear-gradient(180deg, #10282f, #1c4b4a);
-  border-radius: 20px;
-  padding: 26px 22px;
-  text-align: center;
-  color: #f0e6d0;
-}
-
-.annual-title { font-size: 20px; font-weight: 700; }
-.annual-sub { font-size: 10px; letter-spacing: 2px; opacity: .55; margin: 4px 0 18px; }
-.annual-line.big { font-size: 52px; font-weight: 800; color: #ffd970; }
-.annual-line.big .unit { font-size: 16px; margin-left: 4px; color: #f0e6d0; }
-.annual-cap { font-size: 13px; opacity: .85; margin-bottom: 18px; }
-.annual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.annual-cell {
-  background: rgba(255,255,255,0.07);
-  border-radius: 12px;
-  padding: 12px 8px;
-  font-size: 11px;
-}
-.annual-cell .num { font-size: 22px; margin-bottom: 4px; }
-.annual-quote {
-  margin-top: 16px;
-  padding: 12px;
-  border-left: 2px solid #ffd970;
-  background: rgba(255,217,112,0.08);
-  border-radius: 0 10px 10px 0;
-  font-size: 12px;
-  line-height: 1.7;
-  text-align: left;
-}
-.annual-quote-from { margin-top: 6px; opacity: .55; font-size: 10px; text-align: right; }
-.annual-close {
-  margin-top: 18px;
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 24px;
-  background: #ed7d5b;
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.destiny-header {
-  text-align: center;
-  padding-bottom: 14px;
-  border-bottom: 1px dashed var(--line);
-  margin-bottom: 16px;
-}
-.destiny-title {
-  font-family: "Kaiti SC", "STKaiti", serif;
-  font-size: 22px;
-  color: var(--teal-deep);
-  letter-spacing: 0.2em;
-  margin-bottom: 4px;
-}
-.destiny-subtitle {
-  font-size: 10px;
-  color: var(--ink-mute);
-  letter-spacing: 0.12em;
-}
-.destiny-record-id {
-  font-family: "SF Mono", "Monaco", monospace;
-  font-size: 10px;
-  color: var(--ink-mute);
-  margin-top: 4px;
-}
-
-.destiny-segment {
-  margin-bottom: 14px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--line-soft);
-  background: #fdfaf2;
-  transition: opacity 0.3s;
-}
-.destiny-segment.locked {
-  opacity: 0.85;
-}
-.destiny-seg-banner {
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  position: relative;
-}
-.destiny-seg-body {
-  padding: 12px 14px 14px;
-}
-.destiny-seg-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 6px;
-  letter-spacing: 0.04em;
-}
-.destiny-seg-text {
-  font-size: 12px;
-  color: var(--ink-soft);
-  line-height: 1.7;
-}
-.destiny-seg-index {
-  position: absolute;
-  top: 8px;
-  left: 12px;
-  font-size: 10px;
-  color: rgba(255,255,255,0.85);
-  font-family: "SF Mono", "Monaco", monospace;
-  background: rgba(31,58,54,0.35);
-  padding: 2px 8px;
-  border-radius: 99px;
-}
-
-.destiny-lock-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(31, 58, 54, 0.55);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: #fff;
-}
-.destiny-lock-icon { font-size: 22px; }
-.destiny-lock-hint { font-size: 10px; letter-spacing: 0.1em; opacity: 0.9; }
-
-.destiny-seg-unlock-btn {
-  width: 100%;
-  margin-top: 10px;
-  padding: 8px 0;
-  background: var(--teal-deep);
-  color: var(--paper);
-  border: none;
-  border-radius: 8px;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.destiny-seg-unlock-btn:hover { background: var(--teal); }
-.destiny-seg-unlock-btn:active { transform: scale(0.97); }
-.destiny-seg-unlock-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.destiny-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--line);
-}
-.destiny-bundle-btn {
-  flex: 1;
-  padding: 11px 0;
-  background: linear-gradient(135deg, #ed7d5b, #d96d4d);
-  color: #fff;
-  border: none;
-  border-radius: 99px;
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.destiny-bundle-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(237,125,91,0.4); }
-.destiny-bundle-btn:active { transform: scale(0.97); }
-.destiny-bundle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.destiny-close-btn {
-  flex: 0 0 80px;
-  padding: 11px 0;
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  font-size: 12px;
-  color: var(--ink-soft);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.destiny-close-btn:hover { border-color: var(--teal); color: var(--teal); }
-
-.destiny-loading {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--ink-mute);
-  font-size: 12px;
-}
-.destiny-loading .spinner {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  border: 2px solid var(--line);
-  border-top-color: var(--teal);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-bottom: 10px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.destiny-pay-toast {
-  position: fixed;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--teal-deep);
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 99px;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s;
-  z-index: 200;
-  box-shadow: 0 8px 24px rgba(31,58,54,0.3);
-}
-.destiny-pay-toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* ==================== Ad Overlay (激励视频模拟) ==================== */
-.ad-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 200;
-  padding: 20px;
-}
-.ad-overlay.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-.ad-card {
-  width: 100%;
-  max-width: 360px;
-  background: var(--paper);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
-  transform: scale(0.96);
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
-}
-.ad-overlay.show .ad-card { transform: scale(1); }
-.ad-banner {
-  background: linear-gradient(135deg, #2c8a7a, #1f3a36);
-  color: #fff;
-  padding: 10px 16px;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  font-weight: 500;
-}
-.ad-body {
-  padding: 20px;
-}
-.ad-content {
-  background: linear-gradient(135deg, #d4e8e2, #c7dbe2);
-  border-radius: 12px;
-  height: 180px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-.ad-placeholder {
-  font-size: 32px;
-  color: var(--teal-deep);
-  opacity: 0.6;
-}
-.ad-tag {
-  font-size: 11px;
-  color: var(--ink-soft);
-  letter-spacing: 0.06em;
-}
-.ad-countdown {
-  text-align: center;
-  font-size: 13px;
-  color: var(--ink-soft);
-  margin-bottom: 14px;
-}
-.ad-countdown span {
-  font-family: "SF Mono", "Monaco", monospace;
-  font-weight: 600;
-  color: var(--coral);
-  font-size: 16px;
-}
-.ad-close-btn {
-  width: 100%;
-  padding: 12px 0;
-  background: var(--teal-deep);
-  color: var(--paper);
-  border: none;
-  border-radius: 99px;
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.ad-close-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  background: var(--line);
-}
-.ad-close-btn:not(:disabled):hover { background: var(--teal); }
-
-/* ==================== Animations ==================== */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-/* ==================== Responsive ==================== */
-@media (max-width: 860px) {
-  .top-nav { padding: 0 16px; height: 56px; }
-  .nav-logo { font-size: 18px; }
-  .nav-logo .logo-mark { width: 24px; height: 24px; font-size: 12px; }
-  .nav-toggle .nav-pill { padding: 6px 16px; font-size: 12px; }
-  .nav-login-tag { display: none; }
-
-  .release-view { flex-direction: column; }
-  .water-canvas { flex: 0 0 50%; min-height: 280px; }
-  .control-panel {
-    flex: 1;
-    padding: 16px;
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    margin-top: -16px;
-    z-index: 5;
-    position: relative;
+  :root {
+    --bg0: #060d14;
+    --bg1: #0a1622;
+    --bg2: #0f2130;
+    --ink: #dce9f2;
+    --ink-dim: #8fa8ba;
+    --ink-faint: #5f7889;
+    --coral: #ff7a59;
+    --coral-soft: rgba(255, 122, 89, .16);
+    --aqua: #57c8b2;
+    --aqua-soft: rgba(87, 200, 178, .14);
+    --gold: #ffd970;
+    --line: rgba(143, 168, 186, .18);
+    --glass: rgba(15, 33, 48, .72);
+    --radius: 18px;
   }
-  .glass-panel { padding: 20px; border-radius: 16px; }
-  .creature-layer { width: 50%; bottom: 40px; }
-  .river-stat { bottom: 12px; left: 12px; padding: 8px 12px; font-size: 11px; }
-  .map-hint { bottom: 60px; font-size: 10px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    background: radial-gradient(1200px 700px at 50% -10%, #10293c 0%, var(--bg0) 62%);
+    color: var(--ink);
+    font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", -apple-system, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  textarea, input { font-family: inherit; }
+  ::selection { background: rgba(87,200,178,.35); }
 
-  .archive-view { padding: 16px; }
-  .archive-panel { padding: 20px; border-radius: 18px; max-height: calc(100vh - 88px); }
-  .record-list { grid-template-columns: 1fr; gap: 12px; padding: 16px 4px 8px; }
-  .stats-row { padding: 16px 0; gap: 10px; }
-  .stat-num { font-size: 26px; }
-  .user-bar { padding-bottom: 16px; gap: 12px; }
-  .user-avatar { width: 40px; height: 40px; font-size: 15px; }
+  .app { max-width: 560px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column; }
 
-  .receipt-card { padding: 24px 18px 16px; max-height: 88vh; }
-}
+  /* ===== header ===== */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px 10px;
+  }
+  .brand { font-size: 19px; font-weight: 700; letter-spacing: 1px; }
+  .brand em { font-style: normal; color: var(--aqua); }
+  .nav-pills { display: flex; gap: 6px; background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
+  .nav-pill { padding: 6px 16px; border-radius: 999px; font-size: 13px; color: var(--ink-dim); transition: all .2s; }
+  .nav-pill.active { background: var(--aqua-soft); color: var(--aqua); font-weight: 600; }
 
-@media (max-width: 480px) {
-  .nav-logo .logo-text { display: none; }
-  .nav-toggle .nav-pill { padding: 6px 14px; }
+  .view { display: none; flex: 1; padding: 10px 16px 40px; }
+  .view.active { display: block; }
+
+  /* ===== release: water canvas ===== */
+  .water-canvas {
+    position: relative; border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--line); background: #08131e;
+    height: 320px; margin-bottom: 14px;
+  }
+  .globe-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+  .water-canvas.has-3d.mode-3d .globe-canvas { display: block; }
+  /* 3D 模式隐藏平面地图；2D 模式隐藏球体、恢复地图交互 */
+  .water-canvas.has-3d.mode-3d .world-map { opacity: 0; pointer-events: none; }
+  .water-canvas.has-3d:not(.mode-3d) .globe-canvas { display: none; }
+  .world-map { position: absolute; inset: 0; transition: opacity .3s; }
+  .map-svg { width: 100%; height: 100%; }
+  .water-marker { cursor: pointer; }
+  .water-marker .dot { fill: var(--aqua); }
+  .water-marker .pulse { fill: rgba(87,200,178,.25); animation: pulse 2.4s infinite; }
+  .water-marker.selected .dot { fill: var(--coral); }
+  .water-marker.selected .pulse { fill: rgba(255,122,89,.3); }
+  .water-label { fill: #cfe3ee; font-size: 11px; text-anchor: middle; paint-order: stroke; stroke: rgba(6,13,20,.8); stroke-width: 3px; }
+  @keyframes pulse { 0% { r: 5; opacity: .9; } 70% { r: 12; opacity: 0; } 100% { r: 12; opacity: 0; } }
+  .map-hint {
+    position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+    background: rgba(6,13,20,.72); border: 1px solid var(--line);
+    padding: 5px 14px; border-radius: 999px; font-size: 12px; color: var(--ink-dim);
+    white-space: nowrap;
+  }
+  .map-hint.hidden { display: none; }
+  .style-toggle {
+    position: absolute; top: 10px; right: 10px; z-index: 5;
+    background: rgba(6,13,20,.72); border: 1px solid var(--line); border-radius: 999px;
+    padding: 4px 12px; font-size: 12px; color: var(--ink-dim);
+  }
+  .river-stat {
+    position: absolute; left: 12px; bottom: 12px; z-index: 4;
+    background: rgba(6,13,20,.66); border: 1px solid var(--line); border-radius: 12px;
+    padding: 8px 12px; font-size: 12px;
+  }
+  .stat-line .num { color: var(--aqua); font-weight: 600; }
+  .stat-line.muted { color: var(--ink-faint); font-size: 11px; }
+
+  /* ===== control panel ===== */
+  .glass-panel {
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 18px 16px;
+    backdrop-filter: blur(8px);
+  }
   .section-block { margin-bottom: 18px; }
-  .release-btn { padding: 14px; font-size: 15px; }
-}
+  .section-block:last-child { margin-bottom: 0; }
+  .section-label { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .label-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 6px; background: var(--aqua-soft);
+    color: var(--aqua); font-size: 11px; font-weight: 700;
+  }
+  .label-hint { font-weight: 400; color: var(--ink-faint); font-size: 11px; }
+  .feeling-row { position: relative; }
+  .feeling-textarea {
+    width: 100%; background: rgba(6,13,20,.6); border: 1px solid var(--line);
+    border-radius: 14px; color: var(--ink); font-size: 14px; padding: 12px 14px;
+    resize: none; min-height: 64px; outline: none; transition: border .2s;
+  }
+  .feeling-textarea:focus { border-color: rgba(87,200,178,.55); }
+  .feeling-hint { margin-top: 6px; font-size: 11px; color: var(--ink-faint); }
+  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    padding: 8px 16px; border-radius: 999px; font-size: 13px;
+    border: 1px solid var(--line); color: var(--ink-dim); background: rgba(6,13,20,.4);
+    transition: all .2s;
+  }
+  .chip.active { border-color: var(--coral); color: var(--coral); background: var(--coral-soft); font-weight: 600; }
+  .chip.aqua.active { border-color: var(--aqua); color: var(--aqua); background: var(--aqua-soft); }
+  .redepart-box { margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 12px; }
+  .redepart-toggle { font-size: 12px; color: var(--ink-dim); display: flex; align-items: center; gap: 8px; }
+  .redepart-toggle .switch {
+    width: 34px; height: 20px; border-radius: 999px; background: rgba(95,120,137,.4); position: relative; transition: background .2s;
+  }
+  .redepart-toggle .switch::after {
+    content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; top: 2px; left: 2px; transition: left .2s;
+  }
+  .redepart-toggle.on .switch { background: var(--aqua); }
+  .redepart-toggle.on .switch::after { left: 16px; }
+  .redepart-list { display: none; margin-top: 10px; }
+  .redepart-box.open .redepart-list { display: block; }
+  .release-btn {
+    width: 100%; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700;
+    background: linear-gradient(135deg, #ff9a76, var(--coral)); color: #241109;
+    transition: opacity .2s, transform .1s; margin-top: 4px;
+  }
+  .release-btn:disabled { opacity: .35; }
+  .release-btn:not(:disabled):active { transform: scale(.98); }
+  .tone-note { font-size: 11px; color: var(--ink-faint); margin-top: 8px; }
 
-/* ===== 长按蓄力放生 ===== */
-.release-btn.charging {
-  animation: chargeGlow 1.2s ease-in-out infinite;
-  transform: scale(0.97);
-}
+  /* ===== mailbox ===== */
+  .journey-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; scrollbar-width: none; }
+  .journey-chips::-webkit-scrollbar { display: none; }
+  .jchip {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 999px; font-size: 12px;
+    background: var(--glass); border: 1px solid var(--line); color: var(--ink-dim);
+  }
+  .jchip.active { border-color: var(--aqua); color: var(--aqua); background: var(--aqua-soft); }
+  .jchip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-faint); }
+  .jchip .dot.live { background: var(--aqua); box-shadow: 0 0 8px rgba(87,200,178,.8); }
+  .jchip .dot.done { background: var(--ink-faint); }
+  .jchip .dot.paused { background: var(--gold); }
 
-@keyframes chargeGlow {
-  0%, 100% { box-shadow: 0 6px 18px rgba(237,125,91,.45); }
-  50% { box-shadow: 0 6px 34px rgba(237,125,91,.95), 0 0 60px rgba(255,179,138,.5); }
-}
+  .jhead { margin-bottom: 14px; }
+  .jhead-main { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .jhead-emoji { font-size: 34px; }
+  .jhead-title { font-size: 17px; font-weight: 700; }
+  .jhead-sub { font-size: 12px; color: var(--ink-dim); }
+  .phase-badge {
+    margin-left: auto; padding: 4px 12px; border-radius: 999px; font-size: 11px;
+    border: 1px solid var(--line); color: var(--ink-dim); white-space: nowrap;
+  }
+  .phase-badge.live { color: var(--aqua); border-color: rgba(87,200,178,.5); background: var(--aqua-soft); }
+  .phase-badge.warn { color: var(--gold); border-color: rgba(255,217,112,.5); background: rgba(255,217,112,.1); }
+  .phase-badge.done { color: var(--ink-faint); }
+  .goal-quote {
+    background: rgba(6,13,20,.5); border: 1px solid var(--line); border-left: 3px solid var(--aqua);
+    border-radius: 10px; padding: 10px 14px; font-size: 13px; color: var(--ink-dim); font-style: italic;
+  }
+  .goal-quote b { color: var(--aqua); font-style: normal; font-size: 11px; margin-right: 6px; }
+  .jhead-note { font-size: 11px; color: var(--ink-faint); margin-top: 8px; }
 
-.release-btn.charging::after {
-  content: '深呼吸 · 长按送它走';
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,.28);
-  letter-spacing: 2px;
-  font-size: 13px;
-}
+  .signal-card {
+    border: 1px solid rgba(255,122,89,.55); border-radius: var(--radius);
+    background: linear-gradient(160deg, rgba(255,122,89,.12), rgba(15,33,48,.85));
+    padding: 16px; margin-bottom: 14px;
+  }
+  .signal-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--coral); font-weight: 700; margin-bottom: 8px; }
+  .signal-tag .blink { width: 7px; height: 7px; border-radius: 50%; background: var(--coral); animation: blink 1.2s infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  .signal-text { font-size: 14px; margin-bottom: 10px; }
+  .signal-due { font-size: 11px; color: var(--ink-dim); margin-bottom: 12px; }
+  .signal-due b { color: var(--gold); font-weight: 600; }
+  .signal-actions { font-size: 11px; color: var(--ink-faint); margin-bottom: 12px; }
+  .signal-reply { display: flex; gap: 8px; }
+  .signal-reply textarea {
+    flex: 1; background: rgba(6,13,20,.6); border: 1px solid var(--line); border-radius: 12px;
+    color: var(--ink); font-size: 13px; padding: 10px 12px; resize: none; height: 44px; outline: none;
+  }
+  .signal-reply textarea:focus { border-color: rgba(255,122,89,.6); }
+  .reply-btn { padding: 0 18px; border-radius: 12px; background: var(--coral); color: #241109; font-weight: 700; font-size: 13px; }
+  .replied-note { font-size: 12px; color: var(--aqua); }
+
+  .msg-list { display: flex; flex-direction: column; gap: 10px; }
+  .msg-card { background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+  .msg-card.final { border-color: rgba(255,217,112,.5); background: linear-gradient(160deg, rgba(255,217,112,.08), rgba(15,33,48,.85)); }
+  .msg-card.system { border-style: dashed; opacity: .8; }
+  .msg-card.signal-msg { border-left: 3px solid var(--coral); }
+  .msg-card.user-reply { margin-left: 28px; background: rgba(87,200,178,.08); border-color: rgba(87,200,178,.3); }
+  .msg-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+  .msg-kind { font-size: 10px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-faint); white-space: nowrap; }
+  .msg-card.final .msg-kind { color: var(--gold); border-color: rgba(255,217,112,.5); }
+  .msg-title { font-size: 13px; font-weight: 700; }
+  .msg-time { margin-left: auto; font-size: 10px; color: var(--ink-faint); white-space: nowrap; }
+  .msg-text { font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+  .msg-img { margin-top: 10px; border-radius: 12px; width: 100%; display: block; }
+  .msg-badge { font-size: 10px; color: var(--ink-faint); margin-top: 6px; }
+  .msg-badge.warn { color: var(--gold); }
+
+  .empty-box { text-align: center; padding: 60px 20px; color: var(--ink-dim); }
+  .empty-box .big { font-size: 44px; margin-bottom: 12px; }
+  .empty-box p { font-size: 13px; margin-bottom: 16px; }
+  .btn-line {
+    padding: 9px 22px; border-radius: 999px; border: 1px solid var(--line);
+    color: var(--ink-dim); font-size: 13px;
+  }
+  .btn-line:hover { border-color: var(--aqua); color: var(--aqua); }
+  .jfoot { display: flex; align-items: center; gap: 10px; margin-top: 18px; justify-content: space-between; flex-wrap: wrap; }
+  .tone-inline { display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--ink-faint); flex-wrap: wrap; }
+  .end-link { font-size: 12px; color: var(--ink-faint); text-decoration: underline; text-underline-offset: 3px; }
+  .end-link:hover { color: var(--coral); }
+
+  /* ===== overlays ===== */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(4, 9, 14, .78); z-index: 50;
+    display: none; align-items: center; justify-content: center; padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .overlay.show { display: flex; }
+  .receipt-card {
+    width: 100%; max-width: 360px; background: var(--bg2); border: 1px solid var(--line);
+    border-radius: 22px; padding: 30px 24px; text-align: center;
+    animation: rise .35s ease;
+  }
+  @keyframes rise { from { transform: translateY(18px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .receipt-emoji { font-size: 52px; margin-bottom: 10px; }
+  .receipt-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .receipt-sub { font-size: 13px; color: var(--ink-dim); margin-bottom: 20px; }
+  .receipt-actions { display: flex; gap: 10px; justify-content: center; }
+  .btn-primary {
+    padding: 10px 24px; border-radius: 999px; background: var(--aqua); color: #06231d; font-weight: 700; font-size: 13px;
+  }
+  .toast {
+    position: fixed; left: 50%; bottom: 34px; transform: translateX(-50%) translateY(20px);
+    background: rgba(15,33,48,.95); border: 1px solid var(--line); color: var(--ink);
+    padding: 10px 20px; border-radius: 999px; font-size: 13px; z-index: 99;
+    opacity: 0; transition: all .25s; pointer-events: none; max-width: 86vw; text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .loading-dots::after { content: '…'; animation: dots 1.4s steps(4) infinite; }
+  @keyframes dots { 0% { content: ''; } 25% { content: '·'; } 50% { content: '··'; } 75% { content: '···'; } }
+
+  @media (min-width: 700px) {
+    .water-canvas { height: 380px; }
+  }
 </style>
 </head>
 <body>
-
-<div class="water-bg"></div>
-<div class="water-ripples"></div>
-
-<div class="app-shell">
-
-  <!-- Top Navigation -->
-  <nav class="top-nav">
-    <div class="nav-logo">
-      <span class="logo-mark">放</span>
-      <span class="logo-text">赛博放生</span>
-    </div>
-    <div class="nav-toggle" id="navToggle">
+<div class="app">
+  <header class="topbar">
+    <div class="brand">赛博<em>放生</em></div>
+    <nav class="nav-pills">
       <button class="nav-pill active" data-page="release">放生</button>
-      <button class="nav-pill" data-page="archive">档案</button>
-    </div>
-    <div class="nav-right">
-      <div class="nav-avatar">微</div>
-      <span class="nav-login-tag">静默登录</span>
-    </div>
-  </nav>
+      <button class="nav-pill" data-page="mailbox">信箱</button>
+    </nav>
+  </header>
 
-  <!-- View Container -->
-  <div class="view-container">
-
-    <!-- Release View -->
-    <div class="view active" id="releaseView">
-      <div class="release-view" id="releaseContent"></div>
-    </div>
-
-    <!-- Archive View -->
-    <div class="view" id="archiveView">
-      <div class="archive-view" id="archiveContent"></div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Receipt Modal -->
-<div class="receipt-overlay" id="receiptOverlay">
-  <div class="receipt-card" id="receiptCard"></div>
-</div>
-
-<!-- Destiny Modal -->
-<div class="destiny-overlay" id="destinyOverlay">
-  <div class="destiny-modal" id="destinyModal"></div>
-</div>
-
-<!-- Ad Overlay (激励视频模拟) -->
-<div class="ad-overlay" id="adOverlay">
-  <div class="ad-card">
-    <div class="ad-banner">📺 广告</div>
-    <div class="ad-body">
-      <div class="ad-content" id="adContent">
-        <div class="ad-placeholder">广告位</div>
-        <div class="ad-tag">激励视频 · 观看完整后可解锁</div>
+  <!-- 放生 -->
+  <section class="view active" id="releaseView">
+    <div class="water-canvas" id="waterCanvasBox">
+      <canvas class="globe-canvas" id="globeCanvas"></canvas>
+      <div class="world-map" id="worldMap">
+        <svg class="map-svg" viewBox="0 0 640 480" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#12283a"/>
+              <stop offset="60%" stop-color="#0d1f30"/>
+              <stop offset="100%" stop-color="#081420"/>
+            </linearGradient>
+          </defs>
+          <rect width="640" height="480" fill="url(#oceanGrad)"/>
+          <g fill="#16354a" stroke="#1e4258" stroke-width="0.6">
+            <path d="M 50 70 Q 90 50 150 65 Q 190 80 195 120 Q 185 160 160 180 Q 120 195 85 180 Q 55 160 45 120 Q 40 90 50 70 Z"/>
+            <path d="M 130 230 Q 165 220 185 250 Q 195 290 185 330 Q 170 370 150 365 Q 125 340 120 300 Q 120 260 130 230 Z"/>
+            <path d="M 200 40 Q 230 30 250 45 Q 255 65 240 75 Q 215 75 200 60 Z"/>
+            <path d="M 260 75 Q 330 55 420 70 Q 500 85 545 120 Q 555 155 530 180 Q 480 195 420 190 Q 360 185 310 170 Q 270 155 255 125 Q 250 95 260 75 Z"/>
+            <path d="M 285 95 Q 300 88 308 100 Q 305 115 292 113 Q 283 105 285 95 Z"/>
+            <path d="M 540 130 Q 555 125 560 140 Q 555 155 545 150 Q 538 140 540 130 Z"/>
+            <path d="M 335 210 Q 370 200 395 225 Q 405 265 395 305 Q 380 340 360 340 Q 335 325 325 290 Q 320 250 335 210 Z"/>
+            <path d="M 500 220 Q 520 215 530 230 Q 525 245 510 243 Q 498 235 500 220 Z"/>
+            <path d="M 495 335 Q 535 325 560 345 Q 565 375 545 390 Q 515 392 498 378 Q 488 355 495 335 Z"/>
+          </g>
+          <g id="waterMarkers"></g>
+        </svg>
       </div>
-      <div class="ad-countdown">剩余 <span id="adCountdownNum">15</span> 秒</div>
+      <div class="map-hint" id="mapHint">转动地球 · 点选放生水域</div>
+      <button class="style-toggle" id="globeModeBtn" type="button"></button>
+      <div class="river-stat">
+        <div class="stat-line">已选 · <span class="num" id="selectedWater">未选择</span></div>
+        <div class="stat-line muted" id="worldPulseLine">此刻世界上有 <span id="worldAliveCount">…</span> 段旅程在水里</div>
+      </div>
     </div>
-    <button class="ad-close-btn" id="adCloseBtn" disabled>跳过</button>
+
+    <div class="control-panel">
+      <div class="glass-panel">
+        <div class="section-block">
+          <div class="section-label"><span class="label-num">1</span>写下一件具体的烦恼 <span class="label-hint">（它会成为这只生物本程的动机）</span></div>
+          <div class="feeling-row">
+            <textarea class="feeling-textarea" id="feelingText" rows="3" maxlength="500" placeholder="例如：谁找我帮忙我都答应，最后只有我自己的事没做完……"></textarea>
+          </div>
+          <div class="feeling-hint"><span>·</span> 写得越具体，它记得越清楚</div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-label"><span class="label-num">2</span>想放生一只</div>
+          <div class="chip-row" id="creatureChips">
+            <button class="chip coral" data-creature="koi">🐟 锦鲤</button>
+            <button class="chip coral" data-creature="turtle">🐢 乌龟</button>
+            <button class="chip coral" data-creature="cloud">☁️ 云朵</button>
+          </div>
+          <div class="redepart-box" id="redepartBox">
+            <button class="redepart-toggle" id="redepartToggle" type="button">
+              <span class="switch"></span>
+              <span>让一只放生过的生物再次出发（同一只，新的旅程）</span>
+            </button>
+            <div class="redepart-list chip-row" id="redepartList"></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-label"><span class="label-num">3</span>这程的故事，你想它讲得</div>
+          <div class="chip-row" id="toneChips">
+            <button class="chip aqua" data-tone="gentle">轻一点</button>
+            <button class="chip aqua active" data-tone="balanced">荒诞但温和</button>
+            <button class="chip aqua" data-tone="absurd">更荒唐一点</button>
+          </div>
+          <div class="tone-note">只影响之后的遭遇与文风；它自己的决定和已经发生的事不会被改写。</div>
+        </div>
+
+        <button class="release-btn" id="releaseBtn" disabled>选好啦 · 按下放生</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 信箱 -->
+  <section class="view" id="mailboxView">
+    <div class="journey-chips" id="journeyChips"></div>
+    <div id="mailboxBody"></div>
+  </section>
+</div>
+
+<!-- 放生回执 -->
+<div class="overlay" id="receiptOverlay">
+  <div class="receipt-card">
+    <div class="receipt-emoji" id="receiptEmoji">🐟</div>
+    <div class="receipt-title">已放生 · 准备出发</div>
+    <div class="receipt-sub" id="receiptSub">它正在熟悉这片水域。你不用守在页面旁，有了动静它会写信到这里。</div>
+    <div class="receipt-actions">
+      <button class="btn-line" id="receiptHome">回首页</button>
+      <button class="btn-primary" id="receiptMailbox">去看信箱</button>
+    </div>
   </div>
 </div>
 
-<!-- Pay Toast -->
-<div class="destiny-pay-toast" id="destinyPayToast"></div>
+<div class="toast" id="toast"></div>
 
-<!-- 3D 地球依赖：本地 vendor 优先，CDN 兜底；失败自动回落 2D 地图 -->
 <script src="/vendor/three.min.js" onerror="this.remove()"></script>
 <script>
-  if (typeof THREE === 'undefined') {
-    document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"><\/script>');
-  }
+  // Bloom 后处理（可选：缺失时 globe3d 自动降级普通渲染）
+  document.write('<script src="/vendor/EffectComposer.js"><\/script>');
+  document.write('<script src="/vendor/RenderPass.js"><\/script>');
+  document.write('<script src="/vendor/ShaderPass.js"><\/script>');
+  document.write('<script src="/vendor/UnrealBloomPass.js"><\/script>');
+  document.write('<script src="/vendor/CopyShader.js"><\/script>');
+  document.write('<script src="/vendor/LuminosityHighPassShader.js"><\/script>');
 </script>
-<!-- Bloom 后处理（可选：缺失时 globe3d 自动降级普通渲染） -->
-<script src="/vendor/CopyShader.js" onerror="this.remove()"></script>
-<script src="/vendor/LuminosityHighPassShader.js" onerror="this.remove()"></script>
-<script src="/vendor/EffectComposer.js" onerror="this.remove()"></script>
-<script src="/vendor/RenderPass.js" onerror="this.remove()"></script>
-<script src="/vendor/ShaderPass.js" onerror="this.remove()"></script>
-<script src="/vendor/UnrealBloomPass.js" onerror="this.remove()"></script>
-<script src="/globe3d.js?v=15"></script>
+<script src="/globe3d.js?v=16"></script>
 <script>
-  // 加载与小程序共享的 3D 地球配置（失败则用 globe3d.js 内置兜底常量）
-  (function () {
-    var inject = function (cfg) { if (window.Globe3D) Globe3D.loadConfig(cfg); };
-    var fallback = {
-      WATERS_GEO: {
-        pacific: { lat: 0, lng: -160 }, atlantic: { lat: 15, lng: -40 }, indian: { lat: -25, lng: 75 },
-        arctic: { lat: 85, lng: 0 }, aegean: { lat: 38, lng: 25 }, galapagos: { lat: -0.7, lng: -90.5 },
-        baikal: { lat: 53.5, lng: 108 }, ness: { lat: 57.3, lng: -4.4 }, xihu: { lat: 30.2, lng: 120.1 },
-        deadsea: { lat: 31.5, lng: 35.5 }, xiang: { lat: 28, lng: 113 }, mariana: { lat: 11.3, lng: 142.2 }
-      },
-      CREATURE_3D: {
-        koi: { color: 0xed7d5b, glow: 0xffb38a }, turtle: { color: 0x7fb6a4, glow: 0xa9d2c5 },
-        cloud: { color: 0xf0e6d0, glow: 0xffffff }
-      },
-      GLOBE_ANIM: { CHARGE_MIN_MS: 600, DIVE_MS: 1600, RIPPLE_MS: 2400, BUBBLE_COUNT: 40, FOCUS_MS: 900, AUTO_ROTATE_SPEED: 0.0004 }
-    };
-    window.__globeConfigReady = fetch('/globe-config.json').then(r => r.ok ? r.json() : Promise.reject())
-      .then(inject).catch(function () { inject(fallback); });
-    // 真实大陆轮廓（Natural Earth，61KB）；init 前必须就绪
-    window.__worldLandReady = fetch('/world-land.json').then(r => r.ok ? r.json() : Promise.reject())
-      .then(function (wl) { if (window.Globe3D) Globe3D.setWorldLand(wl); return wl; })
-      .catch(function () { return null; });
-  })();
-</script>
-<script>
-(function() {
+(function () {
   'use strict';
+  var $ = function (id) { return document.getElementById(id); };
 
-  // ==================== API Layer ====================
-  const API_BASE = '/api';
-  const USE_API = true; // Set to true when backend is running
-
-  async function apiRelease(data) {
-    if (!USE_API) return localRelease(data);
-    try {
-      const res = await fetch(`${API_BASE}/release`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) {
-        const errText = await res.text().catch(() => '');
-        throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
-      }
-      return await res.json();
-    } catch (e) {
-      console.error('[apiRelease] 失败:', e);
-      alert('后端 API 连接失败，无法放生。请确认：\n1. 已在 server 目录运行 npm start\n2. 访问的是 http://localhost:3001\n3. 不是 file:// 打开的文件\n\n错误：' + e.message);
-      throw e;
-    }
+  // ==================== 安全渲染 ====================
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  async function apiGetRecords(openid) {
-    if (!USE_API) return { records: loadRecords(), stats: getStats() };
-    const res = await fetch(`${API_BASE}/records?openid=${encodeURIComponent(openid)}`);
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
-    }
-    return await res.json();
+  function toast(text) {
+    var t = $('toast');
+    t.textContent = text;
+    t.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(function () { t.classList.remove('show'); }, 2600);
   }
 
-  async function apiGetReply(id) {
-    if (!USE_API) {
-      const records = loadRecords();
-      const r = records.find(x => x.id === id);
-      return { reply: r ? r.reply : null };
-    }
-    const res = await fetch(`${API_BASE}/reply/${id}`);
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
-    }
-    return await res.json();
+  function fmtTime(ts) {
+    var d = new Date(ts);
+    var p = function (n) { return String(n).padStart(2, '0'); };
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + p(d.getHours()) + ':' + p(d.getMinutes());
   }
 
-  // 命运轨迹：获取
-  async function apiGetDestiny(recordId) {
-    if (!USE_API) return localGetDestiny(recordId);
-    const res = await fetch(`${API_BASE}/destiny/${recordId}`);
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
-    }
-    return await res.json();
+  function fmtDuration(ms) {
+    if (ms <= 0) return '已到期';
+    var s = Math.floor(ms / 1000);
+    if (s < 60) return s + ' 秒';
+    var m = Math.floor(s / 60);
+    if (m < 60) return m + ' 分 ' + (s % 60) + ' 秒';
+    var h = Math.floor(m / 60);
+    return h + ' 小时 ' + (m % 60) + ' 分';
   }
 
-  // 命运轨迹：看广告解锁
-  async function apiUnlockDestiny(recordId, mode, index) {
-    if (!USE_API) return localUnlockDestiny(recordId, mode, index);
-    const res = await fetch(`${API_BASE}/destiny/unlock`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        recordId,
-        mode,
-        index: mode === 'single' ? index : undefined,
-        adToken: 'mock_ad_ok'
-      })
-    });
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
-    }
-    return await res.json();
-  }
-
-  // 生成回信 + 命运轨迹（手动触发，用于本地模式）
-  async function apiGenerateReply(id) {
-    if (!USE_API) return localGenerateReply(id);
-    const res = await fetch(`${API_BASE}/reply/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
-    });
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      throw new Error(`后端错误 ${res.status}: ${errText.slice(0, 200)}`);
-    }
-    return await res.json();
-  }
-
-  function localRelease(data) {
-    addRecord(data);
-    return { ok: true, id: data.id };
-  }
-
-  // ==================== Data ====================
-  const STORAGE_KEY = 'cyber_release_records';
-
-  const CREATURES = {
-    koi: { name: '锦鲤', emoji: '🐟' },
-    turtle: { name: '乌龟', emoji: '🐢' },
-    cloud: { name: '云朵', emoji: '☁️' }
+  // ==================== 状态 ====================
+  var WATERS = {
+    pacific: '太平洋', atlantic: '大西洋', indian: '印度洋', arctic: '北冰洋',
+    baikal: '贝加尔湖', ness: '尼斯湖', xihu: '西湖', xiang: '湘江',
+    mariana: '马里亚纳海沟', deadsea: '死海', aegean: '爱琴海', galapagos: '加拉帕戈斯'
   };
-
-  const WATERS = {
-    pacific:   { name: '太平洋',         type: 'ocean'  },
-    atlantic:  { name: '大西洋',         type: 'ocean'  },
-    indian:    { name: '印度洋',         type: 'ocean'  },
-    arctic:    { name: '北冰洋',         type: 'ocean'  },
-    baikal:    { name: '贝加尔湖',       type: 'lake'   },
-    ness:      { name: '尼斯湖',         type: 'lake'   },
-    xihu:      { name: '西湖',           type: 'lake'   },
-    xiang:     { name: '湘江',           type: 'river'  },
-    mariana:   { name: '马里亚纳海沟',   type: 'trench' },
-    deadsea:   { name: '死海',           type: 'lake'   },
-    aegean:    { name: '爱琴海',         type: 'sea'    },
-    galapagos: { name: '加拉帕戈斯',     type: 'sea'    }
-  };
-
-  const WATER_COORDS = {
-    pacific:   { x: 590, y: 200 },
-    atlantic:  { x: 225, y: 180 },
-    indian:    { x: 460, y: 340 },
-    arctic:    { x: 340, y: 25  },
-    baikal:    { x: 450, y: 120 },
-    ness:      { x: 295, y: 90  },
-    xihu:      { x: 515, y: 155 },
-    xiang:     { x: 505, y: 175 },
-    mariana:   { x: 600, y: 275 },
-    deadsea:   { x: 395, y: 198 },
-    aegean:    { x: 350, y: 188 },
-    galapagos: { x: 95,  y: 260 }
-  };
-
-  const CREATURE_SVG = {
-    koi: `<g>
-      <ellipse cx="60" cy="40" rx="38" ry="20" fill="url(#koiGrad)"/>
-      <ellipse cx="60" cy="40" rx="38" ry="20" fill="none" stroke="#b85a3a" stroke-width="0.5" opacity="0.4"/>
-      <path d="M22 40 Q 10 28 6 40 Q 10 52 22 40 Z" fill="#ed7d5b"/>
-      <ellipse cx="60" cy="32" rx="14" ry="4" fill="#fff" opacity="0.5"/>
-      <circle cx="78" cy="36" r="3" fill="#1f3a36"/>
-      <circle cx="79" cy="35" r="0.8" fill="#fff"/>
-      <path d="M55 50 Q 60 60 65 50" stroke="#b85a3a" stroke-width="1" fill="none" opacity="0.6"/>
-      <defs>
-        <linearGradient id="koiGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#f9d8c9"/>
-          <stop offset="50%" stop-color="#ed7d5b"/>
-          <stop offset="100%" stop-color="#d96d4d"/>
-        </linearGradient>
-      </defs>
-    </g>`,
-    turtle: `<g>
-      <ellipse cx="60" cy="50" rx="36" ry="22" fill="#3e7a96"/>
-      <ellipse cx="60" cy="50" rx="36" ry="22" fill="none" stroke="#1f3a36" stroke-width="0.5" opacity="0.3"/>
-      <ellipse cx="60" cy="50" rx="24" ry="14" fill="#5a9bb5"/>
-      <g fill="#2c5d72" opacity="0.55">
-        <ellipse cx="60" cy="42" rx="4" ry="3"/>
-        <ellipse cx="48" cy="48" rx="4" ry="3"/>
-        <ellipse cx="72" cy="48" rx="4" ry="3"/>
-        <ellipse cx="54" cy="58" rx="4" ry="3"/>
-        <ellipse cx="66" cy="58" rx="4" ry="3"/>
-        <ellipse cx="60" cy="50" rx="3" ry="3"/>
-      </g>
-      <ellipse cx="22" cy="52" rx="10" ry="6" fill="#5a9bb5"/>
-      <ellipse cx="98" cy="52" rx="10" ry="6" fill="#5a9bb5"/>
-      <circle cx="22" cy="50" r="2" fill="#1f3a36"/>
-      <circle cx="98" cy="50" r="2" fill="#1f3a36"/>
-      <circle cx="22.6" cy="49.5" r="0.6" fill="#fff"/>
-      <circle cx="98.6" cy="49.5" r="0.6" fill="#fff"/>
-    </g>`,
-    cloud: `<g>
-      <ellipse cx="60" cy="48" rx="42" ry="22" fill="#faf6ec"/>
-      <ellipse cx="40" cy="42" rx="18" ry="16" fill="#faf6ec"/>
-      <ellipse cx="78" cy="40" rx="20" ry="18" fill="#faf6ec"/>
-      <ellipse cx="60" cy="38" rx="16" ry="14" fill="#fff"/>
-      <ellipse cx="60" cy="48" rx="42" ry="22" fill="none" stroke="#c7dbe2" stroke-width="0.6"/>
-      <g opacity="0.5">
-        <circle cx="44" cy="42" r="2" fill="#cfe4dd"/>
-        <circle cx="56" cy="40" r="2.5" fill="#cfe4dd"/>
-        <circle cx="70" cy="38" r="2" fill="#cfe4dd"/>
-        <circle cx="80" cy="44" r="2" fill="#cfe4dd"/>
-      </g>
-      <circle cx="48" cy="46" r="1.2" fill="#1f3a36"/>
-      <circle cx="72" cy="46" r="1.2" fill="#1f3a36"/>
-      <path d="M52 52 Q 60 56 68 52" stroke="#1f3a36" stroke-width="0.8" fill="none" opacity="0.6"/>
-    </g>`
-  };
-
-  const HOT_WATERS = ['pacific', 'baikal', 'mariana'];
-
-  const SIGNS = {
-    koi: [
-      '今天的你已经比昨天更松弛一丢丢了。',
-      '锦鲤说：好运不是等来的，是你走过去接的。',
-      '你放下的东西，会以另一种形式回来。',
-      '今天适合做一件没用但开心的事。',
-      '紧张说明你在乎，在乎说明你认真。'
-    ],
-    turtle: [
-      '乌龟说：慢一点也没关系，方向对就行。',
-      '你不需要赢过谁，你只需要不放弃。',
-      '今天的疲惫是明天的铠甲。',
-      '允许自己偶尔停下来，这不叫偷懒。',
-      '乌龟的壳不是逃避，是给自己一个安全的空间。'
-    ],
-    cloud: [
-      '云朵说：飘着飘着，风就来了。',
-      '你此刻的烦恼，90% 不会发生。',
-      '允许自己不开心一会儿，但别忘了开心。',
-      '天上没有过不去的云，地上没有过不去的坎。',
-      '你比你以为的要轻，放下一些就飘起来了。'
-    ]
-  };
-
-  const REPLY_POOL = [
-    { bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)', emoji: '🌿', text: '你放生的那只小家伙在电子水域里安顿下来了。它托我转告：你此刻觉得过不去的坎，三个月后回头看连坎都不算。深呼吸，没事的。' },
-    { bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)', emoji: '🌙', text: '今晚的水域很安静。你的感受已经被收到了——不是被解决了，是被听到了。有些事不需要解决，被听到就够了。' },
-    { bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)', emoji: '🔥', text: '好消息：你焦虑的事有 87% 不会发生。坏消息：剩下 13% 你也管不了。所以这只生物决定替你扛着，你先去吃顿好的。' },
-    { bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)', emoji: '✨', text: '它游了一圈回来说：你比自己以为的要结实。那些让你觉得要碎掉的时刻，其实你一次都没真碎过。这次也不会。' },
-    { bg: 'linear-gradient(135deg, #fff3cd, #ffd970)', emoji: '☀️', text: '报告！你的生物已在虚拟水域完成打卡。它观察到：你最近对自己太严格了。建议本周至少做两件"没用但开心"的事。' },
-    { bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)', emoji: '🌊', text: '水域温度 22°C，生物状态良好。它给你带了一句话："紧张说明你在乎，在乎说明你认真，认真的人运气不会太差。"' }
+  var PLACEHOLDERS = [
+    '明天要答辩，紧张到胃疼…',
+    '又加班到十一点，脑子嗡嗡的…',
+    '谁找我帮忙我都答应，最后只有我的事没做完…',
+    '凌晨三点了还是睡不着，想太多…'
   ];
 
-  const PLACEHOLDERS = [
-    '明天要答辩，紧张到胃疼...',
-    '又加班到十一点，脑子嗡嗡的...',
-    '就是莫名的烦躁，说不上来...',
-    '项目明天上线，手心一直在出汗...',
-    '凌晨三点了还是睡不着，想太多...',
-    '今天被老板否了第三版方案...'
-  ];
-
-  const FB_LABELS = {
-    '24h': '24 小时后',
-    '3d': '3 天后',
-    '7d': '7 天后',
-    'custom': ''
-  };
-
-  // ==================== State ====================
-  const OPENID_KEY = 'cyber_release_openid';
-  function getOpenid() {
-    let id = localStorage.getItem(OPENID_KEY);
-    if (!id) {
-      id = `web-user-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-      localStorage.setItem(OPENID_KEY, id);
-    }
-    return id;
-  }
-
-  let state = {
-    currentPage: 'release',
+  var state = {
+    page: 'release',
     feeling: '',
-    creature: null,
+    creature: null,          // koi | turtle | cloud
     water: null,
-    feedbackTime: '24h',
-    feedbackDate: '',
+    tone: 'balanced',
+    redepartOpen: false,
+    redepartCreatureId: null,
+    creatures: [],
+    journeys: [],
+    currentJourneyId: null,
+    journey: null,           // 当前旅程视图缓存
     isReleased: false,
-    showReceipt: false,
-    receipt: null,
-    todayCount: 1247,
-    openid: getOpenid(),
-    archiveCollapsedIds: new Set()
+    globeActive: false,
+    pollTimer: null,
+    countdownTimer: null
   };
 
-  // ==================== Map State ====================
-  const MAP_VB = { w: 280, h: 280 };
-  const MAP_BOUNDS = { minX: 0, maxX: 640 - MAP_VB.w, minY: 0, maxY: 480 - MAP_VB.h };
-  let mapVb = { x: 380, y: 60 };
-  let mapDrag = { active: false, startX: 0, startY: 0, vbX: 0, vbY: 0, moved: false };
-
-  // ==================== Helpers ====================
-  const $ = (id) => document.getElementById(id);
-  const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  const pad = (n, len) => String(n).padStart(len, '0');
-
-  function formatTime(ts) {
-    const d = new Date(ts);
-    return `${pad(d.getMonth()+1, 2)}.${pad(d.getDate(), 2)} ${pad(d.getHours(), 2)}:${pad(d.getMinutes(), 2)}`;
-  }
-
-  function formatFullTime(ts) {
-    const d = new Date(ts);
-    return `${d.getFullYear()}.${pad(d.getMonth()+1, 2)}.${pad(d.getDate(), 2)} ${pad(d.getHours(), 2)}:${pad(d.getMinutes(), 2)}`;
-  }
-
-  function formatCountdown(ms) {
-    if (ms <= 0) return '00:00:00';
-    const h = Math.floor(ms / 3600000);
-    const m = Math.floor((ms % 3600000) / 60000);
-    const s = Math.floor((ms % 60000) / 1000);
-    return `${pad(h,2)}:${pad(m,2)}:${pad(s,2)}`;
-  }
-
-  function generateId() {
-    const d = new Date();
-    const dateStr = `${d.getFullYear()}${pad(d.getMonth()+1, 2)}${pad(d.getDate(), 2)}`;
-    const rand4 = pad(Math.floor(Math.random() * 9999), 4);
-    return `CRSB-${dateStr}-${rand4}`;
-  }
-
-  function getFeedbackLabel() {
-    if (state.feedbackTime === 'custom' && state.feedbackDate) {
-      return state.feedbackDate.replace(/-/g, '.').replace('T', ' ');
-    }
-    return FB_LABELS[state.feedbackTime] || '24 小时后';
-  }
-
-  function calcReplyAt() {
-    const now = Date.now();
-    if (state.feedbackTime === '3d') return now + 3 * 24 * 3600 * 1000;
-    if (state.feedbackTime === '7d') return now + 7 * 24 * 3600 * 1000;
-    if (state.feedbackTime === 'custom' && state.feedbackDate) {
-      const t = new Date(state.feedbackDate).getTime();
-      if (!isNaN(t)) return t;
-    }
-    return now + 24 * 3600 * 1000;
-  }
-
-  // ==================== Storage ====================
-  function loadRecords() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    } catch(_) { return []; }
-  }
-
-  function saveRecords(records) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-  }
-
-  function addRecord(record) {
-    const records = loadRecords();
-    records.unshift(record);
-    saveRecords(records);
-  }
-
-  function getStats() {
-    const records = loadRecords();
-    const total = records.length;
-    const pending = records.filter(r => !r.reply).length;
-    const replied = total - pending;
-    return { total, pending, replied };
-  }
-
-  function generateReply() {
-    return REPLY_POOL[Math.floor(Math.random() * REPLY_POOL.length)];
-  }
-
-  // ==================== Local Destiny (命运轨迹) ====================
-  const DESTINY_KEY = 'cyber_release_destinies';
-
-  function loadDestinies() {
-    try {
-      return JSON.parse(localStorage.getItem(DESTINY_KEY)) || {};
-    } catch(_) { return {}; }
-  }
-
-  function saveDestinies(d) {
-    localStorage.setItem(DESTINY_KEY, JSON.stringify(d));
-  }
-
-  // 本地命运轨迹模板生成（与 server/ai.js templateDestiny 保持一致）
-  function localGenerateDestinySegments(creature) {
-    const creatureName = CREATURES[creature]?.name || '生物';
-    const palettes = [
-      { bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)', emoji: '🌿' },
-      { bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)', emoji: '🌊' },
-      { bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)', emoji: '🔥' },
-      { bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)', emoji: '✨' }
-    ];
-    const arcs = {
-      koi: [
-        { title: '入水瞬间', text: `${creatureName}从你的掌心滑进水域，鳞片在光里闪了一下。它没有回头，但摆了摆尾巴，像是在说"放心"。` },
-        { title: '顺流而下', text: '水流比想象中温柔。它穿过一片水草，遇见一群透明的小鱼，它们互相打了个照面，又各自游开。' },
-        { title: '一次回望', text: '在某个转弯处它停了一下。它想起你写下那些字时的样子——它没法替你解决，但它决定替你记着。' },
-        { title: '准备回信', text: '它找到一块温暖的礁石，靠着，开始想怎么把这一路的事讲给你听。回信已经在它嘴里成形了。' }
-      ],
-      turtle: [
-        { title: '缓缓下沉', text: `${creatureName}缩进壳里，慢慢沉到水底。光从上面一缕缕漏下来，它闭上眼，决定先休息一会儿。` },
-        { title: '海底漫步', text: '它在沙地上一步一步走，比谁都慢，但每一步都稳。遇到一只水母，它从水母下面钻过去，像过一扇门。' },
-        { title: '一个决定', text: '它想起你写下的那些话。它想：慢不是错，方向对就行。它决定把这个想法带回去给你。' },
-        { title: '浮出水面', text: '它开始往上浮，气泡一颗颗从嘴边冒出去。它要去找一张干净的纸，把回信写下来。' }
-      ],
-      cloud: [
-        { title: '升上天空', text: `${creatureName}从你手心飘起来，越飘越高，最后停在水域上空。它低头看了你一眼，然后被风推着走了。` },
-        { title: '随风漂泊', text: '它路过一座山，又路过一片云。云和云之间互相点头，像在说"你也来啦"。它觉得自己轻了一点。' },
-        { title: '装下你的事', text: '它把你写下的那些事装进自己身体里。装着装着，它发现自己变重了——但不是坏事，是那种被需要的重。' },
-        { title: '化作回信', text: '它飘回水域上空，把自己拧了拧，拧出一封回信，轻轻丢向你的方向。' }
-      ]
-    };
-    const list = arcs[creature] || arcs.koi;
-    return list.map((seg, i) => ({
-      title: seg.title,
-      text: seg.text,
-      emoji: palettes[i % palettes.length].emoji,
-      bg: palettes[i % palettes.length].bg
-    }));
-  }
-
-  function localGetDestiny(recordId) {
-    const destinies = loadDestinies();
-    const records = loadRecords();
-    const record = records.find(r => r.id === recordId);
-    if (!record) return { error: '记录不存在' };
-
-    // 若命运轨迹不存在，则生成（第 0 段默认免费）
-    if (!destinies[recordId]) {
-      destinies[recordId] = {
-        id: `DST-${recordId}`,
-        recordId,
-        segments: localGenerateDestinySegments(record.creature),
-        unlockedIndices: [0],
-        createdAt: Date.now()
-      };
-      saveDestinies(destinies);
-    }
-    const d = destinies[recordId];
-    const unlocked = new Set(d.unlockedIndices);
-    const segments = d.segments.map((seg, i) => {
-      if (unlocked.has(i)) {
-        return { ...seg, index: i, locked: false };
-      }
-      return { index: i, title: seg.title, emoji: seg.emoji, bg: seg.bg, locked: true, unlockType: i === 0 ? 'free' : 'ad' };
+  // ==================== API ====================
+  function api(path, opts) {
+    opts = opts || {};
+    return fetch(path, {
+      method: opts.method || 'GET',
+      headers: opts.body ? { 'Content-Type': 'application/json' } : undefined,
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+      credentials: 'same-origin'
+    }).then(function (r) {
+      return r.json().then(function (data) { return { status: r.status, data: data }; })
+        .catch(function () { return { status: r.status, data: {} }; });
     });
-    return {
-      id: d.id,
-      recordId: d.recordId,
-      segments,
-      totalSegments: segments.length,
-      unlockedCount: segments.filter(s => !s.locked).length,
-      allUnlocked: segments.every(s => !s.locked),
-      adDurationMs: 15000
-    };
   }
 
-  function localUnlockDestiny(recordId, mode, index) {
-    const destinies = loadDestinies();
-    const d = destinies[recordId];
-    if (!d) return { error: '命运轨迹不存在' };
-    const total = d.segments.length;
-    const current = new Set(d.unlockedIndices);
-
-    if (mode === 'bundle') {
-      if (current.size >= total) {
-        return { ok: true, alreadyUnlocked: true, unlockedIndices: Array.from(current).sort((a,b)=>a-b) };
-      }
-      const all = Array.from({ length: total }, (_, i) => i);
-      d.unlockedIndices = all;
-      saveDestinies(destinies);
-      return { ok: true, adId: 'LOCAL-AD-' + Date.now(), unlockedIndices: all, adWatched: true };
-    }
-
-    const idx = parseInt(index, 10);
-    if (isNaN(idx) || idx < 0 || idx >= total) return { error: '无效索引' };
-    if (current.has(idx)) {
-      return { ok: true, alreadyUnlocked: true, unlockedIndices: Array.from(current).sort((a,b)=>a-b) };
-    }
-    current.add(idx);
-    d.unlockedIndices = Array.from(current).sort((a,b)=>a-b);
-    saveDestinies(destinies);
-    return { ok: true, adId: 'LOCAL-AD-' + Date.now(), unlockedIndices: d.unlockedIndices, adWatched: idx !== 0 };
-  }
-
-  function localGenerateReply(id) {
-    const records = loadRecords();
-    const r = records.find(x => x.id === id);
-    if (!r) return { ok: false, error: '记录不存在' };
-    if (!r.reply) {
-      r.reply = generateReply();
-      saveRecords(records);
-    }
-    // 确保命运轨迹存在
-    localGetDestiny(id);
-    return { ok: true, reply: r.reply, destinyId: `DST-${id}`, aiEnabled: false };
-  }
-
-  function checkPendingReplies() {
-    if (USE_API) return false; // 后端模式下由服务器定时器处理
-    const records = loadRecords();
-    let changed = false;
-    records.forEach(r => {
-      if (!r.reply && Date.now() >= r.replyAt) {
-        r.reply = generateReply();
-        changed = true;
-      }
+  // ==================== 页面切换 ====================
+  function switchPage(page) {
+    state.page = page;
+    document.querySelectorAll('.nav-pill').forEach(function (p) {
+      p.classList.toggle('active', p.dataset.page === page);
     });
-    if (changed) {
-      saveRecords(records);
-      if (state.currentPage === 'archive') {
-        renderArchive();
-      }
-    }
-    return changed;
+    $('releaseView').classList.toggle('active', page === 'release');
+    $('mailboxView').classList.toggle('active', page === 'mailbox');
+    if (page === 'mailbox') refreshMailbox();
+    if (page === 'release') startPulse();
+    stopPolling();
+    if (page === 'mailbox' && state.currentJourneyId) startPolling();
   }
 
-  function seedDemoData() {
-    if (USE_API) return; // 后端模式下不注入本地演示数据
-    if (loadRecords().length > 0) return;
-    const now = Date.now();
-    const demoRecords = [
-      {
-        id: 'CRSB-20260615-2847',
-        creature: 'koi', water: 'xihu',
-        feeling: '明天答辩，紧张到胃疼...',
-        feedbackLabel: '24 小时后',
-        createdAt: now - 26 * 3600 * 1000,
-        replyAt: now - 2 * 3600 * 1000,
-        reply: {
-          bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)',
-          emoji: '🌅',
-          text: '嘿，昨晚的西湖锦鲤替你游了一圈。它说答辩那天你会比想象中镇定——不是因为不紧张了，而是因为你已经紧张过了，该轮到镇定了。胃不疼了吧？'
-        }
-      },
-      {
-        id: 'CRSB-20260616-3912',
-        creature: 'turtle', water: 'mariana',
-        feeling: '项目今天上线，手心一直在出汗...',
-        feedbackLabel: '24 小时后',
-        createdAt: now - 0.5 * 3600 * 1000,
-        replyAt: now + 23.5 * 3600 * 1000,
-        reply: null
-      },
-      {
-        id: 'CRSB-20260614-1023',
-        creature: 'cloud', water: 'baikal',
-        feeling: '凌晨三点了还是睡不着，想太多...',
-        feedbackLabel: '24 小时后',
-        createdAt: now - 50 * 3600 * 1000,
-        replyAt: now - 26 * 3600 * 1000,
-        reply: {
-          bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)',
-          emoji: '🌙',
-          text: '贝加尔湖的云朵飘过来说：你凌晨三点想的事，有 90% 不会发生。剩下 10% 发生了你也管不了。它替你把那 90% 装走了，今晚试试能不能早点闭眼。'
-        }
-      },
-      {
-        id: 'CRSB-20260612-0568',
-        creature: 'koi', water: 'pacific',
-        feeling: '今天被老板否了第三版方案...',
-        feedbackLabel: '24 小时后',
-        createdAt: now - 96 * 3600 * 1000,
-        replyAt: now - 72 * 3600 * 1000,
-        reply: {
-          bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)',
-          emoji: '🔥',
-          text: '太平洋的锦鲤回信了：老板否了三版，说明你在尝试。它替你数了一下——第三版被否的人，第四版过的概率是 67%。你已经在路上了，别停下来。'
-        }
-      }
-    ];
-    saveRecords(demoRecords);
-  }
+  document.querySelectorAll('.nav-pill').forEach(function (p) {
+    p.addEventListener('click', function () { switchPage(p.dataset.page); });
+  });
 
-  // ==================== Router ====================
-  function navigateTo(page) {
-    state.currentPage = page;
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
-    if (page === 'release') {
-      $('releaseView').classList.add('active');
-      document.querySelector('.nav-pill[data-page="release"]').classList.add('active');
-      renderRelease();
-    } else if (page === 'archive') {
-      $('archiveView').classList.add('active');
-      document.querySelector('.nav-pill[data-page="archive"]').classList.add('active');
-      renderArchive();
-    }
-  }
-
-  // ==================== Release Page Render ====================
-  function renderRelease() {
-    const waterName = state.water ? WATERS[state.water].name : '未选择';
-    const creatureArt = CREATURE_SVG[state.creature] || CREATURE_SVG.koi;
-
-    const hotBubblesHtml = HOT_WATERS.map(key => `
-      <button class="hot-bubble ${state.water === key ? 'active' : ''}" data-water="${key}">🔥 ${WATERS[key].name}</button>
-    `).join('');
-
-    const waterMarkersHtml = `
-      <g class="water-marker ${state.water === 'pacific' ? 'selected' : ''}" data-water="pacific" transform="translate(590,200)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">太平洋</text>
-      </g>
-      <g class="water-marker ${state.water === 'atlantic' ? 'selected' : ''}" data-water="atlantic" transform="translate(225,180)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">大西洋</text>
-      </g>
-      <g class="water-marker ${state.water === 'indian' ? 'selected' : ''}" data-water="indian" transform="translate(460,340)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">印度洋</text>
-      </g>
-      <g class="water-marker ${state.water === 'arctic' ? 'selected' : ''}" data-water="arctic" transform="translate(340,25)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="18">北冰洋</text>
-      </g>
-      <g class="water-marker lake ${state.water === 'baikal' ? 'selected' : ''}" data-water="baikal" transform="translate(450,120)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">贝加尔湖</text>
-      </g>
-      <g class="water-marker lake ${state.water === 'ness' ? 'selected' : ''}" data-water="ness" transform="translate(295,90)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">尼斯湖</text>
-      </g>
-      <g class="water-marker lake ${state.water === 'xihu' ? 'selected' : ''}" data-water="xihu" transform="translate(515,155)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">西湖</text>
-      </g>
-      <g class="water-marker river ${state.water === 'xiang' ? 'selected' : ''}" data-water="xiang" transform="translate(505,175)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="18">湘江</text>
-      </g>
-      <g class="water-marker trench ${state.water === 'mariana' ? 'selected' : ''}" data-water="mariana" transform="translate(600,275)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">马里亚纳海沟</text>
-      </g>
-      <g class="water-marker lake ${state.water === 'deadsea' ? 'selected' : ''}" data-water="deadsea" transform="translate(395,198)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">死海</text>
-      </g>
-      <g class="water-marker ${state.water === 'aegean' ? 'selected' : ''}" data-water="aegean" transform="translate(350,188)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">爱琴海</text>
-      </g>
-      <g class="water-marker ${state.water === 'galapagos' ? 'selected' : ''}" data-water="galapagos" transform="translate(95,260)">
-        <circle class="pulse" r="7"/><circle class="dot" r="5"/>
-        <text class="water-label" y="-12">加拉帕戈斯</text>
-      </g>
-    `;
-
-    const ready = state.feeling.trim() && state.creature && state.water && !state.isReleased;
-    const btnText = state.isReleased ? '正在放生…' : (ready ? '按下放生' : '选好啦 · 按下放生');
-
-    $('releaseContent').innerHTML = `
-      <div class="water-canvas" id="waterCanvasBox">
-        <canvas class="globe-canvas" id="globeCanvas"></canvas>
-        <div class="world-map" id="worldMap">
-          <svg class="map-svg" id="mapSvg" viewBox="${mapVb.x} ${mapVb.y} ${MAP_VB.w} ${MAP_VB.h}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#cfe4dd"/>
-                <stop offset="60%" stop-color="#a9d2c5"/>
-                <stop offset="100%" stop-color="#7fb6a4"/>
-              </linearGradient>
-            </defs>
-            <rect width="640" height="480" fill="url(#oceanGrad)"/>
-            <g fill="#f0e6d0" stroke="#d6cdb8" stroke-width="0.5">
-              <path d="M 50 70 Q 90 50 150 65 Q 190 80 195 120 Q 185 160 160 180 Q 120 195 85 180 Q 55 160 45 120 Q 40 90 50 70 Z"/>
-              <path d="M 130 230 Q 165 220 185 250 Q 195 290 185 330 Q 170 370 150 365 Q 125 340 120 300 Q 120 260 130 230 Z"/>
-              <path d="M 200 40 Q 230 30 250 45 Q 255 65 240 75 Q 215 75 200 60 Z"/>
-              <path d="M 260 75 Q 330 55 420 70 Q 500 85 545 120 Q 555 155 530 180 Q 480 195 420 190 Q 360 185 310 170 Q 270 155 255 125 Q 250 95 260 75 Z"/>
-              <path d="M 285 95 Q 300 88 308 100 Q 305 115 292 113 Q 283 105 285 95 Z"/>
-              <path d="M 540 130 Q 555 125 560 140 Q 555 155 545 150 Q 538 140 540 130 Z"/>
-              <path d="M 335 210 Q 370 200 395 225 Q 405 265 395 305 Q 380 340 360 340 Q 335 325 325 290 Q 320 250 335 210 Z"/>
-              <path d="M 500 220 Q 520 215 530 230 Q 525 245 510 243 Q 498 235 500 220 Z"/>
-              <path d="M 495 335 Q 535 325 560 345 Q 565 375 545 390 Q 515 392 498 378 Q 488 355 495 335 Z"/>
-            </g>
-            <g id="waterMarkers">${waterMarkersHtml}</g>
-          </svg>
-        </div>
-        <div class="hot-bubbles">${hotBubblesHtml}</div>
-        <div class="map-hint ${state.water ? 'hidden' : ''}" id="mapHint">拖动地图 · 点选水域</div>
-        <button class="style-toggle" id="globeModeBtn" type="button"></button>
-        <div class="creature-layer ${state.isReleased ? 'released' : ''}" id="creatureLayer">
-          <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" id="creatureSvg">${creatureArt}</svg>
-        </div>
-        <div class="river-stat">
-          <div class="stat-line">已选 · <span class="num" id="selectedWater">${waterName}</span></div>
-          <div class="stat-line muted">今日放生 <span id="todayCount">${state.todayCount.toLocaleString()}</span></div>
-          <div class="stat-line muted" id="worldPulseLine">此刻世界上有 <span id="worldAliveCount">…</span> 条生命在流浪</div>
-        </div>
-      </div>
-      <div class="control-panel">
-        <div class="glass-panel">
-          <div class="section-block">
-            <div class="section-label"><span class="label-num">1</span>此刻感受 <span class="label-hint">（可语音 / 可文字）</span></div>
-            <div class="feeling-row">
-              <button class="mic-btn" id="micBtn">🎤</button>
-              <textarea class="feeling-textarea" id="feelingText" rows="2" placeholder="${PLACEHOLDERS[0]}"></textarea>
-            </div>
-            <div class="feeling-hint"><span class="dot">·</span>描述越具体，回信越懂你</div>
-          </div>
-          <div class="section-block">
-            <div class="section-label"><span class="label-num">2</span>想放生一只</div>
-            <div class="creature-chips" id="creatureChips">
-              <button class="chip coral ${state.creature === 'koi' ? 'active' : ''}" data-creature="koi">🐟 锦鲤</button>
-              <button class="chip coral ${state.creature === 'turtle' ? 'active' : ''}" data-creature="turtle">🐢 乌龟</button>
-              <button class="chip coral ${state.creature === 'cloud' ? 'active' : ''}" data-creature="cloud">☁️ 云朵</button>
-            </div>
-          </div>
-          <div class="section-block">
-            <div class="section-label"><span class="label-num">3</span>什么时候回信？</div>
-            <div class="feedback-options" id="feedbackOptions">
-              <button class="fb-opt ${state.feedbackTime === '24h' ? 'active' : ''}" data-fb="24h">24 小时后</button>
-              <button class="fb-opt ${state.feedbackTime === '3d' ? 'active' : ''}" data-fb="3d">3 天后</button>
-              <button class="fb-opt ${state.feedbackTime === '7d' ? 'active' : ''}" data-fb="7d">7 天后</button>
-              <button class="fb-opt ${state.feedbackTime === 'custom' ? 'active' : ''}" data-fb="custom">自选时间</button>
-            </div>
-            <input type="datetime-local" class="fb-date" id="fbDate" style="display:${state.feedbackTime === 'custom' ? 'block' : 'none'}" value="${state.feedbackDate}">
-          </div>
-          <button class="release-btn" id="releaseBtn" ${!ready ? 'disabled' : ''}>${btnText}</button>
-        </div>
-      </div>
-    `;
-
-    attachReleaseHandlers();
-  }
-
-  // ==================== Release Page Handlers ====================
-  let placeholderIdx = 0;
-  let placeholderTimer = null;
-
-  function attachReleaseHandlers() {
-    const feelingText = $('feelingText');
-    const micBtn = $('micBtn');
-    const creatureChips = $('creatureChips');
-    const feedbackOptions = $('feedbackOptions');
-    const fbDate = $('fbDate');
-    const releaseBtn = $('releaseBtn');
-    const worldMap = $('worldMap');
-    const mapSvg = $('mapSvg');
-    const mapHint = $('mapHint');
-
-    // Restore feeling text
-    if (feelingText) {
-      feelingText.value = state.feeling;
-      feelingText.addEventListener('input', () => {
-        state.feeling = feelingText.value;
-        updateReleaseBtn();
-      });
-    }
-
-    // Placeholder rotation
-    if (placeholderTimer) clearInterval(placeholderTimer);
-    placeholderIdx = 0;
-    placeholderTimer = setInterval(() => {
-      if (feelingText && document.activeElement !== feelingText && !state.isReleased) {
-        feelingText.placeholder = PLACEHOLDERS[placeholderIdx];
-      }
-      placeholderIdx = (placeholderIdx + 1) % PLACEHOLDERS.length;
-    }, 3500);
-
-    // Mic button (Web Speech API if available)
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let recognition = null;
-    let isRecording = false;
-
-    if (SpeechRec) {
-      recognition = new SpeechRec();
-      recognition.lang = 'zh-CN';
-      recognition.continuous = false;
-      recognition.interimResults = true;
-      recognition.onresult = (e) => {
-        let transcript = '';
-        for (let i = 0; i < e.results.length; i++) {
-          transcript += e.results[i][0].transcript;
-        }
-        if (feelingText) {
-          feelingText.value = transcript;
-          state.feeling = transcript;
-          updateReleaseBtn();
-        }
-      };
-      recognition.onend = () => {
-        isRecording = false;
-        if (micBtn) {
-          micBtn.classList.remove('recording');
-          micBtn.textContent = '🎤';
-        }
-      };
-      recognition.onerror = () => {
-        isRecording = false;
-        if (micBtn) {
-          micBtn.classList.remove('recording');
-          micBtn.textContent = '🎤';
-        }
-      };
-    }
-
-    if (micBtn) {
-      micBtn.addEventListener('click', () => {
-        if (state.isReleased) return;
-        if (!recognition) {
-          if (feelingText) feelingText.focus();
-          return;
-        }
-        if (isRecording) {
-          recognition.stop();
-          return;
-        }
-        try {
-          recognition.start();
-          isRecording = true;
-          micBtn.classList.add('recording');
-          micBtn.textContent = '●';
-        } catch(_) {}
-      });
-    }
-
-    // Creature chips
-    if (creatureChips) {
-      creatureChips.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-creature]');
-        if (!btn || state.isReleased) return;
-        creatureChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        state.creature = btn.dataset.creature;
-        updateCreatureDisplay();
-        updateReleaseBtn();
-      });
-    }
-
-    // World map drag
-    function setMapViewBox() {
-      if (mapSvg) mapSvg.setAttribute('viewBox', `${mapVb.x} ${mapVb.y} ${MAP_VB.w} ${MAP_VB.h}`);
-    }
-
-    function panToWater(waterId) {
-      const c = WATER_COORDS[waterId];
-      if (!c) return;
-      mapVb.x = Math.max(MAP_BOUNDS.minX, Math.min(MAP_BOUNDS.maxX, c.x - MAP_VB.w / 2));
-      mapVb.y = Math.max(MAP_BOUNDS.minY, Math.min(MAP_BOUNDS.maxY, c.y - MAP_VB.h / 2));
-      setMapViewBox();
-    }
-
-    function onDocPointerMove(e) {
-      if (!mapDrag.active) return;
-      const dx = e.clientX - mapDrag.startX;
-      const dy = e.clientY - mapDrag.startY;
-      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) mapDrag.moved = true;
-      if (!mapSvg) return;
-      const rect = mapSvg.getBoundingClientRect();
-      const scaleX = MAP_VB.w / rect.width;
-      const scaleY = MAP_VB.h / rect.height;
-      mapVb.x = Math.max(MAP_BOUNDS.minX, Math.min(MAP_BOUNDS.maxX, mapDrag.vbX - dx * scaleX));
-      mapVb.y = Math.max(MAP_BOUNDS.minY, Math.min(MAP_BOUNDS.maxY, mapDrag.vbY - dy * scaleY));
-      setMapViewBox();
-    }
-
-    function onDocPointerUp() {
-      mapDrag.active = false;
-      if (worldMap) worldMap.classList.remove('dragging');
-      document.removeEventListener('pointermove', onDocPointerMove);
-      document.removeEventListener('pointerup', onDocPointerUp);
-    }
-
-    if (worldMap) {
-      worldMap.addEventListener('pointerdown', (e) => {
-        if (state.isReleased) return;
-        mapDrag.active = true;
-        mapDrag.moved = false;
-        mapDrag.startX = e.clientX;
-        mapDrag.startY = e.clientY;
-        mapDrag.vbX = mapVb.x;
-        mapDrag.vbY = mapVb.y;
-        worldMap.classList.add('dragging');
-        if (mapHint) mapHint.classList.add('hidden');
-        document.addEventListener('pointermove', onDocPointerMove);
-        document.addEventListener('pointerup', onDocPointerUp);
-      });
-    }
-
-    // Water marker clicks
-    document.querySelectorAll('.water-marker').forEach(marker => {
-      marker.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (mapDrag.moved || state.isReleased) return;
-        selectWater(marker.dataset.water);
-      });
+  // ==================== 2D 地图水域标记 ====================
+  var MARKER_POS = {
+    pacific: [590, 200], atlantic: [225, 180], indian: [460, 340], arctic: [340, 25],
+    baikal: [450, 120], ness: [295, 90], xihu: [515, 155], xiang: [505, 175],
+    mariana: [600, 275], deadsea: [395, 198], aegean: [350, 188], galapagos: [95, 260]
+  };
+  function renderMarkers() {
+    var g = $('waterMarkers');
+    var html = '';
+    Object.keys(MARKER_POS).forEach(function (id) {
+      var pos = MARKER_POS[id];
+      html += '<g class="water-marker ' + (state.water === id ? 'selected' : '') + '" data-water="' + id + '" transform="translate(' + pos[0] + ',' + pos[1] + ')">' +
+        '<circle class="pulse" r="7"/><circle class="dot" r="5"/>' +
+        '<text class="water-label" y="-12">' + esc(WATERS[id]) + '</text></g>';
     });
-
-    // Hot bubbles
-    document.querySelectorAll('.hot-bubble').forEach(bubble => {
-      bubble.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (state.isReleased) return;
-        panToWater(bubble.dataset.water);
-        selectWater(bubble.dataset.water);
-      });
+    g.innerHTML = html;
+    g.querySelectorAll('.water-marker').forEach(function (m) {
+      m.addEventListener('click', function () { selectWater(m.dataset.water); });
     });
-
-    // Feedback options
-    if (feedbackOptions) {
-      feedbackOptions.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-fb]');
-        if (!btn || state.isReleased) return;
-        feedbackOptions.querySelectorAll('.fb-opt').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        state.feedbackTime = btn.dataset.fb;
-        if (state.feedbackTime === 'custom') {
-          if (fbDate) {
-            fbDate.style.display = 'block';
-            fbDate.focus();
-          }
-        } else {
-          if (fbDate) fbDate.style.display = 'none';
-          state.feedbackDate = '';
-        }
-      });
-    }
-
-    if (fbDate) {
-      fbDate.addEventListener('change', () => {
-        state.feedbackDate = fbDate.value;
-      });
-    }
-
-    // Release button —— 长按蓄力放生（松手触发），快速点击仍可用
-    if (releaseBtn) {
-      let pressTimer = null;
-      const CHARGE_MS = 600;
-      const vibrate = (p) => { if (navigator.vibrate) try { navigator.vibrate(p); } catch(_) {} };
-      const startCharge = () => {
-        if (releaseBtn.disabled || state.isReleased) return;
-        releaseBtn.classList.add('charging');
-        vibrate(30);
-        pressTimer = setTimeout(() => vibrate([40, 60, 40]), CHARGE_MS);
-      };
-      const endCharge = (fire) => {
-        releaseBtn.classList.remove('charging');
-        if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-        if (fire) triggerRelease();
-      };
-      releaseBtn.addEventListener('pointerdown', (e) => {
-        if (releaseBtn.disabled) return;
-        e.preventDefault();
-        startCharge();
-        const onUp = (ev) => {
-          document.removeEventListener('pointerup', onUp);
-          document.removeEventListener('pointercancel', onUp);
-          endCharge(true);
-        };
-        document.addEventListener('pointerup', onUp);
-        document.addEventListener('pointercancel', onUp);
-      });
-      releaseBtn.addEventListener('click', (e) => e.preventDefault()); // 由长按逻辑接管
-      releaseBtn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); triggerRelease(); }
-      });
-    }
-
-    // ==================== 3D 地球初始化（失败回落 2D） ====================
-    initGlobe3D();
   }
 
-  let globeActive = false;
+  function selectWater(id) {
+    if (state.isReleased) return;
+    state.water = id;
+    if (state.globeActive && window.Globe3D) Globe3D.focusWater(id);
+    if (state.globeActive && window.Globe3D) Globe3D.setMarkersState(id);
+    renderMarkers();
+    $('selectedWater').textContent = WATERS[id];
+    $('mapHint').classList.add('hidden');
+    updateReleaseBtn();
+  }
 
-  // NASA 卫星贴图预加载（昼/夜/水/云；任一失败不阻塞，走程序化兜底）
-  async function loadEarthTextures() {
-    if (typeof THREE === 'undefined') return null;
-    const loader = new THREE.TextureLoader();
+  // ==================== 3D 地球 ====================
+  window.__globeConfigReady = fetch('/globe-config.json').then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function (cfg) { if (window.Globe3D) Globe3D.loadConfig(cfg); return cfg; })
+    .catch(function () { return null; });
+  window.__worldLandReady = fetch('/world-land.json').then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function (wl) { if (window.Globe3D) Globe3D.setWorldLand(wl); return wl; })
+    .catch(function () { return null; });
+
+  function loadEarthTextures() {
+    if (typeof THREE === 'undefined') return Promise.resolve(null);
+    var loader = new THREE.TextureLoader();
     loader.setCrossOrigin('anonymous');
-    const load = (url) => new Promise((res) => {
-      loader.load(url, (t) => res(t), undefined, () => res(null));
-      setTimeout(() => res(null), 15000); // 超时兜底
-    });
-    const base = '/vendor/textures/';
-    const [day, night, water, clouds] = await Promise.all([
-      load(base + 'earth-blue-marble.jpg'),
-      load(base + 'earth-night.jpg'),
-      load(base + 'earth-water.png'),
-      load(base + 'clouds.png')
-    ]);
-    return day ? { day, night, water, clouds } : null;
+    var load = function (url) {
+      return new Promise(function (res) {
+        loader.load(url, function (t) { res(t); }, undefined, function () { res(null); });
+        setTimeout(function () { res(null); }, 15000);
+      });
+    };
+    var base = '/vendor/textures/';
+    return Promise.all([
+      load(base + 'earth-blue-marble.jpg'), load(base + 'earth-night.jpg'),
+      load(base + 'earth-water.png'), load(base + 'clouds.png')
+    ]).then(function (arr) { return arr[0] ? { day: arr[0], night: arr[1], water: arr[2], clouds: arr[3] } : null; });
   }
 
-  async function initGlobe3D() {
-    const canvas = $('globeCanvas');
-    const box = $('waterCanvasBox');
-    if (!canvas || !box || typeof Globe3D === 'undefined') return;
-    try {
-      await window.__globeConfigReady;
-      if (window.__worldLandReady) await window.__worldLandReady;
-    } catch(_) {}
-    const textures = await loadEarthTextures();
-    const ok = Globe3D.init({
-      canvas,
-      textures,
-      onSelect: (waterId) => {
-        if (state.isReleased) return;
-        selectWater(waterId);
-      },
-      disabled: () => state.isReleased
-    });
-    if (ok) {
-      globeActive = true;
-      if (state.water) Globe3D.setMarkersState(state.water);
-      startWorldPulse();
-
-      // 3D 地球 / 2D 平面地图切换（持久化；默认 3D）
-      const curMode = () => localStorage.getItem('globe_mode') === '2d' ? '2d' : '3d';
-      const applyGlobeMode = (mode) => {
-        const b = $('waterCanvasBox'), btn = $('globeModeBtn'), h = $('mapHint');
-        const is3d = mode === '3d';
-        if (b) {
-          b.classList.toggle('mode-3d', is3d);
-          b.classList.add('has-3d');
-        }
-        if (Globe3D.setPaused) Globe3D.setPaused(!is3d);
-        if (btn) btn.textContent = is3d ? '🗺️ 2D' : '🌐 3D';
-        if (h) { h.style.visibility = 'visible'; h.textContent = is3d ? '转动地球 · 点选水域' : '拖动地图 · 点选水域'; }
-      };
-      applyGlobeMode(curMode());
-
-      const modeBtn = $('globeModeBtn');
-      if (modeBtn) {
-        modeBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const next = curMode() === '3d' ? '2d' : '3d';
-          localStorage.setItem('globe_mode', next);
-          applyGlobeMode(next);
-          Sfx.ripple();
+  function initGlobe() {
+    var canvas = $('globeCanvas');
+    var box = $('waterCanvasBox');
+    if (!canvas || !box || typeof Globe3D === 'undefined') return Promise.resolve();
+    return Promise.all([window.__globeConfigReady, window.__worldLandReady]).catch(function () {})
+      .then(loadEarthTextures)
+      .then(function (textures) {
+        var ok = Globe3D.init({
+          canvas: canvas,
+          textures: textures,
+          onSelect: function (waterId) { selectWater(waterId); },
+          disabled: function () { return state.isReleased; }
         });
-      }
+        if (!ok) return;
+        state.globeActive = true;
+        box.classList.add('has-3d');
+        var curMode = function () { return localStorage.getItem('globe_mode') === '2d' ? '2d' : '3d'; };
+        var applyMode = function (mode) {
+          var is3d = mode === '3d';
+          box.classList.toggle('mode-3d', is3d);
+          if (Globe3D.setPaused) Globe3D.setPaused(!is3d);
+          $('globeModeBtn').textContent = is3d ? '🗺️ 2D' : '🌐 3D';
+          var h = $('mapHint');
+          h.style.visibility = 'visible';
+          h.textContent = is3d ? '转动地球 · 点选放生水域' : '点选水域';
+          h.classList.toggle('hidden', !!state.water);
+        };
+        applyMode(curMode());
+        $('globeModeBtn').addEventListener('click', function (e) {
+          e.stopPropagation();
+          var next = curMode() === '3d' ? '2d' : '3d';
+          localStorage.setItem('globe_mode', next);
+          applyMode(next);
+        });
+      });
+  }
+
+  // ==================== 世界脉搏（无他人原话） ====================
+  var pulseTimer = null;
+  function startPulse() {
+    if (pulseTimer) return;
+    fetchPulse();
+    pulseTimer = setInterval(fetchPulse, 30000);
+  }
+  function fetchPulse() {
+    api('/api/world/pulse').then(function (r) {
+      if (!r.data || typeof r.data.total !== 'number') return;
+      var el = $('worldAliveCount');
+      if (el) el.textContent = r.data.total.toLocaleString();
+    }).catch(function () {});
+  }
+
+  // ==================== 放生表单 ====================
+  var placeholderIdx = 0;
+  setInterval(function () {
+    var ta = $('feelingText');
+    if (ta && document.activeElement !== ta && !ta.value) {
+      ta.placeholder = PLACEHOLDERS[placeholderIdx = (placeholderIdx + 1) % PLACEHOLDERS.length];
     }
-  }
+  }, 4000);
 
-  // ==================== 世界脉搏：全球共时感 ====================
-  let worldPulseSeen = new Set();
-  let worldPulseTimer = null;
-
-  async function fetchWorldPulse() {
-    try {
-      const r = await fetch('/api/world/pulse');
-      if (!r.ok) return;
-      const data = await r.json();
-      const num = $('worldAliveCount');
-      if (num) num.textContent = data.total.toLocaleString();
-      // 最近放生 → 球面亮起光点（只对未见过的）
-      for (const item of (data.recent || [])) {
-        const key = item.ts + ':' + item.water + ':' + item.feeling;
-        if (worldPulseSeen.has(key)) continue;
-        worldPulseSeen.add(key);
-        if (Date.now() - item.ts < 5 * 60 * 1000 && globeActive && Globe3D.addSpark) {
-          const w = (Globe3D.WATERS_GEO || {})[item.water];
-          if (w) Globe3D.addSpark({ lat: w.lat, lng: w.lng });
-        }
-      }
-    } catch (_) { /* 离线静默 */ }
+  $('feelingText').addEventListener('input', function () {
+    state.feeling = this.value;
+    updateReleaseBtn();
+  });
+  $('creatureChips').addEventListener('click', function (e) {
+    var chip = e.target.closest('.chip');
+    if (!chip) return;
+    selectCreature(chip.dataset.creature, null);
+  });
+  function selectCreature(species, creatureId) {
+    state.creature = species;
+    state.redepartCreatureId = creatureId || null;
+    document.querySelectorAll('#creatureChips .chip').forEach(function (c) {
+      c.classList.toggle('active', !creatureId && c.dataset.creature === species);
+    });
+    document.querySelectorAll('#redepartList .chip').forEach(function (c) {
+      c.classList.toggle('active', creatureId && c.dataset.creatureId === creatureId);
+    });
+    updateReleaseBtn();
   }
-
-  function startWorldPulse() {
-    if (!USE_API || worldPulseTimer) return;
-    fetchWorldPulse();
-    worldPulseTimer = setInterval(fetchWorldPulse, 30000);
-  }
+  $('toneChips').addEventListener('click', function (e) {
+    var chip = e.target.closest('.chip');
+    if (!chip) return;
+    state.tone = chip.dataset.tone;
+    document.querySelectorAll('#toneChips .chip').forEach(function (c) {
+      c.classList.toggle('active', c.dataset.tone === state.tone);
+    });
+  });
+  $('redepartToggle').addEventListener('click', function () {
+    state.redepartOpen = !state.redepartOpen;
+    $('redepartBox').classList.toggle('open', state.redepartOpen);
+    $('redepartToggle').classList.toggle('on', state.redepartOpen);
+    if (!state.redepartOpen) selectCreature(state.creature, null);
+    else if (state.creatures.length && !state.redepartCreatureId) {
+      var c = state.creatures[state.creatures.length - 1];
+      selectCreature(c.species, c.id);
+    }
+  });
 
   function updateReleaseBtn() {
-    const btn = $('releaseBtn');
-    if (!btn) return;
-    const ready = state.feeling.trim() && state.creature && state.water && !state.isReleased;
+    var ready = state.feeling.trim() && state.creature && state.water && !state.isReleased;
+    var btn = $('releaseBtn');
     btn.disabled = !ready;
     btn.textContent = state.isReleased ? '正在放生…' : (ready ? '按下放生' : '选好啦 · 按下放生');
   }
 
-  function updateCreatureDisplay() {
-    const creatureSvg = $('creatureSvg');
-    if (!creatureSvg) return;
-    if (state.creature) {
-      creatureSvg.innerHTML = CREATURE_SVG[state.creature];
-    } else {
-      creatureSvg.innerHTML = CREATURE_SVG.koi;
-    }
+  function loadCreatures() {
+    return api('/api/creatures').then(function (r) {
+      state.creatures = (r.data && r.data.creatures) || [];
+      renderRedepartList();
+    }).catch(function () {});
+  }
+  function renderRedepartList() {
+    var box = $('redepartBox');
+    if (!state.creatures.length) { box.style.display = 'none'; return; }
+    box.style.display = '';
+    var html = '';
+    state.creatures.forEach(function (c) {
+      html += '<button class="chip aqua' + (state.redepartCreatureId === c.id ? ' active' : '') + '" data-creature-id="' + esc(c.id) + '" data-species="' + esc(c.species) + '">' +
+        esc(c.creatureEmoji) + ' ' + esc(c.creatureName) + ' · ' + c.journeyCount + '程</button>';
+    });
+    $('redepartList').innerHTML = html;
+    $('redepartList').querySelectorAll('.chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        selectCreature(chip.dataset.species, chip.dataset.creatureId);
+      });
+    });
   }
 
-  function selectWater(waterId) {
-    state.water = waterId;
-    if (globeActive && typeof Globe3D !== 'undefined') Globe3D.focusWater(waterId);
-    document.querySelectorAll('.water-marker').forEach(m => {
-      m.classList.toggle('selected', m.dataset.water === waterId);
-    });
-    document.querySelectorAll('.hot-bubble').forEach(b => {
-      b.classList.toggle('active', b.dataset.water === waterId);
-    });
-    const selectedSpan = $('selectedWater');
-    if (selectedSpan) selectedSpan.textContent = WATERS[waterId].name;
-    const mapHint = $('mapHint');
-    if (mapHint) mapHint.classList.add('hidden');
-    updateReleaseBtn();
-  }
-
-  // ==================== WebAudio 音效（合成，无外部文件） ====================
-  const Sfx = (() => {
-    let ctx = null;
-    function ac() {
-      if (!ctx) {
-        const AC = window.AudioContext || window.webkitAudioContext;
-        if (!AC) return null;
-        ctx = new AC();
-      }
-      if (ctx.state === 'suspended') ctx.resume();
-      return ctx;
-    }
-    function tone(freq, dur, { type = 'sine', gain = 0.12, slideTo = null, delay = 0 } = {}) {
-      const c = ac(); if (!c) return;
-      const o = c.createOscillator(), g = c.createGain();
-      o.type = type;
-      const t0 = c.currentTime + delay;
-      o.frequency.setValueAtTime(freq, t0);
-      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
-      g.gain.setValueAtTime(gain, t0);
-      g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
-      o.connect(g).connect(c.destination);
-      o.start(t0); o.stop(t0 + dur + 0.05);
-    }
-    function noise(dur, { gain = 0.15, lp = 1200, delay = 0 } = {}) {
-      const c = ac(); if (!c) return;
-      const len = Math.floor(c.sampleRate * dur);
-      const buf = c.createBuffer(1, len, c.sampleRate);
-      const d = buf.getChannelData(0);
-      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
-      const src = c.createBufferSource(); src.buffer = buf;
-      const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = lp;
-      const g = c.createGain();
-      const t0 = c.currentTime + delay;
-      g.gain.setValueAtTime(gain, t0);
-      g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
-      src.connect(f).connect(g).connect(c.destination);
-      src.start(t0);
-    }
-    return {
-      dive() { tone(660, 0.5, { type: 'sine', slideTo: 160, gain: 0.1 }); },
-      splash() { noise(0.7, { gain: 0.22, lp: 900 }); tone(180, 0.3, { slideTo: 60, gain: 0.08 }); },
-      ripple() { tone(520, 1.2, { type: 'sine', gain: 0.05, slideTo: 320 }); },
-      stamp() { noise(0.12, { gain: 0.3, lp: 2500 }); tone(140, 0.15, { type: 'square', gain: 0.06 }); }
-    };
-  })();
-
-  // ==================== Release Trigger ====================
-  function triggerRelease() {
-    if (!state.feeling.trim() || !state.creature || !state.water || state.isReleased) return;
+  $('releaseBtn').addEventListener('click', function () {
+    if (state.isReleased) return;
+    if (!state.feeling.trim() || !state.creature || !state.water) return;
     state.isReleased = true;
     updateReleaseBtn();
-
-    const creatureLayer = $('creatureLayer');
-    const finish = () => showReceipt();
-    const box = $('waterCanvasBox');
-    const use3D = globeActive && box && box.classList.contains('mode-3d') &&
-                  typeof Globe3D !== 'undefined' && Globe3D.playRelease;
-
-    if (use3D) {
-      if (creatureLayer) creatureLayer.style.opacity = '0';
-      Sfx.dive();
-      setTimeout(() => { Sfx.splash(); Sfx.ripple(); }, 1500);
-      Globe3D.playRelease({ creature: state.creature, water: state.water }).then(finish);
-    } else {
-      if (creatureLayer) {
-        creatureLayer.style.opacity = '';
-        creatureLayer.classList.remove('released');
-        void creatureLayer.offsetWidth; // 强制 reflow，重播下沉动画
-        creatureLayer.classList.add('released');
+    var body = {
+      species: state.creature,
+      water: state.water,
+      feeling: state.feeling.trim(),
+      tone: state.tone
+    };
+    if (state.redepartCreatureId) body.creatureId = state.redepartCreatureId;
+    if (state.globeActive && window.Globe3D && Globe3D.playRelease) {
+      Globe3D.playRelease({ creature: state.creature, water: state.water }).catch(function () {});
+    }
+    api('/api/release', { method: 'POST', body: body }).then(function (r) {
+      state.isReleased = false;
+      updateReleaseBtn();
+      if (r.status !== 200 || !r.data.ok) {
+        toast('放生没有成功：' + (r.data.code === 'feeling_too_long' ? '写得太多啦（500 字以内）' : (r.data.error || '稍后再试')));
+        return;
       }
-      Sfx.splash();
-      setTimeout(finish, 800);
-    }
-  }
-
-  function showReceipt() {
-    Sfx.stamp();
-    const id = generateId();
-    const sign = rand(SIGNS[state.creature]);
-    const fbLabel = getFeedbackLabel();
-    const replyAt = calcReplyAt();
-    const now = Date.now();
-
-    const receipt = {
-      id,
-      creature: state.creature,
-      water: state.water,
-      feeling: state.feeling,
-      sign,
-      feedbackLabel: fbLabel,
-      createdAt: now,
-      timeStr: formatFullTime(now)
-    };
-
-    state.receipt = receipt;
-    state.showReceipt = true;
-    state.todayCount++;
-
-    const recordData = {
-      id,
-      openid: state.openid,
-      creature: state.creature,
-      water: state.water,
-      feeling: state.feeling,
-      feedbackTime: state.feedbackTime,
-      feedbackDate: state.feedbackDate,
-      feedbackLabel: fbLabel,
-      createdAt: now,
-      replyAt,
-      reply: null
-    };
-
-    // Use API with localStorage fallback
-    apiRelease(recordData);
-
-    $('receiptCard').innerHTML = `
-      <div class="receipt-header">
-        <div class="receipt-stamp">放生成功</div>
-        <div class="receipt-subtitle">CYBER RELEASE RECEIPT</div>
-      </div>
-      <div class="receipt-rows">
-        <div class="receipt-row"><span class="row-key">护生编号</span><span class="row-val mono">${id}</span></div>
-        <div class="receipt-row"><span class="row-key">放生地点</span><span class="row-val serif">${WATERS[state.water].name}</span></div>
-        <div class="receipt-row"><span class="row-key">生物</span><span class="row-val">${CREATURES[state.creature].emoji} ${CREATURES[state.creature].name}</span></div>
-        <div class="receipt-row"><span class="row-key">放生时间</span><span class="row-val mono">${receipt.timeStr}</span></div>
-      </div>
-      <div class="receipt-feeling">
-        <div class="block-label">— 此刻感受 —</div>
-        <div class="block-text">${state.feeling || '（这次没说，没关系）'}</div>
-      </div>
-      <div class="receipt-sign">
-        <div class="block-label">— 本日好运签 —</div>
-        <div class="block-text">${sign}</div>
-      </div>
-      <div class="receipt-feedback">
-        <div class="block-label">— AI 回信安排 —</div>
-        <div class="block-text">📬 <strong>${fbLabel}</strong> 以图文形式推送，基于你此刻的感受生成 · <span class="mute">可能治愈、可能搞怪</span></div>
-      </div>
-      <div class="receipt-actions">
-        <button class="btn-line" id="shareBtn">生成放生海报</button>
-        <button class="btn-primary" id="againBtn">再来一只</button>
-      </div>
-      <div class="receipt-footer">
-        * 本回执不构成任何好运承诺 / 也不鼓励线下放生<br>
-        仅作虚拟情绪仪式使用 · 编号随机
-      </div>
-    `;
-
-    $('receiptOverlay').classList.add('show');
-
-    $('shareBtn').addEventListener('click', () => {
-      sharePoster();
+      var c = r.data.creature;
+      $('receiptEmoji').textContent = c.emoji;
+      $('receiptSub').textContent = (c.isNew ? '一只' : '这只') + c.name + '正在熟悉' + r.data.waterName + '。你不用守在页面旁，有了动静它会写信到这里。';
+      $('receiptOverlay').classList.add('show');
+      state.feeling = '';
+      $('feelingText').value = '';
+      state.currentJourneyId = r.data.journeyId;
+      loadCreatures();
+    }).catch(function () {
+      state.isReleased = false;
+      updateReleaseBtn();
+      toast('网络不太顺畅，稍后再试');
     });
+  });
 
-    $('againBtn').addEventListener('click', closeReceipt);
-  }
-
-  // ==================== 放生瞬间海报（Canvas 绘制，星象风格） ====================
-  function drawPoster(r) {
-    const W = 750, H = 1200;
-    const c = document.createElement('canvas');
-    c.width = W; c.height = H;
-    const ctx = c.getContext('2d');
-
-    // 星空底
-    const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0, '#0e2a33');
-    grad.addColorStop(0.55, '#1c4b4a');
-    grad.addColorStop(1, '#2e6f60');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-    for (let i = 0; i < 160; i++) {
-      const x = Math.random() * W, y = Math.random() * H * 0.8;
-      const s = Math.random() * 1.8 + 0.4;
-      ctx.fillStyle = `rgba(255,255,255,${0.25 + Math.random() * 0.6})`;
-      ctx.beginPath(); ctx.arc(x, y, s, 0, Math.PI * 2); ctx.fill();
-    }
-
-    // 月亮
-    ctx.fillStyle = 'rgba(255,246,224,0.95)';
-    ctx.beginPath(); ctx.arc(W - 130, 140, 46, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = 'rgba(28,75,74,0.55)';
-    ctx.beginPath(); ctx.arc(W - 112, 126, 40, 0, Math.PI * 2); ctx.fill();
-
-    // 水面
-    ctx.fillStyle = 'rgba(10,30,34,0.65)';
-    ctx.fillRect(0, H * 0.78, W, H * 0.22);
-    for (let i = 0; i < 26; i++) {
-      const y = H * 0.8 + Math.random() * H * 0.18;
-      ctx.strokeStyle = `rgba(169,210,197,${0.06 + Math.random() * 0.12})`;
-      ctx.lineWidth = 1 + Math.random() * 2;
-      const x = Math.random() * W, w = 40 + Math.random() * 140;
-      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w, y); ctx.stroke();
-    }
-
-    // 生物剪影（emoji 放大 + 光晕）
-    const emoji = CREATURES[r.creature].emoji;
-    ctx.save();
-    ctx.shadowColor = 'rgba(255,179,138,0.9)';
-    ctx.shadowBlur = 60;
-    ctx.font = '150px serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(emoji, W / 2, H * 0.46);
-    ctx.restore();
-    // 涟漪
-    for (let i = 1; i <= 3; i++) {
-      ctx.strokeStyle = `rgba(223,243,236,${0.5 / i})`;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.ellipse(W / 2, H * 0.8, 70 * i, 14 * i, 0, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-
-    // 文案
-    ctx.fillStyle = '#f0e6d0';
-    ctx.textAlign = 'center';
-    ctx.font = '600 44px "PingFang SC", "Microsoft YaHei", sans-serif';
-    ctx.fillText(`放生于 · ${WATERS[r.water].name}`, W / 2, H * 0.60);
-    ctx.font = '26px "PingFang SC", "Microsoft YaHei", sans-serif';
-    ctx.fillStyle = 'rgba(240,230,208,0.85)';
-    const signLines = wrapText(ctx, r.sign, W - 160);
-    signLines.forEach((line, i) => ctx.fillText(line, W / 2, H * 0.66 + i * 40));
-    ctx.font = '22px monospace';
-    ctx.fillStyle = 'rgba(223,243,236,0.7)';
-    ctx.fillText(`护生编号 ${r.id}`, W / 2, H * 0.90);
-    ctx.font = '20px "PingFang SC", sans-serif';
-    ctx.fillStyle = 'rgba(223,243,236,0.5)';
-    ctx.fillText(`${r.timeStr} · 赛博放生`, W / 2, H * 0.94);
-    return c;
-  }
-
-  function wrapText(ctx, text, maxW) {
-    const lines = [];
-    let line = '';
-    for (const ch of text) {
-      if (ctx.measureText(line + ch).width > maxW) { lines.push(line); line = ch; }
-      else line += ch;
-    }
-    if (line) lines.push(line);
-    return lines.slice(0, 2);
-  }
-
-  function sharePoster() {
-    const btn = $('shareBtn');
-    if (!state.receipt) return;
-    try {
-      const c = drawPoster(state.receipt);
-      const url = c.toDataURL('image/png');
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `赛博放生-${state.receipt.id}.png`;
-      a.click();
-      const orig = btn.textContent;
-      btn.textContent = '✓ 海报已保存';
-      btn.style.color = 'var(--teal)';
-      btn.style.borderColor = 'var(--teal)';
-      setTimeout(() => {
-        btn.textContent = orig;
-        btn.style.color = '';
-        btn.style.borderColor = '';
-      }, 1500);
-    } catch (e) {
-      console.error('[poster] 生成失败:', e);
-    }
-  }
-
-  function closeReceipt() {
+  $('receiptHome').addEventListener('click', function () {
     $('receiptOverlay').classList.remove('show');
-    state.showReceipt = false;
-    state.receipt = null;
-    state.isReleased = false;
-    state.creature = null;
-    state.water = null;
-    state.feeling = '';
-    state.feedbackTime = '24h';
-    state.feedbackDate = '';
-    mapVb.x = 380;
-    mapVb.y = 60;
-    setTimeout(() => {
-      if (state.currentPage === 'release') {
-        renderRelease();
-      }
-    }, 300);
-  }
-
-  // Click overlay to close
-  $('receiptOverlay').addEventListener('click', (e) => {
-    if (e.target === $('receiptOverlay')) {
-      closeReceipt();
-    }
+  });
+  $('receiptMailbox').addEventListener('click', function () {
+    $('receiptOverlay').classList.remove('show');
+    switchPage('mailbox');
   });
 
-  // ==================== Archive Page Render ====================
-  async function renderArchive() {
-    let stats, records;
-    if (USE_API) {
-      try {
-        const data = await apiGetRecords(state.openid);
-        stats = data.stats;
-        records = data.records;
-      } catch (e) {
-        console.error('[renderArchive] 加载后端记录失败:', e);
-        alert('加载档案失败：' + e.message);
-        return;
-      }
-    } else {
-      stats = getStats();
-      records = loadRecords();
-    }
-
-    let listHtml;
-    if (records.length === 0) {
-      listHtml = '<div class="empty-state">还没有放生记录<br>去放生一只吧 🐟</div>';
-    } else {
-      listHtml = records.map((r, i) => {
-        const creature = CREATURES[r.creature] || { name: r.creature, emoji: '🐟' };
-        const water = WATERS[r.water] || { name: r.water };
-        const hasReply = !!r.reply;
-        const timeStr = formatTime(r.createdAt);
-        const isCollapsed = state.archiveCollapsedIds.has(r.id);
-
-        let inner = `
-          <div class="record-header">
-            <span class="record-id mono">${r.id}</span>
-            <span class="record-status ${hasReply ? 'replied' : 'pending'}">${hasReply ? '已回信' : '待回信'}</span>
-          </div>
-          <div class="record-meta">${creature.emoji} ${creature.name} · ${water.name} · ${timeStr}</div>
-          <div class="record-feeling">"${r.feeling}"</div>
-        `;
-
-        if (hasReply) {
-          const opened = localStorage.getItem('cyber_bottle_opened_' + r.id);
-          if (!opened) {
-            // 漂流瓶待拆封
-            inner += `
-              <div class="bottle-block" data-record-id="${r.id}">
-                <div class="bottle-visual">🍶</div>
-                <div class="bottle-text">一只漂流瓶漂到了岸边</div>
-                <button class="bottle-open-btn" data-bottle-open="${r.id}">拔开瓶塞 · 拆读回信</button>
-              </div>
-            `;
-          } else {
-          inner += `
-            <div class="reply-block ${isCollapsed ? 'collapsed' : ''}">
-              <div class="reply-inner">
-                <div class="reply-label">📬 AI 回信 · ${r.feedbackLabel}
-                  <button class="tts-btn" data-tts="${r.id}" title="听它读给你">🔊 听它说</button>
-                </div>
-                ${r.reply.image ? `<img class="reply-image" src="${r.reply.image}" alt="回信配图" data-full="${r.reply.image}">` : `<div class="reply-image-fallback" style="background: ${r.reply.bg};">${r.reply.emoji}</div>`}
-                <div class="reply-text">${r.reply.text}</div>
-                <div class="destiny-entry" data-record-id="${r.id}">
-                  <span class="destiny-entry-label">✨ 命运轨迹</span>
-                  <span class="destiny-entry-progress">查看 ›</span>
-                </div>
-              </div>
-            </div>
-          `;
-          }
-        } else {
-          const isWriting = Date.now() >= r.replyAt;
-          inner += `
-            <div class="countdown-block" data-reply-at="${r.replyAt}">
-              ${isWriting ? '✍️ 信件正在撰写中…' : `⏳ 回信倒计时 <span class="countdown-time">${formatCountdown(r.replyAt - Date.now())}</span>`}
-            </div>
-          `;
-        }
-
-        return `<div class="record-card ${hasReply ? 'has-reply' : ''}" data-idx="${i}" data-record-id="${r.id}">${inner}</div>`;
-      }).join('');
-    }
-
-    $('archiveContent').innerHTML = `
-      <div class="archive-panel">
-        <div class="user-bar">
-          <div class="user-avatar">微</div>
-          <div class="user-info">
-            <div class="user-name">微信用户</div>
-            <div class="user-id">ID ····3a7f</div>
-          </div>
-          <span class="login-tag">静默登录</span>
-        </div>
-        <div class="stats-row">
-          <div class="stat-item">
-            <div class="stat-num teal">${stats.total}</div>
-            <div class="stat-label">累计放生</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num coral">${stats.pending}</div>
-            <div class="stat-label">待回信</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num teal">${stats.replied}</div>
-            <div class="stat-label">已回信</div>
-          </div>
-          <button class="annual-report-btn" id="annualReportBtn">🎯 我的放生报告</button>
-        </div>
-        <div class="record-list" id="recordList">${listHtml}</div>
-      </div>
-    `;
-
-    state.archiveRecords = records;
-    attachArchiveHandlers();
-  }
-
-  // ==================== Archive Page Handlers ====================
-  function attachArchiveHandlers() {
-    const list = $('recordList');
-    if (!list) return;
-
-    list.querySelectorAll('.record-card.has-reply').forEach(card => {
-      card.addEventListener('click', (e) => {
-        // 点击命运轨迹入口时不折叠/展开回信
-        if (e.target.closest('.destiny-entry')) return;
-        const recordId = card.dataset.recordId;
-        const replyBlock = card.querySelector('.reply-block');
-        if (!replyBlock) return;
-
-        replyBlock.classList.toggle('collapsed');
-        if (replyBlock.classList.contains('collapsed')) {
-          state.archiveCollapsedIds.add(recordId);
-        } else {
-          state.archiveCollapsedIds.delete(recordId);
-        }
-      });
-    });
-
-    // 命运轨迹入口
-    list.querySelectorAll('.destiny-entry').forEach(entry => {
-      entry.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const recordId = entry.dataset.recordId;
-        openDestinyModal(recordId);
-      });
-    });
-
-    // 年度放生报告
-    const annualBtn = $('annualReportBtn');
-    if (annualBtn) {
-      annualBtn.addEventListener('click', () => showAnnualReport(state.archiveRecords));
-    }
-
-    // 回信配图点击放大
-    list.querySelectorAll('.reply-image').forEach(img => {
-      img.addEventListener('click', (e) => {
-        e.stopPropagation();
-        previewImage(img.dataset.full || img.src);
-      });
-    });
-
-    // 漂流瓶拆封
-    list.querySelectorAll('[data-bottle-open]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.dataset.bottleOpen;
-        localStorage.setItem('cyber_bottle_opened_' + id, '1');
-        Sfx.ripple();
-        if (navigator.vibrate) { try { navigator.vibrate(30); } catch(_) {} }
-        renderArchive();
-      });
-    });
-
-    // AI 回信语音朗读（Web Speech，生物专属音色）
-    list.querySelectorAll('[data-tts]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.dataset.tts;
-        const rec = records.find(x => x.id === id);
-        if (!rec || !rec.reply || !window.speechSynthesis) return;
-        if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; }
-        const u = new SpeechSynthesisUtterance(rec.reply.text);
-        u.lang = 'zh-CN';
-        // 生物专属音色：锦鲤轻快 / 乌龟低沉 / 云朵轻飘
-        if (rec.creature === 'turtle') { u.pitch = 0.6; u.rate = 0.85; }
-        else if (rec.creature === 'cloud') { u.pitch = 1.5; u.rate = 0.95; }
-        else { u.pitch = 1.15; u.rate = 1.0; }
-        speechSynthesis.speak(u);
-      });
-    });
-  }
-
-  // ==================== 年度放生报告 ====================
-  function showAnnualReport(records) {
-    if (!records || !records.length) return;
-    const byCreature = {}, byWater = {};
-    let repliedCount = 0, firstReplyText = '';
-    for (const r of records) {
-      byCreature[r.creature] = (byCreature[r.creature] || 0) + 1;
-      byWater[r.water] = (byWater[r.water] || 0) + 1;
-      if (r.reply) {
-        repliedCount++;
-        if (!firstReplyText) firstReplyText = r.reply.text;
-      }
-    }
-    const top = (obj) => Object.entries(obj).sort((a, b) => b[1] - a[1])[0] || ['-', 0];
-    const [tc, tcn] = top(byCreature), [tw, twn] = top(byWater);
-    const year = new Date().getFullYear();
-
-    const overlay = document.createElement('div');
-    overlay.className = 'annual-overlay';
-    overlay.innerHTML = `
-      <div class="annual-card">
-        <div class="annual-title">🌊 ${year} 放生报告</div>
-        <div class="annual-sub">CYBER RELEASE ANNUAL REPORT</div>
-        <div class="annual-body">
-          <div class="annual-line big">${records.length}<span class="unit">次</span></div>
-          <div class="annual-cap">这一年，你把 ${records.length} 份情绪送进了水里</div>
-          <div class="annual-grid">
-            <div class="annual-cell"><div class="num">${(CREATURES[tc] || { emoji: '🐟' }).emoji}</div><div>最常陪伴 · ${(CREATURES[tc] || { name: tc }).name} ×${tcn}</div></div>
-            <div class="annual-cell"><div class="num">📍</div><div>最常去 · ${(WATERS[tw] || { name: tw }).name} ×${twn}</div></div>
-            <div class="annual-cell"><div class="num">${repliedCount}</div><div>封回信已抵达</div></div>
-            <div class="annual-cell"><div class="num">${records.length - repliedCount}</div><div>份牵挂还在海上</div></div>
-          </div>
-          ${firstReplyText ? `<div class="annual-quote">"${firstReplyText.slice(0, 60)}${firstReplyText.length > 60 ? '…' : ''}"<div class="annual-quote-from">—— 最戳你的一封回信</div></div>` : ''}
-        </div>
-        <button class="annual-close">收好这份报告</button>
-      </div>
-    `;
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
-    overlay.querySelector('.annual-close').addEventListener('click', () => overlay.remove());
-    document.body.appendChild(overlay);
-    Sfx.ripple();
-  }
-
-  // ==================== Destiny Modal (命运轨迹) ====================
-  let destinyState = {
-    recordId: null,
-    data: null,
-    loading: false
+  // ==================== 信箱 ====================
+  var PHASE_TEXT = {
+    preparing: ['准备出发', 'live'],
+    journeying: ['旅途中', 'live'],
+    awaiting_reply: ['等你的回应', 'warn'],
+    experiencing: ['正在经历', 'live'],
+    paused: ['暂停', 'warn'],
+    ended: ['已结束', 'done']
   };
 
-  function showPayToast(msg) {
-    const toast = $('destinyPayToast');
-    if (!toast) return;
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 1800);
+  function refreshMailbox() {
+    return api('/api/journeys').then(function (r) {
+      state.journeys = (r.data && r.data.journeys) || [];
+      renderJourneyChips();
+      var target = state.currentJourneyId && state.journeys.find(function (j) { return j.id === state.currentJourneyId; })
+        ? state.currentJourneyId
+        : (state.journeys.find(function (j) { return ['preparing', 'active', 'paused'].includes(j.status); }) || state.journeys[0] || {}).id;
+      if (target) return loadJourney(target);
+      renderMailboxEmpty();
+    }).catch(function () {});
   }
 
-  async function openDestinyModal(recordId) {
-    destinyState.recordId = recordId;
-    destinyState.data = null;
-    destinyState.loading = true;
-    renderDestinyModal();
-    $('destinyOverlay').classList.add('show');
-
-    try {
-      const data = await apiGetDestiny(recordId);
-      destinyState.data = data;
-    } catch (e) {
-      destinyState.data = { error: '加载失败' };
-    } finally {
-      destinyState.loading = false;
-      renderDestinyModal();
-    }
-  }
-
-  function closeDestinyModal() {
-    $('destinyOverlay').classList.remove('show');
-    destinyState.recordId = null;
-    destinyState.data = null;
-    destinyState.loading = false;
-    // 关闭后清空 modal，避免下次打开先闪旧内容
-    setTimeout(() => {
-      const modal = $('destinyModal');
-      if (modal && !$('destinyOverlay').classList.contains('show')) {
-        modal.innerHTML = '';
-      }
-    }, 350);
-  }
-
-  function previewImage(src) {
-    const modal = $('destinyModal');
-    const overlay = $('destinyOverlay');
-    if (!modal || !overlay) return;
-
-    // 先显示 loading，避免空白闪烁
-    modal.innerHTML = `
-      <div style="padding:60px 16px;text-align:center;color:var(--ink-light);">
-        <div class="spinner" style="margin:0 auto 12px;"></div>
-        <div>图片加载中…</div>
-      </div>
-    `;
-    overlay.classList.add('show');
-
-    const img = new Image();
-    img.onload = () => {
-      modal.innerHTML = `
-        <div style="padding:16px;text-align:center;">
-          <img class="preview-image-full" src="${src}" style="max-width:100%;max-height:70vh;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);display:block;margin:0 auto;" alt="大图预览">
-          <div style="margin-top:16px;">
-            <button class="destiny-close-btn" onclick="document.getElementById('destinyOverlay').classList.remove('show')">关闭</button>
-          </div>
-        </div>
-      `;
-    };
-    img.onerror = () => {
-      modal.innerHTML = `
-        <div style="padding:60px 16px;text-align:center;color:var(--ink-light);">
-          <div>图片加载失败</div>
-          <div style="margin-top:16px;">
-            <button class="destiny-close-btn" onclick="document.getElementById('destinyOverlay').classList.remove('show')">关闭</button>
-          </div>
-        </div>
-      `;
-    };
-    img.src = src;
-  }
-
-  // ==================== 命运航线图：放生水域 → 离谱结局地点 ====================
-  // 常见地名经纬度速查（LLM 生成离谱地点多为真实地标），未命中时用稳定伪随机坐标
-  const LANDMARK_GEO = {
-    '东京': [35.7, 139.7], '巴黎': [48.9, 2.35], '纽约': [40.7, -74], '伦敦': [51.5, -0.1],
-    '冰岛': [64.9, -19], '雷克雅未克': [64.1, -21.9], '撒哈拉': [23.4, 12.6], '开罗': [30, 31.2],
-    '马里亚纳': [11.3, 142.2], '百慕大': [32.3, -64.8], '夏威夷': [19.8, -155.5], '檀香山': [21.3, -157.9],
-    '南极': [-80, 0], '北极': [85, 0], '珠峰': [27.99, 86.93], '珠穆朗玛': [27.99, 86.93],
-    '亚马逊': [-3.5, -62], '威尼斯': [45.4, 12.3], '罗马': [41.9, 12.5], '迪拜': [25.2, 55.3],
-    '马尔代夫': [3.2, 73.2], '大堡礁': [-18.3, 147.7], '好望角': [-34.4, 18.5], '圣地亚哥': [-33.4, -70.7],
-    '洛杉矶': [34, -118.2], '旧金山': [37.8, -122.4], '西雅图': [47.6, -122.3], '莫斯科': [55.8, 37.6],
-    '曼谷': [13.8, 100.5], '新加坡': [1.35, 103.8], '首尔': [37.6, 127], '孟买': [19, 72.9],
-    '伊斯坦布尔': [41, 29], '里约': [-22.9, -43.2], '开普敦': [-33.9, 18.4], '内罗毕': [-1.3, 36.8],
-    '拉萨': [29.7, 91.1], '成都': [30.6, 104.1], '重庆': [29.6, 106.5], '上海': [31.2, 121.5],
-    '北京': [39.9, 116.4], '香港': [22.3, 114.2], '台北': [25, 121.5], '京都': [35, 135.8],
-    '复活节岛': [-27.1, -109.4], '格陵兰': [72, -40], '芬迪湾': [45.3, -65], '死海': [31.5, 35.5],
-    '贝加尔': [53.5, 108], '尼斯湖': [57.3, -4.4], '西湖': [30.2, 120.1], '湘江': [28, 113]
-  };
-
-  function geocodeLocation(name) {
-    if (!name) return null;
-    for (const [k, v] of Object.entries(LANDMARK_GEO)) {
-      if (name.includes(k)) return { lat: v[0], lng: v[1] };
-    }
-    // 稳定伪随机（同一地点总落同一点）
-    let h = 0;
-    for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) | 0;
-    return { lat: (h % 14000) / 100 - 70, lng: ((h >> 8) % 34000) / 100 - 170 };
-  }
-
-  function latLngToSvg(lat, lng, W, H) {
-    return { x: ((lng + 180) / 360) * W, y: ((90 - lat) / 180) * H };
-  }
-
-  function buildRouteMapHtml(d) {
-    const waterGeo = (window.Globe3D && Globe3D.WATERS_GEO && Globe3D.WATERS_GEO[d.water]) || { lat: 0, lng: -160 };
-    const dest = geocodeLocation(d.location);
-    if (!dest) return '';
-    const W = 320, H = 120;
-    const a = latLngToSvg(waterGeo.lat, waterGeo.lng, W, H);
-    const b = latLngToSvg(dest.lat, dest.lng, W, H);
-    // 大弧线（控制点垂直抬升）
-    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-    const dx = b.x - a.x, dy = b.y - a.y;
-    const len = Math.hypot(dx, dy);
-    const lift = Math.min(46, len * 0.35);
-    const cx = mx - dy / (len || 1) * lift, cy = my + dx / (len || 1) * lift;
-    // 已解锁比例 → 航线绘制进度
-    const progress = d.totalSegments ? d.unlockedCount / d.totalSegments : 1;
-    const totalLen = Math.abs(len) * 1.15;
-    const drawn = totalLen * progress;
-    return `
-      <div class="destiny-route">
-        <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="routeArrow" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="5" markerHeight="5" orient="auto">
-              <circle cx="4" cy="4" r="3" fill="#ed7d5b"/>
-            </marker>
-          </defs>
-          <rect width="${W}" height="${H}" rx="10" fill="rgba(169,210,197,0.18)"/>
-          <path d="M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}" fill="none" stroke="rgba(74,156,134,0.3)" stroke-width="2" stroke-dasharray="3 4"/>
-          <path d="M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}" fill="none" stroke="#ed7d5b" stroke-width="2.5"
-                stroke-linecap="round" marker-end="url(#routeArrow)"
-                stroke-dasharray="${drawn} ${totalLen}" class="destiny-route-line"/>
-          <circle cx="${a.x}" cy="${a.y}" r="4" fill="#2c8a7a"/>
-          <circle cx="${a.x}" cy="${a.y}" r="7" fill="none" stroke="#2c8a7a" stroke-opacity="0.4">
-            <animate attributeName="r" values="5;10;5" dur="2.4s" repeatCount="indefinite"/>
-          </circle>
-          ${progress >= 1 ? `<circle cx="${b.x}" cy="${b.y}" r="6" fill="#ed7d5b" class="destiny-route-burst">
-            <animate attributeName="r" values="3;9;3" dur="1.6s" repeatCount="indefinite"/>
-          </circle>` : ''}
-          <text x="${a.x}" y="${Math.min(H - 4, a.y + 16)}" font-size="8" text-anchor="middle" fill="#2f4f48">${(WATERS[d.water] || {}).name || '放生点'}</text>
-          <text x="${Math.max(30, Math.min(W - 30, b.x))}" y="${Math.max(10, b.y - 8)}" font-size="8" text-anchor="middle" fill="#ed7d5b">${(d.location || '').slice(0, 8)}</text>
-        </svg>
-        <div class="destiny-route-hint">${progress >= 1 ? '航线抵达终点' : '解锁下一段，航线继续延伸'}</div>
-      </div>
-    `;
-  }
-
-  function renderDestinyModal() {
-    const modal = $('destinyModal');
-    if (!modal) return;
-
-    if (destinyState.loading) {
-      modal.innerHTML = `
-        <div class="destiny-loading">
-          <div class="spinner"></div>
-          <div>正在召唤命运轨迹…</div>
-        </div>
-      `;
-      return;
-    }
-
-    const d = destinyState.data;
-    if (!d || d.error) {
-      modal.innerHTML = `
-        <div class="destiny-header">
-          <div class="destiny-title">命运轨迹</div>
-          <div class="destiny-subtitle">DESTINY TRAJECTORY</div>
-        </div>
-        <div class="destiny-loading">${d && d.error ? d.error : '加载失败'}</div>
-        <div class="destiny-actions">
-          <button class="destiny-close-btn" onclick="document.getElementById('destinyOverlay').classList.remove('show')">关闭</button>
-        </div>
-      `;
-      return;
-    }
-
-    const segmentsHtml = d.segments.map(seg => {
-      if (seg.locked) {
-        const isFree = seg.unlockType === 'free' || seg.index === 0;
-        const btnText = isFree ? '免费解锁' : '📺 看广告解锁';
-        return `
-          <div class="destiny-segment locked">
-            <div class="destiny-seg-banner" style="background: ${seg.bg};">
-              <span class="destiny-seg-index">第 ${seg.index + 1} 段</span>
-              <span>${seg.emoji}</span>
-              <div class="destiny-lock-overlay">
-                <div class="destiny-lock-icon">🔒</div>
-                <div class="destiny-lock-hint">${isFree ? '免费' : '看广告解锁'}</div>
-              </div>
-            </div>
-            <div class="destiny-seg-body">
-              <div class="destiny-seg-title">${seg.title}</div>
-              <button class="destiny-seg-unlock-btn" data-unlock-index="${seg.index}" data-needs-ad="${isFree ? '0' : '1'}">
-                ${btnText}
-              </button>
-            </div>
-          </div>
-        `;
-      }
-      return `
-        <div class="destiny-segment">
-          <div class="destiny-seg-banner" style="background: ${seg.bg};">
-            <span class="destiny-seg-index">第 ${seg.index + 1} 段</span>
-            <span>${seg.emoji}</span>
-          </div>
-          <div class="destiny-seg-body">
-            <div class="destiny-seg-title">${seg.title}</div>
-            <div class="destiny-seg-text">${seg.text}</div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    const allUnlocked = d.allUnlocked;
-    const bundleBtnHtml = allUnlocked
-      ? ''
-      : `<button class="destiny-bundle-btn" id="destinyBundleBtn">📺 看广告 · 一次解锁全部</button>`;
-
-    modal.innerHTML = `
-      <div class="destiny-header">
-        <div class="destiny-title">命运轨迹</div>
-        <div class="destiny-subtitle">DESTINY TRAJECTORY</div>
-        <div class="destiny-record-id">${d.recordId}</div>
-      </div>
-      ${buildRouteMapHtml(d)}
-      <div>${segmentsHtml}</div>
-      <div class="destiny-actions">
-        ${bundleBtnHtml}
-        <button class="destiny-close-btn" id="destinyCloseBtn">关闭</button>
-      </div>
-    `;
-
-    // 绑定解锁按钮
-    modal.querySelectorAll('.destiny-seg-unlock-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const idx = parseInt(btn.dataset.unlockIndex, 10);
-        const needsAd = btn.dataset.needsAd === '1';
-        btn.disabled = true;
-        const originalText = btn.textContent;
-
-        if (needsAd) {
-          // 看广告流程
-          const adOk = await watchAd(d.adDurationMs || 15000);
-          if (!adOk) {
-            showPayToast('广告未完成，解锁失败');
-            btn.disabled = false;
-            btn.textContent = originalText;
-            return;
-          }
-        }
-
-        btn.textContent = '解锁中…';
-        try {
-          const res = await apiUnlockDestiny(destinyState.recordId, 'single', idx);
-          if (res.ok) {
-            showPayToast(idx === 0 ? '已解锁（免费）' : '广告观看完成，已解锁');
-            destinyState.data = await apiGetDestiny(destinyState.recordId);
-            renderDestinyModal();
-          } else {
-            showPayToast(res.error || '解锁失败');
-            btn.disabled = false;
-            btn.textContent = originalText;
-          }
-        } catch (e) {
-          showPayToast('解锁失败');
-          btn.disabled = false;
-          btn.textContent = originalText;
-        }
-      });
+  function renderJourneyChips() {
+    var box = $('journeyChips');
+    if (!state.journeys.length) { box.innerHTML = ''; return; }
+    var html = '';
+    state.journeys.forEach(function (j) {
+      var dot = ['preparing', 'active', 'paused'].includes(j.status) ? 'live' : 'done';
+      if (j.status === 'paused') dot = 'paused';
+      html += '<button class="jchip' + (j.id === state.currentJourneyId ? ' active' : '') + '" data-jid="' + esc(j.id) + '">' +
+        '<span class="dot ' + dot + '"></span>' + esc(j.creatureEmoji) + ' ' + esc(j.waterName) + ' · ' + esc(PHASE_TEXT[j.phase] ? PHASE_TEXT[j.phase][0] : j.status) +
+        '</button>';
     });
-
-    const bundleBtn = $('destinyBundleBtn');
-    if (bundleBtn) {
-      bundleBtn.addEventListener('click', async () => {
-        bundleBtn.disabled = true;
-        const oldText = bundleBtn.textContent;
-        // 看广告流程
-        const adOk = await watchAd(d.adDurationMs || 15000);
-        if (!adOk) {
-          showPayToast('广告未完成，解锁失败');
-          bundleBtn.disabled = false;
-          bundleBtn.textContent = oldText;
-          return;
-        }
-        bundleBtn.textContent = '解锁中…';
-        try {
-          const res = await apiUnlockDestiny(destinyState.recordId, 'bundle');
-          if (res.ok) {
-            showPayToast('广告观看完成，全部解锁');
-            destinyState.data = await apiGetDestiny(destinyState.recordId);
-            renderDestinyModal();
-          } else {
-            showPayToast(res.error || '解锁失败');
-            bundleBtn.disabled = false;
-            bundleBtn.textContent = oldText;
-          }
-        } catch (e) {
-          showPayToast('解锁失败');
-          bundleBtn.disabled = false;
-          bundleBtn.textContent = oldText;
-        }
-      });
-    }
-
-    const closeBtn = $('destinyCloseBtn');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', closeDestinyModal);
-    }
+    box.innerHTML = html;
+    box.querySelectorAll('.jchip').forEach(function (chip) {
+      chip.addEventListener('click', function () { loadJourney(chip.dataset.jid); });
+    });
   }
 
-  // ==================== Ad Watching (激励视频模拟) ====================
-  // 返回 Promise<boolean>，true 表示观看完成
-  function watchAd(durationMs) {
-    return new Promise((resolve) => {
-      const overlay = $('adOverlay');
-      const numEl = $('adCountdownNum');
-      const closeBtn = $('adCloseBtn');
-      if (!overlay || !numEl || !closeBtn) {
-        // 没有广告 UI，直接放行（本地降级）
-        resolve(true);
-        return;
-      }
+  function loadJourney(id) {
+    state.currentJourneyId = id;
+    renderJourneyChips();
+    return api('/api/journey/' + encodeURIComponent(id)).then(function (r) {
+      if (r.status === 404) { toast('找不到这段旅程'); return; }
+      state.journey = r.data.journey;
+      renderMailbox();
+      stopPolling();
+      if (state.journey && ['preparing', 'active', 'paused'].includes(state.journey.status)) startPolling();
+    });
+  }
 
-      const totalSec = Math.max(5, Math.round(durationMs / 1000));
-      let remaining = totalSec;
-      numEl.textContent = remaining;
-      closeBtn.disabled = true;
-      closeBtn.textContent = `请观看 ${remaining}s`;
-      overlay.classList.add('show');
-
-      const timer = setInterval(() => {
-        remaining -= 1;
-        numEl.textContent = remaining;
-        if (remaining > 0) {
-          closeBtn.textContent = `请观看 ${remaining}s`;
-        } else {
-          clearInterval(timer);
-          closeBtn.disabled = false;
-          closeBtn.textContent = '领取奖励';
+  function startPolling() {
+    stopPolling();
+    state.pollTimer = setInterval(function () {
+      if (document.hidden || state.page !== 'mailbox' || !state.currentJourneyId) return;
+      api('/api/journey/' + encodeURIComponent(state.currentJourneyId)).then(function (r) {
+        if (r.data && r.data.journey) {
+          var prevSignalReplied = state.journey && state.journey.pendingSignal && state.journey.pendingSignal.replied;
+          state.journey = r.data.journey;
+          renderMailbox();
+          var msgs = state.journey.messages || [];
+          var latest = msgs[msgs.length - 1];
+          if (!prevSignalReplied && state.journey.pendingSignal && state.journey.pendingSignal.replied) {
+            toast('回应已送达，它在决定了');
+          }
         }
+      }).catch(function () {});
+    }, 15000);
+  }
+  function stopPolling() {
+    if (state.pollTimer) { clearInterval(state.pollTimer); state.pollTimer = null; }
+  }
+
+  function renderMailboxEmpty() {
+    $('mailboxBody').innerHTML =
+      '<div class="empty-box"><div class="big">🌊</div>' +
+      '<p>还没有生物出发。去放一只，把你的烦恼交给它带走。</p>' +
+      '<button class="btn-line" id="emptyGo">去放生</button></div>';
+    $('emptyGo').addEventListener('click', function () { switchPage('release'); });
+  }
+
+  function phaseBadge(j) {
+    var ph = PHASE_TEXT[j.phase] || [j.phase, ''];
+    return '<span class="phase-badge ' + ph[1] + '">' + esc(ph[0]) + '</span>';
+  }
+
+  function msgKindLabel(kind, meta) {
+    if (kind === 'letter') return '经历来信';
+    if (kind === 'final_letter') return '收束来信';
+    if (kind === 'signal') return '信号';
+    if (kind === 'user_reply') return '你说的话';
+    if (kind === 'system') return '服务提示';
+    return kind;
+  }
+
+  function renderMessages(msgs) {
+    if (!msgs.length) return '';
+    return '<div class="msg-list">' + msgs.map(function (m) {
+      var cls = 'msg-card ' + (m.kind === 'final_letter' ? 'final' : '') + (m.kind === 'system' ? ' system' : '') + (m.kind === 'signal' ? ' signal-msg' : '') + (m.kind === 'user_reply' ? ' user-reply' : '');
+      var html = '<div class="' + cls + '">' +
+        '<div class="msg-head"><span class="msg-kind">' + esc(msgKindLabel(m.kind, m.meta)) + '</span>' +
+        (m.title ? '<span class="msg-title">' + esc(m.title) + '</span>' : '') +
+        '<span class="msg-time">' + fmtTime(m.sentAt) + '</span></div>' +
+        '<div class="msg-text">' + esc(m.text) + '</div>';
+      if (m.kind === 'signal' && m.status === 'expired') {
+        html += '<div class="msg-badge">（你没来得及回，它自己做了决定）</div>';
+      }
+      if (m.kind === 'user_reply' && m.meta && m.meta.late) {
+        html += '<div class="msg-badge warn">来晚了 · 只作为它之后面对未决之事的参考</div>';
+      }
+      if (m.image) {
+        html += '<img class="msg-img" src="' + esc(m.image) + '" alt="旅程配图" loading="lazy">';
+      } else if (m.imageStatus === 'pending' || m.imageStatus === 'failed') {
+        html += '<div class="msg-badge">配图' + (m.imageStatus === 'failed' ? '没有生成成功，文字不受影响' : '正在路上…') + '</div>';
+      }
+      if (m.meta && m.meta.isFinal) {
+        html += '<div class="msg-badge">这一程到这里结束了。它随时可以再次出发。</div>';
+      }
+      html += '</div>';
+      return html;
+    }).join('') + '</div>';
+  }
+
+  function renderMailbox() {
+    var j = state.journey;
+    if (!j) { renderMailboxEmpty(); return; }
+    var body = $('mailboxBody');
+
+    var html = '<div class="jhead"><div class="jhead-main">' +
+      '<div class="jhead-emoji">' + esc(j.creatureEmoji) + '</div>' +
+      '<div><div class="jhead-title">' + esc(j.creatureName) + ' · ' + esc(j.waterName) + '</div>' +
+      '<div class="jhead-sub">第 ' + j.eventCount + ' 段经历 · ' + (j.motivation && j.motivation.status === 'recognized' ? '动机已记下' : (j.motivation && j.motivation.status === 'degraded' ? '动机识别暂不可用' : (j.motivation && j.motivation.status === 'insufficient_evidence' ? '原话已记下（没有足够证据确认具体处境）' : '动机准备中'))) + '</div></div>' +
+      phaseBadge(j) + '</div>';
+
+    if (j.goal) {
+      html += '<div class="goal-quote"><b>它的目标</b>' + esc(j.goal) + '</div>';
+    } else if (j.phase === 'preparing') {
+      html += '<div class="goal-quote"><b>状态</b><span class="loading-dots">正在熟悉水域、整理你写下的话</span></div>';
+    }
+    if (j.pauseReason) {
+      html += '<div class="jhead-note">⏸ 服务暂停（' + esc(j.pauseReason) + '）：模型服务或预算暂时不可用，这不是它自己停下来。</div>';
+    }
+    html += '</div>';
+
+    // 待回应信号
+    if (j.pendingSignal && !j.pendingSignal.replied) {
+      var s = j.pendingSignal;
+      html += '<div class="signal-card" id="signalCard">' +
+        '<div class="signal-tag"><span class="blink"></span>它寄来了一个信号 · 还没决定怎么做</div>' +
+        '<div class="signal-text">' + esc(s.text || '') + '</div>' +
+        '<div class="signal-due">补给截止 <b id="signalDue" data-due="' + s.dueAt + '">' + fmtDuration(s.remainingMs) + '</b> · 不回也没关系，到点它会自己决定</div>' +
+        '<div class="signal-actions">它在犹豫：' + s.actions.map(function (a) { return esc(a.label) + '（' + esc(a.cost) + '）'; }).join(' / ') + '</div>' +
+        '<div class="signal-reply"><textarea id="signalReplyText" maxlength="120" placeholder="可以捎一句话：信息、态度、或一句许可（可选）"></textarea>' +
+        '<button class="reply-btn" id="signalReplyBtn">寄出</button></div></div>';
+    } else if (j.pendingSignal && j.pendingSignal.replied) {
+      html += '<div class="signal-card"><div class="signal-tag"><span class="blink"></span>已回应 · 它正在结合你的话做决定</div></div>';
+    }
+
+    html += renderMessages(j.messages);
+
+    // 底部：语气 + 结束
+    if (j.status !== 'ended_user' && j.status !== 'ended_natural') {
+      var tones = [['gentle', '轻一点'], ['balanced', '刚好'], ['absurd', '更荒唐一点']];
+      html += '<div class="jfoot"><div class="tone-inline">往后的故事：' +
+        tones.map(function (t) {
+          return '<button class="chip aqua tone-mini' + (j.tone === t[0] ? ' active' : '') + '" data-tone="' + t[0] + '">' + t[1] + '</button>';
+        }).join('') +
+        '<span style="opacity:.7">（只影响未来）</span></div>' +
+        '<button class="end-link" id="endJourneyBtn">结束这段旅程</button></div>';
+    } else {
+      html += '<div class="jfoot"><span class="tone-inline">这段旅程已收束。' +
+        '<button class="btn-line" id="reGoBtn" style="margin-left:8px">让' + esc(j.creatureName) + '再次出发</button></span></div>';
+    }
+
+    body.innerHTML = html;
+
+    // 信号倒计时
+    var dueEl = $('signalDue');
+    if (dueEl) {
+      clearInterval(state.countdownTimer);
+      state.countdownTimer = setInterval(function () {
+        var remain = parseInt(dueEl.dataset.due, 10) - Date.now();
+        dueEl.textContent = fmtDuration(remain);
+        if (remain <= 0) { clearInterval(state.countdownTimer); loadJourney(state.currentJourneyId); }
       }, 1000);
-
-      // 倒计时结束后点击"领取奖励"视为观看完成
-      const handler = () => {
-        if (closeBtn.disabled) return;
-        clearInterval(timer);
-        closeBtn.removeEventListener('click', handler);
-        overlay.classList.remove('show');
-        resolve(true);
-      };
-      closeBtn.addEventListener('click', handler);
-    });
-  }
-
-  // 点击遮罩关闭命运轨迹
-  $('destinyOverlay').addEventListener('click', (e) => {
-    if (e.target === $('destinyOverlay')) {
-      closeDestinyModal();
-    }
-  });
-
-  // ==================== Nav Toggle ====================
-  document.querySelectorAll('.nav-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      navigateTo(pill.dataset.page);
-    });
-  });
-
-  // ==================== Countdown Timer ====================
-  let archivePollCounter = 0;
-  setInterval(() => {
-    archivePollCounter++;
-    checkPendingReplies();
-    if (state.currentPage === 'archive') {
-      // 每 10 秒轮询一次后端记录，生成完成后自动刷新
-      if (USE_API && archivePollCounter % 10 === 0) {
-        apiGetRecords(state.openid).then(data => {
-          state.records = data.records;
-          renderArchive();
-        }).catch(err => {
-          console.error('[poll] 加载后端记录失败:', err);
-        });
-      }
-      document.querySelectorAll('.countdown-block').forEach(el => {
-        const replyAt = parseInt(el.dataset.replyAt);
-        const remaining = replyAt - Date.now();
-        if (remaining <= 0) {
-          el.innerHTML = '✍️ 信件正在撰写中…';
-        } else {
-          let timeEl = el.querySelector('.countdown-time');
-          if (!timeEl) {
-            el.innerHTML = '⏳ 回信倒计时 <span class="countdown-time"></span>';
-            timeEl = el.querySelector('.countdown-time');
-          }
-          if (timeEl) {
-            timeEl.textContent = formatCountdown(remaining);
-          }
-        }
+      var btn = $('signalReplyBtn');
+      btn.addEventListener('click', function () {
+        var ta = $('signalReplyText');
+        var text = (ta.value || '').trim();
+        if (!text) { toast('想写点什么再寄出（也可以不回，等它自己决定）'); return; }
+        btn.disabled = true;
+        api('/api/journey/' + encodeURIComponent(j.id) + '/reply', { method: 'POST', body: { text: text } })
+          .then(function (r) {
+            btn.disabled = false;
+            if (r.data && r.data.ok) {
+              toast(r.data.ontime ? '回应已寄出，它收到了' : (r.data.message || '来晚了，它会记在心里'));
+              loadJourney(j.id);
+            } else {
+              toast(r.data.message || r.data.error || '没寄出去，稍后再试');
+            }
+          }).catch(function () { btn.disabled = false; toast('网络不太顺畅'); });
       });
     }
-  }, 1000);
 
-  // ==================== Init ====================
-  seedDemoData();
-  checkPendingReplies();
-  navigateTo('release');
+    // 语气切换
+    body.querySelectorAll('.tone-mini').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        api('/api/journey/' + encodeURIComponent(j.id) + '/tone', { method: 'POST', body: { tone: chip.dataset.tone } })
+          .then(function (r) {
+            if (r.data && r.data.ok) { toast('往后它会讲得' + chip.textContent.trim()); loadJourney(j.id); }
+            else toast('没改成，稍后再试');
+          });
+      });
+    });
 
+    // 结束旅程
+    var endBtn = $('endJourneyBtn');
+    if (endBtn) {
+      endBtn.addEventListener('click', function () {
+        if (!confirm('确定结束这段旅程吗？它不会再寄新的信，已收到的信还在。')) return;
+        api('/api/journey/' + encodeURIComponent(j.id) + '/end', { method: 'POST' })
+          .then(function (r) {
+            if (r.data && r.data.ok) { toast('旅程已结束'); loadJourney(j.id); }
+            else toast(r.data.error || '操作失败');
+          });
+      });
+    }
+    var reGo = $('reGoBtn');
+    if (reGo) {
+      reGo.addEventListener('click', function () {
+        switchPage('release');
+        selectCreature(j.species, j.creatureId);
+        state.redepartOpen = true;
+        $('redepartBox').classList.add('open');
+        $('redepartToggle').classList.add('on');
+      });
+    }
+  }
+
+  // ==================== 启动 ====================
+  renderMarkers();
+  initGlobe();
+  loadCreatures();
+  startPulse();
+  api('/api/health').then(function (r) {
+    if (r.data && r.data.aiEnabled === false) {
+      console.warn('[journey] AI 未启用：旅程无法开局（服务端需配置 AI_API_KEY）');
+    }
+  }).catch(function () {});
 })();
 </script>
-
 </body>
 </html>

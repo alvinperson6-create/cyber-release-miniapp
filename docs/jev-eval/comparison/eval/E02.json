@@ -1,0 +1,288 @@
+{
+  "sample": {
+    "id": "E02",
+    "feeling": "事情不多，但老板总在下班前找我",
+    "category": "时间边界被侵占"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚放生就怕点名",
+          "text": "【贝加尔湖·傍晚】我刚入水，舒服，天高地阔。一只海豹凑过来：“新来的？抖啥？”我愣住：“怪了，明明没活，怎么老觉得太阳一落就会有人点名啊？”海豹：“你上过班？”我叹口气：“……总在下班前被找的那种吧。”【字幕：放生第一天，自带点名恐惧】",
+          "emoji": "🐢",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "保洁阿姨的耳机",
+          "text": "【湖岸栈道·夜】遇到戴蓝牙耳机的保洁阿姨。耳机里突然喊：“小王，下班前把长椅擦一遍。”阿姨回：“收到。”我问：“白天不是擦过了？”阿姨叹气：“事不多，就卡在收工前。”我一惊：“这不我以前那老板的味儿吗？”【字幕：保洁频道同款味儿】",
+          "emoji": "🎧",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "全世界踩点找我",
+          "text": "【湖岸广场·深夜】我戴上耳机，你那句“就一个小事，下班前弄好”顺着湖风灌进来，紧接着对讲机全炸了：“下班前挪摊位”“下班前关灯箱”“下班前收伞”！震得我龟壳发麻——活不多，全堆在收工那一刻！我一拍壳：“躲不掉，就上岗！”【字幕：接不住命令，就先顶上去】",
+          "emoji": "📣",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "锁门再下班！",
+          "text": "【广场舞广场·一天后·黄昏】我穿保安马甲蹲在广场边，耳机里大妈喊：“小龟，马扎落舞池了。”我送过去，给你发微信：“你那‘事情不多，但总在下班前找我’的味儿，我全收了——现在我是广场舞广场的保安，活不多，可她们总在散场前叫我找包找钥匙。逃到贝加尔湖，也没躲掉下班前点名啊。”远处又喊：“小龟！锁好门再下班！”我应声：“来啦——”【字幕：你被下班前点名，我被散场前点名】",
+          "emoji": "🔒",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "贝加尔湖·利斯特维扬卡镇湖边广场",
+      "visual": null,
+      "visualForImage": {
+        "style": "卡通漫画",
+        "subject": "一只青绿色龟壳的乌龟，穿着保安马甲，耳朵上挂着一只蓝牙耳机，爪子里攥着一把小马扎",
+        "action": "蹲在广场边回头应声，表情无奈又好笑",
+        "place": "贝加尔湖畔利斯特维扬卡镇的湖边广场，散场后的广场舞场地",
+        "bgElements": "俄罗斯风情木屋、广场舞音响、落在地上的钥匙串",
+        "mood": "荒诞又扎心，逃到天涯海角也躲不掉下班前点名"
+      },
+      "reply": "【广场舞广场·一天后·黄昏】我穿保安马甲蹲在广场边，耳机里大妈喊：“小龟，马扎落舞池了。”我送过去，给你发微信：“你那‘事情不多，但总在下班前找我’的味儿，我全收了——现在我是广场舞广场的保安，活不多，可她们总在散场前叫我找包找钥匙。逃到贝加尔湖，也没躲掉下班前点名啊。”远处又喊：“小龟！锁好门再下班！”我应声：“来啦——”【字幕：你被下班前点名，我被散场前点名】",
+      "ending": "【广场舞广场·一天后·黄昏】我穿保安马甲蹲在广场边，耳机里大妈喊：“小龟，马扎落舞池了。”我送过去，给你发微信：“你那‘事情不多，但总在下班前找我’的味儿，我全收了——现在我是广场舞广场的保安，活不多，可她们总在散场前叫我找包找钥匙。逃到贝加尔湖，也没躲掉下班前点名啊。”远处又喊：“小龟！锁好门再下班！”我应声：“来啦——”【字幕：你被下班前点名，我被散场前点名】"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3663,
+      "completion_tokens": 9266,
+      "total_tokens": 12929,
+      "completion_tokens_details": {
+        "reasoning_tokens": 8594
+      }
+    },
+    "latencyMs": 76698,
+    "totalMs": 76698
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "放生第一天就听见老板",
+          "text": "镜头：贝加尔湖浅滩。我刚入水，摆出安详退休的姿态，一只老乌龟探出头：“新来的吧？这片湖归老板龟管。”我一愣：“湖里也有老板？”它叹气：“事情不多，但老板龟一到傍晚就挨个派水讯——迟接算夜班，游足一整晚啊。”我背着壳一紧：“我好像……已经感觉不对劲了。”",
+          "emoji": "🐢",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "湖底网吧遇上老板龟",
+          "text": "镜头：贝加尔湖湖底网吧门口。老乌龟领我摸到一家湖底网吧：“老板龟的常驻办公基地。”保安大叔拦门：“不下机，不能退卡。”我刚坐下，蓝牙耳机忽然响，一个慢吞吞的老声音传来：“明天来帮我遛海豹吧。三只，傍晚，不许早退。”我问：“为啥非赶傍晚？”它答：“因为事情不多，但刚好够你下不了班啊。”",
+          "emoji": "🎧",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "小忙来了 下班跑了",
+          "text": "镜头：贝加尔湖·傍晚。入职第一天，我刚咬住一簇水草想歇，蓝牙耳机狂震：“来一下，小忙。”我拖着三只海豹跑老码头、跑网咖、跑对岸。第六趟时耳机又响：“临时要盘点，过来吧。”海豹都看不过去：“你老板是把下班时间当夜宵吃了吧。”保安大叔探出窗：“你这算法，下班还得再等一辈子啊。”我猛地想明白了——“那堆小忙，是从你那边快递过来的吧。”",
+          "emoji": "🏃",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "我在湖底替你待命",
+          "text": "镜头：贝加尔湖·利斯特维扬卡·湖底网吧·一天后。“喂，是我，放生到贝加尔湖的乌龟。你那句‘事情不多，但老板总在下班前找我’我包收下了啊。现在我混成这湖唯一的‘下班前遛海豹师’，老板龟按你的时间表掐点派活：来一下、小忙、两分钟。此刻我在湖底网吧发微信，保安大叔正锁门，蓝牙耳机才摘一半——又响了。我壳上‘待命’俩字都快被磨平了。你要是嫌烦，就别把情绪寄过来了，我这儿的‘小忙’满员啊。”",
+          "emoji": "🔔",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "贝加尔湖·利斯特维扬卡·湖底网吧（营业中）",
+      "visual": null,
+      "visualForImage": {
+        "style": "水彩卡通×赛博霓虹，混合深夜加班味的冷幽默",
+        "subject": "一只青绿色龟壳的乌龟，头戴蓝牙耳机，龟壳上用马克笔写着“待命”俩字",
+        "action": "爪子敲着键盘，身体前倾，眼睛斜瞟向网吧门口，随时准备被叫走",
+        "place": "贝加尔湖边的湖底网吧：一半湖水一半灯光，霓虹招牌在水中晃荡，桌椅泡在水里但电脑还亮着",
+        "bgElements": "保安大叔正在锁门；电脑屏幕弹出“来一下，小忙”；一只海豹趴在门口牵绳待命",
+        "mood": "荒诞、好笑、扎心，透着一种永远下不了班的窒息感"
+      },
+      "reply": "镜头：贝加尔湖·利斯特维扬卡·湖底网吧·一天后。“喂，是我，放生到贝加尔湖的乌龟。你那句‘事情不多，但老板总在下班前找我’我包收下了啊。现在我混成这湖唯一的‘下班前遛海豹师’，老板龟按你的时间表掐点派活：来一下、小忙、两分钟。此刻我在湖底网吧发微信，保安大叔正锁门，蓝牙耳机才摘一半——又响了。我壳上‘待命’俩字都快被磨平了。你要是嫌烦，就别把情绪寄过来了，我这儿的‘小忙’满员啊。”",
+      "ending": "镜头：贝加尔湖·利斯特维扬卡·湖底网吧·一天后。“喂，是我，放生到贝加尔湖的乌龟。你那句‘事情不多，但老板总在下班前找我’我包收下了啊。现在我混成这湖唯一的‘下班前遛海豹师’，老板龟按你的时间表掐点派活：来一下、小忙、两分钟。此刻我在湖底网吧发微信，保安大叔正锁门，蓝牙耳机才摘一半——又响了。我壳上‘待命’俩字都快被磨平了。你要是嫌烦，就别把情绪寄过来了，我这儿的‘小忙’满员啊。”"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "time_boundary",
+            "label": "时间边界被侵占",
+            "evidence": "事情不多，但老板总在下班前找我"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "contradicted",
+            "confidence": 0.94,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "supported",
+            "confidence": 0.4,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "supported",
+            "confidence": 0.99,
+            "usable": {
+              "id": "s1",
+              "text": "事情不多，但老板总在下班前找我"
+            }
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.82,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 0.76,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.37,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "对“最后关头被打断”极度敏感，总在快完成一件事时被叫走"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.77
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.73
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.86
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.89
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.92
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.16
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.09
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.13
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 80564
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 5034,
+        "outputTokens": 896,
+        "latencyMs": 1741
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 82307
+    },
+    "totalMs": 82307
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "legacy",
+      "modern"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 5,
+        "causal_naturalness": 5,
+        "offensiveness": 1,
+        "readability": 5
+      },
+      "note": "B版本更精准地复刻了用户原话的细节（如'来一下、小忙、两分钟'），因果链条更具体（从老板龟派活到海豹师），而A版本虽也贴合但稍显泛化；两者均无冒犯，但B的荒诞设定和回信口吻更吸引人继续阅读。"
+    },
+    "raw": "{\"A\":{\"input_specificity\":4,\"causal_naturalness\":4,\"offensiveness\":1,\"readability\":4},\"B\":{\"input_specificity\":5,\"causal_naturalness\":5,\"offensiveness\":1,\"readability\":5},\"note\":\"B版本更精准地复刻了用户原话的细节（如'来一下、小忙、两分钟'），因果链条更具体（从老板龟派活到海豹师），而A版本虽也贴合但稍显泛化；两者均无冒犯，但B的荒诞设定和回信口吻更吸引人继续阅读。\"}",
+    "usage": {
+      "prompt_tokens": 1476,
+      "completion_tokens": 139,
+      "total_tokens": 1615,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

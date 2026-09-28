@@ -1,0 +1,61 @@
+{
+  "startedAt": "2026-09-26T19:19:33.143Z",
+  "records": [
+    {
+      "input": {
+        "feeling": "每天都干不完，我真的想歇一下",
+        "creature": "koi",
+        "water": "xihu"
+      },
+      "recordId": "CRSB-20260927-8701",
+      "ok": true,
+      "semanticStatus": "accepted",
+      "replyText": "【切镜·杭州·写字楼27层会议室·凌晨一点】嘿，是我。你那句“每天都干不完”，我替你干出花来了：一天，我从西湖锦鲤变成奶茶店调茶师，又干成连锁区域总监。现在我在写字楼会议室里，开着“锦鲤为何不需要休息”的论证会。他们盯着我：“鱼嘛，就该一直游。”蓝牙耳机里还在排明天的班。我想歇，但我的歇，得等你这条“源头”先放假。【字幕：你的一句话，我不歇的一天】",
+      "replyImage": null,
+      "wallMs": 56560,
+      "idempotentText": true,
+      "destiny": {
+        "location": "杭州市滨江区·某写字楼27层会议室",
+        "totalSegments": 4,
+        "seg4Text": null,
+        "seg1Unlocked": true,
+        "seg2Locked": true
+      },
+      "replyFromSeg4": true
+    },
+    {
+      "input": {
+        "feeling": "谁找我帮忙我都答应，最后只有我的事情没做完",
+        "creature": "turtle",
+        "water": "baikal"
+      },
+      "recordId": "CRSB-20260927-7321",
+      "ok": true,
+      "semanticStatus": "accepted",
+      "replyText": "【切镜头·贝加尔湖畔KTV门口·一天后】嘿，是我啊，你放生那只乌龟。贝加尔湖这儿的脾气，真跟你一模一样——谁找帮忙我都痛快答应，忙到天黑，自己的事一桩没动。给醉汉当滴滴司机，给阿姨录表格，给KTV扛键盘。好不容易安静下来，我慢慢往湖边爬，水獭追出来喊：“最后一趟！”我一回头，壳上又多了三件活。自由游这件小事，我从早排到晚，还没轮上啊。【字幕：人人有救兵，唯独我自己没跑成】",
+      "replyImage": null,
+      "wallMs": 59920,
+      "idempotentText": true,
+      "destiny": {
+        "location": "贝加尔湖畔·KTV门口",
+        "totalSegments": 4,
+        "seg4Text": null,
+        "seg1Unlocked": true,
+        "seg2Locked": true
+      },
+      "replyFromSeg4": true
+    }
+  ],
+  "health": {
+    "status": "ok",
+    "time": "2026-09-26T19:19:33.488Z",
+    "aiEnabled": true
+  },
+  "image": {
+    "path": "/images/reply-1790450521232-xvvv7vyq.png",
+    "wallMs": 31218,
+    "exists": true
+  },
+  "finishedAt": "2026-09-26T19:22:01.234Z",
+  "usageLedger": []
+}

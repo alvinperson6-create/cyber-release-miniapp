@@ -1,375 +1,657 @@
+// 赛博放生 · 权威旅程内核（v2）
+//
+// schema 原则（handoff §4.2）：
+// - 程序掌握权威事实：encounters/facts/messages 均为追加式持久账本，
+//   每条已提交记录有稳定 ID；模型文字必须经程序校验后由程序落账
+// - 状态版本（state_version）做乐观锁：提案冻结时的版本、决策/结算的
+//   条件更新，重复调度/并发留言/进程重启都不会双写或覆盖
+// - 模型调用在事务外；这里的所有写操作都是短事务
+// - 任务表带租约（lease）：崩溃/重启后到期回收，按 due_at 公平取用
+// - 旧四集 schema 不再创建、不再迁移（旧数据无需兼容，handoff §4.1）
+
 const Database = require('better-sqlite3');
 const path = require('path');
-const { REPLY_POOL, SIGNS } = require('./data');
+const crypto = require('node:crypto');
 
-const DB_PATH = path.join(__dirname, 'data.db');
-const DEMO_OPENID = 'demo_user_001';
+// DB 路径每次 initDb 时解析（测试在同进程内切换隔离库）
+function resolveDbPath() {
+  return process.env.DB_PATH ? path.resolve(process.env.DB_PATH) : path.join(__dirname, 'data.db');
+}
 
-const db = new Database(DB_PATH);
-db.pragma('journal_mode = WAL');
+let db = null;
 
 function initDb() {
+  closeDb();
+  db = new Database(resolveDbPath());
+  db.pragma('journal_mode = WAL');
+  db.pragma('foreign_keys = ON');
+
   db.prepare(`
-    CREATE TABLE IF NOT EXISTS records (
+    CREATE TABLE IF NOT EXISTS creatures (
       id TEXT PRIMARY KEY,
-      openid TEXT NOT NULL,
-      creature TEXT NOT NULL,
+      owner_key TEXT NOT NULL,
+      species TEXT NOT NULL,
+      origin_journey_id TEXT,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL
+    )
+  `).run();
+
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS journeys (
+      id TEXT PRIMARY KEY,
+      creature_id TEXT NOT NULL,
+      owner_key TEXT NOT NULL,
+      species TEXT NOT NULL,
       water TEXT NOT NULL,
-      feeling TEXT,
-      feedback_label TEXT,
-      sign TEXT,
+      feeling TEXT NOT NULL,
+      tone TEXT NOT NULL DEFAULT 'balanced',
+      status TEXT NOT NULL DEFAULT 'preparing',
+      pause_reason TEXT,
+      goal TEXT,
+      motivation_version INTEGER NOT NULL DEFAULT 0,
+      state_version INTEGER NOT NULL DEFAULT 0,
+      event_count INTEGER NOT NULL DEFAULT 0,
+      ending_reason TEXT,
       created_at INTEGER NOT NULL,
-      reply_at INTEGER NOT NULL,
-      reply_bg TEXT,
-      reply_emoji TEXT,
-      reply_text TEXT,
-      reply_image TEXT,
-      reply_created_at INTEGER
+      updated_at INTEGER NOT NULL
+    )
+  `).run();
+  db.prepare(`CREATE INDEX IF NOT EXISTS idx_journeys_owner ON journeys(owner_key, created_at)`).run();
+
+  // 本程动机档案（版本化）：原文 + 识别结果；识别不可用时 status=pending 等待重试
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS motivations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      journey_id TEXT NOT NULL,
+      version INTEGER NOT NULL,
+      raw_text TEXT NOT NULL,
+      status TEXT NOT NULL,
+      items_json TEXT,
+      note TEXT,
+      created_at INTEGER NOT NULL,
+      UNIQUE(journey_id, version)
     )
   `).run();
 
-  // 兼容旧数据库：新增 reply_image / reply_generating_at 字段
-  for (const col of ['reply_image', 'reply_generating_at']) {
-    try {
-      db.prepare(`ALTER TABLE records ADD COLUMN ${col} TEXT`).run();
-    } catch (e) {
-      // 字段已存在则忽略
-    }
-  }
-
-  // 命运轨迹表：每条放生记录对应一段命运轨迹
-  // segments: JSON 数组 [{title, text, emoji, bg}]
-  // unlocked_indices: JSON 数组 [0,1,2,...] 已解锁的段索引（第 0 段默认免费）
-  // location/visual: AI 自选的真实地点与画面描述，用于对齐回信和配图
+  // 遭遇：提案由程序冻结；决策与结算按条件更新推进
   db.prepare(`
-    CREATE TABLE IF NOT EXISTS destinies (
+    CREATE TABLE IF NOT EXISTS encounters (
       id TEXT PRIMARY KEY,
-      record_id TEXT NOT NULL UNIQUE,
-      openid TEXT NOT NULL,
-      segments TEXT NOT NULL,
-      location TEXT,
-      visual TEXT,
-      unlocked_indices TEXT NOT NULL DEFAULT '[0]',
+      journey_id TEXT NOT NULL,
+      seq INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'proposed',
+      proposal_json TEXT NOT NULL,
+      facts_version INTEGER NOT NULL,
+      state_version INTEGER NOT NULL,
+      signal_message_id TEXT,
+      signal_due_at INTEGER,
+      supply_message_id TEXT,
+      supply_late INTEGER NOT NULL DEFAULT 0,
+      chosen_action TEXT,
+      decision_source TEXT,
+      decision_meta_json TEXT,
+      outcome_json TEXT,
+      outcome_status TEXT,
+      reproposals INTEGER NOT NULL DEFAULT 0,
       created_at INTEGER NOT NULL,
-      FOREIGN KEY (record_id) REFERENCES records(id)
+      updated_at INTEGER NOT NULL,
+      UNIQUE(journey_id, seq)
+    )
+  `).run();
+  db.prepare(`CREATE INDEX IF NOT EXISTS idx_encounters_journey ON encounters(journey_id, seq)`).run();
+
+  // 事实账本（追加式）
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS facts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      journey_id TEXT NOT NULL,
+      encounter_id TEXT,
+      seq INTEGER NOT NULL,
+      kind TEXT NOT NULL,
+      content TEXT NOT NULL,
+      detail_json TEXT,
+      created_at INTEGER NOT NULL
+    )
+  `).run();
+  db.prepare(`CREATE INDEX IF NOT EXISTS idx_facts_journey ON facts(journey_id, id)`).run();
+
+  // 机制卡：压力来源—两难—选择代价—持久后果（去重对象）
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS mechanism_cards (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      creature_id TEXT NOT NULL,
+      journey_id TEXT NOT NULL,
+      encounter_id TEXT NOT NULL,
+      pressure TEXT NOT NULL,
+      dilemma TEXT NOT NULL,
+      choice_cost TEXT NOT NULL,
+      lasting_consequence TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    )
+  `).run();
+  db.prepare(`CREATE INDEX IF NOT EXISTS idx_cards_creature ON mechanism_cards(creature_id, id)`).run();
+
+  // 消息：signal / letter / final_letter / user_reply / system
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS messages (
+      id TEXT PRIMARY KEY,
+      journey_id TEXT NOT NULL,
+      kind TEXT NOT NULL,
+      encounter_id TEXT,
+      text TEXT NOT NULL,
+      title TEXT,
+      meta_json TEXT,
+      status TEXT NOT NULL DEFAULT 'sent',
+      image TEXT,
+      image_status TEXT,
+      sent_at INTEGER NOT NULL,
+      created_at INTEGER NOT NULL
+    )
+  `).run();
+  db.prepare(`CREATE INDEX IF NOT EXISTS idx_messages_journey ON messages(journey_id, sent_at)`).run();
+
+  // 任务队列：lease + 重试 + 幂等
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS tasks (
+      id TEXT PRIMARY KEY,
+      journey_id TEXT NOT NULL,
+      kind TEXT NOT NULL,
+      due_at INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      lease_until INTEGER,
+      lease_key TEXT,
+      attempts INTEGER NOT NULL DEFAULT 0,
+      payload_json TEXT,
+      last_error TEXT,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL
+    )
+  `).run();
+  db.prepare(`CREATE INDEX IF NOT EXISTS idx_tasks_due ON tasks(status, due_at)`).run();
+
+  // 模型调用台账（含 JEV），预算与成本追踪
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS model_calls (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      journey_id TEXT,
+      task_id TEXT,
+      kind TEXT NOT NULL,
+      provider TEXT,
+      model TEXT,
+      usage_json TEXT,
+      latency_ms INTEGER,
+      status TEXT NOT NULL,
+      error TEXT,
+      created_at INTEGER NOT NULL
+    )
+  `).run();
+  db.prepare(`CREATE INDEX IF NOT EXISTS idx_calls_journey ON model_calls(journey_id)`).run();
+
+  // 匿名会话：cookie token 的 sha256 → owner_key（凭据本身不落库、不进日志）
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS sessions (
+      token_hash TEXT PRIMARY KEY,
+      owner_key TEXT NOT NULL UNIQUE,
+      created_at INTEGER NOT NULL,
+      last_seen_at INTEGER NOT NULL
     )
   `).run();
 
-  // 兼容旧数据库：新增 location/visual/ending/reply/visual_for_image 字段
-  for (const col of ['location', 'visual', 'ending', 'reply', 'visual_for_image']) {
-    try {
-      db.prepare(`ALTER TABLE destinies ADD COLUMN ${col} TEXT`).run();
-    } catch (e) {
-      // 字段已存在则忽略
-    }
+  return db;
+}
+
+function getDb() {
+  if (!db) initDb();
+  return db;
+}
+
+// 测试专用：关闭当前连接并清空模块级实例，让下一次 initDb 指向新的 DB_PATH
+function closeDb() {
+  if (db) {
+    try { db.close(); } catch (e) { /* already closed */ }
+    db = null;
   }
-
-  seedDemoData();
 }
 
-function seedDemoData() {
-  const row = db.prepare('SELECT COUNT(*) AS c FROM records').get();
-  if (row.c > 0) return;
-
-  const now = Date.now();
-  const HOUR = 60 * 60 * 1000;
-  const DAY = 24 * HOUR;
-
-  const demoRecords = [
-    {
-      id: 'CRSB-DEMO-0001',
-      openid: DEMO_OPENID,
-      creature: 'koi',
-      water: 'xihu',
-      feeling: '最近项目压力大，放一只锦鲤求点好运。',
-      feedback_label: '24 小时后',
-      sign: SIGNS.koi[0],
-      created_at: now - 26 * HOUR,
-      reply_at: now - 26 * HOUR + DAY,
-      reply: REPLY_POOL[0]
-    },
-    {
-      id: 'CRSB-DEMO-0002',
-      openid: DEMO_OPENID,
-      creature: 'turtle',
-      water: 'mariana',
-      feeling: '感觉自己太慢了，把焦虑沉到海底去吧。',
-      feedback_label: '24 小时后',
-      sign: SIGNS.turtle[0],
-      created_at: now - 30 * 60 * 1000,
-      reply_at: now - 30 * 60 * 1000 + DAY,
-      reply: null
-    },
-    {
-      id: 'CRSB-DEMO-0003',
-      openid: DEMO_OPENID,
-      creature: 'cloud',
-      water: 'baikal',
-      feeling: '脑子乱糟糟的，想让云朵替我飘一会儿。',
-      feedback_label: '24 小时后',
-      sign: SIGNS.cloud[0],
-      created_at: now - 50 * HOUR,
-      reply_at: now - 50 * HOUR + DAY,
-      reply: REPLY_POOL[3]
-    },
-    {
-      id: 'CRSB-DEMO-0004',
-      openid: DEMO_OPENID,
-      creature: 'koi',
-      water: 'pacific',
-      feeling: '祝自己一切顺利，放生积德。',
-      feedback_label: '24 小时后',
-      sign: SIGNS.koi[1],
-      created_at: now - 96 * HOUR,
-      reply_at: now - 96 * HOUR + DAY,
-      reply: REPLY_POOL[5]
-    }
-  ];
-
-  const insert = db.prepare(`
-    INSERT INTO records (
-      id, openid, creature, water, feeling, feedback_label, sign,
-      created_at, reply_at, reply_bg, reply_emoji, reply_text, reply_created_at
-    ) VALUES (
-      @id, @openid, @creature, @water, @feeling, @feedback_label, @sign,
-      @created_at, @reply_at, @reply_bg, @reply_emoji, @reply_text, @reply_created_at
-    )
-  `);
-
-  const tx = db.transaction((records) => {
-    for (const r of records) {
-      insert.run({
-        id: r.id,
-        openid: r.openid,
-        creature: r.creature,
-        water: r.water,
-        feeling: r.feeling,
-        feedback_label: r.feedback_label,
-        sign: r.sign,
-        created_at: r.created_at,
-        reply_at: r.reply_at,
-        reply_bg: r.reply ? r.reply.bg : null,
-        reply_emoji: r.reply ? r.reply.emoji : null,
-        reply_text: r.reply ? r.reply.text : null,
-        reply_created_at: r.reply ? r.reply_at : null
-      });
-    }
-  });
-
-  tx(demoRecords);
-
-  // 为已回信的 demo 记录播种命运轨迹
-  const demoDestinies = [
-    {
-      id: 'DST-CRSB-DEMO-0001',
-      record_id: 'CRSB-DEMO-0001',
-      openid: DEMO_OPENID,
-      location: '西湖断桥',
-      visual: '锦鲤在西湖断桥下游动，粉色荷花盛开，远处有断桥轮廓',
-      segments: [
-        { title: '入水瞬间', text: '锦鲤从你的掌心滑进西湖，鳞片在晨光里闪了一下。它没有回头，但摆了摆尾巴，像是在说"放心"。', emoji: '🌿', bg: 'linear-gradient(135deg, #d4e8e2, #a9d2c5)' },
-        { title: '顺流而下', text: '它穿过一片水草，遇见一群透明的小鱼。它们互相打了个照面，又各自游开。西湖的水比它想象的温柔。', emoji: '🌊', bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)' },
-        { title: '一次回望', text: '在断桥下面它停了一下。它想起你写"项目压力大"时的样子——它没法替你解决，但它决定替你记着，替你游得慢一点。', emoji: '🔥', bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)' },
-        { title: '离谱结局', text: '它游着游着被一位晨练大爷用网兜捞起，送进了白堤边的知味观。厨师正要动手，它掏出手机给你发了条语音。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' }
-      ],
-      unlocked_indices: '[0,1]'  // 前两段已解锁
-    },
-    {
-      id: 'DST-CRSB-DEMO-0003',
-      record_id: 'CRSB-DEMO-0003',
-      openid: DEMO_OPENID,
-      location: '贝加尔湖奥利洪岛',
-      visual: '云朵飘在贝加尔湖奥利洪岛上方，湖水湛蓝，岸边有萨满岩',
-      segments: [
-        { title: '升上天空', text: '云朵从你手心飘起来，越飘越高，最后停在贝加尔湖上空。它低头看了你一眼，然后被风推着走了。', emoji: '☁️', bg: 'linear-gradient(135deg, #c7dbe2, #9bc8bd)' },
-        { title: '随风漂泊', text: '它路过一座雪山，又路过一片云。云和云之间互相点头，像在说"你也来啦"。它觉得自己轻了一点。', emoji: '🌙', bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)' },
-        { title: '装下你的事', text: '它把你写下的"脑子乱糟糟的"装进自己身体里。装着装着，它发现自己变重了——但不是坏事，是那种被需要的重。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' },
-        { title: '离谱结局', text: '它飘到奥利洪岛萨满岩上空时被当地巫师当成祥瑞收进陶罐，罐口恰好能连上 WiFi，它赶紧给你写回信。', emoji: '🌙', bg: 'linear-gradient(135deg, #fff3cd, #ffd970)' }
-      ],
-      unlocked_indices: '[0]'  // 仅第一段已解锁
-    },
-    {
-      id: 'DST-CRSB-DEMO-0004',
-      record_id: 'CRSB-DEMO-0004',
-      openid: DEMO_OPENID,
-      location: '太平洋中途岛',
-      visual: '锦鲤在太平洋中途岛附近清澈海水中游动，热带鱼群环绕',
-      segments: [
-        { title: '入水瞬间', text: '锦鲤从你的掌心滑进太平洋，鳞片在正午的阳光里闪了一下。它没有回头，一头扎进了深蓝色的水里。', emoji: '🔥', bg: 'linear-gradient(135deg, #f9d8c9, #ed7d5b)' },
-        { title: '顺流而下', text: '太平洋很大，它游了很久没见到边。遇到一群海豚，海豚问它去哪，它说"去给一个人写封信"。', emoji: '🌊', bg: 'linear-gradient(135deg, #d1ecf1, #79c8d9)' },
-        { title: '一次回望', text: '在一片珊瑚礁它停了一下。它想起你写"放生积德"时的样子——它决定替你把这份善意带去更远的海域。', emoji: '☀️', bg: 'linear-gradient(135deg, #fff3cd, #ffd970)' },
-        { title: '离谱结局', text: '它游到中途岛时被一只信天翁当成漂流瓶叼走，鸟喙里信号不错，它就地给你写了回信。', emoji: '✨', bg: 'linear-gradient(135deg, #e8d5f0, #c4a8d8)' }
-      ],
-      unlocked_indices: '[0,1,2,3]'  // 全部已解锁
-    }
-  ];
-
-  const insertDst = db.prepare(`
-    INSERT INTO destinies (id, record_id, openid, segments, location, visual, unlocked_indices, created_at)
-    VALUES (@id, @record_id, @openid, @segments, @location, @visual, @unlocked_indices, @created_at)
-  `);
-  const txDst = db.transaction((items) => {
-    for (const d of items) {
-      insertDst.run({
-        id: d.id,
-        record_id: d.record_id,
-        openid: d.openid,
-        segments: JSON.stringify(d.segments),
-        location: d.location || null,
-        visual: d.visual || null,
-        unlocked_indices: d.unlocked_indices,
-        created_at: now
-      });
-    }
-  });
-  txDst(demoDestinies);
-  console.log(`[db] Seeded ${demoRecords.length} demo records`);
+function rid(prefix) {
+  return `${prefix}-${Date.now().toString(36)}${crypto.randomBytes(5).toString('base64url')}`;
 }
 
-function insertRecord(record) {
-  const stmt = db.prepare(`
-    INSERT INTO records (
-      id, openid, creature, water, feeling, feedback_label, sign,
-      created_at, reply_at, reply_bg, reply_emoji, reply_text, reply_image, reply_created_at
-    ) VALUES (
-      @id, @openid, @creature, @water, @feeling, @feedback_label, @sign,
-      @created_at, @reply_at, @reply_bg, @reply_emoji, @reply_text, @reply_image, @reply_created_at
-    )
-  `);
-  stmt.run({
-    id: record.id,
-    openid: record.openid,
-    creature: record.creature,
-    water: record.water,
-    feeling: record.feeling,
-    feedback_label: record.feedback_label,
-    sign: record.sign,
-    created_at: record.created_at,
-    reply_at: record.reply_at,
-    reply_bg: record.reply_bg ?? null,
-    reply_emoji: record.reply_emoji ?? null,
-    reply_text: record.reply_text ?? null,
-    reply_image: record.reply_image ?? null,
-    reply_created_at: record.reply_created_at ?? null
-  });
+// ==================== 会话 ====================
+function upsertSession(tokenHash, ownerKey, now) {
+  getDb().prepare(`
+    INSERT INTO sessions (token_hash, owner_key, created_at, last_seen_at)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(token_hash) DO UPDATE SET last_seen_at = excluded.last_seen_at
+  `).run(tokenHash, ownerKey, now, now);
 }
 
-function getRecordsByOpenid(openid) {
-  return db.prepare(`
-    SELECT * FROM records WHERE openid = ? ORDER BY created_at DESC
-  `).all(openid);
+function getSessionByTokenHash(tokenHash) {
+  return getDb().prepare(`SELECT * FROM sessions WHERE token_hash = ?`).get(tokenHash) || null;
 }
 
-function getRecordById(id) {
-  return db.prepare(`SELECT * FROM records WHERE id = ?`).get(id);
+// ==================== 生物与旅程 ====================
+function createCreature({ id, ownerKey, species, originJourneyId, now }) {
+  getDb().prepare(`
+    INSERT INTO creatures (id, owner_key, species, origin_journey_id, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(id, ownerKey, species, originJourneyId || null, now, now);
+  return getCreature(id);
 }
 
-function getAllRecords() {
-  return db.prepare('SELECT * FROM records ORDER BY created_at DESC').all();
+function getCreature(id) {
+  return getDb().prepare(`SELECT * FROM creatures WHERE id = ?`).get(id) || null;
 }
 
-function getPendingReplies(limit = 1, preGenerateMs = 0) {
-  const now = Date.now();
-  const GENERATING_TIMEOUT_MS = 15 * 60 * 1000; // 15 分钟内认为还在生成中
-  return db.prepare(`
-    SELECT * FROM records
-    WHERE reply_at - ? <= ?
-      AND reply_text IS NULL
-      AND (reply_generating_at IS NULL OR reply_generating_at < ?)
-    ORDER BY created_at ASC
-    LIMIT ?
-  `).all(preGenerateMs, now, now - GENERATING_TIMEOUT_MS, limit);
+// 同一所有者名下的生物（“让这只生物再次出发”的来源）
+function getCreaturesByOwner(ownerKey) {
+  return getDb().prepare(`
+    SELECT c.*, (SELECT COUNT(*) FROM journeys j WHERE j.creature_id = c.id) AS journey_count
+    FROM creatures c WHERE c.owner_key = ? ORDER BY c.created_at ASC
+  `).all(ownerKey);
 }
 
-function updateReply(id, reply) {
-  const now = Date.now();
-  db.prepare(`
-    UPDATE records
-    SET reply_bg = ?, reply_emoji = ?, reply_text = ?, reply_image = ?, reply_created_at = ?, reply_generating_at = NULL
-    WHERE id = ?
-  `).run(reply.bg, reply.emoji, reply.text, reply.image || null, now, id);
+// 归属校验：creature 必须属于 owner
+function getOwnedCreature(id, ownerKey) {
+  return getDb().prepare(`SELECT * FROM creatures WHERE id = ? AND owner_key = ?`).get(id, ownerKey) || null;
 }
 
-function markReplyGenerating(id) {
-  db.prepare(`UPDATE records SET reply_generating_at = ? WHERE id = ?`).run(Date.now(), id);
+function createJourney({ id, creatureId, ownerKey, species, water, feeling, tone, now }) {
+  getDb().prepare(`
+    INSERT INTO journeys (id, creature_id, owner_key, species, water, feeling, tone, status, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 'preparing', ?, ?)
+  `).run(id, creatureId, ownerKey, species, water, feeling, tone || 'balanced', now, now);
+  // 本程动机档案 v1：先持久化原文，识别状态 pending（后台补齐）
+  getDb().prepare(`
+    INSERT INTO motivations (journey_id, version, raw_text, status, created_at)
+    VALUES (?, 1, ?, 'pending', ?)
+  `).run(id, feeling, now);
+  return getJourney(id);
 }
 
-function clearReplyGenerating(id) {
-  db.prepare(`UPDATE records SET reply_generating_at = NULL WHERE id = ?`).run(id);
+function getJourney(id) {
+  return getDb().prepare(`SELECT * FROM journeys WHERE id = ?`).get(id) || null;
 }
 
-function getStats(openid) {
-  const total = db.prepare(`SELECT COUNT(*) AS c FROM records WHERE openid = ?`).get(openid).c;
-  const replied = db.prepare(`SELECT COUNT(*) AS c FROM records WHERE openid = ? AND reply_text IS NOT NULL`).get(openid).c;
-  const now = Date.now();
-  const pending = db.prepare(`
-    SELECT COUNT(*) AS c FROM records
-    WHERE openid = ? AND reply_at <= ? AND reply_text IS NULL
-  `).get(openid, now).c;
-  return { total, pending, replied };
+function getOwnedJourney(id, ownerKey) {
+  return getDb().prepare(`SELECT * FROM journeys WHERE id = ? AND owner_key = ?`).get(id, ownerKey) || null;
 }
 
-// ==================== 命运轨迹 ====================
-function insertDestiny({ id, recordId, openid, segments, location, visual, visualForImage, reply, ending }) {
-  // 同一记录多次生成时直接覆盖，避免 UNIQUE constraint failed
-  db.prepare(`
-    INSERT INTO destinies (id, record_id, openid, segments, location, visual, visual_for_image, reply, ending, unlocked_indices, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '[0]', ?)
-    ON CONFLICT(record_id) DO UPDATE SET
-      segments = excluded.segments,
-      location = excluded.location,
-      visual = excluded.visual,
-      visual_for_image = excluded.visual_for_image,
-      reply = excluded.reply,
-      ending = excluded.ending,
-      unlocked_indices = excluded.unlocked_indices,
-      created_at = excluded.created_at
-  `).run(id, recordId, openid, JSON.stringify(segments), location || null, visual || null, JSON.stringify(visualForImage || {}), reply || ending || null, ending || null, Date.now());
+function getJourneysByOwner(ownerKey) {
+  return getDb().prepare(`SELECT * FROM journeys WHERE owner_key = ? ORDER BY created_at DESC`).all(ownerKey);
 }
 
-function getDestinyByRecordId(recordId) {
-  const row = db.prepare(`SELECT * FROM destinies WHERE record_id = ?`).get(recordId);
+// 进行中旅程（调度/恢复对象；paused 已被护栏暂停，不参与自动推进）
+function getActiveJourneys(limit = 50) {
+  return getDb().prepare(`
+    SELECT * FROM journeys
+    WHERE status IN ('preparing', 'active')
+    ORDER BY created_at ASC LIMIT ?
+  `).all(limit);
+}
+
+function countJourneysByCreature(creatureId) {
+  return getDb().prepare(`SELECT COUNT(*) AS c FROM journeys WHERE creature_id = ?`).get(creatureId).c;
+}
+
+// 条件更新：乐观锁。expected 里的字段必须与库内一致才生效
+function updateJourney(id, fields, expected = {}) {
+  const all = { ...fields, updated_at: Date.now() };
+  const keys = Object.keys(all);
+  if (!keys.length) return false;
+  const conds = [`id = @id`];
+  const params = { id };
+  for (const k of keys) params[`f_${k}`] = all[k];
+  for (const [k, v] of Object.entries(expected)) {
+    conds.push(v === null ? `${k} IS NULL` : `${k} = @e_${k}`);
+    if (v !== null) params[`e_${k}`] = v;
+  }
+  const sets = keys.map(k => `${k} = @f_${k}`).join(', ');
+  const info = getDb().prepare(`UPDATE journeys SET ${sets} WHERE ${conds.join(' AND ')}`).run(params);
+  return info.changes > 0;
+}
+
+// 用户主动结束：立即生效，不等任何模型调用；非进行中旅程不可结束
+function endJourneyByUser(id, now) {
+  const info = getDb().prepare(`
+    UPDATE journeys SET status = 'ended_user', ending_reason = 'user', updated_at = ?
+    WHERE id = ? AND status IN ('preparing', 'active', 'paused')
+  `).run(now, id);
+  return info.changes > 0;
+}
+
+function updateTone(id, tone) {
+  return updateJourney(id, { tone }, { });
+}
+
+// ==================== 动机档案 ====================
+function saveMotivation(journeyId, version, { status, items, note, now }) {
+  getDb().prepare(`
+    UPDATE motivations SET status = ?, items_json = ?, note = ?
+    WHERE journey_id = ? AND version = ?
+  `).run(status, items ? JSON.stringify(items) : null, note || null, journeyId, version);
+  getDb().prepare(`UPDATE journeys SET motivation_version = ?, updated_at = ? WHERE id = ?`)
+    .run(version, now, journeyId);
+  return getMotivation(journeyId, version);
+}
+
+function getMotivation(journeyId, version) {
+  const row = version
+    ? getDb().prepare(`SELECT * FROM motivations WHERE journey_id = ? AND version = ?`).get(journeyId, version)
+    : getDb().prepare(`SELECT * FROM motivations WHERE journey_id = ? ORDER BY version DESC LIMIT 1`).get(journeyId);
   if (!row) return null;
-  let visualForImage = null;
-  try {
-    visualForImage = JSON.parse(row.visual_for_image || '{}');
-  } catch (e) {
-    visualForImage = {};
-  }
+  let items = null;
+  try { items = row.items_json ? JSON.parse(row.items_json) : null; } catch (e) { items = null; }
+  return { id: row.id, journeyId: row.journey_id, version: row.version, rawText: row.raw_text, status: row.status, items, note: row.note, createdAt: row.created_at };
+}
+
+// ==================== 遭遇 ====================
+function insertEncounter({ id, journeyId, seq, proposal, factsVersion, stateVersion, now }) {
+  getDb().prepare(`
+    INSERT INTO encounters (id, journey_id, seq, status, proposal_json, facts_version, state_version, created_at, updated_at)
+    VALUES (?, ?, ?, 'proposed', ?, ?, ?, ?, ?)
+  `).run(id, journeyId, seq, JSON.stringify(proposal), factsVersion, stateVersion, now, now);
+  return getEncounter(id);
+}
+
+function getEncounter(id) {
+  const row = getDb().prepare(`SELECT * FROM encounters WHERE id = ?`).get(id);
+  return row ? shapeEncounter(row) : null;
+}
+
+function getEncounterBySeq(journeyId, seq) {
+  const row = getDb().prepare(`SELECT * FROM encounters WHERE journey_id = ? AND seq = ?`).get(journeyId, seq);
+  return row ? shapeEncounter(row) : null;
+}
+
+function getLatestEncounter(journeyId) {
+  const row = getDb().prepare(`SELECT * FROM encounters WHERE journey_id = ? ORDER BY seq DESC LIMIT 1`).get(journeyId);
+  return row ? shapeEncounter(row) : null;
+}
+
+function shapeEncounter(row) {
+  let proposal = null;
+  try { proposal = JSON.parse(row.proposal_json); } catch (e) { proposal = null; }
+  let outcome = null;
+  try { outcome = row.outcome_json ? JSON.parse(row.outcome_json) : null; } catch (e) { outcome = null; }
+  let decisionMeta = null;
+  try { decisionMeta = row.decision_meta_json ? JSON.parse(row.decision_meta_json) : null; } catch (e) { decisionMeta = null; }
   return {
-    id: row.id,
-    recordId: row.record_id,
-    openid: row.openid,
-    segments: JSON.parse(row.segments),
-    location: row.location,
-    visual: row.visual,
-    visualForImage,
-    reply: row.reply || null,
-    ending: row.ending,
-    unlockedIndices: JSON.parse(row.unlocked_indices),
-    createdAt: row.created_at
+    id: row.id, journeyId: row.journey_id, seq: row.seq, status: row.status,
+    proposal, factsVersion: row.facts_version, stateVersion: row.state_version,
+    signalMessageId: row.signal_message_id, signalDueAt: row.signal_due_at,
+    supplyMessageId: row.supply_message_id, supplyLate: !!row.supply_late,
+    chosenAction: row.chosen_action, decisionSource: row.decision_source,
+    decisionMeta, outcome, outcomeStatus: row.outcome_status,
+    reproposals: row.reproposals,
+    createdAt: row.created_at, updatedAt: row.updated_at
   };
 }
 
-function updateDestinyUnlocked(recordId, indices) {
-  db.prepare(`
-    UPDATE destinies SET unlocked_indices = ? WHERE record_id = ?
-  `).run(JSON.stringify(indices), recordId);
+// 冻结信号：proposed → signal_sent（同一遭遇只可能寄一次信号，条件更新保证）
+function freezeEncounterSignal(id, { messageId, dueAt, now }) {
+  const info = getDb().prepare(`
+    UPDATE encounters SET status = 'signal_sent', signal_message_id = ?, signal_due_at = ?, updated_at = ?
+    WHERE id = ? AND status = 'proposed'
+  `).run(messageId, dueAt, now, id);
+  return info.changes > 0;
+}
+
+// 记录按时补给（signal_sent 仍成立时才可能成功；返回是否抢到）
+function attachSupply(id, messageId, now) {
+  const info = getDb().prepare(`
+    UPDATE encounters SET supply_message_id = ?, updated_at = ?
+    WHERE id = ? AND status = 'signal_sent' AND supply_message_id IS NULL
+  `).run(messageId, now, id);
+  return info.changes > 0;
+}
+
+// JEV 决策落账：proposed/signal_sent → decided（一次性提交；迟到回复不得改写）
+function decideEncounter(id, { action, source, meta, now }) {
+  const info = getDb().prepare(`
+    UPDATE encounters SET status = 'decided', chosen_action = ?, decision_source = ?, decision_meta_json = ?, updated_at = ?
+    WHERE id = ? AND status IN ('proposed', 'signal_sent')
+  `).run(action, source, meta ? JSON.stringify(meta) : null, now, id);
+  return info.changes > 0;
+}
+
+// 结算落账：decided → resolved（outcome + 状态版本推进）
+function resolveEncounter(id, { outcome, outcomeStatus, stateVersion, now }) {
+  const info = getDb().prepare(`
+    UPDATE encounters SET status = 'resolved', outcome_json = ?, outcome_status = ?, state_version = ?, updated_at = ?
+    WHERE id = ? AND status = 'decided'
+  `).run(JSON.stringify(outcome), outcomeStatus || 'ok', stateVersion, now, id);
+  return info.changes > 0;
+}
+
+function markEncounterStatus(id, status, now) {
+  const info = getDb().prepare(`UPDATE encounters SET status = ?, updated_at = ? WHERE id = ?`).run(status, now, id);
+  return info.changes > 0;
+}
+
+// 定向重提案：保留同一 seq，覆盖提案内容（reproposals+1，状态回到 proposed）
+function reproposalEncounter(id, { proposal, stateVersion, now }) {
+  const info = getDb().prepare(`
+    UPDATE encounters SET proposal_json = ?, state_version = ?, reproposals = reproposals + 1,
+      status = 'proposed', updated_at = ?
+    WHERE id = ? AND status = 'proposed'
+  `).run(JSON.stringify(proposal), stateVersion, now, id);
+  return info.changes > 0;
+}
+
+// ==================== 事实账本 ====================
+function insertFacts(journeyId, encounterId, seq, facts, now) {
+  const stmt = getDb().prepare(`
+    INSERT INTO facts (journey_id, encounter_id, seq, kind, content, detail_json, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `);
+  const tx = getDb().transaction((items) => {
+    for (const f of items) {
+      stmt.run(journeyId, encounterId, seq, f.kind, String(f.content).slice(0, 500), f.detail ? JSON.stringify(f.detail) : null, now);
+    }
+  });
+  tx(facts || []);
+}
+
+function getFacts(journeyId, { upToSeq } = {}) {
+  const rows = upToSeq == null
+    ? getDb().prepare(`SELECT * FROM facts WHERE journey_id = ? ORDER BY id ASC`).all(journeyId)
+    : getDb().prepare(`SELECT * FROM facts WHERE journey_id = ? AND seq <= ? ORDER BY id ASC`).all(journeyId, upToSeq);
+  return rows.map(r => {
+    let detail = null;
+    try { detail = r.detail_json ? JSON.parse(r.detail_json) : null; } catch (e) { detail = null; }
+    return { id: r.id, journeyId: r.journey_id, encounterId: r.encounter_id, seq: r.seq, kind: r.kind, content: r.content, detail, createdAt: r.created_at };
+  });
+}
+
+// ==================== 机制卡 ====================
+function insertMechanismCard({ creatureId, journeyId, encounterId, card, now }) {
+  getDb().prepare(`
+    INSERT INTO mechanism_cards (creature_id, journey_id, encounter_id, pressure, dilemma, choice_cost, lasting_consequence, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(creatureId, journeyId, encounterId,
+    String(card.pressure || '').slice(0, 300), String(card.dilemma || '').slice(0, 300),
+    String(card.choice_cost || '').slice(0, 300), String(card.lasting_consequence || '').slice(0, 300), now);
+}
+
+function getRecentCards(creatureId, limit = 3) {
+  return getDb().prepare(`
+    SELECT * FROM mechanism_cards WHERE creature_id = ? ORDER BY id DESC LIMIT ?
+  `).all(creatureId, limit);
+}
+
+// ==================== 消息 ====================
+function insertMessage({ id, journeyId, kind, encounterId, text, title, meta, status, image, imageStatus, sentAt, now }) {
+  getDb().prepare(`
+    INSERT INTO messages (id, journey_id, kind, encounter_id, text, title, meta_json, status, image, image_status, sent_at, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(id, journeyId, kind, encounterId || null, text, title || null,
+    meta ? JSON.stringify(meta) : null, status || 'sent', image || null, imageStatus || null, sentAt ?? now, now);
+  return getMessage(id);
+}
+
+function getMessage(id) {
+  const row = getDb().prepare(`SELECT * FROM messages WHERE id = ?`).get(id);
+  return row ? shapeMessage(row) : null;
+}
+
+function shapeMessage(row) {
+  let meta = null;
+  try { meta = row.meta_json ? JSON.parse(row.meta_json) : null; } catch (e) { meta = null; }
+  return {
+    id: row.id, journeyId: row.journey_id, kind: row.kind, encounterId: row.encounter_id,
+    text: row.text, title: row.title, meta, status: row.status,
+    image: row.image, imageStatus: row.image_status, sentAt: row.sent_at, createdAt: row.created_at
+  };
+}
+
+function getMessages(journeyId) {
+  return getDb().prepare(`SELECT * FROM messages WHERE journey_id = ? ORDER BY sent_at ASC, id ASC`)
+    .all(journeyId).map(shapeMessage);
+}
+
+// 用户面向消息的最新发送时间（最小间隔/最大静默护栏用）
+function lastUserFacingAt(journeyId) {
+  const row = getDb().prepare(`
+    SELECT MAX(sent_at) AS t FROM messages
+    WHERE journey_id = ? AND kind IN ('signal', 'letter', 'final_letter')
+  `).get(journeyId);
+  return row?.t || null;
+}
+
+// 服务性状态提示与生物来信分开计数
+function setMessagesStatusByEncounter(encounterId, status) {
+  getDb().prepare(`UPDATE messages SET status = ? WHERE encounter_id = ? AND kind = 'signal'`).run(status, encounterId);
+}
+
+function attachMessageImage(id, image, imageStatus) {
+  getDb().prepare(`UPDATE messages SET image = ?, image_status = ? WHERE id = ?`).run(image, imageStatus, id);
+}
+
+// ==================== 任务队列 ====================
+function insertTask({ id, journeyId, kind, dueAt, payload, now }) {
+  getDb().prepare(`
+    INSERT INTO tasks (id, journey_id, kind, due_at, status, payload_json, created_at, updated_at)
+    VALUES (?, ?, ?, ?, 'pending', ?, ?, ?)
+  `).run(id, journeyId, kind, dueAt, payload ? JSON.stringify(payload) : null, now, now);
+  return id;
+}
+
+function getTask(id) {
+  return getDb().prepare(`SELECT * FROM tasks WHERE id = ?`).get(id) || null;
+}
+
+// 幂等去重：同一旅程同一 kind 的 pending/leased 任务是否已存在
+function hasOpenTask(journeyId, kind) {
+  return !!getDb().prepare(`
+    SELECT 1 FROM tasks WHERE journey_id = ? AND kind = ? AND status IN ('pending', 'leased') LIMIT 1
+  `).get(journeyId, kind);
+}
+
+// 取得到期任务：先到先租（条件更新保证只有一个 worker 抢到），同一旅程每次 tick 最多 1 条（公平）
+function claimDueTasks(now, { limit = 3, leaseMs = 5 * 60e3, maxPerJourney = 1 } = {}) {
+  const rows = getDb().prepare(`
+    SELECT * FROM tasks WHERE status = 'pending' AND due_at <= ? ORDER BY due_at ASC, created_at ASC LIMIT 50
+  `).all(now);
+  const claimed = [];
+  const perJourney = new Map();
+  const leaseKey = crypto.randomBytes(8).toString('base64url');
+  for (const t of rows) {
+    if (claimed.length >= limit) break;
+    const c = perJourney.get(t.journey_id) || 0;
+    if (c >= maxPerJourney) continue;
+    const info = getDb().prepare(`
+      UPDATE tasks SET status = 'leased', lease_until = ?, lease_key = ?, attempts = attempts + 1, updated_at = ?
+      WHERE id = ? AND status = 'pending'
+    `).run(now + leaseMs, leaseKey, now, t.id);
+    if (info.changes > 0) {
+      claimed.push(getTask(t.id));
+      perJourney.set(t.journey_id, c + 1);
+    }
+  }
+  return claimed;
+}
+
+// 崩溃恢复：租约过期的任务回到 pending（attempts 已在租用时 +1，重试上限由调用方判）
+function recoverExpiredLeases(now) {
+  const info = getDb().prepare(`
+    UPDATE tasks SET status = 'pending', lease_until = NULL, lease_key = NULL, updated_at = ?
+    WHERE status = 'leased' AND lease_until < ?
+  `).run(now, now);
+  return info.changes;
+}
+
+function completeTask(id, now) {
+  getDb().prepare(`UPDATE tasks SET status = 'done', lease_until = NULL, lease_key = NULL, updated_at = ? WHERE id = ?`).run(now, id);
+}
+
+// 重试：回到 pending 并退避；attempts 超限时标 failed（由调用方决定旅程暂停）
+function retryTask(id, dueAt, now) {
+  getDb().prepare(`
+    UPDATE tasks SET status = 'pending', due_at = ?, lease_until = NULL, lease_key = NULL, updated_at = ? WHERE id = ?
+  `).run(dueAt, now, id);
+}
+
+function failTask(id, error, now) {
+  getDb().prepare(`UPDATE tasks SET status = 'failed', last_error = ?, lease_until = NULL, lease_key = NULL, updated_at = ? WHERE id = ?`)
+    .run(String(error || '').slice(0, 500), now, id);
+}
+
+function cancelTasksForJourney(journeyId, now) {
+  const info = getDb().prepare(`
+    UPDATE tasks SET status = 'cancelled', updated_at = ?
+    WHERE journey_id = ? AND status IN ('pending', 'leased')
+  `).run(now, journeyId);
+  return info.changes;
+}
+
+function countOpenTasks(journeyId) {
+  return getDb().prepare(`SELECT COUNT(*) AS c FROM tasks WHERE journey_id = ? AND status IN ('pending','leased')`).get(journeyId).c;
+}
+
+// 把某旅程某类 pending 任务提前到 dueAt（用户按时补给后立即唤醒决策用）
+function accelerateTask(journeyId, kind, dueAt, now) {
+  const info = getDb().prepare(`
+    UPDATE tasks SET due_at = ?, updated_at = ?
+    WHERE journey_id = ? AND kind = ? AND status = 'pending' AND due_at > ?
+  `).run(dueAt, now, journeyId, kind, dueAt);
+  return info.changes > 0;
+}
+
+// ==================== 模型调用台账 ====================
+function recordModelCall({ journeyId, taskId, kind, provider, model, usage, latencyMs, status, error, now }) {
+  getDb().prepare(`
+    INSERT INTO model_calls (journey_id, task_id, kind, provider, model, usage_json, latency_ms, status, error, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(journeyId || null, taskId || null, kind, provider || null, model || null,
+    usage ? JSON.stringify(usage) : null, latencyMs || null, status, error || null, now);
+}
+
+function countModelCalls(journeyId) {
+  return getDb().prepare(`SELECT COUNT(*) AS c FROM model_calls WHERE journey_id = ?`).get(journeyId).c;
+}
+
+function getModelCalls(journeyId) {
+  return getDb().prepare(`SELECT * FROM model_calls WHERE journey_id = ? ORDER BY id ASC`).all(journeyId)
+    .map(r => ({ ...r, usage: (() => { try { return r.usage_json ? JSON.parse(r.usage_json) : null; } catch (e) { return null; } })() }));
 }
 
 module.exports = {
-  initDb,
-  insertRecord,
-  getRecordsByOpenid,
-  getRecordById,
-  getAllRecords,
-  getPendingReplies,
-  updateReply,
-  markReplyGenerating,
-  clearReplyGenerating,
-  getStats,
-  insertDestiny,
-  getDestinyByRecordId,
-  updateDestinyUnlocked,
-  DEMO_OPENID
+  initDb, getDb, closeDb, rid,
+  upsertSession, getSessionByTokenHash,
+  createCreature, getCreature, getCreaturesByOwner, getOwnedCreature,
+  createJourney, getJourney, getOwnedJourney, getJourneysByOwner, getActiveJourneys,
+  countJourneysByCreature, updateJourney, endJourneyByUser, updateTone,
+  saveMotivation, getMotivation,
+  insertEncounter, getEncounter, getEncounterBySeq, getLatestEncounter,
+  freezeEncounterSignal, attachSupply, decideEncounter, resolveEncounter,
+  markEncounterStatus, reproposalEncounter,
+  insertFacts, getFacts,
+  insertMechanismCard, getRecentCards,
+  insertMessage, getMessage, getMessages, lastUserFacingAt,
+  setMessagesStatusByEncounter, attachMessageImage,
+  insertTask, getTask, hasOpenTask, claimDueTasks, recoverExpiredLeases,
+  completeTask, retryTask, failTask, cancelTasksForJourney, countOpenTasks, accelerateTask,
+  recordModelCall, countModelCalls, getModelCalls
 };

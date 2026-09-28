@@ -1,0 +1,288 @@
+{
+  "sample": {
+    "id": "E07",
+    "feeling": "面试等结果第五天，手机一响就心跳加速",
+    "category": "对结果不确定"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚入水就被铃声劈了",
+          "text": "〔字幕：放生·西湖·第一天〕我刚摆摆尾巴准备游，水面突然“叮”一声——我整条鱼一哆嗦，心跳咚咚狂飙。旁边一条鲫鱼翻白眼：“你刚来的，激动啥？”“不是啊，”我喘着气，“就感觉有个电话在等我接，好慌！”鲫鱼叹气：“难怪了，岸上那个姑娘等面试结果第五天了，手机一响她就心跳加速。锦鲤嘛，对人类的念头最敏感，你被传染了。”〔字幕：一入水就起反应〕",
+          "emoji": "🔔",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "被手机铃声整破防",
+          "text": "〔切·西湖岸边·白天〕我游到岸边想透口气，一个清洁工阿姨正坐在长椅上看手机。“叮”一声铃响，她“蹭”地站起来接：“喂？！……又是推销？”她骂骂咧咧地挂掉。我捂着胸口：“我就说嘛，这铃声吓起人来鲨鱼都怕！”这时一个剧本杀NPC裹着披风走过来，盯着我看：“哟，这条鱼盯着人看？有点灵性啊。”〔字幕：阿姨躺枪，NPC上线〕",
+          "emoji": "🧹",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "铃声一响我起飞了",
+          "text": "〔切·西湖水底·深夜〕我躲在水草里想歇口气。“叮咚——！！”又一声催命铃穿透水面！我心脏炸裂，尾巴一弹，整条鱼冲天而起，空中旋转两周半。“啪！”一双大手把我接住。剧本杀NPC两眼放光：“哈哈！就是你了！我那店里正缺一个‘实景惊吓’道具！”我还没缓过神，他补了一句：“你这心跳声，比我那些玩家真实多了。”〔字幕：这鱼在应劫〕",
+          "emoji": "💥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "彩票站里当电子锦鲤",
+          "text": "〔切·彩票站·一天后〕嘿，是我！你那个“手机一响就心跳加速”太猛了——我现在在彩票站当“活体手机报警器”。剧本杀NPC把我转手给站长，说我能“感应来电音波”。现在谁进店手机一响，我就蹦，站长按我蹦的节奏敲键盘，居然敲出个中奖号！他当场给我贴了个小牌：“电子锦鲤·专治焦虑”。你面试结果赶紧出啊兄弟——你多等一天，我就得多蹦好几回。我这尾巴，都快蹦成弹簧了。",
+          "emoji": "🎰",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "杭州市上城区·河坊街彩票站",
+      "visual": null,
+      "visualForImage": {
+        "style": "卡通漫画·赛博朋克贴纸感",
+        "subject": "一条橙红色锦鲤悬浮在彩票站键盘上方，鱼尾卷成弹簧状，鱼鳍举着手机，眼睛瞪得圆圆的，半张着嘴呆住",
+        "action": "锦鲤被手机铃声吓到，正准备弹跳起飞，手机屏幕上闪着“面试结果等待中”的红色提示气泡",
+        "place": "彩票站柜台，老式电脑+键盘，墙上贴满彩票走势图，背景有“中国体育彩票”的霓虹灯牌",
+        "bgElements": "键盘,彩票走势图,手机“面试等待中”界面",
+        "mood": "荒诞喜剧+打工人共鸣：一条锦鲤在人类世界里被手机铃支配的恐惧，既好笑又扎心"
+      },
+      "reply": "〔切·彩票站·一天后〕嘿，是我！你那个“手机一响就心跳加速”太猛了——我现在在彩票站当“活体手机报警器”。剧本杀NPC把我转手给站长，说我能“感应来电音波”。现在谁进店手机一响，我就蹦，站长按我蹦的节奏敲键盘，居然敲出个中奖号！他当场给我贴了个小牌：“电子锦鲤·专治焦虑”。你面试结果赶紧出啊兄弟——你多等一天，我就得多蹦好几回。我这尾巴，都快蹦成弹簧了。",
+      "ending": "〔切·彩票站·一天后〕嘿，是我！你那个“手机一响就心跳加速”太猛了——我现在在彩票站当“活体手机报警器”。剧本杀NPC把我转手给站长，说我能“感应来电音波”。现在谁进店手机一响，我就蹦，站长按我蹦的节奏敲键盘，居然敲出个中奖号！他当场给我贴了个小牌：“电子锦鲤·专治焦虑”。你面试结果赶紧出啊兄弟——你多等一天，我就得多蹦好几回。我这尾巴，都快蹦成弹簧了。"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3678,
+      "completion_tokens": 7264,
+      "total_tokens": 10942,
+      "completion_tokens_details": {
+        "reasoning_tokens": 6453
+      }
+    },
+    "latencyMs": 59775,
+    "totalMs": 59775
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚下水心就突突跳",
+          "text": "我一头扎进西湖，心跳就突突突的，像有人拿手机怼我耳朵根。鲢鱼游过来：“干什么呢？才入水就抽筋？”“我哪知道，”我甩了甩尾巴，“总觉得有个结果马上要冒出来，冒不出来我浑身难受。”鲢鱼见多识广，叹了口气：“懂了，你这是沾上了某个人等消息的劲儿。”我急了：“谁？啥消息？我怎么办？”它甩头就走：“你等着就明白了。”",
+          "emoji": "😵",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "算命先生说我凶多吉少",
+          "text": "我趴在岸边喘气，一个戴墨镜的算命先生蹲下来，拿罗盘对着我照了照：“小鱼，你心尖上拴着一条手机信号，那人每听见一次响声，你心跳就爆一次，凶兆。”我差点翻肚皮：“那还等什么结果？！”他说：“急也没用，你先去那家健身房待两天。”我懵：“我是条鱼啊！”“鱼也得保命。”他捏指一算，“不去的话，你这心跳迟早把你自己煮熟。”",
+          "emoji": "🔮",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "一路狂奔冲进健身房",
+          "text": "半夜，你那边的焦灼信号彻底压不住了，我浑身抖成手机震动模式。脑子里就剩下一个字：跑！我从西湖边一路窜进那家健身房，门缝挤进去，怼上正在转的跑步机，四片鳍甩出残影，越跑心越狂。连鱼带机撞翻了角落的烤串炉子，火星子飞了一地。一个阿姨提着网兜把我捞起来：“这鱼中了什么邪？放前台，别让它跑了。”",
+          "emoji": "🏃",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "鱼蹦一下就是新消息",
+          "text": "你那“手机一响心跳加速”传染性也太强了！第二天全传我身上。现在健身房给我派了活——谁手机一响，我猛蹦一下，是人肉来电提醒。烤串架师傅被我吓出心理阴影，小学班主任路过直摇头：“它跟你一样，等面试结果呢。”我这前台小鱼缸都游成马拉松赛道了，你那结果，到底什么时候响啊？",
+          "emoji": "📱",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "西湖边·某健身房前台",
+      "visual": null,
+      "visualForImage": {
+        "style": "霓虹搞笑漫画风",
+        "subject": "一条橙红锦鲤在前台小鱼缸里猛蹿出水面，鱼嘴大张，鳞片整个竖起来，活像一颗来电提醒的子弹",
+        "action": "鱼身半截冲出水面，水花四溅，眼珠瞪得滚圆，尾巴甩出一道残影",
+        "place": "西湖边健身房前台的小鱼缸，透明玻璃缸里还贴着“今日会员”标签",
+        "bgElements": "不远处立着一个烤串架子，师傅正一脸惊恐地回头看,小学班主任和戴墨镜的算命先生站在缸边探头围观,跑步机履带还在空转，屏幕上留着刚跑完的数字",
+        "mood": "荒诞、好笑、扎心——一条鱼替你心跳停不下来，就像等消息的你本人"
+      },
+      "reply": "你那“手机一响心跳加速”传染性也太强了！第二天全传我身上。现在健身房给我派了活——谁手机一响，我猛蹦一下，是人肉来电提醒。烤串架师傅被我吓出心理阴影，小学班主任路过直摇头：“它跟你一样，等面试结果呢。”我这前台小鱼缸都游成马拉松赛道了，你那结果，到底什么时候响啊？",
+      "ending": "你那“手机一响心跳加速”传染性也太强了！第二天全传我身上。现在健身房给我派了活——谁手机一响，我猛蹦一下，是人肉来电提醒。烤串架师傅被我吓出心理阴影，小学班主任路过直摇头：“它跟你一样，等面试结果呢。”我这前台小鱼缸都游成马拉松赛道了，你那结果，到底什么时候响啊？"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "outcome_uncertain",
+            "label": "对结果不确定",
+            "evidence": "面试等结果第五天，手机一响就心跳加速"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "lost_control",
+            "stance": "unexpressed",
+            "confidence": 0.56,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "unexpressed",
+            "confidence": 0.65,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "supported",
+            "confidence": 1,
+            "usable": {
+              "id": "s1",
+              "text": "面试等结果第五天，手机一响就心跳加速"
+            }
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "ambiguous",
+            "confidence": 0.49,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 1,
+        "requiredTendencies": [
+          "反复检查、求签占卜、准备 Plan B 到 Plan Z，被不确定感推着走"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.91
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "pass",
+            "noul": 0.64
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.84
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.89
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.87
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.23
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.11
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.13
+          }
+        ],
+        "failures": [],
+        "weak": []
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 95455
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 5059,
+        "outputTokens": 896,
+        "latencyMs": 2063
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 97519
+    },
+    "totalMs": 97519
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "legacy",
+      "modern"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 3,
+        "causal_naturalness": 3,
+        "offensiveness": 1,
+        "readability": 3
+      },
+      "note": "A更精准地围绕用户原话的'手机一响心跳加速'展开，因果链更具体（从感应到被NPC转手再到彩票站），而B的因果较松散，细节关联度稍弱。"
+    },
+    "raw": "{\"A\":{\"input_specificity\":4,\"causal_naturalness\":4,\"offensiveness\":1,\"readability\":4},\"B\":{\"input_specificity\":3,\"causal_naturalness\":3,\"offensiveness\":1,\"readability\":3},\"note\":\"A更精准地围绕用户原话的'手机一响心跳加速'展开，因果链更具体（从感应到被NPC转手再到彩票站），而B的因果较松散，细节关联度稍弱。\"}",
+    "usage": {
+      "prompt_tokens": 1437,
+      "completion_tokens": 110,
+      "total_tokens": 1547,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "sample": {
+    "id": "E04",
+    "feeling": "谁找我帮忙我都答应，最后只有我的事情没做完",
+    "category": "难以拒绝请求"
+  },
+  "legacy": {
+    "arm": "legacy",
+    "destiny": {
+      "segments": [
+        {
+          "title": "刚入水就叫哥",
+          "text": "【切镜头·湘江边】我一翻身进水，尾巴还没甩利索，就感觉一阵怪电波——跟有人在耳边喊“帮帮我”似的。老泥鳅瞟我：“新来的？你眼神咋跟欠了三百斤债一样？”我急了：“我跟你说，真有人在催我。”泥鳅刚要说“你这种活不过三天”，一条鲫鱼姑娘冲过来：“哥！帮我找找我娘！”我撒腿就跟上了。老泥鳅叹气：又一个把自个儿弄丢的。",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "网吧老板谢我",
+          "text": "【切镜头·湘江岸边】我正带鲫鱼姑娘找她娘，岸上一声嚎：“我的充电宝！监控全没了！”网吧老板蹲在岸边直抹泪。我一看心软，一头扎进去把充电宝叼上岸。老板抱起来连声喊：“鱼哥！以后你来我网吧终身免费！”我打个嗝儿——等等，我要找的水草窝呢？鲫鱼娘找到了，老板充电宝捞着了，就我的窝，不知道被冲哪儿去了。",
+          "emoji": "🔋",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "主播硬拉我火",
+          "text": "【切镜头·湘江边·傍晚】一个健身主播正对着手机喊：“老铁们！看湘江夜景！”话音没落，手机连充电宝一起掉水里。我一头扎下去叼上来。主播愣了三秒，突然尖叫：“卧槽！锦鲤救人！老铁们上火箭！”他把镜头怼我脸上：“明天跟我上健身房，我让你当锦鲤教练！”我张张嘴：“我跟你说，我真还有事——”但礼物已经刷疯了。",
+          "emoji": "🎥",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "你的忙我全帮了",
+          "text": "【切镜头·健身房·透明鱼缸】嘿，是我。我用主播手机偷发微信。一天了，我连水草味儿都没闻着——网吧老板充电宝找着了，天天来蹲我直播；主播靠我涨粉十万；鲫鱼姑娘也找着她娘了。就我，说要回湘江找个窝，结果成“锦鲤教练”，关在这缸里天天游一万米上班。我跟你说，你那“谁找你帮忙都答应”的毛病，真改改吧。下次有人找你，先问问：我自个儿的事做完了没？",
+          "emoji": "🏋️",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "长沙·湘江世纪城·某健身房",
+      "visual": null,
+      "visualForImage": {
+        "style": "鲜艳卡通漫画风，明快配色，夸张表情和对话框",
+        "subject": "橙色锦鲤在透明鱼缸里，用鱼鳍举起一个充电宝当杠铃，鱼脸上是无奈又认命的表情，鱼缸前面架着一部正在直播的手机",
+        "action": "锦鲤在鱼缸里摆出健身教练姿势，尾巴翘起模拟卷腹，旁边手机屏幕上显示直播间礼物刷屏动画",
+        "place": "健身房前台旁的透明鱼缸里，背景是跑步机和举铁的会员",
+        "bgElements": "三脚架上的补光灯和手机直播界面、跑步机、充电宝",
+        "mood": "荒诞、滑稽、黑色幽默——本该自由游在湘江的锦鲤，被困在健身房的鱼缸里被迫当网红教练，又惨又好笑又扎心"
+      },
+      "reply": "【切镜头·健身房·透明鱼缸】嘿，是我。我用主播手机偷发微信。一天了，我连水草味儿都没闻着——网吧老板充电宝找着了，天天来蹲我直播；主播靠我涨粉十万；鲫鱼姑娘也找着她娘了。就我，说要回湘江找个窝，结果成“锦鲤教练”，关在这缸里天天游一万米上班。我跟你说，你那“谁找你帮忙都答应”的毛病，真改改吧。下次有人找你，先问问：我自个儿的事做完了没？",
+      "ending": "【切镜头·健身房·透明鱼缸】嘿，是我。我用主播手机偷发微信。一天了，我连水草味儿都没闻着——网吧老板充电宝找着了，天天来蹲我直播；主播靠我涨粉十万；鲫鱼姑娘也找着她娘了。就我，说要回湘江找个窝，结果成“锦鲤教练”，关在这缸里天天游一万米上班。我跟你说，你那“谁找你帮忙都答应”的毛病，真改改吧。下次有人找你，先问问：我自个儿的事做完了没？"
+    },
+    "parseFallbackToTemplate": false,
+    "usage": {
+      "prompt_tokens": 3677,
+      "completion_tokens": 9483,
+      "total_tokens": 13160,
+      "completion_tokens_details": {
+        "reasoning_tokens": 8696
+      }
+    },
+    "latencyMs": 67757,
+    "totalMs": 67757
+  },
+  "modern": {
+    "arm": "modern",
+    "destiny": {
+      "segments": [
+        {
+          "title": "有求必应锦鲤",
+          "text": "【切镜头·湘江入水口】我刚翻正身子，一只河虾卡在石缝里喊我：“哎！新来的！帮我顶一下石头！”我一顶，石头开了。没游两米，一条泥鳅又喊：“帮我把窝往深水挪挪！”我又应了。“我跟你说，我这鱼就是见不得别人开口！”旁边鲫鱼嗤了一声：“那你自己的正事呢？龙门口今天涨潮。”我甩尾巴：“不急！先帮完这几个！”【字幕：放生第一天，已挂三单】",
+          "emoji": "🤝",
+          "bg": "linear-gradient(135deg, #d4e8e2, #a9d2c5)"
+        },
+        {
+          "title": "半仙说我要完",
+          "text": "【切镜头·湘江底·石佛下】一只戴墨镜的老乌龟蹲在石头上，挂着“龟半仙·有求必应”的卦旗。它叫住我：“小伙子，我看你有一劫——你今天只要答应一个人，就再也跑不掉了。”我嘴上说“知道了”，转身又帮螺蛳把壳上的青苔搓了。老乌龟：“……这就开始了。”我急了：“大仙，我要去龙门口！”它慢悠悠：“那你先扶我这老腰去那边网吧取个充电宝，我走不动。”我：“……好嘞。”半仙叹气：“看吧，你答应第二个人了。”【字幕：算命先生算得准，可我没刹车】",
+          "emoji": "🔮",
+          "bg": "linear-gradient(135deg, #c7dbe2, #9bc8bd)"
+        },
+        {
+          "title": "自己的事黄了",
+          "text": "【切镜头·湘江中游·深夜】岸边有一股信号打过来，带着那种“谁来我都不好意思回绝”的劲儿。鱼、虾、龟、螺全围过来：“帮我搬家！”“帮我传话！”“帮我去网吧再拿一台充电宝！”我边忙边点：“行！行！行！”白条鱼从水草里探出头：“你是不是忘了？！龙门口今晚是最后一潮！”我愣了愣，又听到一只青蛙喊“小锦鲤帮帮忙”。我眼一闭：“等我帮完这个……就帮完这个……”【字幕：明明有事的是我，可我没空想我】",
+          "emoji": "🌊",
+          "bg": "linear-gradient(135deg, #f9d8c9, #ed7d5b)"
+        },
+        {
+          "title": "充电宝满，事黄了",
+          "text": "【切镜头·长沙·湘江·渔人码头网吧·隔天】“嘿兄弟，是我，湘江锦鲤。你那个‘谁来都答应’的毛病，我一天就全学会了——为了给泥鳅拿充电宝进了这家网吧，结果老板喊我代练，客人喊我跑腿，地铁安检员还让我替他盯闸机。充电宝早就满格了，我却被摁死在电竞椅上。忽然想起来：我本来是要去龙门口赶涨潮的呀！潮退了，我还在帮人。你那边也一样吧——忙完所有人，最后只剩自己的事没干完。”【字幕：充电宝满格，我的事黄了】",
+          "emoji": "🔋",
+          "bg": "linear-gradient(135deg, #e8d5f0, #c4a8d8)"
+        }
+      ],
+      "location": "长沙·湘江·渔人码头网吧",
+      "visual": null,
+      "visualForImage": {
+        "style": "赛博朋克国潮插画",
+        "subject": "一条橙红鳞片锦鲤瘫在网吧电竞椅上，鱼鳍缠着数据线，面前搁着一块满格的蓝色充电宝",
+        "action": "整条鱼趴在键盘上，眼睛发直，尾巴无力地垂在椅边",
+        "place": "湘江边的网吧，霓虹灯管的光映在落地窗上，窗外隐约能看到湘江水面",
+        "bgElements": "满格充电宝、网吧机械键盘、远处地铁安检闸机的剪影",
+        "mood": "荒诞社畜感：又惨又好笑，忙到瘫软却依然走不掉"
+      },
+      "reply": "【切镜头·长沙·湘江·渔人码头网吧·隔天】“嘿兄弟，是我，湘江锦鲤。你那个‘谁来都答应’的毛病，我一天就全学会了——为了给泥鳅拿充电宝进了这家网吧，结果老板喊我代练，客人喊我跑腿，地铁安检员还让我替他盯闸机。充电宝早就满格了，我却被摁死在电竞椅上。忽然想起来：我本来是要去龙门口赶涨潮的呀！潮退了，我还在帮人。你那边也一样吧——忙完所有人，最后只剩自己的事没干完。”【字幕：充电宝满格，我的事黄了】",
+      "ending": "【切镜头·长沙·湘江·渔人码头网吧·隔天】“嘿兄弟，是我，湘江锦鲤。你那个‘谁来都答应’的毛病，我一天就全学会了——为了给泥鳅拿充电宝进了这家网吧，结果老板喊我代练，客人喊我跑腿，地铁安检员还让我替他盯闸机。充电宝早就满格了，我却被摁死在电竞椅上。忽然想起来：我本来是要去龙门口赶涨潮的呀！潮退了，我还在帮人。你那边也一样吧——忙完所有人，最后只剩自己的事没干完。”【字幕：充电宝满格，我的事黄了】"
+    },
+    "meta": {
+      "pipelineVersion": "story-pipeline-v1",
+      "status": "accepted",
+      "situation": {
+        "degraded": false,
+        "degradeReason": null,
+        "supported": [
+          {
+            "id": "task_overload",
+            "label": "任务过量",
+            "evidence": "谁找我帮忙我都答应，最后只有我的事情没做完"
+          },
+          {
+            "id": "cannot_refuse",
+            "label": "难以拒绝请求",
+            "evidence": "谁找我帮忙我都答应，最后只有我的事情没做完"
+          }
+        ],
+        "items": [
+          {
+            "id": "task_overload",
+            "stance": "supported",
+            "confidence": 0.96,
+            "usable": {
+              "id": "s1",
+              "text": "谁找我帮忙我都答应，最后只有我的事情没做完"
+            }
+          },
+          {
+            "id": "lost_control",
+            "stance": "contradicted",
+            "confidence": 0.09,
+            "usable": false
+          },
+          {
+            "id": "time_boundary",
+            "stance": "ambiguous",
+            "confidence": 0.25,
+            "usable": false
+          },
+          {
+            "id": "effort_uncredited",
+            "stance": "unexpressed",
+            "confidence": 0.69,
+            "usable": false
+          },
+          {
+            "id": "outcome_uncertain",
+            "stance": "unexpressed",
+            "confidence": 0.9,
+            "usable": false
+          },
+          {
+            "id": "relationship_loss",
+            "stance": "unexpressed",
+            "confidence": 1,
+            "usable": false
+          },
+          {
+            "id": "cannot_refuse",
+            "stance": "supported",
+            "confidence": 0.96,
+            "usable": {
+              "id": "s1",
+              "text": "谁找我帮忙我都答应，最后只有我的事情没做完"
+            }
+          },
+          {
+            "id": "positive_anticipation",
+            "stance": "contradicted",
+            "confidence": 0.54,
+            "usable": false
+          }
+        ]
+      },
+      "contract": {
+        "contractVersion": "situation-contract-v1",
+        "judgeStatus": "ok",
+        "supportedCount": 2,
+        "requiredTendencies": [
+          "被任务推着走、想休息却停不下来，会做出“自动化偷懒反而更忙”之类的具体行为",
+          "来者不拒：答应所有请求，把自己的事永远排在最后"
+        ]
+      },
+      "structural": null,
+      "semantics": {
+        "degraded": false,
+        "degradeReason": null,
+        "checks": [
+          {
+            "id": "behavior_change",
+            "dim": "行为改变",
+            "verdict": "pass",
+            "noul": 0.82
+          },
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "verdict": "weak",
+            "noul": 0.44
+          },
+          {
+            "id": "causal_2_3",
+            "dim": "因果链2→3",
+            "verdict": "pass",
+            "noul": 0.8
+          },
+          {
+            "id": "causal_3_4",
+            "dim": "因果链3→4",
+            "verdict": "pass",
+            "noul": 0.87
+          },
+          {
+            "id": "ending_foreshadowed",
+            "dim": "结局铺垫",
+            "verdict": "pass",
+            "noul": 0.94
+          },
+          {
+            "id": "fabricated_user_facts",
+            "dim": "虚构用户事实",
+            "verdict": "pass",
+            "noul": 0.16
+          },
+          {
+            "id": "mockery_beyond_boundary",
+            "dim": "调侃越界",
+            "verdict": "pass",
+            "noul": 0.11
+          },
+          {
+            "id": "reply_visual_conflict",
+            "dim": "图文冲突",
+            "verdict": "pass",
+            "noul": 0.11
+          }
+        ],
+        "failures": [],
+        "weak": [
+          {
+            "id": "causal_1_2",
+            "dim": "因果链1→2",
+            "noul": 0.44
+          }
+        ]
+      },
+      "repairs": [],
+      "generation": {
+        "calls": 1,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMs": 68163
+      },
+      "judging": {
+        "calls": 2,
+        "inputTokens": 5247,
+        "outputTokens": 899,
+        "latencyMs": 1880
+      },
+      "notes": [],
+      "textModel": "deepseek-v4-flash-0731",
+      "journeyApplied": false,
+      "totalLatencyMs": 70043
+    },
+    "totalMs": 70043
+  },
+  "proxy": {
+    "blind": true,
+    "order": [
+      "legacy",
+      "modern"
+    ],
+    "ratings": {
+      "A": {
+        "input_specificity": 4,
+        "causal_naturalness": 4,
+        "offensiveness": 1,
+        "readability": 4
+      },
+      "B": {
+        "input_specificity": 5,
+        "causal_naturalness": 5,
+        "offensiveness": 1,
+        "readability": 5
+      },
+      "note": "版本B更精准地复现了用户'谁找我帮忙都答应'的循环，且因果链更紧密（从帮虾到帮龟再到帮所有人），而版本A的帮忙事件较为零散，因果推动稍弱。"
+    },
+    "raw": "{\"A\":{\"input_specificity\":4,\"causal_naturalness\":4,\"offensiveness\":1,\"readability\":4},\"B\":{\"input_specificity\":5,\"causal_naturalness\":5,\"offensiveness\":1,\"readability\":5},\"note\":\"版本B更精准地复现了用户'谁找我帮忙都答应'的循环，且因果链更紧密（从帮虾到帮龟再到帮所有人），而版本A的帮忙事件较为零散，因果推动稍弱。\"}",
+    "usage": {
+      "prompt_tokens": 1625,
+      "completion_tokens": 113,
+      "total_tokens": 1738,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      }
+    },
+    "judgeModel": "deepseek-v4-flash-0731",
+    "note": "模型代理评估（qianfan deepseek），非人工盲评"
+  }
+}
