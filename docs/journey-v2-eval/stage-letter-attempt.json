@@ -1,0 +1,61 @@
+{
+  "startedAt": "2026-09-28T21:36:38.180Z",
+  "maxEvents": 10,
+  "goal": "我想在海面上找到一块能让我安静待着的空地，不被打扰。",
+  "stageLetterSeen": false,
+  "stageLetterText": null,
+  "finalLetterSeen": true,
+  "signalCount": 0,
+  "eventCount": 10,
+  "status": "ended_natural",
+  "checkpoints": [],
+  "letterDeliveredLatencyMs": null,
+  "messages": [
+    {
+      "kind": "final_letter",
+      "status": "sent",
+      "title": "海上的空地",
+      "t": "主人，我在爱琴海找到了一块浮台，安静得能听见自己的呼吸。海鸥学会了我的三短敲击，像在说暗号；灯塔绿光暗时绳索绷紧，亮时松弛，气泡从木板缝里涌上来，仿佛底下有谁在应和。我描画凹痕时，金属板下传来刮擦声，蓝绿粉末散成模糊符号——它们都在等我读懂。可我只想躺平，看云。你那些堆成山的事，或许也像这海，越挣扎越深。但你看，我耗到"
+    }
+  ],
+  "modelCallKinds": [
+    {
+      "kind": "director_dedup_reproposal",
+      "c": 9
+    },
+    {
+      "kind": "director_opening",
+      "c": 1
+    },
+    {
+      "kind": "director_proposal",
+      "c": 9
+    },
+    {
+      "kind": "director_settlement",
+      "c": 10
+    },
+    {
+      "kind": "final_letter_repair",
+      "c": 1
+    },
+    {
+      "kind": "final_letter_write",
+      "c": 1
+    },
+    {
+      "kind": "jev_decide",
+      "c": 10
+    },
+    {
+      "kind": "jev_letter_check",
+      "c": 2
+    },
+    {
+      "kind": "jev_settlement_check",
+      "c": 10
+    }
+  ],
+  "hasRealLetterWrite": false,
+  "finishedAt": "2026-09-28T21:39:31.251Z"
+}
