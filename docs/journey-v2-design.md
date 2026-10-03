@@ -83,6 +83,7 @@ contact：继续 / 阶段经历来信 / 自然收束来信（LLM 执笔，程序
 | --- | --- |
 | `POST /api/release` | 放生/再出发（species, water, feeling, tone, creatureId?）→ 立即 `preparing` 回执 |
 | `GET /api/journey/:id` | 本程视图：状态、目标、动机、待回应信号、已寄出信件（归属校验，只读） |
+| `GET /api/journey/:id/timeline` | 旅程回顾时间线：开局→遭遇与选择→信号/回应/来信→收束，单线串起（**仅旅程结束后**；归属校验；纯读取零模型调用） |
 | `POST /api/journey/:id/reply` | 回应信号（按时/迟到服务端判定） |
 | `POST /api/journey/:id/tone` | 语气偏好（只影响未来） |
 | `POST /api/journey/:id/end` | 结束本程（立即） |
@@ -95,6 +96,9 @@ contact：继续 / 阶段经历来信 / 自然收束来信（LLM 执笔，程序
 
 ## 7. 已移除的旧入口（handoff §4.3/4.5）
 `/api/destiny`（广告解锁）、`POST /api/reply/generate`、按 `reply_at` 预生成的调度、旧 `JOURNEY_ENABLED` 三节点旅程、`/api/records` 旧档案、世界脉搏中的用户原话片段——全部停挂；实现代码冻结在 `legacy/story-v0/`（含其 61 个旧测试快照）。真实小程序 `miniprogram/` 与 `cyber-release-miniapp.html` 为历史原型，本阶段未接入新版 API，不再作为可用入口展示。
+
+### 5.1 旅程回顾时间线的披露边界
+时间线只在旅程结束后开放：进行中全量公开遭遇会取消"生物自己选择何时来信"的意义（§3.3）。结束后所有信已寄出，展开无副作用；未落定的遭遇（如用户中途结束时挂在信号上的那件）如实标记"还没落定"。这是**单程内**的回顾视图，不是跨旅程故事档案（第二阶段边界不变）。
 
 ## 8. 明确不做（留给第二份 handoff）
 生物相遇 + 共同世界；用户可见的跨旅程故事档案。本阶段的内部账本/消息/生物身份与"本程信箱"不是故事档案。

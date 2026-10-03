@@ -365,6 +365,10 @@ function getEncounterBySeq(journeyId, seq) {
   return row ? shapeEncounter(row) : null;
 }
 
+function getEncounters(journeyId) {
+  return getDb().prepare(`SELECT * FROM encounters WHERE journey_id = ? ORDER BY seq ASC`).all(journeyId).map(shapeEncounter);
+}
+
 function getLatestEncounter(journeyId) {
   const row = getDb().prepare(`SELECT * FROM encounters WHERE journey_id = ? ORDER BY seq DESC LIMIT 1`).get(journeyId);
   return row ? shapeEncounter(row) : null;
@@ -599,9 +603,10 @@ function failTask(id, error, now) {
 }
 
 function cancelTasksForJourney(journeyId, now) {
+  // image 任务豁免：它只给已投递的信追加配图（非阻塞），旅程收束后仍应完成
   const info = getDb().prepare(`
     UPDATE tasks SET status = 'cancelled', updated_at = ?
-    WHERE journey_id = ? AND status IN ('pending', 'leased')
+    WHERE journey_id = ? AND status IN ('pending', 'leased') AND kind != 'image'
   `).run(now, journeyId);
   return info.changes;
 }
@@ -644,7 +649,7 @@ module.exports = {
   createJourney, getJourney, getOwnedJourney, getJourneysByOwner, getActiveJourneys,
   countJourneysByCreature, updateJourney, endJourneyByUser, updateTone,
   saveMotivation, getMotivation,
-  insertEncounter, getEncounter, getEncounterBySeq, getLatestEncounter,
+  insertEncounter, getEncounter, getEncounters, getEncounterBySeq, getLatestEncounter,
   freezeEncounterSignal, attachSupply, decideEncounter, resolveEncounter,
   markEncounterStatus, reproposalEncounter,
   insertFacts, getFacts,

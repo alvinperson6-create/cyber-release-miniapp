@@ -21,6 +21,21 @@ router.get('/:id', (req, res) => {
   }
 });
 
+// GET /api/journey/:id/timeline —— 旅程回顾时间线（仅结束后；纯读取不触模型）
+router.get('/:id/timeline', (req, res) => {
+  try {
+    const r = orchestrator.getJourneyTimeline({ ownerKey: req.ownerKey, journeyId: req.params.id });
+    if (!r.ok) {
+      const status = r.code === 'journey_not_found' ? 404 : (r.code === 'journey_not_finished' ? 403 : 400);
+      return res.status(status).json({ ok: false, code: r.code, message: r.message || null });
+    }
+    return res.json({ ok: true, timeline: r.timeline });
+  } catch (err) {
+    console.error('[journey/timeline] error:', err);
+    return res.status(500).json({ ok: false, error: '服务器内部错误' });
+  }
+});
+
 // POST /api/journey/:id/reply —— 回应信号（body: {text}）
 router.post('/:id/reply', (req, res) => {
   try {

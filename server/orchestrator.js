@@ -420,6 +420,83 @@ async function jevNarrowChecks({ journey, taskId, kind, questions, now }) {
   return { available: true, results: r.answers };
 }
 
+// ==================== 旅程回顾时间线（只读） ====================
+//
+// 披露边界：只在旅程结束后开放——进行中全量公开遭遇会取消"生物自己选择
+// 何时来信"的意义（handoff §3.3）。结束后所有信已寄出，展开无副作用。
+// 纯读取：不触发任何模型调用；单程回顾，不是跨旅程故事档案（第二阶段）。
+
+const ENDED_STATUSES = ['ended_user', 'ended_natural', 'aborted'];
+
+function getJourneyTimeline({ ownerKey, journeyId }) {
+  const journey = db.getOwnedJourney(journeyId, ownerKey);
+  if (!journey) return { ok: false, code: 'journey_not_found' };
+  if (!ENDED_STATUSES.includes(journey.status)) {
+    return { ok: false, code: 'journey_not_finished', message: '旅程还在进行中：它想自己决定什么时候讲给你听。这一程结束后，这里会展开完整时间线。' };
+  }
+  const now = clock.now();
+  const encounters = db.getEncounters(journeyId);
+  const messages = db.getMessages(journeyId).filter(m => m.sentAt <= now);
+  const motivation = db.getMotivation(journeyId);
+  const header = director.creatureHeader(journey);
+
+  const nodes = [];
+  nodes.push({
+    kind: 'opening',
+    at: encounters.length ? encounters[0].createdAt : journey.created_at,
+    goal: journey.goal || null,
+    creatureName: header.creatureName,
+    creatureEmoji: CREATURES[journey.species]?.emoji || '🐚',
+    waterName: header.waterName,
+    motivation: motivation ? {
+      status: motivation.status,
+      rawText: motivation.rawText,
+      items: (motivation.items || []).filter(i => i.usable).map(i => i.label)
+    } : null
+  });
+
+  for (const enc of encounters) {
+    const actions = enc.proposal?.actions || [];
+    const chosen = actions.find(a => a.id === enc.chosenAction) || null;
+    nodes.push({
+      kind: 'encounter',
+      at: enc.updatedAt,
+      seq: enc.seq,
+      title: enc.proposal?.title || `第 ${enc.seq} 站`,
+      situation: enc.proposal?.situation || null,
+      options: actions.map(a => ({ label: a.label, cost: a.cost })),
+      chosenAction: chosen ? chosen.label : (enc.chosenAction === 'none_fit' ? '（都不合适，搁下了）' : enc.chosenAction),
+      chosenCost: chosen ? chosen.cost : null,
+      decisionSource: enc.decisionSource,
+      narrative: enc.outcome?.narrative || null,
+      outcomeFacts: (enc.outcome?.facts || []).map(f => f.content),
+      settled: enc.status === 'resolved',
+      unresolvedNote: enc.status !== 'resolved' ? '这件事还没落定，旅程就先停在了这里。' : null,
+      hadSignal: !!enc.signalMessageId
+    });
+  }
+
+  for (const m of messages) {
+    nodes.push({
+      kind: m.kind, // signal | letter | final_letter | user_reply | system
+      at: m.sentAt,
+      title: m.title || null,
+      text: m.text,
+      image: m.image || null,
+      imageStatus: m.imageStatus || null,
+      status: m.status,
+      late: !!m.meta?.late,
+      isFinal: m.kind === 'final_letter'
+    });
+  }
+
+  nodes.sort((a, b) => a.at - b.at);
+  const reasonText = journey.ending_reason === 'user' ? '你结束了这段旅程' : '这一程自然收束';
+  nodes.push({ kind: 'ending', at: Math.max(journey.updated_at || 0, ...nodes.map(n => n.at)), reason: journey.ending_reason, reasonText, status: journey.status });
+
+  return { ok: true, timeline: { journeyId, status: journey.status, nodes } };
+}
+
 // ==================== 任务处理器（幂等；状态迁移条件化） ====================
 
 // --- 开局：识别处境 → 建动机档案 → 导演给目标+首遭遇 → 冻结 ---
@@ -1041,7 +1118,8 @@ async function runTask(task, { now } = {}) {
   const t = now ?? clock.now();
   const journey = db.getJourney(task.journey_id);
   if (!journey) return { status: 'done' };
-  if (['ended_user', 'ended_natural', 'aborted', 'paused'].includes(journey.status)) return { status: 'done' };
+  // image 任务豁免：给已投递的信补配图，旅程结束/暂停后仍应完成
+  if (['ended_user', 'ended_natural', 'aborted', 'paused'].includes(journey.status) && task.kind !== 'image') return { status: 'done' };
   const handler = HANDLERS[task.kind];
   if (!handler) return { status: 'failed', reason: `unknown task kind ${task.kind}` };
   try {
@@ -1113,7 +1191,7 @@ function maybeGuardSilence(journey, now) {
 module.exports = {
   ORCHESTRATOR_VERSION,
   startJourney, replyToSignal, setTone, endJourney,
-  getJourneyView, listJourneys, listCreatures,
+  getJourneyView, getJourneyTimeline, listJourneys, listCreatures,
   runTask, reconcileJourneys, pauseJourney,
   effectiveSendTime, earliestSendAt, budgetRemaining,
   FlowError

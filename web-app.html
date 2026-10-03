@@ -213,6 +213,45 @@
   .msg-badge { font-size: 10px; color: var(--ink-faint); margin-top: 6px; }
   .msg-badge.warn { color: var(--gold); }
 
+  /* ===== journey timeline ===== */
+  .tl-toggle { width: 100%; margin-bottom: 14px; padding: 11px; }
+  .timeline { position: relative; margin: 4px 0 16px 8px; padding-left: 24px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px;
+    background: linear-gradient(180deg, var(--aqua), rgba(87,200,178,.12)); border-radius: 2px;
+  }
+  .tl-node { position: relative; margin-bottom: 12px; }
+  .tl-node::before {
+    content: ''; position: absolute; left: -24px; top: 14px; width: 11px; height: 11px;
+    border-radius: 50%; background: var(--bg1); border: 2px solid var(--aqua); box-sizing: border-box;
+  }
+  .tl-node.encounter::before { border-color: var(--coral); }
+  .tl-node.letter::before, .tl-node.final_letter::before { border-color: var(--gold); }
+  .tl-node.system::before { border-color: var(--ink-faint); }
+  .tl-node.ending::before { border-color: var(--gold); background: rgba(255,217,112,.35); }
+  .tl-card { background: var(--glass); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .tl-node.final_letter .tl-card { border-color: rgba(255,217,112,.5); background: linear-gradient(160deg, rgba(255,217,112,.08), rgba(15,33,48,.85)); }
+  .tl-node.encounter .tl-card { border-left: 3px solid var(--coral); }
+  .tl-node.system { opacity: .72; }
+  .tl-node.system .tl-card { border-style: dashed; }
+  .tl-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .tl-kind { font-size: 10px; font-weight: 700; color: var(--aqua); white-space: nowrap; letter-spacing: .5px; }
+  .tl-node.encounter .tl-kind { color: var(--coral); }
+  .tl-node.letter .tl-kind, .tl-node.final_letter .tl-kind, .tl-node.ending .tl-kind { color: var(--gold); }
+  .tl-time { margin-left: auto; font-size: 10px; color: var(--ink-faint); white-space: nowrap; }
+  .tl-title { font-size: 13px; font-weight: 700; margin-right: 4px; }
+  .tl-text { font-size: 13.5px; white-space: pre-wrap; word-break: break-word; }
+  .tl-sub { font-size: 12px; color: var(--ink-dim); margin-top: 4px; }
+  .tl-choice {
+    margin: 8px 0 2px; padding: 8px 12px; border-left: 3px solid var(--coral);
+    background: rgba(255,122,89,.08); border-radius: 8px; font-size: 12.5px;
+  }
+  .tl-choice b { color: var(--coral); }
+  .tl-facts { margin-top: 6px; font-size: 11.5px; color: var(--ink-faint); line-height: 1.7; }
+  .tl-img { margin-top: 10px; border-radius: 10px; width: 100%; display: block; }
+  .tl-badge { font-size: 10px; color: var(--ink-faint); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+  .tl-badge.warn { color: var(--gold); border-color: rgba(255,217,112,.4); }
+
   .empty-box { text-align: center; padding: 60px 20px; color: var(--ink-dim); }
   .empty-box .big { font-size: 44px; margin-bottom: 12px; }
   .empty-box p { font-size: 13px; margin-bottom: 16px; }
@@ -836,6 +875,71 @@
     }).join('') + '</div>';
   }
 
+  function tlKindLabel(node) {
+    switch (node.kind) {
+      case 'opening': return '🎯 开局';
+      case 'encounter': return '⚔️ 第 ' + node.seq + ' 站';
+      case 'signal': return '📡 信号';
+      case 'user_reply': return '💬 你捎的话';
+      case 'letter': return '✉️ 经历来信';
+      case 'final_letter': return '✉️ 收束来信';
+      case 'system': return '⚙️ 服务提示';
+      case 'ending': return '🏁 收束';
+      return node.kind;
+    }
+  }
+
+  function renderTimeline(nodes) {
+    var html = '<div class="timeline">';
+    nodes.forEach(function (n) {
+      var cls = 'tl-node ' + n.kind;
+      html += '<div class="' + cls + '"><div class="tl-card">';
+      html += '<div class="tl-head"><span class="tl-kind">' + tlKindLabel(n) + '</span>' +
+        (n.title ? '<span class="tl-title">' + esc(n.title) + '</span>' : '') +
+        '<span class="tl-time">' + fmtTime(n.at) + '</span></div>';
+      if (n.kind === 'opening') {
+        if (n.goal) html += '<div class="goal-quote" style="margin-bottom:6px;"><b>它的目标</b>' + esc(n.goal) + '</div>';
+        html += '<div class="tl-sub">' + esc(n.creatureEmoji) + ' ' + esc(n.creatureName) + ' · ' + esc(n.waterName);
+        if (n.motivation) {
+          html += '<br>放生时写下：「' + esc(n.motivation.rawText) + '」';
+          if (n.motivation.items && n.motivation.items.length) {
+            html += '<br>它记住的处境：' + n.motivation.items.map(esc).join('、');
+          }
+        }
+        html += '</div>';
+      } else if (n.kind === 'encounter') {
+        if (n.situation) html += '<div class="tl-sub" style="margin-bottom:6px;">' + esc(n.situation) + '</div>';
+        if (n.settled) {
+          html += '<div class="tl-choice">它选择了 <b>' + esc(n.chosenAction) + '</b>' +
+            (n.chosenCost ? '（代价：' + esc(n.chosenCost) + '）' : '') + '</div>';
+          if (n.narrative) html += '<div class="tl-text">' + esc(n.narrative) + '</div>';
+          if (n.outcomeFacts && n.outcomeFacts.length) {
+            html += '<div class="tl-facts">' + n.outcomeFacts.map(function (f) { return '<div>' + esc(f) + '</div>'; }).join('') + '</div>';
+          }
+        } else {
+          html += '<div class="tl-sub">' + esc(n.unresolvedNote || '这件事没有落定。') + '</div>';
+        }
+      } else if (n.kind === 'ending') {
+        html += '<div class="tl-text">' + esc(n.reasonText) + '。</div>';
+      } else {
+        // signal / letter / final_letter / user_reply / system
+        html += '<div class="tl-text">' + esc(n.text) + '</div>';
+        var badges = [];
+        if (n.kind === 'signal' && n.status === 'expired') badges.push('你没来得及回，它自己做了决定');
+        if (n.late) badges.push('来晚了 · 只作了参考');
+        if (n.isFinal) badges.push('最后一封');
+        if (n.imageStatus === 'failed') badges.push('配图未生成，文字不受影响');
+        if (badges.length) {
+          html += '<div style="margin-top:6px;">' + badges.map(function (b) { return '<span class="tl-badge warn">' + esc(b) + '</span>'; }).join(' ') + '</div>';
+        }
+        if (n.image) html += '<img class="tl-img" src="' + esc(n.image) + '" alt="旅程配图" loading="lazy">';
+      }
+      html += '</div></div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
   function renderMailbox() {
     var j = state.journey;
     if (!j) { renderMailboxEmpty(); return; }
@@ -856,6 +960,11 @@
       html += '<div class="jhead-note">⏸ 服务暂停（' + esc(j.pauseReason) + '）：模型服务或预算暂时不可用，这不是它自己停下来。</div>';
     }
     html += '</div>';
+
+    // 旅程回顾：结束后才可展开（进行中全量公开会取消它自己选择来信时机的意义）
+    if (j.phase === 'ended') {
+      html += '<button class="btn-line tl-toggle" id="timelineBtn">📖 展开完整旅程时间线</button><div id="timelineBox" style="display:none;"></div>';
+    }
 
     // 待回应信号
     if (j.pendingSignal && !j.pendingSignal.replied) {
@@ -927,6 +1036,29 @@
           });
       });
     });
+
+    // 旅程回顾时间线（懒加载 + 展开/收起）
+    var tlBtn = $('timelineBtn');
+    if (tlBtn) {
+      tlBtn.addEventListener('click', function () {
+        var box = $('timelineBox');
+        if (box.dataset.loaded === '1') {
+          var show = box.style.display === 'none';
+          box.style.display = show ? 'block' : 'none';
+          tlBtn.textContent = show ? '📕 收起完整旅程' : '📖 展开完整旅程时间线';
+          return;
+        }
+        tlBtn.disabled = true;
+        api('/api/journey/' + encodeURIComponent(j.id) + '/timeline').then(function (r) {
+          tlBtn.disabled = false;
+          if (!r.data || !r.data.ok) { toast((r.data && r.data.message) || '回顾还没准备好'); return; }
+          box.innerHTML = renderTimeline(r.data.timeline.nodes);
+          box.style.display = 'block';
+          box.dataset.loaded = '1';
+          tlBtn.textContent = '📕 收起完整旅程';
+        }).catch(function () { tlBtn.disabled = false; toast('网络不太顺畅'); });
+      });
+    }
 
     // 结束旅程
     var endBtn = $('endJourneyBtn');
