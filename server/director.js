@@ -189,7 +189,7 @@ function buildOpeningMessages({ journey, motivation, now }) {
     '    "title": "遭遇标题（10字内）",',
     '    "situation": "当前具体处境（60-150字，具体场景与提出要求的一方）",',
     '    "constraints": ["由既有事实/身份引出的约束，0-3条"],',
-    '    "actions": [{"id":"a1","label":"行动短标签（10字内）","cost":"真实代价（一句话）"}],  // 2-4 个，动态生成',
+    '    "actions": [{"id":"a1","label":"行动短标签（10字内）","cost":"真实代价（一句话）"}],  // 2-4 个：数量由这次两难有几个可区分的选项决定，动态生成，不固定',
     '    "mechanism_summary": {"pressure":"压力来源","dilemma":"真正的两难","cost":"可能的代价"},',
     '    "expected_fact_types": ["location","relationship"]  // 从 location/goal/promise/resource/relationship/open_thread/action/consequence/trigger 中选',
     '  }',
@@ -217,7 +217,8 @@ function buildProposalMessages({ journey, motivation, facts, recentCards, openTh
     worldRules(journey.tone),
     '',
     '输出严格 JSON（结构同开局遭遇对象，不要 goal）：',
-    '{ "title": "...", "situation": "...", "constraints": [...], "actions": [...], "mechanism_summary": {...}, "expected_fact_types": [...] }'
+    '{ "title": "...", "situation": "...", "constraints": [...], "actions": [...], "mechanism_summary": {...}, "expected_fact_types": [...] }',
+    'actions 给 2-4 个当下可行、可区分、各有真实代价的行动；数量由这次两难的可区分选项决定，不要固定给两个。'
   ].join('\n');
   const user = [
     `生物自身目标：「${journey.goal || '（未设定）'}」`,
@@ -239,7 +240,8 @@ function buildReproposalMessages({ journey, facts, recentCards, rejectedProposal
     `你是${creatureName}所在文字世界的导演。你上一次提出的遭遇被程序判定与已发生的机制高度重复，需要换一个真正不同的两难。`,
     worldRules(journey.tone),
     '',
-    '输出严格 JSON（结构同遭遇对象）。'
+    '输出严格 JSON（结构同遭遇对象）。',
+    'actions 给 2-4 个当下可行、可区分、各有真实代价的行动；数量由新两难的可区分选项决定，不要固定给两个。'
   ].join('\n');
   const user = [
     `被驳回的提案：${JSON.stringify(rejectedProposal)}`,

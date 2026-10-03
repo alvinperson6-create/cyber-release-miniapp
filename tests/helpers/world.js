@@ -45,7 +45,7 @@ function createWorld(opts = {}) {
   const jevState = { on: opts.jevOn !== false, calls: [], decideSeq: 0, contactSeq: 0 };
   jev.isJeVEnabled = () => jevState.on;
   jev.jevJudge = async (state, questions) => {
-    jevState.calls.push({ state: String(state).slice(0, 2000), q: Object.keys(questions) });
+    jevState.calls.push({ state: String(state).slice(0, 4000), q: Object.keys(questions) });
     const answers = {};
     if (questions.action) {
       const script = opts.jev?.decide;

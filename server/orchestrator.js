@@ -729,6 +729,7 @@ async function taskSettle(task, journey, now) {
   if (budgetRemaining(journey.id) <= 0) { pauseJourney(journey.id, 'budget_exhausted', { now }); return { status: 'done' }; }
 
   const facts = db.getFacts(journey.id);
+  const motivation = db.getMotivation(journey.id);
   const chosen = enc.proposal.actions.find(a => a.id === enc.chosenAction);
   let attemptNarrative = null;
   let outcome = null;
@@ -760,6 +761,7 @@ async function taskSettle(task, journey, now) {
           生物实际选择: chosen ? chosen.label : enc.chosenAction,
           结算叙述: outcome.narrative,
           生物目标: journey.goal || '',
+          本程动机档案: motivationForJev(motivation),
           已发生事实: facts.slice(-10).map(f => f.content)
         },
         items: {
