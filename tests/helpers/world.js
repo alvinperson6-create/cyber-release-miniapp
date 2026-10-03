@@ -54,6 +54,9 @@ function createWorld(opts = {}) {
         : (Array.isArray(script) ? script[Math.min(jevState.decideSeq++, script.length - 1)] : (script ?? 'a1'));
       answers.action = { choice, probabilities: {}, confidence: 0.9 };
     }
+    if (questions.signal_urgency) {
+      answers.signal_urgency = { choice: opts.jev?.urgency ?? 'soon', probabilities: {}, confidence: 0.9 };
+    }
     if (questions.contact) {
       const script = opts.jev?.contact;
       const choice = typeof script === 'function'

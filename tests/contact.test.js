@@ -23,7 +23,7 @@ function makeWorld(over = {}) {
         ? { title: '道别', text: '这程到此为止。我的小贝壳记满了，谢谢你那句“可以答应”。' }
         : { title: '第一夜', text: '我替螃蟹值了一晚班，鳍都是僵的。你说可以答应，我就答应了。' }
     },
-    jev: { decide: over.decide || ['send_signal', 'a1', 'a1'], contact: over.contact || ['continue', 'letter', 'final_letter'] }
+    jev: { decide: over.decide || ['send_signal', 'a1', 'a1'], contact: over.contact || ['continue', 'letter', 'final_letter'], urgency: over.urgency }
   });
 }
 
@@ -203,4 +203,41 @@ test('安静时段：深夜生成的信顺延到早晨投递（投递前视图�
   world.setTime(letter.sentAt - 60000);
   const v = world.orchestrator.getJourneyView({ ownerKey: 'o1', journeyId: r.journey.id });
   assert.ok(!v.messages.some(m => m.id === letter.id), 'not visible before delivery time');
+});
+
+
+test('信号截止由 JEV 紧急度决定（1-120 分钟分桶）；无效答案回退默认并如实记录来源', async () => {
+  // 分桶边界：所有映射都在 1-120 分钟
+  const { SIGNAL_URGENCY_MINUTES } = require('../server/orchestrator');
+  for (const mins of Object.values(SIGNAL_URGENCY_MINUTES)) {
+    assert.ok(mins >= 1 && mins <= 120, `分钟数 ${mins} 超出 1-120`);
+  }
+
+  // urgent → 10 分钟，元数据如实记录
+  const w1 = makeWorld({ tag: 'urg1', urgency: 'urgent', contact: 'continue' });
+  const r1 = w1.orchestrator.startJourney({ ownerKey: 'o1', species: 'koi', water: 'xihu', feeling: '谁找我帮忙都答应', tone: 'balanced' });
+  await w1.drain(50, { stopWhen: () => { const v = view(w1, r1.journey.id); return !!(v.pendingSignal && !v.pendingSignal.replied); } });
+  const enc1 = w1.db.getLatestEncounter(r1.journey.id);
+  const msg1 = w1.db.getMessage(enc1.signalMessageId);
+  assert.equal(enc1.signalDueAt - msg1.sentAt, 10 * 60e3, 'urgent 桶 = 10 分钟');
+  assert.equal(msg1.meta.deadlineSource, 'jev_urgency');
+  assert.equal(msg1.meta.urgencyLevel, 'urgent');
+  assert.equal(msg1.meta.urgencyMinutes, 10);
+
+  // 无效桶 → 回退默认 6h，来源如实
+  const w2 = makeWorld({ tag: 'urg2', urgency: 'bogus-level', contact: 'continue' });
+  const r2 = w2.orchestrator.startJourney({ ownerKey: 'o1', species: 'turtle', water: 'baikal', feeling: '太慢', tone: 'balanced' });
+  await w2.drain(50, { stopWhen: () => { const v = view(w2, r2.journey.id); return !!(v.pendingSignal && !v.pendingSignal.replied); } });
+  const enc2 = w2.db.getLatestEncounter(r2.journey.id);
+  const msg2 = w2.db.getMessage(enc2.signalMessageId);
+  assert.equal(enc2.signalDueAt - msg2.sentAt, 6 * 3600e3, '无效答案回退默认 6h');
+  assert.equal(msg2.meta.deadlineSource, 'fallback_default');
+  assert.equal(msg2.meta.urgencyLevel, null);
+
+  // patient → 120 分钟（区间上界）
+  const w3 = makeWorld({ tag: 'urg3', urgency: 'patient', contact: 'continue' });
+  const r3 = w3.orchestrator.startJourney({ ownerKey: 'o1', species: 'cloud', water: 'ness', feeling: '乱糟糟', tone: 'balanced' });
+  await w3.drain(50, { stopWhen: () => { const v = view(w3, r3.journey.id); return !!(v.pendingSignal && !v.pendingSignal.replied); } });
+  const enc3 = w3.db.getLatestEncounter(r3.journey.id);
+  assert.equal(enc3.signalDueAt - w3.db.getMessage(enc3.signalMessageId).sentAt, 120 * 60e3, 'patient 桶 = 120 分钟');
 });

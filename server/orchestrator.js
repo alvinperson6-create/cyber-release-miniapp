@@ -24,6 +24,15 @@ const { checkTextBoundaries } = require('./boundary');
 const ORCHESTRATOR_VERSION = 'journey-orchestrator-v2';
 
 // 服务节奏（可经 J_TIME_SCALE 缩放；是服务护栏，不是剧情拍板）
+// 信号截止的紧急度分桶：JEV 在选择寄信号的同一请求里选桶，程序映射为分钟（1-120 区间）
+const SIGNAL_URGENCY_MINUTES = {
+  instant: 3,    // 千钧一发
+  urgent: 10,    // 很急
+  soon: 30,      // 有些急
+  unhurried: 60, // 不算急
+  patient: 120   // 可以慢慢等
+};
+
 const PACE = {
   decideAfterProposal: () => scaleMs(3 * 60e3),   // 提案冻结后 JEV 何时决策
   settleAfterDecision: () => scaleMs(2 * 60e3),   // 选定行动后何时结算
@@ -362,6 +371,14 @@ async function jevDecideAction({ journey, encounter, motivation, facts, supplies
   if (encounter.status === 'proposed') {
     criteria.send_signal = '先不行动：就这件未决处境给主人寄一个可回应的信号，等回复或到期后再决定';
   }
+  // 紧急度（独立问题）：只在它选择寄信号时被程序采用；时间窗由程序映射持有
+  const urgencyCriteria = {
+    instant: '千钧一发：它马上就要面对结果，主人几分钟内回一句才算来得及',
+    urgent: '很急：事情就在眼前，大约十分钟内会变',
+    soon: '有些急：再拖一阵就要变了',
+    unhurried: '不算急：值得等主人一会儿，但不该占它一整天',
+    patient: '不急：它愿意慢慢等主人想清楚'
+  };
   const state = buildDecisionState({ journey, encounter, motivation, facts, supplies });
   try {
     const r = await jev.jevJudge(state, {
@@ -369,12 +386,21 @@ async function jevDecideAction({ journey, encounter, motivation, facts, supplies
         type: 'choice',
         instructions: '这是一只被放生的虚拟生物，正在它的文字世界里面对一件具体遭遇。结合它的动机档案、目标和已发生事实，判断它此刻会怎么做。只从候选中选择一个。',
         criteria
+      },
+      signal_urgency: {
+        type: 'choice',
+        instructions: '（独立判断）如果它这次选择寄信号向主人求助，判断这件事对它有多急：主人最晚多久之内回一句，对它来说还算来得及？',
+        criteria: urgencyCriteria
       }
     });
     director.recordJeVCall({ journeyId: journey.id, taskId, kind: 'jev_decide', result: r, now });
     const choice = r.answers.action.choice;
     if (!criteria[choice]) throw new FlowError('jev_format', `JEV 返回了非法选项 ${choice}`);
-    return { action: choice, meta: { usage: r.usage, model: r.model, latencyMs: r.latencyMs } };
+    const urgencyLevel = r.answers.signal_urgency?.choice;
+    const urgency = SIGNAL_URGENCY_MINUTES[urgencyLevel]
+      ? { source: 'jev_urgency', level: urgencyLevel, minutes: SIGNAL_URGENCY_MINUTES[urgencyLevel] }
+      : { source: 'fallback_default', level: null, minutes: null };
+    return { action: choice, urgency, meta: { usage: r.usage, model: r.model, latencyMs: r.latencyMs, urgency } };
   } catch (err) {
     if (!(err instanceof FlowError)) {
       director.recordJeVCall({ journeyId: journey.id, taskId, kind: 'jev_decide', error: err, now });
@@ -592,7 +618,7 @@ async function taskDecide(task, journey, now) {
   }
 
   if (decision.action === 'send_signal') {
-    return sendSignal(task, journey, enc, now);
+    return sendSignal(task, journey, enc, now, decision.urgency);
   }
   if (decision.action === 'none_fit') {
     return handleNoneFit(task, journey, enc, now);
@@ -614,7 +640,7 @@ function resolveEnc(task, journey, now) {
 }
 
 // --- 寄可回应信号：冻结 encounter + 持久化 pending_signal + 到期任务 ---
-async function sendSignal(task, journey, enc, now) {
+async function sendSignal(task, journey, enc, now, urgency) {
   if (budgetRemaining(journey.id) <= 0) { pauseJourney(journey.id, 'budget_exhausted', { now }); return { status: 'done' }; }
   const facts = db.getFacts(journey.id);
   const msgs = director.buildSignalMessages({ journey, encounter: enc, facts, now });
@@ -635,9 +661,13 @@ async function sendSignal(task, journey, enc, now) {
   if (!text) throw new FlowError('signal_failed', lastError || '信号生成失败');
 
   // 冻结 + 持久化（原子：信号消息与 encounter 冻结必须同时成立）
+  // 截止时长：JEV 紧急度桶映射（1-120 分钟）；无效/缺失 → 默认回退，来源如实记录
+  const expiryMs = urgency?.source === 'jev_urgency'
+    ? scaleMs(urgency.minutes * 60e3)
+    : PACE.signalExpiry();
   const msgId = db.rid('MSG');
   const sendAt = Math.max(effectiveSendTime(now), earliestSendAt(journey.id, now));
-  const dueAt = sendAt + PACE.signalExpiry();
+  const dueAt = sendAt + expiryMs;
   const fresh = db.getEncounter(enc.id);
   if (!fresh || fresh.status !== 'proposed') return { status: 'done' };
   const tx = db.getDb().transaction(() => {
@@ -646,7 +676,7 @@ async function sendSignal(task, journey, enc, now) {
     db.insertMessage({
       id: msgId, journeyId: journey.id, kind: 'signal', encounterId: enc.id,
       text, status: 'sent', sentAt: sendAt, now,
-      meta: { dueAt, encounterTitle: enc.proposal.title }
+      meta: { dueAt, encounterTitle: enc.proposal.title, deadlineSource: urgency?.source || 'fallback_default', urgencyLevel: urgency?.level || null, urgencyMinutes: urgency?.minutes || null }
     });
   });
   try { tx(); } catch (err) {
@@ -1195,6 +1225,6 @@ module.exports = {
   startJourney, replyToSignal, setTone, endJourney,
   getJourneyView, getJourneyTimeline, listJourneys, listCreatures,
   runTask, reconcileJourneys, pauseJourney,
-  effectiveSendTime, earliestSendAt, budgetRemaining,
+  effectiveSendTime, earliestSendAt, budgetRemaining, SIGNAL_URGENCY_MINUTES,
   FlowError
 };

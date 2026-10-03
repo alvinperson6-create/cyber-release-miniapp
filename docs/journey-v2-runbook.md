@@ -26,7 +26,7 @@ JOURNEY_ENABLED=1            # v2 缺省开启；'0' 为停用后门
 
 | 变量 | 默认 | 含义 |
 | --- | --- | --- |
-| `J_SIGNAL_DEADLINE_MS` | 6h（可缩放） | 可回应信号的补给截止 |
+| `J_SIGNAL_DEADLINE_MS` | 6h（可缩放） | 信号截止的**回退值**——正常由 JEV 紧急度分桶决定（3/10/30/60/120 分钟，随 `J_TIME_SCALE` 缩放），答案无效/缺失时使用 |
 | `J_MAX_SILENCE_MS` | 36h | 最大静默 → 触发联系检查点 |
 | `J_MIN_INTERVAL_MS` | 2h | 两封用户面向消息的最小间隔 |
 | `J_QUIET_START` / `J_QUIET_END` | 1 / 7 | 安静时段（本地时），信顺延投递；设相等值关闭 |
