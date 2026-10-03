@@ -188,4 +188,8 @@ test('H5 安全渲染：页面不含 innerHTML 注入模型/用户文本的路�
   assert.ok(src.includes("esc(m.text)"), 'message text escaped');
   assert.ok(src.includes("esc(j.goal)"), 'goal escaped');
   assert.ok(src.includes("esc(s.text || '')"), 'signal text escaped');
+  // 表单默认值契约：除烦恼输入外开箱即用（生物=锦鲤、语气=荒诞但温和）
+  assert.ok(src.includes('<button class="chip coral active" data-creature="koi">'), 'koi chip active by default');
+  assert.ok(src.includes('<button class="chip aqua active" data-tone="balanced">'), 'balanced tone active by default');
+  assert.ok(src.includes("creature: 'koi'"), 'state.creature defaults to koi');
 });

@@ -360,7 +360,7 @@
         <div class="section-block">
           <div class="section-label"><span class="label-num">2</span>想放生一只</div>
           <div class="chip-row" id="creatureChips">
-            <button class="chip coral" data-creature="koi">🐟 锦鲤</button>
+            <button class="chip coral active" data-creature="koi">🐟 锦鲤</button>
             <button class="chip coral" data-creature="turtle">🐢 乌龟</button>
             <button class="chip coral" data-creature="cloud">☁️ 云朵</button>
           </div>
@@ -473,7 +473,7 @@
   var state = {
     page: 'release',
     feeling: '',
-    creature: null,          // koi | turtle | cloud
+    creature: 'koi',         // 默认锦鲤（koi | turtle | cloud）
     water: null,
     tone: 'balanced',
     redepartOpen: false,
@@ -735,6 +735,7 @@
       $('receiptOverlay').classList.add('show');
       state.feeling = '';
       $('feelingText').value = '';
+      selectCreature('koi', null); // 表单回到默认：新生物=锦鲤
       state.currentJourneyId = r.data.journeyId;
       loadCreatures();
     }).catch(function () {
