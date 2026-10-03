@@ -684,7 +684,7 @@ async function handleNoneFit(task, journey, enc, now) {
   if (!fresh || !['proposed', 'signal_sent'].includes(fresh.status)) return { status: 'done' };
   db.decideEncounter(enc.id, { action: 'none_fit', source: enc.reproposals >= 1 ? 'jev_after_reproposal' : 'jev', meta: {}, now });
   const outcome = {
-    narrative: `「${fresh.proposal.title}」这件事被它搁下了：没有答应，也没有拒绝谁，它绕开这件事，让水流把它带去别处。`,
+    narrative: `「${fresh.proposal.title}」这件事被我搁下了：没有答应，也没有拒绝谁，我绕开它，让水流把我带去别处。`,
     facts: [{ kind: 'action', content: `它没有接受「${fresh.proposal.title}」里的任何选项，这件事被搁下了` }],
     mechanism_card: {
       pressure: fresh.proposal.mechanism_summary.pressure,

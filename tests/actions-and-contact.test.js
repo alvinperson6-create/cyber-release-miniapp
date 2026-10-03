@@ -97,3 +97,24 @@ test('jev_settlement_check 的 state 显式携带本程动机档案（contact �
   const decide = world.jevState.calls.filter(c => c.q.includes('action')).pop();
   assert.ok(decide.state.includes('本程动机档案') && decide.state.includes(FEELING));
 });
+
+// ---------- 故事线第一人称契约 ----------
+test('提示词契约：开局/提案/重提案的 situation 与结算 narrative 均要求第一人称「我」', () => {
+  const journey = { species: 'koi', water: 'xihu', tone: 'balanced', goal: 'g', feeling: 'f' };
+  const motivation = { rawText: '原话', items: [], status: 'recognized', version: 1 };
+  const enc = {
+    proposal: proposalJson(),
+    chosenAction: 'a1'
+  };
+  const opening = director.buildOpeningMessages({ journey, motivation, now: 0 });
+  assert.ok(opening.system.includes('第一人称「我」叙述'), 'opening situation 第一人称');
+
+  const proposal = director.buildProposalMessages({ journey, motivation, facts: [], recentCards: [], openThreads: [], lastSettlement: null, now: 0 });
+  assert.ok(proposal.system.includes('situation 用生物第一人称「我」叙述'), 'proposal 第一人称');
+
+  const reproposal = director.buildReproposalMessages({ journey, facts: [], recentCards: [], rejectedProposal: proposalJson(), now: 0 });
+  assert.ok(reproposal.system.includes('situation 用生物第一人称「我」叙述'), 'reproposal 第一人称');
+
+  const settlement = director.buildSettlementMessages({ journey, encounter: enc, facts: [], now: 0 });
+  assert.ok(settlement.system.includes('以生物第一人称「我」讲述'), 'settlement narrative 第一人称');
+});

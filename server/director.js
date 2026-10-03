@@ -187,7 +187,7 @@ function buildOpeningMessages({ journey, motivation, now }) {
     '  "goal": "生物自己的轻量目标，一句话，第一人称，与它的处境相关",',
     '  "encounter": {',
     '    "title": "遭遇标题（10字内）",',
-    '    "situation": "当前具体处境（60-150字，具体场景与提出要求的一方）",',
+    '    "situation": "当前具体处境（60-150字，以生物第一人称「我」叙述：具体场景与提出要求的一方）",',
     '    "constraints": ["由既有事实/身份引出的约束，0-3条"],',
     '    "actions": [{"id":"a1","label":"行动短标签（10字内）","cost":"真实代价（一句话）"}],  // 2-4 个：数量由这次两难有几个可区分的选项决定，动态生成，不固定',
     '    "mechanism_summary": {"pressure":"压力来源","dilemma":"真正的两难","cost":"可能的代价"},',
@@ -218,7 +218,8 @@ function buildProposalMessages({ journey, motivation, facts, recentCards, openTh
     '',
     '输出严格 JSON（结构同开局遭遇对象，不要 goal）：',
     '{ "title": "...", "situation": "...", "constraints": [...], "actions": [...], "mechanism_summary": {...}, "expected_fact_types": [...] }',
-    'actions 给 2-4 个当下可行、可区分、各有真实代价的行动；数量由这次两难的可区分选项决定，不要固定给两个。'
+    'actions 给 2-4 个当下可行、可区分、各有真实代价的行动；数量由这次两难的可区分选项决定，不要固定给两个。',
+    'situation 用生物第一人称「我」叙述。'
   ].join('\n');
   const user = [
     `生物自身目标：「${journey.goal || '（未设定）'}」`,
@@ -241,7 +242,8 @@ function buildReproposalMessages({ journey, facts, recentCards, rejectedProposal
     worldRules(journey.tone),
     '',
     '输出严格 JSON（结构同遭遇对象）。',
-    'actions 给 2-4 个当下可行、可区分、各有真实代价的行动；数量由新两难的可区分选项决定，不要固定给两个。'
+    'actions 给 2-4 个当下可行、可区分、各有真实代价的行动；数量由新两难的可区分选项决定，不要固定给两个。',
+    'situation 用生物第一人称「我」叙述。'
   ].join('\n');
   const user = [
     `被驳回的提案：${JSON.stringify(rejectedProposal)}`,
@@ -267,7 +269,7 @@ function buildSettlementMessages({ journey, encounter, facts, now }) {
     '',
     '输出严格 JSON：',
     '{',
-    '  "narrative": "后果叙述（60-160字，具体、有画面；允许荒诞或平静）",',
+    '  "narrative": "后果叙述（60-160字，以生物第一人称「我」讲述这次行动的后果，具体、有画面；允许荒诞或平静）",',
     '  "facts": [{"kind":"consequence","content":"一条具体的事实增量"}],  // 0-5 条，kind 从 location/goal/promise/resource/relationship/open_thread/action/consequence/trigger 中选',
     '  "mechanism_card": {"pressure":"压力来源","dilemma":"真正的两难","choice_cost":"这次选择的实际代价","lasting_consequence":"持久后果"},',
     '  "next_trigger": "什么可能引出下一件事（一句话，可选）"',
