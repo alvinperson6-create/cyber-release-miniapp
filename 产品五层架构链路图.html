@@ -1,0 +1,119 @@
+<html style="margin:0;padding:0;">
+<div style="width:100%;box-sizing:border-box;padding:24px;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f8f9fb;">
+  <div style="max-width:960px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <h2 style="margin:0 0 8px 0;font-size:22px;color:#1a1a2e;font-weight:700;">产品核心 5 层架构 — 电商下单实际链路</h2>
+      <p style="margin:0;font-size:13px;color:#666;">从你点击「提交订单」到订单落库，请求穿透 5 层的完整路径</p>
+    </div>
+    <div style="position:relative;background:#fff;border-radius:12px;padding:28px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:stretch;gap:12px;">
+          <div style="flex:0 0 120px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:12px 8px;color:#fff;">
+            <div style="font-size:18px;font-weight:700;">第 1 层</div>
+            <div style="font-size:13px;margin-top:4px;opacity:0.9;">用户终端层</div>
+          </div>
+          <div style="flex:1;background:#f0f2ff;border:1.5px solid #c5c9f5;border-radius:8px;padding:14px 18px;">
+            <div style="font-size:14px;font-weight:600;color:#333;margin-bottom:6px;">APP / H5 / 小程序</div>
+            <div style="font-size:12.5px;color:#555;line-height:1.7;">
+              <b>职责：</b>界面渲染、用户交互、本地状态管理<br>
+              <b>本链路动作：</b>选好规格 → 点击「提交订单」→ 前端校验收货地址/优惠券 → 组装下单参数 → 发起 HTTPS 请求
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;color:#999;font-size:18px;line-height:1;margin:2px 0;">↓</div>
+        <div style="display:flex;align-items:stretch;gap:12px;">
+          <div style="flex:0 0 120px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:12px 8px;color:#fff;">
+            <div style="font-size:18px;font-weight:700;">第 2 层</div>
+            <div style="font-size:13px;margin-top:4px;opacity:0.9;">接入网关层</div>
+          </div>
+          <div style="flex:1;background:#fff0f3;border:1.5px solid #f5c2d0;border-radius:8px;padding:14px 18px;">
+            <div style="font-size:14px;font-weight:600;color:#333;margin-bottom:6px;">CDN / WAF / API 网关 / 负载均衡</div>
+            <div style="font-size:12.5px;color:#555;line-height:1.7;">
+              <b>职责：</b>统一入口、HTTPS 卸载、身份认证、限流熔断、请求路由<br>
+              <b>本链路动作：</b>WAF 过滤恶意请求 → 网关校验 Token 确认本人 → 限流判断没刷单 → 路由转发给「订单服务集群」
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;color:#999;font-size:18px;line-height:1;margin:2px 0;">↓</div>
+        <div style="display:flex;align-items:stretch;gap:12px;">
+          <div style="flex:0 0 120px;background:linear-gradient(135deg,#4facfe,#00f2fe);border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:12px 8px;color:#fff;">
+            <div style="font-size:18px;font-weight:700;">第 3 层</div>
+            <div style="font-size:13px;margin-top:4px;opacity:0.9;">业务应用层</div>
+          </div>
+          <div style="flex:1;background:#e8f7ff;border:1.5px solid #b3e0ff;border-radius:8px;padding:14px 18px;">
+            <div style="font-size:14px;font-weight:600;color:#333;margin-bottom:6px;">订单服务 / 商品服务 / 库存服务 / 支付服务</div>
+            <div style="font-size:12.5px;color:#555;line-height:1.7;">
+              <b>职责：</b>核心业务逻辑编排、规则计算、事务控制<br>
+              <b>本链路动作：</b>订单服务编排全流程 → 调商品服务查价格 → 调库存服务预占库存 → 算优惠/运费 → 生成订单号 → 拉起收银台
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;color:#999;font-size:18px;line-height:1;margin:2px 0;">↓</div>
+        <div style="display:flex;align-items:stretch;gap:12px;">
+          <div style="flex:0 0 120px;background:linear-gradient(135deg,#43e97b,#38f9d7);border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:12px 8px;color:#fff;">
+            <div style="font-size:18px;font-weight:700;">第 4 层</div>
+            <div style="font-size:13px;margin-top:4px;opacity:0.9;">数据服务层</div>
+          </div>
+          <div style="flex:1;background:#e8fff3;border:1.5px solid #b3f0d4;border-radius:8px;padding:14px 18px;">
+            <div style="font-size:14px;font-weight:600;color:#333;margin-bottom:6px;">MySQL / Redis / 消息队列 / 搜索引擎</div>
+            <div style="font-size:12.5px;color:#555;line-height:1.7;">
+              <b>职责：</b>数据持久化、缓存加速、异步解耦、分布式协调<br>
+              <b>本链路动作：</b>Redis 原子扣减库存 → MySQL 写入订单主表+明细 → 发 MQ 通知物流/积分服务 → ES 同步商品可售状态
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;color:#999;font-size:18px;line-height:1;margin:2px 0;">↓</div>
+        <div style="display:flex;align-items:stretch;gap:12px;">
+          <div style="flex:0 0 120px;background:linear-gradient(135deg,#fa709a,#fee140);border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:12px 8px;color:#fff;">
+            <div style="font-size:18px;font-weight:700;">第 5 层</div>
+            <div style="font-size:13px;margin-top:4px;opacity:0.9;">基础设施层</div>
+          </div>
+          <div style="flex:1;background:#fffbe8;border:1.5px solid #fce8a3;border-radius:8px;padding:14px 18px;">
+            <div style="font-size:14px;font-weight:600;color:#333;margin-bottom:6px;">服务器 / K8s 容器编排 / 监控告警 / 日志链路 / 配置中心</div>
+            <div style="font-size:12.5px;color:#555;line-height:1.7;">
+              <b>职责：</b>底层算力调度、运维保障、可观测性<br>
+              <b>本链路动作：</b>K8s 把订单服务调度到健康节点 → Prometheus 记录下单 QPS → ELK 写入请求日志 → 配置中心下发限流规则
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;">
+      <div style="background:#fff;border-radius:8px;padding:12px;border-left:3px solid #667eea;">
+        <div style="font-size:12px;color:#888;">第1层</div>
+        <div style="font-size:13px;font-weight:600;color:#333;margin-top:2px;">用户看得见的</div>
+        <div style="font-size:11.5px;color:#666;margin-top:3px;">界面、交互、按钮</div>
+      </div>
+      <div style="background:#fff;border-radius:8px;padding:12px;border-left:3px solid #f5576c;">
+        <div style="font-size:12px;color:#888;">第2层</div>
+        <div style="font-size:13px;font-weight:600;color:#333;margin-top:2px;">大门保安</div>
+        <div style="font-size:11.5px;color:#666;margin-top:3px;">鉴权、限流、路由</div>
+      </div>
+      <div style="background:#fff;border-radius:8px;padding:12px;border-left:3px solid #00b8e6;">
+        <div style="font-size:12px;color:#888;">第3层</div>
+        <div style="font-size:13px;font-weight:600;color:#333;margin-top:2px;">业务大脑</div>
+        <div style="font-size:11.5px;color:#666;margin-top:3px;">编排逻辑、算价格</div>
+      </div>
+      <div style="background:#fff;border-radius:8px;padding:12px;border-left:3px solid #38f9d7;">
+        <div style="font-size:12px;color:#888;">第4层</div>
+        <div style="font-size:13px;font-weight:600;color:#333;margin-top:2px;">仓库管理员</div>
+        <div style="font-size:11.5px;color:#666;margin-top:3px;">存数据、缓存、异步</div>
+      </div>
+      <div style="background:#fff;border-radius:8px;padding:12px;border-left:3px solid #fa709a;">
+        <div style="font-size:12px;color:#888;">第5层</div>
+        <div style="font-size:13px;font-weight:600;color:#333;margin-top:2px;">地基水电</div>
+        <div style="font-size:11.5px;color:#666;margin-top:3px;">算力、监控、运维</div>
+      </div>
+    </div>
+    <div style="margin-top:20px;background:linear-gradient(135deg,#f8f9fb,#eef0f8);border-radius:10px;padding:16px 20px;">
+      <div style="font-size:13px;font-weight:600;color:#333;margin-bottom:8px;">联想法：把一次下单想象成「去餐厅吃饭」</div>
+      <div style="font-size:12.5px;color:#555;line-height:1.9;">
+        <b>第1层（终端）</b> = 你坐下来看菜单点菜 →
+        <b>第2层（网关）</b> = 门口迎宾确认你有预约 →
+        <b>第3层（业务层）</b> = 服务员把你的需求告诉后厨、算总价 →
+        <b>第4层（数据层）</b> = 后厨查冰箱有没有食材、记账本登记 →
+        <b>第5层（基础设施）</b> = 整个餐厅的水电煤气、消防、监控
+      </div>
+    </div>
+  </div>
+</div>

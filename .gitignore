@@ -1,0 +1,6 @@
+
+# macOS
+.DS_Store
+# 运行时生成的信件配图
+server/public/images/letter-*.png
+server/public/images/reply-*.png
