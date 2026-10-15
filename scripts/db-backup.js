@@ -13,7 +13,9 @@
 
 const path = require('node:path');
 const fs = require('node:fs');
-const Database = require(path.join(__dirname, '..', 'server', 'node_modules', 'better-sqlite3'));
+
+// 依赖已上移到仓库根（node_modules/ 在根目录），不要写死旧路径
+const Database = require('better-sqlite3');
 
 const ROOT = path.join(__dirname, '..');
 

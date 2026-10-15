@@ -102,6 +102,33 @@ for (const leaked of ['owner_key', 'ownerKey', 'proposal_json']) {
   check(!html.includes(leaked), `前端不引用内部字段：${leaked}`);
 }
 
+// —— 10. 脚本与文档不引用已搬迁的旧路径（依赖断链检查）——
+// 目录搬迁后最容易留下"看起来还在、其实跑不起来"的引用。
+const STALE_REFS = [
+  'server/node_modules',
+  'server/public',
+  'server/index.js',
+  'server/orchestrator.js',
+  'server/db.js',
+  'web-app.html'
+];
+const scanTargets = [
+  ...fs.readdirSync(path.join(ROOT, 'scripts')).filter(f => f.endsWith('.js')).map(f => path.join(ROOT, 'scripts', f)),
+  ...fs.readdirSync(path.join(ROOT, 'tooling')).filter(f => f.endsWith('.js')).map(f => path.join(ROOT, 'tooling', f)),
+  path.join(ROOT, 'package.json'),
+  path.join(ROOT, 'README.md'),
+  path.join(ROOT, 'AGENTS.md')
+];
+for (const file of scanTargets) {
+  if (!fs.existsSync(file)) continue;
+  // 本检查器自己包含这些字符串（就是规则表），跳过
+  if (path.resolve(file) === path.resolve(__filename)) continue;
+  const content = fs.readFileSync(file, 'utf8');
+  for (const stale of STALE_REFS) {
+    check(!content.includes(stale), `${path.relative(ROOT, file)} 不引用旧路径 ${stale}`);
+  }
+}
+
 console.log('');
 if (problems.length) {
   console.error(`${problems.length} 项前端检查失败`);
