@@ -2,13 +2,18 @@
 
 ## 环境
 
-- **必须用系统 Node 25.6.1**（`/opt/homebrew/bin/node`）跑这个仓库。
-  `better-sqlite3` 原生模块按 ABI 141 编译；托管 Node 22（`npm` 默认走它）
-  会 `ERR_DLOPEN_FAILED`，连 `npm start` 都起不来。
-  换 Node 版本后需 `npm rebuild better-sqlite3`。
-  `npm run check` 现在会主动断言 ABI 并给出修复命令。
+- **Node 20–26**（`better-sqlite3` 12.x 的支持范围）。
+  它是原生模块，编译时的 Node ABI 必须与运行时的 Node 一致，否则
+  `ERR_DLOPEN_FAILED`（错误信息指向模块内部，看不出是版本问题）。
+  **本机同时装有托管 Node 22（npm 默认走它）与系统 Node 25，
+  原生模块按 Node 25 编译**——所以裸 `node xxx.js` 可能失败。
+  npm scripts 都经 `scripts/with-node.sh` 启动，它会**实际建库测试**后
+  自动挑选可用 Node 并说明是否切换过；因此 `npm start` / `npm run check`
+  在任何 Node 环境下都能直接用。手动指定：`scripts/with-node.sh <命令>`。
+- `npm run check` 会主动断言 ABI 并给出修复命令（`npm rebuild better-sqlite3`）。
 - 凭据在 `data/.env`（gitignored），模板见 `data/.env.example`。
-- 数据库默认 `data/data.db`（旧库 `server/data.db` 仍兼容读取）；备份用 `node scripts/db-backup.js`（走 SQLite backup API）。
+- 数据库默认 `data/data.db`（旧库 `server/data.db` 仍兼容读取）；备份用
+  `node scripts/db-backup.js`（走 SQLite backup API）。
 - **JEV 需要显式代理**：`data/.env` 里设 `JEV_PROXY=http://127.0.0.1:7897`。
   JEV 按出口 IP 做地域限制，中国大陆直连返回 451；Node 的 fetch 不读系统代理
   （含内置 `--use-env-proxy` 也无效），必须用 `serving/adapters/http-client.js` 的

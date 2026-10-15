@@ -4,20 +4,20 @@
   "private": true,
   "description": "赛博放生 · 单生物异步图文旅程（Agent 工程环境改造版）",
   "engines": {
-    "node": ">=22"
+    "node": ">=20 <27"
   },
   "main": "serving/entrypoints/start.js",
   "scripts": {
-    "start": "node --env-file-if-exists=data/.env serving/entrypoints/start.js",
-    "dev": "node --env-file-if-exists=data/.env serving/entrypoints/start.js",
-    "check": "node tooling/check.js",
-    "check:fast": "node tooling/check.js --fast",
-    "test": "node tooling/run-tests.js",
-    "scenario": "node tests/scenarios/cli.js",
-    "boundaries": "node tooling/boundary-check.js",
-    "smoke:real": "node scripts/smoke-real.js",
-    "db:backup": "node scripts/db-backup.js backup",
-    "db:verify": "node scripts/db-backup.js verify"
+    "start": "scripts/with-node.sh --env-file-if-exists=data/.env serving/entrypoints/start.js",
+    "dev": "scripts/with-node.sh --env-file-if-exists=data/.env serving/entrypoints/start.js",
+    "check": "scripts/with-node.sh tooling/check.js",
+    "check:fast": "scripts/with-node.sh tooling/check.js --fast",
+    "test": "scripts/with-node.sh tooling/run-tests.js",
+    "scenario": "scripts/with-node.sh tests/scenarios/cli.js",
+    "boundaries": "scripts/with-node.sh tooling/boundary-check.js",
+    "smoke:real": "scripts/with-node.sh scripts/smoke-real.js",
+    "db:backup": "scripts/with-node.sh scripts/db-backup.js backup",
+    "db:verify": "scripts/with-node.sh scripts/db-backup.js verify"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.0",

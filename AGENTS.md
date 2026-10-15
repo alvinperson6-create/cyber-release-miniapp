@@ -6,6 +6,11 @@
 
 ## 0. 先跑什么
 
+> **Node 版本**：`better-sqlite3` 是原生模块，编译时的 Node 版本必须与运行时的
+> 一致。npm scripts 都经 `scripts/with-node.sh` 启动，会自动挑选可用的 Node，
+> 所以 `npm start` / `npm run check` 在任何 Node 环境下都能直接用。
+> 手动执行时用 `scripts/with-node.sh <命令>`。
+
 ```bash
 npm run check          # 全部检查（依赖边界 → 契约 → 业务 → 场景 → 前端）
 npm run check:fast     # 只跑边界 + 契约（改代码过程中用，快）

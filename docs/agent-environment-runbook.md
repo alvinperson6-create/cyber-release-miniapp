@@ -10,18 +10,25 @@
 ```bash
 cd /Users/alvin/Desktop/02-项目/赛博放生
 
-# Node ≥ 22
+# Node 20–26（better-sqlite3 12.x 的支持范围）
 node -v
 
 # 安装依赖
 npm install
-
-# 如果 better-sqlite3 报 NODE_MODULE_VERSION 不匹配（换过 Node 版本）：
-npm rebuild better-sqlite3
 ```
 
-> **常见坑**：`better-sqlite3` 是原生模块，编译时的 Node ABI 必须与运行时的 Node 一致。
-> 如果 `npm run check` 报 `ERR_DLOPEN_FAILED`，先 `npm rebuild better-sqlite3`。
+> **Node 版本**：`better-sqlite3` 是原生模块，编译时的 Node ABI 必须与运行时的 Node 一致，
+> 否则会抛 `ERR_DLOPEN_FAILED`（错误信息指向模块内部，看不出是版本问题）。
+>
+> npm scripts 都经`scripts/with-node.sh` 启动：它会自动挑一个**实际能跑数据库**的 Node，
+> 并在日志里说明是否切换过。因此 `npm start` / `npm run check` 在多Node 环境下都能直接用，
+> 不需要你手动指定路径。手动指定时用：
+>
+> ```bash
+> scripts/with-node.sh npm start
+> ```
+>
+> 如果提示找不到可用 Node，执行 `npm rebuild better-sqlite3` 重新编译当前 Node 的版本。
 
 凭据放在 `data/.env`（已被 gitignore）：
 
@@ -156,7 +163,7 @@ node -e "const {createStore}=require('./serving/adapters/store');const s=createS
 
 | 症状 | 可能原因 | 处理 |
 | --- | --- | --- |
-| `ERR_DLOPEN_FAILED` / `NODE_MODULE_VERSION` | 原生模块 ABI 不匹配 | `npm rebuild better-sqlite3` |
+| `ERR_DLOPEN_FAILED` / `NODE_MODULE_VERSION` | 原生模块 ABI 与当前 Node 不匹配 | 通常不需要处理：npm scripts 会自动切换到可用的 Node。若手动执行报此错，跑 `scripts/with-node.sh <命令>`；仍不行则 `npm rebuild better-sqlite3` |
 | 旅程一直 `paused`，提示 `task_retry_exhausted` | 文本模型或 JEV 不可用 | 看服务端日志的 `flow error`；检查 `.env` 凭据与网络 |
 | **JEV 返回 451** `Typesafe is not available in your region` | **出口 IP 所在区域被 JEV 限制** | **换网络出口，别改代码**。设 `JEV_PROXY=http://127.0.0.1:<端口>`（端口查 `scutil --proxy \| grep -A2 HTTPSEnable`）。同一套代码曾在其他区域跑通，见 `docs/jev-validation.md` §2 |
 | 旅程 `paused`，`pause_reason=budget_exhausted` | 单程模型调用预算耗尽 | 正常护栏；调整 `J_MAX_MODEL_CALLS` |

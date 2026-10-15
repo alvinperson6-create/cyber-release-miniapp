@@ -21,9 +21,10 @@ npm start                             # → http://localhost:3001
 npm run check
 ```
 
-> **Node ≥ 22。** `better-sqlite3` 是原生模块；若报 `ERR_DLOPEN_FAILED`，
-> 执行 `npm rebuild better-sqlite3`。详见
-> [runbook 的故障定位表](docs/agent-environment-runbook.md#7-故障定位)。
+> **Node 20–26。** `better-sqlite3` 是原生模块，编译时的 Node 版本必须与运行时一致。
+> npm scripts 已通过 `scripts/with-node.sh` 自动挑选可用的 Node——
+> 如果你的 npm 用的是另一个 Node 版本，它会自己切过去并在日志里说明。
+> 实在没有可用 Node 时会给出修复命令。
 
 ---
 
