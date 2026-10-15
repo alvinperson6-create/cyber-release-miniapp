@@ -1,0 +1,42 @@
+# 赛博放生 · 项目长期约定
+
+## 环境
+
+- **必须用系统 Node 25.6.1**（`/opt/homebrew/bin/node`）跑这个仓库。
+  `better-sqlite3` 原生模块按 ABI 141 编译；用托管 Node 22 会 `ERR_DLOPEN_FAILED`。
+  换 Node 版本后需 `npm rebuild better-sqlite3`。
+- 凭据在 `server/.env`（gitignored），模板见 `server/.env.example`。
+- 数据库默认 `server/data.db`；备份用 `node scripts/db-backup.js`（走 SQLite backup API）。
+
+## 目录与边界
+
+`shared/contracts`（纯契约）/ `renderer`（前端）/ `serving`（服务）/ `tests` / `tooling` / `legacy`。
+
+边界是**会失败的检查**（`npm run boundaries`），不是文档约定。改动不要放宽规则。
+
+## 命令
+
+```bash
+npm start              # 启动（唯一实际启动入口是 serving/entrypoints/start.js）
+npm run check          # 统一检查 5 项
+npm test               # 只跑测试
+node tests/scenarios/cli.js <场景>    # 进入固定场景
+node scripts/smoke-real.js            # 真实冒烟（花钱）
+```
+
+## 验证纪律
+
+- 固定场景证明"受控输入下程序正确"，**不能**证明真实 JEV 会选那个分支。
+- 收紧边界时必须同时断言"该可达的仍可达"，否则会把功能改坏而检查全绿。
+- 验证工具自己出错比没有验证更危险；报"通过"前先确认它真的验证了那件事。
+- JEV 不可用时系统会重试后如实暂停，不用规则冒充——这是正确行为，不是故障。
+
+## 用户既有规则（不要覆盖）
+
+- 公众号内容抓取优先 `opencli weixin download`
+- 想法记录用 thought-vault
+
+## 历史
+
+- 2026-10-15 完成 Agent 工程环境改造（阶段 A–F），commit `40967f7`
+- 详见 `docs/agent-environment-{design,runbook,validation,progress}.md`
