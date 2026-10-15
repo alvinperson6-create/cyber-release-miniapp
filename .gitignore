@@ -36,3 +36,8 @@ docs/agent-environment-validation-artifacts/
 .vscode/
 __pycache__/
 *.pyc
+
+# GitHub Actions workflow：本地保留但不入库。
+# 当前 OAuth 授权缺少 workflow scope，推送含该目录的提交会被远端拒绝。
+# 需要启用 CI 时，先在 GitHub 授权 workflow 权限，再移除本行。
+.github/
