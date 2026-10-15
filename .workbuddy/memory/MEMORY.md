@@ -3,20 +3,25 @@
 ## 环境
 
 - **必须用系统 Node 25.6.1**（`/opt/homebrew/bin/node`）跑这个仓库。
-  `better-sqlite3` 原生模块按 ABI 141 编译；用托管 Node 22 会 `ERR_DLOPEN_FAILED`。
+  `better-sqlite3` 原生模块按 ABI 141 编译；托管 Node 22（`npm` 默认走它）
+  会 `ERR_DLOPEN_FAILED`，连 `npm start` 都起不来。
   换 Node 版本后需 `npm rebuild better-sqlite3`。
-- 凭据在 `server/.env`（gitignored），模板见 `server/.env.example`。
-- 数据库默认 `server/data.db`；备份用 `node scripts/db-backup.js`（走 SQLite backup API）。
-- **JEV 需要显式代理**：`server/.env` 里设 `JEV_PROXY=http://127.0.0.1:7897`。
+  `npm run check` 现在会主动断言 ABI 并给出修复命令。
+- 凭据在 `data/.env`（gitignored），模板见 `data/.env.example`。
+- 数据库默认 `data/data.db`（旧库 `server/data.db` 仍兼容读取）；备份用 `node scripts/db-backup.js`（走 SQLite backup API）。
+- **JEV 需要显式代理**：`data/.env` 里设 `JEV_PROXY=http://127.0.0.1:7897`。
   JEV 按出口 IP 做地域限制，中国大陆直连返回 451；Node 的 fetch 不读系统代理
   （含内置 `--use-env-proxy` 也无效），必须用 `serving/adapters/http-client.js` 的
   undici ProxyAgent。本机代理端口查 `scutil --proxy | grep -A2 HTTPSEnable`。
 
 ## 目录与边界
 
-`shared/contracts`（纯契约）/ `renderer`（前端）/ `serving`（服务）/ `tests` / `tooling` / `legacy`。
+`shared/contracts`（纯契约）/ `renderer`（前端 + 地球配置数据源）/ `serving`（服务代码）
+/ `data`（数据库、.env、日志，**不含代码**）/ `tests` / `tooling` / `scripts` / `legacy`。
 
-边界是**会失败的检查**（`npm run boundaries`），不是文档约定。改动不要放宽规则。
+- `serving` 与 `data` 刻意不同名：历史上它们都叫 `server/`，极易看混。
+- 边界是**会失败的检查**（`npm run boundaries`），不是文档约定。改动不要放宽规则。
+- 文档从 `docs/README.md` 进，按时效性分现行/历史两层。
 
 ## 命令
 
@@ -25,7 +30,7 @@ npm start              # 启动（唯一实际启动入口是 serving/entrypoint
 npm run check          # 统一检查 5 项
 npm test               # 只跑测试
 node tests/scenarios/cli.js <场景>    # 进入固定场景
-node scripts/smoke-real.js            # 真实冒烟（花钱）
+node scripts/smoke-real.js            # 真实冒烟（花钱，需 JEV_PROXY）
 ```
 
 ## 验证纪律
