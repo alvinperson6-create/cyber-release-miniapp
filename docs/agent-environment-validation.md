@@ -2,7 +2,7 @@
 
 日期：2026-10-15
 运行模式：离线回归（固定 adapter，零真实外部调用）+ 真实生产路径冒烟（隔离库、真实凭据）
-执行 commit：见 `docs/agent-environment-progress.md`
+执行 commit：`40967f7`（refactor: Agent 工程环境改造（阶段 A–F））
 
 本文件只记录**本轮实际跑出来的结果**。历史 39/43 之类的旧数字不作为本轮基线。
 未验证项如实列出，不用 fixture 结论替代真实结论。

@@ -2,6 +2,8 @@
 
 日期：2026-10-15
 交接：`docs/HANDOFF-Agent工程环境改造.md`
+执行 commit：`40967f7`（refactor: Agent 工程环境改造（阶段 A–F））
+改造前 HEAD：`459a55c`
 
 ---
 
