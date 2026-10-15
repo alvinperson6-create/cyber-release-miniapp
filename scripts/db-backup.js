@@ -20,7 +20,7 @@ const Database = require('better-sqlite3');
 const ROOT = path.join(__dirname, '..');
 
 function resolveDbPath() {
-  return process.env.DB_PATH ? path.resolve(process.env.DB_PATH) : path.join(ROOT, 'server', 'data.db');
+  return process.env.DB_PATH ? path.resolve(process.env.DB_PATH) : path.join(ROOT, 'data', 'data.db');
 }
 
 async function backup(destArg) {

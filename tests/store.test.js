@@ -9,7 +9,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const { createStore, resolveDbPath, LEGACY_DB_PATH, SCHEMA_VERSION } = require('../serving/adapters/store');
+const { createStore, resolveDbPath, LEGACY_DB_PATH, DEFAULT_DB_PATH, DATA_DIR, SCHEMA_VERSION } = require('../serving/adapters/store');
 
 function newStore(tag) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), `cr-store-${tag}-`));
@@ -260,14 +260,20 @@ test('模型台账区分逻辑操作与 transport attempt，允许历史缺值',
   } finally { store.closeDb(); }
 });
 
-test('数据路径锚定：DB_PATH 优先，否则落在历史位置', () => {
+test('数据路径锚定：DB_PATH 优先；否则落在 data/，旧库存在时兼容读旧位置', () => {
   const prev = process.env.DB_PATH;
   try {
     process.env.DB_PATH = '/tmp/abc.db';
     assert.equal(resolveDbPath(), '/tmp/abc.db');
     delete process.env.DB_PATH;
-    assert.equal(resolveDbPath(), LEGACY_DB_PATH);
-    assert.ok(LEGACY_DB_PATH.endsWith(path.join('server', 'data.db')), '默认不随代码搬迁漂移');
+
+    // 无论落在哪个位置，都必须锚定在仓库根下，不能随 __dirname 漂移
+    const resolved = resolveDbPath();
+    assert.ok(resolved.endsWith(path.join('data', 'data.db')) || resolved === LEGACY_DB_PATH,
+      `默认应落在 data/data.db（实际 ${resolved}）`);
+    assert.ok(DEFAULT_DB_PATH.endsWith(path.join('data', 'data.db')), '现役路径是 data/data.db');
+    assert.ok(LEGACY_DB_PATH.endsWith(path.join('server', 'data.db')), '旧位置仍是 server/data.db（兼容用）');
+    assert.ok(DATA_DIR.endsWith('data'), '数据目录名是 data，不与 serving/ 混淆');
   } finally {
     if (prev == null) delete process.env.DB_PATH; else process.env.DB_PATH = prev;
   }

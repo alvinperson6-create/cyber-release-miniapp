@@ -8,14 +8,14 @@
   },
   "main": "serving/entrypoints/start.js",
   "scripts": {
-    "start": "node --env-file-if-exists=server/.env serving/entrypoints/start.js",
-    "dev": "node --env-file-if-exists=server/.env serving/entrypoints/start.js",
+    "start": "node --env-file-if-exists=data/.env serving/entrypoints/start.js",
+    "dev": "node --env-file-if-exists=data/.env serving/entrypoints/start.js",
     "check": "node tooling/check.js",
     "check:fast": "node tooling/check.js --fast",
     "test": "node tooling/run-tests.js",
     "scenario": "node tests/scenarios/cli.js",
     "boundaries": "node tooling/boundary-check.js",
-    "smoke:real": "node tests/scenarios/cli.js --real",
+    "smoke:real": "node scripts/smoke-real.js",
     "db:backup": "node scripts/db-backup.js backup",
     "db:verify": "node scripts/db-backup.js verify"
   },

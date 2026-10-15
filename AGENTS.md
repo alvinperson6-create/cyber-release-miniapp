@@ -73,7 +73,7 @@ legacy/               历史原型，禁止被生产路径引用
 - 迟到回复只作为本程后续未决参考：不占补给位、不改写已提交决定。
 
 ### 2.5 数据
-- 数据库路径：`DB_PATH` → `CYBER_RELEASE_DB` → `server/data.db`（历史位置，不随代码搬迁）。
+- 数据库路径：`DB_PATH` → `CYBER_RELEASE_DB` → `data/data.db`（历史位置，不随代码搬迁）。
 - 迁移只增不改、可重入，用 `PRAGMA user_version`；改 schema 就加新版本号。
 - 加唯一约束前先核对历史重复，不通过删历史记录让迁移"通过"。
 - 备份/恢复用 `node scripts/db-backup.js`（走 SQLite backup API，不要直接 cp，WAL 会丢数据）。

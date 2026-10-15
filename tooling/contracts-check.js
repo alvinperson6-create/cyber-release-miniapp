@@ -139,4 +139,34 @@ assert.notStrictEqual(contracts.fingerprintOf('release', v1), contracts.fingerpr
   '内容不同 → 不同指纹');
 console.log('  ✔ 幂等指纹与字段顺序无关、与内容相关');
 
+// —— 10. 原生模块 ABI 与当前 Node 匹配 ——
+// better-sqlite3 是原生模块：编译时的 Node ABI 必须与运行时的 Node 一致。
+// 不一致时 require 直接抛 ERR_DLOPEN_FAILED，服务起不来、测试全红。
+// 这个坑最费时间（错误信息指向模块内部，不像 Node 版本问题），
+// 所以在这里提前断言，并给出可执行的修复命令。
+console.log('  ── 原生模块 ABI ──');
+{
+  let abiOk = true;
+  let detail = '';
+  try {
+    const Database = require('better-sqlite3');
+    const db = new Database(':memory:');
+    db.prepare('SELECT 1 AS x').get();
+    db.close();
+  } catch (e) {
+    abiOk = false;
+    const m = /NODE_MODULE_VERSION (\d+)[\s\S]*?requires[\s\S]*?NODE_MODULE_VERSION (\d+)/.exec(e.message);
+    detail = m
+      ? `模块按 ABI ${m[1]} 编译，当前 Node 是 ABI ${m[2]}。修复：npm rebuild better-sqlite3`
+      : `加载失败：${e.message.split('\n')[0]}`;
+  }
+  if (!abiOk) {
+    console.error(`  ✖ better-sqlite3 与当前 Node (${process.version}) ABI 不匹配`);
+    console.error(`      ${detail}`);
+    console.error('      这个错误会表现为 ERR_DLOPEN_FAILED，服务无法启动、所有测试失败。');
+    process.exit(1);
+  }
+  console.log(`  ✔ better-sqlite3 可加载（Node ${process.version}）`);
+}
+
 console.log('\n契约检查通过。');

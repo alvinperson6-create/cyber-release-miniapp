@@ -7,15 +7,28 @@
 //
 // 数据路径（阶段 2）：
 // 搬迁文件前必须把默认路径锚定到明确配置，而不是随 __dirname 漂移。
-// 解析优先级：DB_PATH → CYBER_RELEASE_DB → 仓库根 server/data.db（历史位置）。
-// 这样无论代码搬到哪个目录，历史数据都还在原处，不会"跟着文件搬家"而丢失。
+// 解析优先级：DB_PATH → CYBER_RELEASE_DB → 仓库根 data/data.db。
+//
+// data/ 目录只装运行数据与凭据（数据库、.env、日志），不含任何代码；
+// 代码在 serving/。两者同名相近容易混淆，所以 data/ 的名字刻意与
+// serving/ 区分开——看到 data/ 就知道是"数据"不是"服务"。
+//
+// 向后兼容：旧位置 server/data.db 若仍存在，优先读它，
+// 保证重命名前后的已有数据都不会被孤立。
 
 const Database = require('better-sqlite3');
 const path = require('node:path');
 const crypto = require('node:crypto');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
-const LEGACY_DB_PATH = path.join(REPO_ROOT, 'server', 'data.db');
+const DATA_DIR = path.join(REPO_ROOT, 'data');
+const LEGACY_DATA_DIR = path.join(REPO_ROOT, 'server');
+const DB_NAME = 'data.db';
+
+/** 现役数据库位置 */
+const DEFAULT_DB_PATH = path.join(DATA_DIR, DB_NAME);
+/** 重命名前的旧位置，仅为兼容仍在用旧布局的本地库而保留 */
+const LEGACY_DB_PATH = path.join(LEGACY_DATA_DIR, DB_NAME);
 
 /** 当前 schema 版本。新增迁移时 +1，绝不修改历史迁移内容。 */
 const SCHEMA_VERSION = 2;
@@ -23,7 +36,10 @@ const SCHEMA_VERSION = 2;
 function resolveDbPath() {
   const explicit = process.env.DB_PATH || process.env.CYBER_RELEASE_DB;
   if (explicit) return path.resolve(explicit);
-  return LEGACY_DB_PATH;
+  // 旧位置仍有数据库时继续用它：重命名不应让任何本地数据被孤立
+  const fs = require('node:fs');
+  if (fs.existsSync(LEGACY_DB_PATH)) return LEGACY_DB_PATH;
+  return DEFAULT_DB_PATH;
 }
 
 // ==================== 版本化迁移 ====================
@@ -1029,7 +1045,7 @@ function getModelCalls(journeyId) {
 }
 
 module.exports = {
-  SCHEMA_VERSION, REPO_ROOT, LEGACY_DB_PATH, resolveDbPath,
+  SCHEMA_VERSION, REPO_ROOT, LEGACY_DB_PATH, DEFAULT_DB_PATH, DATA_DIR, resolveDbPath,
   createStore,
   runMigrations, currentVersion, hasColumn, preflightUniqueIndex, MIGRATIONS
 };

@@ -123,9 +123,16 @@ for (const file of scanTargets) {
   if (!fs.existsSync(file)) continue;
   // 本检查器自己包含这些字符串（就是规则表），跳过
   if (path.resolve(file) === path.resolve(__filename)) continue;
-  const content = fs.readFileSync(file, 'utf8');
+  const raw = fs.readFileSync(file, 'utf8');
+  // 只看**代码**里的引用：注释里的历史说明（"曾产出 server/public"）是
+  // 有价值的迁移记录，不该被当成断链。只扫非注释部分。
+  const code = raw
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')          // 块注释
+    .split('\n')
+    .filter(line => !line.trimStart().startsWith('//'))  // 行注释
+    .join('\n');
   for (const stale of STALE_REFS) {
-    check(!content.includes(stale), `${path.relative(ROOT, file)} 不引用旧路径 ${stale}`);
+    check(!code.includes(stale), `${path.relative(ROOT, file)} 的代码不引用旧路径 ${stale}`);
   }
 }
 

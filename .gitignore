@@ -27,3 +27,12 @@ server/.env
 
 # 冒烟产物（含真实调用明细与用量）
 docs/agent-environment-validation-artifacts/
+
+# IDE / 编辑器个人配置（不属于项目代码，不进版本库）
+.trae/
+.zcode/
+.cursor/
+.idea/
+.vscode/
+__pycache__/
+*.pyc

@@ -122,7 +122,8 @@ test('数据库路径锚定到配置而非模块位置', () => {
   } finally {
     if (prev == null) delete process.env.DB_PATH; else process.env.DB_PATH = prev;
   }
-  // 未设置时落在历史位置 server/data.db，不随代码搬迁漂移
+  // 未设置时落在 data/data.db，不随代码搬迁漂移
   delete process.env.DB_PATH;
-  assert.equal(store.resolveDbPath(), path.join(store.LEGACY_DB_PATH));
+  assert.ok(store.resolveDbPath().endsWith(path.join('data','data.db')) || store.resolveDbPath().endsWith(path.join('server','data.db')),
+    '默认应落在 data/data.db（旧库存在时兼容读 server/data.db）');
 });

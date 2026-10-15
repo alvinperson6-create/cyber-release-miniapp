@@ -492,8 +492,8 @@ test('静态服务只公开 H5 与公共资源：源码、数据库、legacy、f
       '/shared/contracts/dto.js',
       '/tests/helpers/world.js',
       '/legacy/anything.js',
-      '/server/data.db',
-      '/server/.env',
+      '/data/data.db',
+      '/data/.env',
       '/tooling/boundary-check.js',
       '/docs/HANDOFF-Agent工程环境改造.md'
     ]) {

@@ -23,7 +23,7 @@ npm rebuild better-sqlite3
 > **常见坑**：`better-sqlite3` 是原生模块，编译时的 Node ABI 必须与运行时的 Node 一致。
 > 如果 `npm run check` 报 `ERR_DLOPEN_FAILED`，先 `npm rebuild better-sqlite3`。
 
-凭据放在 `server/.env`（已被 gitignore）：
+凭据放在 `data/.env`（已被 gitignore）：
 
 ```
 PORT=3001
@@ -48,7 +48,7 @@ JOURNEY_ENABLED=1
 npm start
 
 # 等价于
-node --env-file-if-exists=server/.env serving/entrypoints/start.js
+node --env-file-if-exists=data/.env serving/entrypoints/start.js
 ```
 
 启动后：
@@ -134,14 +134,14 @@ node scripts/smoke-real.js --keep-db  # 保留隔离库便于复查
 ## 6. 数据库操作
 
 ```bash
-# 位置：DB_PATH → CYBER_RELEASE_DB → server/data.db
+# 位置：DB_PATH → CYBER_RELEASE_DB → data/data.db
 node scripts/db-backup.js backup                          # → .workbuddy/backups/
 node scripts/db-backup.js backup /tmp/snapshot.db
 node scripts/db-backup.js verify /tmp/snapshot.db         # integrity + 逐表行数
 node scripts/db-backup.js restore /tmp/snapshot.db         # 恢复前自动再备份
 ```
 
-**不要直接 `cp server/data.db`**：WAL 模式下会丢掉 `-wal` 里未 checkpoint 的事务。
+**不要直接 `cp data/data.db`**：WAL 模式下会丢掉 `-wal` 里未 checkpoint 的事务。
 
 迁移是自动的（`PRAGMA user_version`），启动时执行，无需手动跑。
 查看当前版本：

@@ -7,6 +7,10 @@
   换 Node 版本后需 `npm rebuild better-sqlite3`。
 - 凭据在 `server/.env`（gitignored），模板见 `server/.env.example`。
 - 数据库默认 `server/data.db`；备份用 `node scripts/db-backup.js`（走 SQLite backup API）。
+- **JEV 需要显式代理**：`server/.env` 里设 `JEV_PROXY=http://127.0.0.1:7897`。
+  JEV 按出口 IP 做地域限制，中国大陆直连返回 451；Node 的 fetch 不读系统代理
+  （含内置 `--use-env-proxy` 也无效），必须用 `serving/adapters/http-client.js` 的
+  undici ProxyAgent。本机代理端口查 `scutil --proxy | grep -A2 HTTPSEnable`。
 
 ## 目录与边界
 

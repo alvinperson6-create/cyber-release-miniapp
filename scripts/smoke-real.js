@@ -57,7 +57,7 @@ function note(step, detail) {
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 function startServer() {
-  const child = spawn(process.execPath, ['--env-file-if-exists=server/.env', 'serving/entrypoints/start.js'], {
+  const child = spawn(process.execPath, ['--env-file-if-exists=data/.env', 'serving/entrypoints/start.js'], {
     cwd: ROOT, env: ENV, stdio: ['ignore', 'pipe', 'pipe']
   });
   child.stdout.on('data', d => process.stdout.write(`  [srv] ${d}`));
@@ -110,11 +110,11 @@ async function waitForPhase(cookie, id, phases, maxMs = 120000) {
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
-  const envPath = path.join(ROOT, 'server', '.env');
+  const envPath = path.join(ROOT, 'data', '.env');
   const hasTextModel = fs.existsSync(envPath) && /AI_API_KEY=\S/.test(fs.readFileSync(envPath, 'utf8'));
   const hasJev = fs.existsSync(envPath) && /JEV_API_KEY=\S/.test(fs.readFileSync(envPath, 'utf8'));
   if (!hasTextModel) {
-    console.error('真实冒烟无法进行：未找到 AI_API_KEY（server/.env）');
+    console.error('真实冒烟无法进行：未找到 AI_API_KEY（data/.env）');
     console.error('如实记录为"真实连通未验证"，不做任何伪造。');
     writeTrace('missing_credentials');
     return 2;

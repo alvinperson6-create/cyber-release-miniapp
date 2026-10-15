@@ -4,7 +4,7 @@
 // 只有这个文件负责"实际启动"：读配置 → 装配 runtime → 初始化 DB →
 // 启动调度 → 监听端口。导入 app.js / runtime.js 都不会启动任何东西。
 //
-// 用法：node --env-file=server/.env serving/entrypoints/start.js
+// 用法：node --env-file=data/.env serving/entrypoints/start.js
 
 const { createRuntime } = require('./runtime');
 const { createApp } = require('./app');
