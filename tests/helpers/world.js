@@ -1,152 +1,204 @@
-// 测试共享工具：隔离 DB + 虚拟时钟 + LLM/JEV 桩
+// 赛博放生 · 测试/场景共享装配
 //
-// 关键：必须在 require 之前替换 jev 模块导出（orchestrator/situations 在加载期解构）。
-// node --test 每个文件独立进程，模块状态互不污染。
+// 阶段 B 的要求：
+// - 实例级依赖注入：store、clock、模型 adapter、图片 adapter 全部替换
+// - 两个 runtime 的库、时间与桩互不污染
+// - **不依赖 require 顺序、不替换模块导出、不按提示词文案分流**
+//
+// 与旧 helpers/world.js 的关键差别：
+//   旧：require('../../server/jev') 后直接覆盖 jev.jevJudge —— 全局副作用，
+//       依赖 orchestrator 加载期解构，多 world 互相污染
+//   新：createRuntime({ jev: fakeJev }) —— 显式注入，两个实例完全隔离
+//
+// 模型操作有显式名称（shared/contracts/enums 的 MODEL_OP）。
+// fixture 遇到未知操作名直接抛错，绝不回退真实网络。
 
 const fs = require('node:fs');
-const path = require('node:path');
 const os = require('node:os');
+const path = require('node:path');
 
-function tmpDbPath(tag) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), `crsv2-${tag}-`));
+const { createRuntime } = require('../../serving/entrypoints/runtime');
+const { createApp } = require('../../serving/entrypoints/app');
+const { createClock, virtualClock } = require('../../serving/adapters/clock');
+const { MODEL_OP, MODEL_OP_NAMES } = require('../../shared/contracts/enums');
+
+function tmpDbPath(tag = 'w') {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), `cyber-release-${tag}-`));
   return path.join(dir, 'test.db');
 }
 
-// LLM 桩路由：按 system 提示词特征分发到场景脚本
-function llmKindOf(system) {
-  const s = String(system || '');
-  if (s.includes('第一个具体遭遇') || s.includes('轻量目标')) return 'opening';
-  if (s.includes('换一个真正不同的两难') || s.includes('机制不同的新遭遇')) return 'reproposal';
-  if (s.includes('下一次具体遭遇')) return 'proposal';
-  if (s.includes('结算这次行动') || s.includes('结算这次行动的环境后果'.slice(0, 6))) return 'settlement';
-  if (s.includes('很短的信号')) return 'signal';
-  if (s.includes('写一封信')) return 'letter';
-  return 'unknown';
+/**
+ * 固定 adapter：按显式操作名供数。
+ *
+ * @param scripts { [opName]: string | object | (ctx) => any | {__error, message} | [..] }
+ *                 未提供的操作名调用会抛错 —— 这正是"未知操作在 fixture 中明确失败"
+ */
+function createFixtureModel(scripts = {}, { label = 'fixture' } = {}) {
+  const calls = [];
+  const scriptOf = (op) => {
+    if (!Object.prototype.hasOwnProperty.call(scripts, op)) {
+      if (!MODEL_OP_NAMES.includes(op)) {
+        throw new Error(`[${label}] unknown model operation: ${op}`);
+      }
+      throw new Error(`[${label}] fixture missing script for op=${op}`);
+    }
+    return scripts[op];
+  };
+
+  async function invoke({ op, messages, temperature, journeyId, taskId, encounterId, operationId, budget, now }) {
+    if (!MODEL_OP_NAMES.includes(op)) throw new Error(`[${label}] unknown model operation: ${op}`);
+    if (budget && budget.allowed === false) {
+      calls.push({ op, denied: true, journeyId });
+      return { ok: false, error: budget.reason || 'budget_exhausted', budgetDenied: true };
+    }
+    const script = scriptOf(op);
+    const idx = calls.filter(c => c.op === op).length;
+    const out = Array.isArray(script) ? script[Math.min(idx, script.length - 1)]
+      : (typeof script === 'function' ? script({ messages, temperature, seq: idx, journeyId, taskId, encounterId })
+        : script);
+    calls.push({ op, journeyId, taskId, encounterId, operationId, now, temperature });
+
+    if (out && out.__error) {
+      // 真实失败：调用方会记 error 并走重试/暂停
+      const err = new Error(out.message || 'fixture error');
+      err.__fixture = true;
+      return { ok: false, error: err.message, meta: { latencyMs: 1 } };
+    }
+    return {
+      ok: true,
+      content: typeof out === 'string' ? out : JSON.stringify(out),
+      meta: { model: 'fixture-llm', usage: { input_tokens: 10, output_tokens: 20 }, latencyMs: 2 }
+    };
+  }
+
+  return { invoke, isEnabled: () => true, calls, getConfig: () => ({ provider: 'fixture', model: 'fixture-llm', apiKey: 'fixture' }) };
+}
+
+/** 固定 JEV adapter：按问题 key 回答 */
+function createFixtureJev(handlers = {}, { label = 'fixture-jev' } = {}) {
+  const calls = [];
+  let enabled = true;
+  const seq = {};
+
+  async function judge({ op, state, questions, journeyId, taskId, encounterId, operationId, budget, now }) {
+    if (budget && budget.allowed === false) {
+      calls.push({ op, denied: true });
+      return { available: false, budgetDenied: true, reason: budget.reason };
+    }
+    if (!enabled) return { available: false, reason: 'DISABLED' };
+    calls.push({ op, state: String(state).slice(0, 4000), questionKeys: Object.keys(questions || {}), journeyId, taskId, encounterId, now });
+    const n = (seq[op] = (seq[op] || 0) + 1) - 1;
+
+    const answers = {};
+    const handler = handlers[op];
+    if (handler) {
+      Object.assign(answers, typeof handler === 'function' ? handler({ state, questions, seq: n }) : handler);
+    }
+    // 通用默认：按问题类型补齐结构
+    for (const [id, q] of Object.entries(questions || {})) {
+      if (answers[id]) continue;
+      if (q.type === 'noul') answers[id] = { noul: 0.05 };
+      else if (q.type === 'choice') answers[id] = { choice: Object.keys(q.criteria || {})[0], probabilities: {}, confidence: 0.9 };
+      else if (q.type === 'score') answers[id] = { score: 0.5 };
+    }
+    return { available: true, answers, usage: { input_tokens: 1, output_tokens: 1 }, model: 'fixture-jev', latencyMs: 1 };
+  }
+
+  return {
+    judge, calls,
+    isEnabled: () => enabled,
+    setEnabled: (v) => { enabled = v; },
+    getConfig: () => ({ apiKey: enabled ? 'fixture' : '', model: 'fixture-jev' })
+  };
+}
+
+/** 固定配图 adapter：永不联网 */
+function createFixtureImage(result = null) {
+  const calls = [];
+  return {
+    calls,
+    async generate(opts) { calls.push(opts); return typeof result === 'function' ? result(opts) : result; }
+  };
 }
 
 /**
- * 建立一个桩世界。
- * @param {object} opts
- *   now: 虚拟时钟起点
- *   situations: (state, questions) => answers  // 处境识别（默认 task_overload supported）
- *   llm: { opening, proposal, reproposal, settlement, signal, letter } 每项 (ctx) => JSON 字符串
- *   jevOn: 是否启用 JEV
- *   jev: { decide, contact, settlementCheck, letterCheck } 每项 (state, questions) => answers
+ * 建立一个隔离世界。
+ *
+ * @param opts.now       虚拟时钟起点
+ * @param opts.tag       临时库标签
+ * @param opts.dbPath    指定数据库路径（默认临时库）
+ * @param opts.textModel 固定文本模型（默认按 scripts 建）
+ * @param opts.jev       固定 JEV（默认按 handlers 建）
+ * @param opts.image     固定配图
+ * @param opts.scripts   文本模型脚本（MODEL_OP → 输出）
+ * @param opts.handlers   JEV 处理器（MODEL_OP → answers）
  */
 function createWorld(opts = {}) {
   const T0 = opts.now ?? 1750000000000;
-  process.env.DB_PATH = tmpDbPath(opts.tag || 'w');
+  const dbPath = opts.dbPath || tmpDbPath(opts.tag || 'w');
+  const vt = virtualClock(T0);
+  const clock = createClock();
+  clock.setNow(() => vt.now());
 
-  const clock = require('../../server/clock');
-  let vt = T0;
-  clock.setNow(() => vt);
+  const textModel = opts.textModel || createFixtureModel(opts.scripts || {});
+  const jev = opts.jev || createFixtureJev(opts.handlers || {});
+  const image = opts.image || createFixtureImage(opts.imageResult ?? null);
 
-  const jev = require('../../server/jev');
-  const jevState = { on: opts.jevOn !== false, calls: [], decideSeq: 0, contactSeq: 0 };
-  jev.isJeVEnabled = () => jevState.on;
-  jev.jevJudge = async (state, questions) => {
-    jevState.calls.push({ state: String(state).slice(0, 4000), q: Object.keys(questions) });
-    const answers = {};
-    if (questions.action) {
-      const script = opts.jev?.decide;
-      const choice = typeof script === 'function'
-        ? script(state, questions, jevState.decideSeq++)
-        : (Array.isArray(script) ? script[Math.min(jevState.decideSeq++, script.length - 1)] : (script ?? 'a1'));
-      answers.action = { choice, probabilities: {}, confidence: 0.9 };
-    }
-    if (questions.signal_urgency) {
-      answers.signal_urgency = { choice: opts.jev?.urgency ?? 'soon', probabilities: {}, confidence: 0.9 };
-    }
-    if (questions.contact) {
-      const script = opts.jev?.contact;
-      const choice = typeof script === 'function'
-        ? script(state, questions, jevState.contactSeq++)
-        : (Array.isArray(script) ? script[Math.min(jevState.contactSeq++, script.length - 1)] : (script ?? 'continue'));
-      answers.contact = { choice, probabilities: {}, confidence: 0.9 };
-    }
-    if (questions.action_consistency) {
-      const r = opts.jev?.settlementCheck;
-      answers.action_consistency = { noul: typeof r === 'function' ? r(state) : (r ?? 0.05) };
-    }
-    if (questions.fabricated_user_facts) {
-      const r = opts.jev?.letterCheck;
-      const v = typeof r === 'function' ? r(state) : (r ?? { fabricated: 0.05, demeaning: 0.05, conflict: 0.05 });
-      answers.fabricated_user_facts = { noul: v.fabricated ?? 0.05 };
-      answers.demeaning_user = { noul: v.demeaning ?? 0.05 };
-      answers.ledger_conflict = { noul: v.conflict ?? 0.05 };
-    }
-    // 处境识别（situations.js 的 16 问）
-    if (questions.task_overload__stance) {
-      const fn = opts.situations;
-      if (fn) {
-        Object.assign(answers, fn(state, questions));
-      } else {
-        for (const q of Object.keys(questions)) {
-          if (q.endsWith('__stance')) answers[q] = { choice: 'unexpressed', probabilities: {}, confidence: 0.9 };
-          if (q.endsWith('__evidence')) answers[q] = { choice: 'none', probabilities: {} };
-        }
-        answers.task_overload__stance = { choice: 'supported', probabilities: {}, confidence: 0.9 };
-        answers.task_overload__evidence = { choice: 's1', probabilities: {} };
-      }
-    }
-    return { answers, usage: { input_tokens: 1, output_tokens: 1 }, model: 'jev-stub', latencyMs: 1 };
+  const quietLogger = {
+    log: () => {}, warn: () => {}, error: () => {}
   };
+  if (opts.verbose) quietLogger.log = console.log;
 
-  const ai = require('../../server/ai');
-  const llmState = { calls: [] };
-  const scripts = opts.llm || {};
-  ai.chatCompletion = async (messages, callOpts = {}) => {
-    const system = messages[0]?.content || '';
-    const user = messages[1]?.content || '';
-    const kind = llmKindOf(system);
-    llmState.calls.push({ kind, system: system.slice(0, 400), user: user.slice(0, 1500), temperature: callOpts.temperature });
-    const script = scripts[kind];
-    if (!script) throw new Error(`llm stub missing for kind=${kind}`);
-    const out = typeof script === 'function' ? script({ system, user, seq: llmState.calls.length, temperature: callOpts.temperature }) : script;
-    if (out && out.__error) { const e = new Error(out.message || 'stub error'); throw e; }
-    return {
-      content: typeof out === 'string' ? out : JSON.stringify(out),
-      usage: { input_tokens: 10, output_tokens: 20, total_tokens: 30 },
-      model: 'llm-stub', finishReason: 'stop', latencyMs: 2
-    };
-  };
+  const runtime = createRuntime({
+    dbPath, clock, textModel, jev, image,
+    logger: quietLogger,
+    mode: opts.mode || 'test'
+  });
 
-  const db = require('../../server/db');
-  db.closeDb(); // 同进程内多个 world 互不共享 SQLite 实例
-  db.initDb();
-  const orchestrator = require('../../server/orchestrator');
-  const scheduler = require('../../server/scheduler');
+  const app = createApp(runtime, { staticDir: opts.staticDir });
 
   return {
-    db, orchestrator, scheduler, clock, jevState, llmState,
-    step(ms) { vt += ms; return vt; },
-    setTime(v) { vt = v; return v; },
-    now: () => vt,
-    jevSet(on) { jevState.on = on; },
-    // 便捷：推进调度直到没有 pending 任务；空闲时把虚拟时钟跳到最近到期点。
-    // stopWhen() 返回 true 时提前停下（供测试在流程中途插入用户操作）。
-    async drain(n = 40, { budget = 3, stopWhen } = {}) {
+    runtime, app, store: runtime.store, clock, textModel, jev, image,
+    db: runtime.store, orchestrator: runtime.orchestrator,
+    scheduler: runtime.scheduler, commands: runtime.commands, queries: runtime.queries,
+    dbPath,
+    get llmCalls() { return textModel.calls; },
+    get jevCalls() { return jev.calls; },
+    step(ms) { return vt.step(ms); },
+    setTime(v) { return vt.set(v); },
+    now: () => vt.now(),
+
+    /**
+     * 推进调度。
+     * @param advanceClock 默认 true：空闲时把虚拟时钟跳到最近到期点。
+     *   信号截止等场景需要 advanceClock:false，否则时钟会被直接跳过截止点。
+     */
+    async drain(n = 40, { budget = 3, stopWhen, advanceClock = true } = {}) {
       let ran = 0;
       for (let i = 0; i < n; i++) {
         if (stopWhen && stopWhen()) break;
-        const r = await scheduler.tick({ budget });
+        const r = await runtime.scheduler.tick({ budget });
         ran += r.claimed;
         if (r.claimed) continue;
         if (stopWhen && stopWhen()) break;
-        const next = db.getDb().prepare(`SELECT MIN(due_at) AS t FROM tasks WHERE status = 'pending'`).get().t;
+        const next = runtime.store.minPendingDueAt();
         if (next == null) break;
-        vt = Math.max(vt + 1, next + 1);
+        if (!advanceClock) break;   // 不推进时钟：只跑当下到期的东西
+        vt.set(Math.max(vt.now() + 1, next + 1));
       }
       return ran;
-    }
+    },
+
+    async close() { await runtime.stop(); }
   };
 }
 
-// 常用 LLM 输出脚本
+// ======== 常用 fixture 脚本 ========
+
 function proposalJson(over = {}) {
   return {
     title: over.title || '水草的搬家请求',
-    situation: over.situation || '一丛水草拦住去路， roots 泡坏了，请它帮忙搬到浅滩，今晚就要。',
+    situation: over.situation || '一丛水草拦住去路，根都泡坏了，请它帮忙搬到浅滩，今晚就要。',
     constraints: over.constraints || ['它已经答应过螃蟹一次代班，精力有限'],
     actions: over.actions || [
       { id: 'a1', label: '连夜帮忙搬', cost: '它会错过自己预约的洋流休息' },
@@ -162,4 +214,53 @@ function proposalJson(over = {}) {
   };
 }
 
-module.exports = { createWorld, proposalJson, llmKindOf, tmpDbPath };
+function settlementJson(over = {}) {
+  return {
+    narrative: over.narrative || '事情有了结果，它继续往前游，水草在浅滩扎下了根。',
+    facts: over.facts || [{ kind: 'consequence', content: '一个具体的后果' }],
+    mechanism_card: over.mechanism_card || {
+      pressure: 'p', dilemma: 'd', choice_cost: 'c', lasting_consequence: 'l'
+    },
+    next_trigger: over.next_trigger || ''
+  };
+}
+
+/** 一套能跑通 opening → decide → settle 的基础脚本 */
+function baseScripts(over = {}) {
+  return {
+    [MODEL_OP.OPENING]: () => ({ goal: '把这片水域的日子过明白', encounter: proposalJson({ title: '遭遇' }) }),
+    [MODEL_OP.PROPOSAL]: () => proposalJson({ title: '下一遭遇' }),
+    [MODEL_OP.SETTLEMENT]: () => settlementJson(),
+    [MODEL_OP.SIGNAL_WRITE]: () => ({ text: '一个简短的信号，问主人一句话。' }),
+    [MODEL_OP.LETTER_WRITE]: () => ({ title: '信', text: '这是信的正文，叙述已经发生的事。' }),
+    [MODEL_OP.FINAL_LETTER_WRITE]: () => ({ title: '最后一封', text: '这一程到此为止，谢谢你放我出来。' }),
+    ...over
+  };
+}
+
+function baseHandlers(over = {}) {
+  return {
+    [MODEL_OP.SITUATION_RECOGNITION]: () => ({}),
+    [MODEL_OP.ACTION_DECISION]: () => ({
+      action: { choice: 'a1', probabilities: {}, confidence: 0.9 },
+      signal_urgency: { choice: 'soon', probabilities: {}, confidence: 0.9 }
+    }),
+    [MODEL_OP.CONTACT_CHECKPOINT]: () => ({ contact: { choice: 'continue', probabilities: {}, confidence: 0.9 } }),
+    [MODEL_OP.SETTLEMENT_CHECK]: () => ({
+      action_consistency: { noul: 0.05 },
+      contact: { choice: 'continue', probabilities: {}, confidence: 0.9 }
+    }),
+    [MODEL_OP.LETTER_CHECK]: () => ({
+      fabricated_user_facts: { noul: 0.05 },
+      demeaning_user: { noul: 0.05 },
+      ledger_conflict: { noul: 0.05 }
+    }),
+    [MODEL_OP.DEDUP_CHECK]: () => ({ same_mechanism: { choice: 'different', probabilities: {}, confidence: 0.9 } }),
+    ...over
+  };
+}
+
+module.exports = {
+  createWorld, createFixtureModel, createFixtureJev, createFixtureImage,
+  tmpDbPath, proposalJson, settlementJson, baseScripts, baseHandlers
+};

@@ -1,0 +1,114 @@
+{
+  "startedAt": "2026-10-15T07:53:58.391Z",
+  "runMode": "real-production-path",
+  "isolatedDb": "/var/folders/bb/knqpl8f95tz0_pmcgvbp4y2c0000gn/T/cyber-release-smoke-1792050838391.db",
+  "steps": [
+    {
+      "step": "health",
+      "at": "2026-10-15T07:54:02.099Z",
+      "contractVersion": "journey-contract-v2",
+      "aiEnabled": true,
+      "jevEnabled": true
+    },
+    {
+      "step": "release",
+      "at": "2026-10-15T07:54:02.280Z",
+      "journeyId": "JRN-mv98svjbAEIEZSc",
+      "status": "preparing"
+    },
+    {
+      "step": "opening",
+      "at": "2026-10-15T07:54:20.325Z",
+      "phase": "journeying",
+      "goal": true
+    },
+    {
+      "step": "progress",
+      "at": "2026-10-15T07:54:53.364Z",
+      "phase": "paused",
+      "status": "paused",
+      "messages": 1
+    },
+    {
+      "step": "end",
+      "at": "2026-10-15T07:54:53.367Z",
+      "http": 200,
+      "ok": true
+    },
+    {
+      "step": "final",
+      "at": "2026-10-15T07:54:53.368Z",
+      "status": "ended_user",
+      "messages": [
+        "system",
+        "system"
+      ],
+      "timelineNodes": "available"
+    },
+    {
+      "step": "timeline",
+      "at": "2026-10-15T07:54:53.371Z",
+      "http": 200,
+      "nodes": 5
+    }
+  ],
+  "covered": [
+    "opening",
+    "user_end",
+    "timeline"
+  ],
+  "notCovered": [
+    "决策/结算/来信（真实模型或 JEV 在验证窗口内不可用，旅程如实暂停）",
+    "阶段来信（真实模型未走到该分支）",
+    "收束来信（真实模型未走到该分支）",
+    "结算（真实 JEV 决策未成功完成）"
+  ],
+  "errors": [],
+  "pauseReason": "task_retry_exhausted",
+  "modelCalls": [
+    {
+      "kind": "situation_recognition",
+      "provider": "typesafe",
+      "model": "jev-latest",
+      "status": "error",
+      "attempt": 1
+    },
+    {
+      "kind": "opening",
+      "provider": "qianfan",
+      "model": "deepseek-v4-flash-0731",
+      "status": "ok",
+      "attempt": 1
+    },
+    {
+      "kind": "action_decision",
+      "provider": "typesafe",
+      "model": "jev-latest",
+      "status": "error",
+      "attempt": 1
+    },
+    {
+      "kind": "action_decision",
+      "provider": "typesafe",
+      "model": "jev-latest",
+      "status": "error",
+      "attempt": 1
+    },
+    {
+      "kind": "action_decision",
+      "provider": "typesafe",
+      "model": "jev-latest",
+      "status": "error",
+      "attempt": 1
+    },
+    {
+      "kind": "action_decision",
+      "provider": "typesafe",
+      "model": "jev-latest",
+      "status": "error",
+      "attempt": 1
+    }
+  ],
+  "finishedAt": "2026-10-15T07:54:54.461Z",
+  "result": "ok"
+}

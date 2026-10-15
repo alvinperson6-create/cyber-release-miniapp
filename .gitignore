@@ -1,6 +1,26 @@
 
 # macOS
 .DS_Store
+
+# 依赖
+node_modules/
+
+# 运行时数据与备份（绝不提交：含会话与用户原话）
+server/data.db
+server/data.db-shm
+server/data.db-wal
+*.db
+*.db-shm
+*.db-wal
+.workbuddy/backups/
+
 # 运行时生成的信件配图
-server/public/images/letter-*.png
-server/public/images/reply-*.png
+renderer/assets/images/letter-*.png
+renderer/assets/images/reply-*.png
+
+# 凭据
+server/.env
+.env
+
+# 场景运行产物
+.workbuddy/scenarios/
