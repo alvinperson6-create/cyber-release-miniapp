@@ -158,6 +158,7 @@ node -e "const {createStore}=require('./serving/adapters/store');const s=createS
 | --- | --- | --- |
 | `ERR_DLOPEN_FAILED` / `NODE_MODULE_VERSION` | 原生模块 ABI 不匹配 | `npm rebuild better-sqlite3` |
 | 旅程一直 `paused`，提示 `task_retry_exhausted` | 文本模型或 JEV 不可用 | 看服务端日志的 `flow error`；检查 `.env` 凭据与网络 |
+| **JEV 返回 451** `Typesafe is not available in your region` | **出口 IP 所在区域被 JEV 限制** | **换网络出口，别改代码**。设 `JEV_PROXY=http://127.0.0.1:<端口>`（端口查 `scutil --proxy \| grep -A2 HTTPSEnable`）。同一套代码曾在其他区域跑通，见 `docs/jev-validation.md` §2 |
 | 旅程 `paused`，`pause_reason=budget_exhausted` | 单程模型调用预算耗尽 | 正常护栏；调整 `J_MAX_MODEL_CALLS` |
 | `flow error: jev_unavailable` | JEV 未配置或返回错误 | 配置 `JEV_API_KEY`；**不要**用规则冒充决策 |
 | 信号迟迟不寄出 | 真实 JEV 可能直接选择行动 | 这是真实行为，不是 bug；用 `awaiting_signal` 场景验证信号路径 |

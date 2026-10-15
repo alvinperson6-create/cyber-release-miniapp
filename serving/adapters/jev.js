@@ -11,8 +11,11 @@
 //   绝不把解析失败伪装成判断通过
 //
 // 环境变量：JEV_API_KEY / JEV_BASE_URL / JEV_MODEL / JEV_TIMEOUT_MS
+// JEV_PROXY：显式代理（JEV 按出口 IP 做地域限制，受限区域直连会拿到 451；
+//            Node 的 fetch 不读系统代理设置，需要显式指定）
 
 const { MODEL_OP } = require('../../shared/contracts/enums');
+const { createHttpClient } = require('./http-client');
 
 const DEFAULT_BASE_URL = 'https://api.typesafe.ai/v1';
 const DEFAULT_MODEL = 'jev-latest';
@@ -32,7 +35,9 @@ function getConfig() {
     apiKey: process.env.JEV_API_KEY || '',
     baseUrl: (process.env.JEV_BASE_URL || DEFAULT_BASE_URL).replace(/\/+$/, ''),
     model: process.env.JEV_MODEL || DEFAULT_MODEL,
-    timeoutMs: parseInt(process.env.JEV_TIMEOUT_MS || '30000', 10) || 30000
+    timeoutMs: parseInt(process.env.JEV_TIMEOUT_MS || '30000', 10) || 30000,
+    // 显式代理优先；不给则由 http-client 读 HTTPS_PROXY/HTTP_PROXY
+    proxyUrl: process.env.JEV_PROXY || null
   };
 }
 
@@ -106,13 +111,23 @@ function createJev({ clock, onCall = () => {} } = {}) {
 
     const maxAttempts = Math.max(1, transportMaxAttempts);
     let lastErr = null;
+    let timeoutMs = cfg.timeoutMs;
+
+    // 代理感知：未配置时 httpFetch === globalThis.fetch，行为与从前一致。
+    // 注意传 url，让 https 请求只匹配 HTTPS 代理（见 http-client 的说明）。
+    const url = cfg.baseUrl + '/systemone';
+    const { fetch: httpFetch, proxyUrl } = await createHttpClient({ proxyUrl: cfg.proxyUrl, url });
+    if (proxyUrl) {
+      // 走代理时要留出链路延迟，超时相应放宽
+      timeoutMs = Math.max(timeoutMs, cfg.timeoutMs * 2);
+    }
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), cfg.timeoutMs);
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
       const t0 = Date.now();
       try {
-        const resp = await fetch(cfg.baseUrl + '/systemone', {
+        const resp = await httpFetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${cfg.apiKey}` },
           body: JSON.stringify({ state, model: cfg.model, questions }),
@@ -165,7 +180,7 @@ function createJev({ clock, onCall = () => {} } = {}) {
           return { available: false, reason: err.code, error: err };
         }
         lastErr = err.name === 'AbortError'
-          ? new JeVError('TIMEOUT', `JEV 请求超时（${cfg.timeoutMs}ms）`)
+          ? new JeVError('TIMEOUT', `JEV 请求超时（${timeoutMs}ms）`)
           : new JeVError('NETWORK', `JEV 网络错误: ${err.message}`);
         onCall({
           journeyId, taskId, encounterId, operationId, operationKind: opName, attempt,

@@ -35,10 +35,11 @@ const CHECKS = [
   {
     id: 'unit',
     title: '离线业务与装配',
-    desc: '存储/旅程/竞态/装配/HTTP/前端的 node:test 套件（零真实外部调用）',
+    desc: '存储/旅程/竞态/装配/HTTP/前端/代理的 node:test 套件（零真实外部调用）',
     cmd: [NODE, [
       '--test',
-      ...['store', 'journey-core', 'race-and-guards', 'app-assembly', 'http-contract', 'frontend-contract']
+      ...['store', 'journey-core', 'race-and-guards', 'app-assembly',
+           'http-contract', 'frontend-contract', 'proxy-client']
         .map(n => path.join(ROOT, 'tests', `${n}.test.js`))
     ]],
     critical: true

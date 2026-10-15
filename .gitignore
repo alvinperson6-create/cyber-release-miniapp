@@ -24,3 +24,6 @@ server/.env
 
 # 场景运行产物
 .workbuddy/scenarios/
+
+# 冒烟产物（含真实调用明细与用量）
+docs/agent-environment-validation-artifacts/

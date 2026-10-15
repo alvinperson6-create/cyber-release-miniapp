@@ -34,6 +34,8 @@ const ENV = {
   PORT: String(PORT),
   J_TIME_SCALE: '900',
   J_MAX_EVENTS: '3',
+  // 代理：JEV 按出口 IP 限制，受限区域需显式指定（不设则直连，JEV 会 451）
+  ...(process.env.JEV_PROXY ? { JEV_PROXY: process.env.JEV_PROXY } : {}),
   JOURNEY_ENABLED: '1'
 };
 
@@ -177,14 +179,26 @@ async function main() {
       if (kinds.includes('signal')) trace.covered.push('signal');
     }
     if (ended && (ended.messages || []).some(m => m.kind === 'signal')) trace.covered.push('signal');
-    if (!trace.covered.includes('settlement')) {
-      trace.notCovered.push('结算（真实 JEV 决策未成功完成）');
+    // 结算是否真的落账，看遭遇是否 resolved + 是否有事实，而不是看消息类型
+    {
+      const encs = readEncounters(DB_PATH, s.journeyId);
+      const resolved = encs.filter(e => e.status === 'resolved').length;
+      if (resolved > 0) trace.covered.push(`settlement（${resolved} 件遭遇已结算）`);
+      else trace.notCovered.push('结算（没有 resolved 状态的遭遇）');
     }
 
-    // 4. 结束：用户主动结束立即生效
+    // 4. 结束：用户主动结束立即生效。
+    //    注意：旅程可能已自然收束，此时返回 409 already_ended 是**正确行为**，
+    //    不能记成"结束失败"。
     const endRes = await fetch(`${BASE}/api/journey/${s.journeyId}/end`, { method: 'POST', headers: { Cookie: s.cookie } });
     const endBody = await endRes.json();
-    note('end', { http: endRes.status, ok: endBody.ok });
+    const endState = await readJourney(s.cookie, s.journeyId);
+    const alreadyEnded = endRes.status === 409 && endBody.code === 'already_ended';
+    note('end', { http: endRes.status, ok: endBody.ok, code: endBody.code, alreadyEnded });
+
+    if (endBody.ok) trace.covered.push('user_end');
+    else if (alreadyEnded) trace.covered.push('user_end（旅程已自然收束，409 already_ended 属正确行为）');
+    else trace.notCovered.push(`用户结束未生效（HTTP ${endRes.status} ${endBody.code || ''}）`);
 
     const final = await readJourney(s.cookie, s.journeyId);
     note('final', {
@@ -192,9 +206,6 @@ async function main() {
       messages: (final.body.journey?.messages || []).map(m => m.kind),
       timelineNodes: final.body.journey?.phase === 'ended' ? 'available' : 'n/a'
     });
-
-    if (final.body.journey?.status === 'ended_user') trace.covered.push('user_end');
-    else trace.notCovered.push('用户结束未在验证窗口内生效');
 
     // 5. 回顾时间线（结束后开放）
     const tl = await fetch(`${BASE}/api/journey/${s.journeyId}/timeline`, { headers: { Cookie: s.cookie } });
@@ -244,7 +255,7 @@ async function main() {
 function readCalls(dbPath) {
   if (!fs.existsSync(dbPath)) return [];
   try {
-    const Database = require(path.join(ROOT, 'node_modules', 'better-sqlite3'));
+    const Database = require('better-sqlite3');
     const db = new Database(dbPath, { readonly: true });
     const rows = db.prepare(
       `SELECT kind, provider, model, status, attempt FROM model_calls ORDER BY id`
@@ -253,6 +264,20 @@ function readCalls(dbPath) {
     return rows;
   } catch (e) {
     return [{ note: 'read_failed', error: e.message }];
+  }
+}
+
+/** 读某旅程的遭遇状态，用来判断结算是否真的发生 */
+function readEncounters(dbPath, journeyId) {
+  if (!fs.existsSync(dbPath)) return [];
+  try {
+    const Database = require('better-sqlite3');
+    const db = new Database(dbPath, { readonly: true });
+    const rows = db.prepare(`SELECT status FROM encounters WHERE journey_id = ?`).all(journeyId);
+    db.close();
+    return rows;
+  } catch (e) {
+    return [];
   }
 }
 

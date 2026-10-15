@@ -186,7 +186,7 @@ contractVersion: journey-contract-v2
         结算（真实 JEV 决策未成功完成）
 ```
 
-### 5.1 JEV 不可用的根因（已定位，非代码问题）
+### 5.1 JEV 不可用的根因与解除（已定位并修复路径）
 
 直接调用 JEV 适配器：
 
@@ -195,12 +195,71 @@ contractVersion: journey-contract-v2
  "error": "JEV 451: {\"title\":\"Typesafe is not available in your region.\",\"status\":451}"}
 ```
 
-**这是外部服务的地域限制（HTTP 451），不是本轮代码缺陷。**
-配置本身正确：baseUrl `https://api.typesafe.ai/v1`、model `jev-latest`、key 长度 108。
+根因是**请求出口 IP 所在区域被拒**，不是代码缺陷：
 
-### 5.2 这次失败恰好验证了一条关键行为
+| 证据 | 内容 |
+| --- | --- |
+| 不需要 key 的根路径也是 451 | 请求在到达鉴权前就被按出口 IP 拒绝 → 与 key 无关 |
+| 三次连续请求结果一致 | 不是限流或瞬时故障 |
+| 出口 IP 检测 | 中国大陆（`116.162.134.x` / `2408:8453::`） |
+| 对照：千帆（国内服务） | 正常可达，说明网络本身通 |
+| **同一套代码的历史记录** | `docs/jev-validation.md` §2 记载 **JEV jev-1.13.0 当时连通且按设计工作** |
 
-JEV 不可用时，系统：
+**换到美国出口后 JEV 完全可用**，实测（curl 显式走本地代理 7897）：
+
+```json
+{"model":"jev-1.13.0","answers":{"a":{"type":"noul","noul":0.61}},"usage":{"input_tokens":288,"output_tokens":20}}
+```
+
+三次一致（0.61 / 0.60 / 0.61）。
+
+### 5.1.1 顺带发现并修掉的一个真实坑：Node 不走系统代理
+
+浏览器能开、服务器连不上的原因：**Node 的 `fetch` 不读 macOS 系统代理设置**。
+
+| 手段 | 实测结果 |
+| --- | --- |
+| 系统代理 127.0.0.1:7897（浏览器能用） | Node 直连仍是本地出口 → 451 |
+| Node 内置 `--use-env-proxy` + `HTTP(S)_PROXY` | **无效**，三种组合都仍走本地出口 |
+| `undici` + `ProxyAgent` | **有效**，出口变美国 |
+
+因此新增 `serving/adapters/http-client.js`（代理感知出口），
+由 JEV 适配器通过 `JEV_PROXY` 环境变量启用。
+
+**实现中踩到的第二个坑**：某些环境（CI / 容器 / IDE 沙箱）会同时注入
+`HTTP_PROXY` 和 `HTTPS_PROXY` 且指向**不同**代理。初版实现按
+`HTTPS_PROXY || http_proxy` 顺序取值，导致 https 请求被 `http_proxy`
+污染 → 表现为"配了代理但出口 IP 没变"，极易误判成代理没生效。
+已改为**https 请求只读 HTTPS 代理**，并由 `tests/proxy-client.test.js` 钉住。
+
+### 5.1.2 换代理后的真实全链路结果
+
+命令：`JEV_PROXY=http://127.0.0.1:7897 node scripts/smoke-real.js`
+
+```text
+· health  — {"aiEnabled":true,"jevEnabled":true}
+· release — {"status":"preparing"}
+· opening — {"phase":"journeying","goal":true}
+· progress— {"phase":"ended","status":"ended_natural"}
+· end     — {"http":409,"ok":false,"alreadyEnded":true}
+· final   — {"status":"ended_natural","messages":["final_letter"]}
+· timeline— {"http":200,"nodes":6}
+
+真实调用次数：17，全部 ok
+  situation_recognition×1  opening×1  action_decision×3  settlement×3
+  settlement_check×3  proposal×2  reproposal×2
+  final_letter_write×1  letter_check×1
+```
+
+**真实 JEV 的行动决策、结算、提案、去重重提案、收束来信全部走通。**
+这一条把§6 里"真实 JEV 路径未验证"的遗留项补上了。
+
+注意 `end` 返回 409：旅程在验证窗口内已自然收束，`already_ended` 是**正确行为**
+（终态不可被改写），不是失败。冒烟脚本已据此修正覆盖判定。
+
+### 5.2 失败时的行为是正确的
+
+JEV 不可用时（第一次冒烟，无代理），系统：
 
 1. 重试 4 次（`task_retry_exhausted`），**没有**用规则伪造 JEV 决策；
 2. 旅程进入 `paused`，写入如实标注的服务提示（"这不是生物的来信"）；
@@ -211,12 +270,23 @@ JEV 不可用时，系统：
 要求的证据。`tests/race-and-guards.test.js` 与
 `journey-core.test.js` 的 JEV 不可用用例用固定 adapter 覆盖了同一行为。
 
-### 5.3 未覆盖路径不能用 fixture 结论替代
+### 5.3 覆盖边界
 
-决策、结算、阶段信、收束来信在**真实外部服务**下本轮未被验证。
-固定场景（`npm run check` 第 4 项）证明的是：
-**在受控输入下，程序装配、状态迁移与护栏行为正确**。
-它**不能**证明真实 JEV 会选择这些分支。
+**已由真实外部服务验证**（§5.1.2，17 次调用全部 ok）：
+行动决策、结算与一致性检查、遭遇提案、去重重提案、收束来信、回顾时间线。
+
+**仍未验证**：
+
+| 项 | 原因 | 补验方式 |
+| --- | --- | --- |
+| 信号路径（寄信号 → 补给 → 到期） | 真实 JEV 在本次运行中直接行动，未选择寄信号 | 换更容易触发未决的处境重跑；或用固定场景验证程序行为 |
+| 阶段来信（`kind=letter`） | 本次自然收束走的是 `final_letter` | 调大 `J_MAX_EVENTS` 让真实 JEV 有更多检查点机会 |
+| 真实配图 | 未配置 `IMAGE_*` | 配好凭据后寄一封来信 |
+| JEV 网络抖动/限流路径 | 未构造真实限流 | fixture 已覆盖重试与暂停语义 |
+
+**固定场景（`npm run check` 第 4 项）证明的是**：
+在受控输入下，程序装配、状态迁移与护栏行为正确。
+它**不能**证明真实 JEV 会选择这些分支——两者互补，不可互相替代。
 
 ---
 
@@ -224,9 +294,11 @@ JEV 不可用时，系统：
 
 | 项 | 原因 | 补验方式 |
 | --- | --- | --- |
-| 真实 JEV 决策/结算/来信 | HTTP 451 地域限制 | 在可访问区域运行 `node scripts/smoke-real.js` |
+| ~~真实 JEV 决策/结算~~ | ~~HTTP 451~~ | **已验证**：设 `JEV_PROXY` 后 17 次真实调用全部 ok，见 §5.1.2 |
+| 信号路径（真实 JEV 寄信号） | 本次真实 JEV 直接行动，未选择寄信号 | 换更未决的处境重跑；程序行为由固定场景覆盖 |
+| 阶段来信（真实 `kind=letter`） | 本次自然收束走的是 `final_letter` | 调大 `J_MAX_EVENTS` 重跑 |
 | 真实浏览器回归（晚回、乱序、草稿、展开） | 无浏览器环境；已用最小 DOM 桩覆盖状态机 | `tests/browser/`（目录已建，需接入 Playwright 或同类） |
-| 真实配图生成 | 未配置 `IMAGE_*` 或未触发 | `npm start` 后寄一封阶段信，观察 `/images/` |
+| 真实配图生成 | 未配置 `IMAGE_*` | `npm start` 后寄一封来信，观察 `/images/` |
 | CI 远端强制拦截 | 无法在此环境配置 branch protection | 仓库设置里把 `check` 设为必需检查 |
 | 叙事质量 / 被尊重感 / 留存 | 不属于本轮工程目标 | 需要人工评估，不是工程验收项 |
 | 效率收益 | 未做对照测量 | 见 `tooling/templates/efficiency-log-template.md`（**待实测**） |
