@@ -34,9 +34,20 @@
 npm start              # 启动（唯一实际启动入口是 serving/entrypoints/start.js）
 npm run check          # 统一检查 5 项
 npm test               # 只跑测试
-node tests/scenarios/cli.js <场景>    # 进入固定场景
-node scripts/smoke-real.js            # 真实冒烟（花钱，需 JEV_PROXY）
+npm run scenario <名>  # 进入固定场景
+npm run smoke:real     # 真实冒烟（花钱，需 JEV_PROXY）
 ```
+
+## GitHub
+
+- 远端：`github.com/alvinperson6-create/cyber-release-miniapp`
+- 主开发分支：`jev-modify`（**不是 main**）
+- **push 必须走代理**：国内直连会 Empty reply from server
+  `git -c http.proxy=http://127.0.0.1:7897 -c https.proxy=http://127.0.0.1:7897 push origin jev-modify`
+- **不能提交 `.github/workflows/`**：当前 OAuth 授权缺 workflow scope，
+  含该目录的提交一律被远端拒绝。已加入 .gitignore。
+  需要 CI 时先授权（PAT 勾选 workflow）再移除该行。
+  若历史已提交过，需 `filter-branch` 剥离后再推。
 
 ## 验证纪律
 
